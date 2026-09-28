@@ -1,338 +1,177 @@
-/* VOZX RideCompare - Exact Pixel-Perfect Design System */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+/* VOZX RideCompare - Exact Mobile UI */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 :root {
-  --bg-main: #020617;
-  --surface-card: #0B1220;
-  --primary-blue: #2563EB;
-  --glow-blue: #38BDF8;
-  --green-badge: #22C55E;
-  --yellow-rapido: #FACC15;
-  --red-accent: #EF4444;
+  --bg-deep: #00020A;
+  --primary-blue: #0073FF;
+  --primary-blue-hover: #0060E6;
+  --accent-cyan: #38BDF8;
   --text-white: #FFFFFF;
-  --text-secondary: #94A3B8;
-  --border-blue: rgba(59, 130, 246, 0.18);
-  --border-subtle: rgba(255, 255, 255, 0.08);
+  --text-muted: #94A3B8;
+  --text-body: #CBD5E1;
 }
 
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
 }
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
-  background-color: var(--bg-main);
+  background-color: #020617;
   color: var(--text-white);
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
 }
 
-/* Typography Hierarchy matching spec */
-.text-lh { font-size: 34px; font-weight: 700; line-height: 1.15; }
-.text-h { font-size: 26px; font-weight: 700; line-height: 1.2; }
-.text-sub { font-size: 17px; font-weight: 600; line-height: 1.3; }
-.text-body { font-size: 14px; font-weight: 500; line-height: 1.4; }
-.text-caption { font-size: 12px; font-weight: 400; line-height: 1.4; }
-.text-btn { font-size: 15px; font-weight: 700; }
-
-/* Phone Frame (330px width x 710px height) matching Figma presentation */
-.phone-canvas {
-  width: 330px;
-  height: 710px;
-  background: var(--bg-main);
-  border-radius: 40px;
+/* Phone Mockup Canvas (Full height on mobile, centered smartphone on desktop) */
+.exact-phone-wrapper {
+  width: 100%;
+  max-width: 385px;
+  height: 100vh;
+  max-height: 820px;
+  background-color: var(--bg-deep);
   position: relative;
   overflow: hidden;
-  border: 2px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 
-    0 0 0 1px #0f172a,
-    0 25px 60px -10px rgba(0, 0, 0, 0.95),
-    0 0 35px rgba(37, 99, 235, 0.12);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  flex-shrink: 0;
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
-}
-
-.phone-canvas:hover {
-  transform: translateY(-4px);
   box-shadow: 
-    0 0 0 2px var(--primary-blue),
-    0 30px 70px -10px rgba(0, 0, 0, 0.95),
-    0 0 35px rgba(56, 189, 248, 0.28);
+    0 0 0 1.5px rgba(56, 189, 248, 0.22),
+    0 30px 80px -15px rgba(0, 0, 0, 0.98),
+    0 0 50px rgba(0, 115, 255, 0.16);
 }
 
-/* Interactive Phone Simulator Frame (Large) */
-.simulator-phone {
-  width: 375px;
-  height: 800px;
-  background: var(--bg-main);
-  border-radius: 48px;
-  position: relative;
-  overflow: hidden;
-  border: 3px solid rgba(255, 255, 255, 0.16);
-  box-shadow: 
-    0 0 0 2px #1E293B,
-    0 35px 80px -15px rgba(0, 0, 0, 0.98),
-    0 0 50px rgba(56, 189, 248, 0.25);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  flex-shrink: 0;
+@media (min-width: 640px) {
+  .exact-phone-wrapper {
+    height: 820px;
+    border-radius: 44px;
+    border: 3px solid rgba(255, 255, 255, 0.12);
+  }
 }
 
-/* iOS Status Bar */
-.ios-bar {
-  height: 40px;
-  padding: 12px 22px 0 22px;
+/* iOS Top Status Bar */
+.status-bar-exact {
+  height: 44px;
+  padding: 14px 26px 0 26px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 600;
-  color: var(--text-white);
-  z-index: 40;
+  color: #FFFFFF;
+  z-index: 30;
   flex-shrink: 0;
+}
+
+/* Hero Car Layer */
+.hero-car-layer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 125px;
+  width: 100%;
+  pointer-events: none;
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+}
+
+.hero-car-layer img {
+  width: 100%;
+  max-width: 385px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 20px rgba(0, 115, 255, 0.25));
 }
 
 /* iOS Bottom Home Bar */
-.ios-bar-bottom {
-  width: 120px;
+.home-bar-exact {
+  width: 130px;
   height: 4.5px;
   background: rgba(255, 255, 255, 0.35);
   border-radius: 9999px;
-  margin: 6px auto 6px auto;
-  flex-shrink: 0;
-}
-
-/* Exact Cards */
-.card-surface {
-  background: var(--surface-card);
-  border: 1px solid var(--border-blue);
-  border-radius: 18px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-  transition: all 0.2s ease;
-}
-
-.card-surface:hover {
-  border-color: rgba(56, 189, 248, 0.35);
-}
-
-.card-ride {
-  background: var(--surface-card);
-  border: 1px solid var(--border-blue);
-  border-radius: 18px;
-  height: 78px;
-  padding: 0 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
-  transition: all 0.2s ease;
-  cursor: pointer;
-}
-
-.card-ride:hover {
-  border-color: rgba(56, 189, 248, 0.5);
-  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.28);
-  transform: scale(1.01);
-}
-
-/* Buttons */
-.btn-primary-blue {
-  background: var(--primary-blue);
-  color: var(--text-white);
-  font-weight: 700;
-  font-size: 15px;
-  border-radius: 18px;
-  padding: 13px 20px;
-  width: 100%;
-  text-align: center;
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  display: block;
-  cursor: pointer;
-  border: none;
-}
-
-.btn-primary-blue:hover {
-  background: #1D4ED8;
-  box-shadow: 0 8px 26px rgba(56, 189, 248, 0.55);
-}
-
-.btn-primary-blue:active {
-  transform: scale(0.98);
-}
-
-/* Red Logout Pill */
-.btn-logout-pill {
-  border: 1.5px solid var(--red-accent);
-  background: rgba(239, 68, 68, 0.08);
-  color: var(--red-accent);
-  border-radius: 9999px;
-  font-weight: 700;
-  font-size: 14px;
-  padding: 11px;
-  width: 100%;
-  text-align: center;
-  transition: all 0.2s ease;
-  display: block;
-  cursor: pointer;
-}
-
-.btn-logout-pill:hover {
-  background: rgba(239, 68, 68, 0.18);
-  box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
-}
-
-/* Green Badge */
-.badge-green {
-  background: rgba(34, 197, 94, 0.2);
-  border: 1px solid rgba(34, 197, 94, 0.45);
-  color: var(--green-badge);
-  font-size: 10px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 9999px;
-  display: inline-block;
-}
-
-/* Provider Icons - Exact Matching */
-.logo-rapido-sq {
-  width: 44px;
-  height: 44px;
-  border-radius: 13px;
-  background: var(--yellow-rapido);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 12px rgba(250, 204, 21, 0.3);
-  flex-shrink: 0;
-}
-
-/* Ola exact: White squircle with black circle and lime ring */
-.logo-ola-sq {
-  width: 44px;
-  height: 44px;
-  border-radius: 13px;
-  background: #FFFFFF;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  flex-shrink: 0;
-}
-
-.logo-ola-black-circle {
-  width: 30px;
-  height: 30px;
-  border-radius: 9999px;
-  background: #000000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.ring-ola {
-  width: 18px;
-  height: 18px;
-  border-radius: 9999px;
-  border: 3px solid #84CC16;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.dot-ola {
-  width: 4px;
-  height: 4px;
-  border-radius: 9999px;
-  background: #84CC16;
-}
-
-.logo-uber-sq {
-  width: 44px;
-  height: 44px;
-  border-radius: 13px;
-  background: #000000;
-  border: 1px solid #1E293B;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-white);
-  font-weight: 800;
-  font-size: 12px;
-  letter-spacing: -0.3px;
-  flex-shrink: 0;
-}
-
-/* Bottom Navigation Bar */
-.bottom-nav {
-  height: 56px;
-  background: #040812;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  padding: 0 6px;
+  margin: 10px auto 8px auto;
   flex-shrink: 0;
   z-index: 30;
 }
 
-.nav-link {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-secondary);
-  font-size: 10px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  cursor: pointer;
-  padding: 4px 0;
-}
-
-.nav-link:hover {
+/* Primary CTA Button (Exact Blue Pill) */
+.btn-get-started {
+  background: var(--primary-blue);
   color: #FFFFFF;
-}
-
-.nav-link.active {
-  color: var(--primary-blue);
   font-weight: 700;
+  font-size: 16px;
+  border-radius: 9999px;
+  padding: 16px 24px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 4px 25px rgba(0, 115, 255, 0.45);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: block;
+  cursor: pointer;
+  border: none;
+  outline: none;
 }
 
-.nav-link.active svg {
+.btn-get-started:hover {
+  background: var(--primary-blue-hover);
+  box-shadow: 0 6px 30px rgba(56, 189, 248, 0.65);
+  transform: translateY(-1px);
+}
+
+.btn-get-started:active {
+  transform: scale(0.98);
+}
+
+/* Secondary Login Link */
+.btn-login-link {
   color: var(--primary-blue);
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: block;
+  margin: 0 auto;
+  padding: 6px 12px;
+  transition: color 0.2s ease;
 }
 
-/* Dark Map Styling */
-.map-canvas {
-  background-color: #060B18;
-  background-image: 
-    radial-gradient(#152037 1.5px, transparent 1.5px),
-    radial-gradient(#152037 1.5px, #060B18 1.5px);
-  background-size: 18px 18px;
-  background-position: 0 0, 9px 9px;
+.btn-login-link:hover {
+  color: var(--accent-cyan);
 }
 
-/* Floating Controls */
-.glass-pill-nav {
+/* Subtle floating audio toggle */
+.audio-toggle-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 60;
   background: rgba(11, 18, 32, 0.88);
   backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(59, 130, 246, 0.25);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(37, 99, 235, 0.15);
+  color: #38BDF8;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 14px;
   border-radius: 9999px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-/* Hide scrollbar */
-::-webkit-scrollbar {
-  width: 0px;
-  height: 0px;
+.audio-toggle-btn:hover {
+  background: rgba(15, 23, 42, 0.95);
+  border-color: #38BDF8;
 }
