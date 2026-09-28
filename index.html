@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>VOZX RideCompare - One Ride. All Prices.</title>
+  <title>VOZX RideCompare - Desktop, Tablet & Mobile Experience</title>
   
   <link rel="icon" type="image/png" href="assets/images/logo.png">
   <link rel="manifest" href="manifest.json">
@@ -15,103 +15,357 @@
   <!-- Custom Stylesheet -->
   <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="bg-[#020617] text-white min-h-screen flex flex-col items-center justify-center py-0 sm:py-6 px-0 sm:px-4">
+<body class="bg-[#020617] text-white min-h-screen flex flex-col items-center">
 
   <!-- ======================================================== -->
-  <!-- SINGLE EXACT MOBILE UI FRAME (MATCHING REFERENCE EXACTLY) -->
+  <!-- TOP DEVICE VIEWPORT CONTROLS BAR                         -->
   <!-- ======================================================== -->
-  <main id="app-viewport" class="exact-phone-wrapper">
+  <header class="fixed top-3 z-50 flex items-center justify-center w-full px-4 pointer-events-none">
+    <div class="pointer-events-auto glass-pill-nav px-4 py-2 flex items-center gap-3 shadow-2xl">
+      <!-- Brand Emblem -->
+      <div class="flex items-center gap-2 pr-3 border-r border-[#1E293B]">
+        <img src="assets/images/logo_hd_transparent.png" alt="VOZX" class="w-6 h-6 object-contain filter drop-shadow-[0_0_8px_#38BDF8]">
+        <span class="text-xs font-bold text-white tracking-tight hidden sm:inline">VOZX <span class="text-[#0073FF]">RideCompare</span></span>
+      </div>
 
-    <!-- iOS Top Status Bar -->
-    <div class="status-bar-exact">
-      <span>9:41</span>
+      <!-- Device Viewport Switchers -->
       <div class="flex items-center gap-1.5">
-        <!-- Cellular Signal (4 bars) -->
-        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-          <path d="M2 17h3v4H2v-4zm6-5h3v9H8v-9zm6-5h3v14h-3V7zm6-5h3v19h-3V2z"/>
-        </svg>
-        <!-- Wifi Icon -->
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.14 0M1.393 9.393c5.857-5.857 15.355-5.857 21.213 0"/>
-        </svg>
-        <!-- Battery Icon -->
-        <div class="w-5 h-2.5 rounded-[4px] border border-white p-[1px] flex items-center relative">
-          <div class="w-3 h-full bg-white rounded-[1.5px]"></div>
-          <div class="w-0.5 h-1 bg-white absolute -right-1 top-0.5 rounded-r-[1px]"></div>
-        </div>
+        <button id="btn-view-desktop" onclick="app.setDeviceMode('desktop')" class="device-pill-btn active">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          <span>Desktop</span>
+        </button>
+
+        <button id="btn-view-tablet" onclick="app.setDeviceMode('tablet')" class="device-pill-btn">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+          <span>Tablet</span>
+        </button>
+
+        <button id="btn-view-mobile" onclick="app.setDeviceMode('mobile')" class="device-pill-btn">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+          <span>Mobile</span>
+        </button>
+      </div>
+
+      <!-- Audio Toggle -->
+      <div class="pl-3 border-l border-[#1E293B]">
+        <button id="btn-sound-toggle" onclick="app.toggleSound()" class="flex items-center gap-1.5 text-xs text-[#38BDF8] hover:text-white font-medium transition-colors">
+          <svg id="sound-icon" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+          <span id="sound-status-text" class="hidden md:inline">Tesla Sound ON</span>
+        </button>
       </div>
     </div>
+  </header>
 
-    <!-- Car & Skyline Hero Artwork Layer (Positioned behind content) -->
-    <div class="hero-car-layer">
-      <!-- Ambient radial blue glow behind car -->
-      <div class="absolute w-72 h-44 rounded-full bg-[#0073FF]/15 blur-3xl -top-8 pointer-events-none"></div>
-      <!-- Exact Sports Car Hero with glowing neon red tail light bar & city skyline -->
-      <img src="assets/images/exact_car_hero.png" alt="Luxury Sports Car" class="w-full object-contain">
-    </div>
+  <!-- ======================================================== -->
+  <!-- MAIN VIEWPORT STAGE (DYNAMICALLY SCALES ACROSS MODES)    -->
+  <!-- ======================================================== -->
+  <div id="viewport-stage">
 
-    <!-- Screen Content Container -->
-    <div class="flex-1 flex flex-col justify-between relative overflow-hidden px-6 pt-3 pb-3 z-10">
-
-      <!-- Upper Section: 3D Logo & Typography -->
-      <div class="relative z-10 text-center pt-2">
-        <!-- 3D Metallic Electric-Blue R Logo with Lightning Notch -->
-        <div class="w-20 h-20 mx-auto mb-2 flex items-center justify-center">
-          <img src="assets/images/logo_hd_transparent.png" alt="VOZX Logo" class="w-full h-full object-contain filter drop-shadow-[0_0_18px_rgba(56,189,248,0.45)]">
+    <!-- 1. MOBILE VIEW (EXACT MATCHING MOCKUP) -->
+    <div id="view-mobile" class="stage-mobile hidden">
+      <!-- iOS Status Bar -->
+      <div class="status-bar-exact">
+        <span>9:41</span>
+        <div class="flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M2 17h3v4H2v-4zm6-5h3v9H8v-9zm6-5h3v14h-3V7zm6-5h3v19h-3V2z"/></svg>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.14 0M1.393 9.393c5.857-5.857 15.355-5.857 21.213 0"/></svg>
+          <div class="w-5 h-2.5 rounded-[4px] border border-white p-[1px] flex items-center relative">
+            <div class="w-3 h-full bg-white rounded-[1.5px]"></div>
+            <div class="w-0.5 h-1 bg-white absolute -right-1 top-0.5 rounded-r-[1px]"></div>
+          </div>
         </div>
+      </div>
 
-        <!-- Brand Name: "Ride" white, "Compare" electric blue -->
-        <h1 class="text-3xl font-extrabold tracking-tight text-white mb-0.5">
-          Ride<span class="text-[#0073FF]">Compare</span>
-        </h1>
+      <!-- Car & Skyline Hero Artwork Layer -->
+      <div class="hero-car-layer">
+        <div class="absolute w-72 h-44 rounded-full bg-[#0073FF]/15 blur-3xl -top-8 pointer-events-none"></div>
+        <img src="assets/images/exact_car_hero.png" alt="Luxury Sports Car" class="w-full object-contain">
+      </div>
 
-        <!-- Tagline: "One Ride. All Prices." -->
-        <p class="text-xs text-[#94A3B8] font-medium tracking-wide">
-          One Ride. All Prices.
-        </p>
+      <!-- Screen Content -->
+      <div class="flex-1 flex flex-col justify-between relative overflow-hidden px-6 pt-3 pb-3 z-10">
+        <!-- Upper Section: 3D Logo & Typography -->
+        <div class="relative z-10 text-center pt-2">
+          <div class="w-20 h-20 mx-auto mb-2 flex items-center justify-center">
+            <img src="assets/images/logo_hd_transparent.png" alt="VOZX Logo" class="w-full h-full object-contain filter drop-shadow-[0_0_18px_rgba(56,189,248,0.45)]">
+          </div>
 
-        <!-- 3-Line Description -->
-        <div class="mt-8 px-4">
-          <p class="text-[13.5px] text-[#CBD5E1] leading-relaxed font-normal">
-            Compare prices from<br>
-            all ride apps. Choose the best.<br>
-            Save money. Travel smarter.
+          <h1 class="text-3xl font-extrabold tracking-tight text-white mb-0.5">
+            Ride<span class="text-[#0073FF]">Compare</span>
+          </h1>
+
+          <p class="text-xs text-[#94A3B8] font-medium tracking-wide">
+            One Ride. All Prices.
           </p>
+
+          <div class="mt-8 px-4">
+            <p class="text-[13.5px] text-[#CBD5E1] leading-relaxed font-normal">
+              Compare prices from<br>
+              all ride apps. Choose the best.<br>
+              Save money. Travel smarter.
+            </p>
+          </div>
+        </div>
+
+        <!-- Lower Section: Action Buttons -->
+        <div class="relative z-20 space-y-3 pb-2">
+          <button onclick="app.handleGetStarted()" class="btn-get-started">
+            Get Started
+          </button>
+          <button onclick="app.handleLogin()" class="btn-login-link">
+            Login
+          </button>
         </div>
       </div>
 
-      <!-- Lower Section: Action Buttons -->
-      <div class="relative z-20 space-y-3 pb-2">
-        <!-- Primary CTA: "Get Started" Blue Pill Button -->
-        <button id="btn-get-started" onclick="app.handleGetStarted()" class="btn-get-started">
-          Get Started
-        </button>
-
-        <!-- Secondary CTA: "Login" Text Link -->
-        <button id="btn-login" onclick="app.handleLogin()" class="btn-login-link">
-          Login
-        </button>
-      </div>
-
+      <!-- iOS Bottom Indicator -->
+      <div class="home-bar-exact"></div>
     </div>
 
-    <!-- iOS Bottom Home Indicator Bar -->
-    <div class="home-bar-exact"></div>
+    <!-- 2. TABLET VIEW (IPAD PRO OPTIMIZED) -->
+    <div id="view-tablet" class="stage-tablet hidden">
+      <!-- Tablet Top Status Bar -->
+      <div class="status-bar-exact px-8">
+        <span>9:41 AM — iPad</span>
+        <div class="flex items-center gap-2">
+          <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.14 0M1.393 9.393c5.857-5.857 15.355-5.857 21.213 0"/></svg>
+          <div class="w-6 h-3 rounded-[5px] border border-white p-[1px] flex items-center relative">
+            <div class="w-4 h-full bg-white rounded-[2px]"></div>
+          </div>
+        </div>
+      </div>
 
-  </main>
+      <!-- Tablet Main 2-Column Content -->
+      <div class="flex-1 p-8 grid grid-cols-1 md:grid-cols-2 gap-6 items-center z-10 overflow-y-auto">
+        <!-- Left Side: Brand, Description & Interactive Search -->
+        <div class="space-y-6">
+          <div class="flex items-center gap-3">
+            <img src="assets/images/logo_hd_transparent.png" class="w-16 h-16 object-contain filter drop-shadow-[0_0_15px_#38BDF8]">
+            <div>
+              <h2 class="text-3xl font-extrabold text-white">Ride<span class="text-[#0073FF]">Compare</span></h2>
+              <p class="text-xs text-[#94A3B8] font-medium">One Ride. All Prices.</p>
+            </div>
+          </div>
 
-  <!-- Interactive Feedback Toast -->
-  <div id="app-toast" class="fixed top-6 left-1/2 -translate-x-1/2 z-50 bg-[#0B1220]/95 border border-[rgba(59,130,246,0.35)] shadow-[0_10px_30px_rgba(0,0,0,0.8)] text-[#38BDF8] text-xs font-semibold py-2.5 px-5 rounded-2xl text-center opacity-0 translate-y-4 pointer-events-none transition-all duration-300 backdrop-blur-md">
-    Toast message
+          <div>
+            <span class="desktop-pill-badge mb-2">✦ Tablet Edition • Real-Time Aggregator</span>
+            <h3 class="text-2xl font-bold text-white leading-tight">Compare Every Ride.<br>Save On Every Trip.</h3>
+            <p class="text-sm text-slate-300 mt-2 leading-relaxed">
+              Find the cheapest, fastest, and smartest ride across Rapido, Uber, Ola, and BluSmart within seconds.
+            </p>
+          </div>
+
+          <!-- Tablet Live Route Box -->
+          <div class="tablet-card-glow p-4 space-y-3">
+            <div class="flex items-center justify-between text-xs text-slate-400">
+              <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-blue-500"></span> Pickup: Current Location</span>
+              <span class="text-blue-400 font-bold">GPS Active</span>
+            </div>
+            <div class="h-px bg-slate-800"></div>
+            <div class="flex items-center justify-between text-xs text-white font-semibold">
+              <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-red-500"></span> Drop: Sanjay Ghodawat University</span>
+              <span class="text-slate-400 font-normal">Ichalkaranji</span>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <button onclick="app.handleGetStarted()" class="btn-get-started py-3.5">
+              Compare Live Rides
+            </button>
+            <button onclick="app.handleLogin()" class="btn-login-link text-xs">
+              Login to Saved Places
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Side: Hero Car & Live Price Badges -->
+        <div class="relative flex flex-col items-center justify-center">
+          <div class="relative w-full flex justify-center">
+            <div class="absolute w-64 h-64 rounded-full bg-[#0073FF]/20 blur-3xl"></div>
+            <img src="assets/images/exact_car_hero.png" alt="Hero Sports Car" class="w-full max-w-[340px] object-contain relative z-10 filter drop-shadow-[0_0_25px_rgba(0,115,255,0.35)]">
+          </div>
+
+          <!-- Floating Price Comparison Pills -->
+          <div class="w-full space-y-2.5 mt-4 z-20">
+            <div onclick="app.showToast('Rapido Bike: ₹78 (Cheapest)')" class="tablet-card-glow p-3 flex items-center justify-between cursor-pointer hover:border-green-400 transition-all">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-[#FACC15] flex items-center justify-center">
+                  <svg class="w-5 h-5 text-black" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13.5A2.5 2.5 0 1 1 21.5 16 2.5 2.5 0 0 1 19 13.5m-14 0A2.5 2.5 0 1 1 7.5 16 2.5 2.5 0 0 1 5 13.5m10.5-8.5l-3.5 5h-4l3-5h4.5M19 11h-2l-2-3h-4l-2 3H3v2h2.2a4.49 4.49 0 0 1 7.6 0h2.4a4.49 4.49 0 0 1 7.6 0H21v-2h-2z"/></svg>
+                </div>
+                <div>
+                  <h4 class="text-xs font-bold text-white">Rapido Bike</h4>
+                  <p class="text-[10px] text-slate-400">12 mins arrival</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <span class="text-xs font-bold text-[#22C55E]">₹78</span>
+                <span class="block text-[9px] bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full font-bold">Cheapest</span>
+              </div>
+            </div>
+
+            <div onclick="app.showToast('Ola Auto: ₹118')" class="tablet-card-glow p-3 flex items-center justify-between cursor-pointer hover:border-blue-400 transition-all">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center">
+                  <div class="w-6 h-6 rounded-full bg-black flex items-center justify-center">
+                    <div class="w-3.5 h-3.5 rounded-full border-2 border-[#84CC16] flex items-center justify-center"><div class="w-1 h-1 bg-[#84CC16] rounded-full"></div></div>
+                  </div>
+                </div>
+                <div>
+                  <h4 class="text-xs font-bold text-white">Ola Auto</h4>
+                  <p class="text-[10px] text-slate-400">14 mins arrival</p>
+                </div>
+              </div>
+              <span class="text-xs font-bold text-white">₹118</span>
+            </div>
+
+            <div onclick="app.showToast('Uber Car: ₹168')" class="tablet-card-glow p-3 flex items-center justify-between cursor-pointer hover:border-blue-400 transition-all">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-black border border-[#1E293B] flex items-center justify-center text-white text-[10px] font-bold">Uber</div>
+                <div>
+                  <h4 class="text-xs font-bold text-white">Uber Go (Sedan)</h4>
+                  <p class="text-[10px] text-slate-400">16 mins arrival</p>
+                </div>
+              </div>
+              <span class="text-xs font-bold text-white">₹168</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tablet Bottom Home Bar -->
+      <div class="home-bar-exact w-44"></div>
+    </div>
+
+    <!-- 3. DESKTOP VIEW (FULL EXPANSIVE AUTOMOTIVE DASHBOARD) -->
+    <div id="view-desktop" class="stage-desktop">
+      <div class="desktop-hero-card p-8 md:p-12 w-full my-auto">
+        <!-- Desktop Header Row -->
+        <div class="flex items-center justify-between pb-8 border-b border-[#161F30] mb-10">
+          <div class="flex items-center gap-3.5">
+            <img src="assets/images/logo_hd_transparent.png" class="w-12 h-12 object-contain filter drop-shadow-[0_0_12px_#38BDF8]">
+            <div>
+              <span class="text-2xl font-black text-white tracking-tight">VOZX <span class="text-[#0073FF]">RideCompare</span></span>
+              <span class="text-xs text-[#94A3B8] font-medium block">One Ride. All Prices.</span>
+            </div>
+          </div>
+
+          <div class="hidden lg:flex items-center gap-8 text-sm font-semibold text-slate-300">
+            <span class="text-white hover:text-[#38BDF8] cursor-pointer transition-colors">Live Aggregator</span>
+            <span class="hover:text-[#38BDF8] cursor-pointer transition-colors">Supported Providers</span>
+            <span class="hover:text-[#38BDF8] cursor-pointer transition-colors">AI Price Predictor</span>
+            <span class="hover:text-[#38BDF8] cursor-pointer transition-colors">Fare History</span>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <button onclick="app.handleLogin()" class="px-5 py-2.5 rounded-full text-xs font-bold text-slate-300 hover:text-white border border-[#1E293B] hover:border-slate-500 transition-all">
+              Sign In
+            </button>
+            <button onclick="app.handleGetStarted()" class="px-6 py-2.5 rounded-full text-xs font-bold bg-[#0073FF] hover:bg-[#0060E6] text-white shadow-[0_0_20px_rgba(0,115,255,0.6)] transition-all">
+              Get Started Free
+            </button>
+          </div>
+        </div>
+
+        <!-- 2-Column Desktop Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+          <!-- Left Column (7 cols): Hero Copy & Live Search -->
+          <div class="lg:col-span-7 space-y-6">
+            <span class="desktop-pill-badge">
+              ✦ AI-Powered Multi-App Ride Comparison Engine
+            </span>
+
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.1]">
+              One Ride.<br>
+              <span class="text-slate-300">Every </span>
+              <span class="text-[#0073FF] drop-shadow-[0_0_35px_rgba(0,115,255,0.7)]">Price.</span>
+            </h1>
+
+            <p class="text-base text-slate-300 leading-relaxed max-w-xl">
+              Compare live prices in real-time across <strong class="text-white">Rapido</strong>, <strong class="text-white">Uber</strong>, <strong class="text-white">Ola</strong>, <strong class="text-white">Namma Yatri</strong>, and <strong class="text-white">BluSmart</strong>. Choose the cheapest, fastest, or highest-rated ride in seconds.
+            </p>
+
+            <!-- Desktop Route Search Capsule -->
+            <div class="bg-[#0B1220]/90 backdrop-blur-md border border-[rgba(59,130,246,0.25)] rounded-2xl p-3 shadow-2xl flex flex-col sm:flex-row items-center gap-3 max-w-xl">
+              <div class="flex-1 w-full space-y-2 px-2">
+                <div class="flex items-center gap-2.5 text-xs">
+                  <span class="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-[0_0_8px_#3B82F6]"></span>
+                  <span class="text-slate-400">From:</span>
+                  <span class="text-white font-bold">Current Location (GPS Active)</span>
+                </div>
+                <div class="h-px bg-slate-800"></div>
+                <div class="flex items-center gap-2.5 text-xs">
+                  <span class="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_8px_#EF4444]"></span>
+                  <span class="text-slate-400">To:</span>
+                  <span class="text-white font-bold">Sanjay Ghodawat University, Ichalkaranji</span>
+                </div>
+              </div>
+
+              <button onclick="app.handleGetStarted()" class="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-[#0073FF] hover:bg-[#0060E6] text-white text-xs font-bold shadow-[0_0_20px_rgba(0,115,255,0.6)] whitespace-nowrap transition-all">
+                Compare Rides ➔
+              </button>
+            </div>
+
+            <!-- Live Price Pills Ticker -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-xl pt-2">
+              <div onclick="app.showToast('Rapido Bike ₹78 (Cheapest)')" class="provider-chip-exact">
+                <span class="text-xs font-bold text-white flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#FACC15]"></span> Rapido</span>
+                <span class="text-xs font-bold text-[#22C55E]">₹78</span>
+              </div>
+              <div onclick="app.showToast('Ola Bike ₹92')" class="provider-chip-exact">
+                <span class="text-xs font-bold text-white flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#84CC16]"></span> Ola</span>
+                <span class="text-xs font-bold text-white">₹92</span>
+              </div>
+              <div onclick="app.showToast('Uber Bike ₹105')" class="provider-chip-exact">
+                <span class="text-xs font-bold text-white flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-white"></span> Uber</span>
+                <span class="text-xs font-bold text-white">₹105</span>
+              </div>
+              <div onclick="app.showToast('BluSmart EV ₹140')" class="provider-chip-exact">
+                <span class="text-xs font-bold text-white flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-cyan-400"></span> BluSmart</span>
+                <span class="text-xs font-bold text-white">₹140</span>
+              </div>
+            </div>
+
+            <!-- Trust Metrics -->
+            <div class="flex items-center gap-6 pt-4 border-t border-[#161F30] text-xs text-slate-400">
+              <div><strong class="text-white text-sm block font-extrabold">500K+</strong> Active Riders</div>
+              <div class="h-6 w-px bg-slate-800"></div>
+              <div><strong class="text-[#22C55E] text-sm block font-extrabold">₹4.2 Cr</strong> Rider Savings</div>
+              <div class="h-6 w-px bg-slate-800"></div>
+              <div><strong class="text-white text-sm block font-extrabold">4.9 ★</strong> App Rating</div>
+            </div>
+          </div>
+
+          <!-- Right Column (5 cols): Hero Car Artwork Showcase -->
+          <div class="lg:col-span-5 relative flex items-center justify-center">
+            <div class="relative w-full flex items-center justify-center">
+              <div class="absolute w-80 h-80 rounded-full bg-[#0073FF]/20 blur-3xl pointer-events-none"></div>
+              
+              <!-- Luxury Dark Sports Car with Glowing Red Light Bar -->
+              <img src="assets/images/exact_car_hero.png" alt="Luxury Sports Car" class="w-full object-contain relative z-10 filter drop-shadow-[0_0_40px_rgba(0,115,255,0.4)]">
+              
+              <!-- Floating Highlight Badge 1 -->
+              <div class="absolute -top-4 right-4 z-20 bg-[#0B1220]/90 backdrop-blur-md border border-green-500/30 rounded-2xl p-3 shadow-2xl animate-bounce">
+                <span class="text-[10px] text-[#22C55E] font-bold block">✦ Instant Best Deal</span>
+                <span class="text-xs font-bold text-white">Rapido Bike for ₹78</span>
+              </div>
+
+              <!-- Floating Highlight Badge 2 -->
+              <div class="absolute -bottom-4 left-4 z-20 bg-[#0B1220]/90 backdrop-blur-md border border-blue-500/30 rounded-2xl p-3 shadow-2xl">
+                <span class="text-[10px] text-[#38BDF8] font-bold block">🤖 AI Smart Predictor</span>
+                <span class="text-xs font-bold text-white">Save ₹18 in 6 mins</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
-  <!-- Subtle Floating Sound Button (Bottom Right of screen) -->
-  <button id="btn-toggle-sound" onclick="app.toggleSound()" class="audio-toggle-btn">
-    <svg id="sound-icon" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
-    </svg>
-    <span id="sound-status-text">Audio ON</span>
-  </button>
+  <!-- Interactive Feedback Toast -->
+  <div id="app-toast" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-[#0B1220]/95 border border-[rgba(59,130,246,0.35)] shadow-[0_10px_30px_rgba(0,0,0,0.8)] text-[#38BDF8] text-xs font-semibold py-2.5 px-5 rounded-2xl text-center opacity-0 translate-y-4 pointer-events-none transition-all duration-300 backdrop-blur-md">
+    Toast message
+  </div>
 
   <!-- Scripts -->
   <script src="js/audio.js"></script>
