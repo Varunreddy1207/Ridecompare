@@ -1,21 +1,17 @@
-/* VOZX RideCompare - Native Responsive Design System (Mobile, Tablet & Desktop) */
+/* VOZX RideCompare - Exact Responsive Design System (Mobile, Tablet, Desktop) */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 :root {
   --bg-deep: #00020A;
-  --bg-canvas: #020617;
-  --surface-card: #0B1220;
+  --bg-surface: #070D1E;
   --primary-blue: #0073FF;
   --primary-blue-hover: #0060E6;
   --accent-cyan: #38BDF8;
   --accent-green: #22C55E;
-  --accent-yellow: #FACC15;
-  --accent-red: #EF4444;
   --text-white: #FFFFFF;
   --text-muted: #94A3B8;
   --text-body: #CBD5E1;
-  --border-blue: rgba(59, 130, 246, 0.18);
-  --border-cyan: rgba(56, 189, 248, 0.25);
+  --border-glow: rgba(56, 189, 248, 0.22);
 }
 
 * {
@@ -23,32 +19,428 @@
   margin: 0;
   padding: 0;
   -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 
 html, body {
   width: 100%;
-  min-height: 100vh;
-  min-height: 100dvh;
-  background-color: var(--bg-canvas);
+  min-height: 100%;
+  background-color: var(--bg-deep);
   color: var(--text-white);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
   overflow-x: hidden;
 }
 
+/* Ambient Background Radial Glows */
+.ambient-glow-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: 
+    radial-gradient(circle at 50% 10%, rgba(0, 115, 255, 0.12) 0%, transparent 60%),
+    radial-gradient(circle at 50% 85%, rgba(56, 189, 248, 0.08) 0%, transparent 50%),
+    #00020A;
+}
+
+/* Top Device Switcher Header (Visible on Desktop / Tablets) */
+.device-control-bar {
+  background: rgba(7, 13, 30, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(56, 189, 248, 0.22);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 115, 255, 0.15);
+  border-radius: 9999px;
+  transition: all 0.3s ease;
+}
+
+.device-btn {
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #94A3B8;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+}
+
+.device-btn:hover {
+  color: #FFFFFF;
+}
+
+.device-btn.active {
+  background: #0073FF;
+  color: #FFFFFF;
+  box-shadow: 0 0 15px rgba(0, 115, 255, 0.6);
+  font-weight: 700;
+}
+
+/* Base Splash UI Container */
+.splash-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--bg-deep);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 /* ======================================================== */
-/* PRIMARY BUTTONS & CTAs                                   */
+/* 1. AUTO / RESPONSIVE VIEW (DEFAULT)                     */
 /* ======================================================== */
+
+/* MOBILE (< 768px): Full screen edge-to-edge native app */
+@media (max-width: 767px) {
+  .splash-container.mode-auto {
+    min-height: 100dvh;
+    height: 100%;
+    padding: 0;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+  }
+
+  .splash-container.mode-auto .status-bar-box {
+    display: flex;
+  }
+
+  .splash-container.mode-auto .logo-img {
+    width: 82px;
+    height: 82px;
+  }
+
+  .splash-container.mode-auto .title-heading {
+    font-size: 2rem; /* 32px */
+    letter-spacing: -0.03em;
+  }
+
+  .splash-container.mode-auto .subtitle-text {
+    font-size: 0.75rem; /* 12px */
+  }
+
+  .splash-container.mode-auto .desc-text {
+    font-size: 0.85rem; /* 13.5px */
+    line-height: 1.5;
+  }
+
+  .splash-container.mode-auto .car-hero-img {
+    max-width: 360px;
+    width: 100%;
+  }
+
+  .splash-container.mode-auto .home-bar-box {
+    display: block;
+  }
+}
+
+/* TABLET (768px to 1024px): Scaled tablet layout */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .splash-container.mode-auto {
+    max-width: 640px;
+    min-height: 880px;
+    margin: 20px auto;
+    border-radius: 40px;
+    border: 2px solid rgba(56, 189, 248, 0.25);
+    box-shadow: 
+      0 0 0 1px #0B1220,
+      0 30px 80px -15px rgba(0, 0, 0, 0.95),
+      0 0 45px rgba(0, 115, 255, 0.2);
+    padding: 24px 36px;
+  }
+
+  .splash-container.mode-auto .status-bar-box {
+    display: flex;
+  }
+
+  .splash-container.mode-auto .logo-img {
+    width: 105px;
+    height: 105px;
+  }
+
+  .splash-container.mode-auto .title-heading {
+    font-size: 2.75rem; /* 44px */
+  }
+
+  .splash-container.mode-auto .subtitle-text {
+    font-size: 0.875rem; /* 14px */
+    letter-spacing: 0.1em;
+  }
+
+  .splash-container.mode-auto .desc-text {
+    font-size: 1rem; /* 16px */
+    line-height: 1.6;
+  }
+
+  .splash-container.mode-auto .car-hero-img {
+    max-width: 520px;
+  }
+
+  .splash-container.mode-auto .actions-wrapper {
+    max-width: 440px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .splash-container.mode-auto .home-bar-box {
+    display: block;
+  }
+}
+
+/* DESKTOP (>= 1024px): Majestic widescreen luxury hero stage */
+@media (min-width: 1024px) {
+  .splash-container.mode-auto {
+    max-width: 960px;
+    min-height: 820px;
+    margin: 20px auto 40px auto;
+    border-radius: 44px;
+    border: 2px solid rgba(56, 189, 248, 0.28);
+    box-shadow: 
+      0 0 0 1px #0F172A,
+      0 40px 100px -20px rgba(0, 0, 0, 0.98),
+      0 0 60px rgba(0, 115, 255, 0.25);
+    padding: 30px 48px;
+  }
+
+  .splash-container.mode-auto .status-bar-box {
+    display: none; /* Desktop doesn't need phone status bar */
+  }
+
+  .splash-container.mode-auto .logo-img {
+    width: 120px;
+    height: 120px;
+  }
+
+  .splash-container.mode-auto .title-heading {
+    font-size: 3.5rem; /* 56px */
+    letter-spacing: -0.03em;
+  }
+
+  .splash-container.mode-auto .subtitle-text {
+    font-size: 1rem;
+    letter-spacing: 0.15em;
+  }
+
+  .splash-container.mode-auto .desc-text {
+    font-size: 1.15rem; /* 18.5px */
+    line-height: 1.7;
+    max-width: 600px;
+  }
+
+  .splash-container.mode-auto .car-hero-img {
+    max-width: 640px;
+  }
+
+  .splash-container.mode-auto .actions-wrapper {
+    max-width: 440px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .splash-container.mode-auto .home-bar-box {
+    display: none;
+  }
+}
+
+/* ======================================================== */
+/* 2. EXPLICIT SIMULATION MODES (VIA TOP TOGGLE)            */
+/* ======================================================== */
+
+/* Force Mobile Frame (iPhone 15 Pro proportions: 390px x 844px) */
+.splash-container.mode-mobile {
+  max-width: 390px !important;
+  height: 830px !important;
+  min-height: 830px !important;
+  margin: 15px auto !important;
+  border-radius: 48px !important;
+  border: 3.5px solid rgba(255, 255, 255, 0.16) !important;
+  box-shadow: 
+    0 0 0 2px #1E293B,
+    0 35px 80px -15px rgba(0, 0, 0, 0.98),
+    0 0 50px rgba(0, 115, 255, 0.3) !important;
+  padding: 0 20px 10px 20px !important;
+}
+
+.splash-container.mode-mobile .status-bar-box {
+  display: flex !important;
+}
+
+.splash-container.mode-mobile .logo-img {
+  width: 82px !important;
+  height: 82px !important;
+}
+
+.splash-container.mode-mobile .title-heading {
+  font-size: 2rem !important;
+}
+
+.splash-container.mode-mobile .subtitle-text {
+  font-size: 0.75rem !important;
+}
+
+.splash-container.mode-mobile .desc-text {
+  font-size: 0.85rem !important;
+  line-height: 1.5 !important;
+}
+
+.splash-container.mode-mobile .car-hero-img {
+  max-width: 350px !important;
+}
+
+.splash-container.mode-mobile .home-bar-box {
+  display: block !important;
+}
+
+/* Force Tablet Frame (iPad Air: 680px x 920px) */
+.splash-container.mode-tablet {
+  max-width: 680px !important;
+  height: 900px !important;
+  min-height: 900px !important;
+  margin: 15px auto !important;
+  border-radius: 40px !important;
+  border: 4px solid rgba(255, 255, 255, 0.14) !important;
+  box-shadow: 
+    0 0 0 2px #1E293B,
+    0 40px 90px -15px rgba(0, 0, 0, 0.98),
+    0 0 55px rgba(0, 115, 255, 0.3) !important;
+  padding: 20px 36px 15px 36px !important;
+}
+
+.splash-container.mode-tablet .status-bar-box {
+  display: flex !important;
+}
+
+.splash-container.mode-tablet .logo-img {
+  width: 105px !important;
+  height: 105px !important;
+}
+
+.splash-container.mode-tablet .title-heading {
+  font-size: 2.75rem !important;
+}
+
+.splash-container.mode-tablet .subtitle-text {
+  font-size: 0.875rem !important;
+}
+
+.splash-container.mode-tablet .desc-text {
+  font-size: 1rem !important;
+  line-height: 1.6 !important;
+}
+
+.splash-container.mode-tablet .car-hero-img {
+  max-width: 520px !important;
+}
+
+.splash-container.mode-tablet .actions-wrapper {
+  max-width: 440px !important;
+  margin: 0 auto !important;
+  width: 100% !important;
+}
+
+.splash-container.mode-tablet .home-bar-box {
+  display: block !important;
+}
+
+/* Force Desktop Frame (Widescreen luxury layout: 1040px) */
+.splash-container.mode-desktop {
+  max-width: 1040px !important;
+  min-height: 840px !important;
+  margin: 15px auto 40px auto !important;
+  border-radius: 44px !important;
+  border: 2px solid rgba(56, 189, 248, 0.28) !important;
+  box-shadow: 
+    0 0 0 1px #0F172A,
+    0 40px 100px -20px rgba(0, 0, 0, 0.98),
+    0 0 60px rgba(0, 115, 255, 0.28) !important;
+  padding: 30px 48px !important;
+}
+
+.splash-container.mode-desktop .status-bar-box {
+  display: none !important;
+}
+
+.splash-container.mode-desktop .logo-img {
+  width: 120px !important;
+  height: 120px !important;
+}
+
+.splash-container.mode-desktop .title-heading {
+  font-size: 3.5rem !important;
+}
+
+.splash-container.mode-desktop .subtitle-text {
+  font-size: 1rem !important;
+}
+
+.splash-container.mode-desktop .desc-text {
+  font-size: 1.15rem !important;
+  line-height: 1.7 !important;
+  max-width: 600px !important;
+}
+
+.splash-container.mode-desktop .car-hero-img {
+  max-width: 640px !important;
+}
+
+.splash-container.mode-desktop .actions-wrapper {
+  max-width: 440px !important;
+  margin: 0 auto !important;
+  width: 100% !important;
+}
+
+.splash-container.mode-desktop .home-bar-box {
+  display: none !important;
+}
+
+/* ======================================================== */
+/* 3. COMMON ELEMENT STYLING                                */
+/* ======================================================== */
+
+/* Status Bar */
+.status-bar-box {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #FFFFFF;
+  z-index: 30;
+  flex-shrink: 0;
+  padding-top: 8px;
+}
+
+/* Home Indicator Bar */
+.home-bar-box {
+  width: 134px;
+  height: 4.5px;
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 9999px;
+  margin: 8px auto 6px auto;
+  flex-shrink: 0;
+  z-index: 30;
+}
+
+/* Primary CTA Button (Exact Blue Pill) */
 .btn-get-started {
   background: var(--primary-blue);
   color: #FFFFFF;
   font-weight: 700;
   font-size: 16px;
   border-radius: 9999px;
-  padding: 16px 28px;
+  padding: 15px 28px;
+  width: 100%;
   text-align: center;
-  box-shadow: 0 4px 25px rgba(0, 115, 255, 0.45);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  display: inline-block;
+  box-shadow: 0 4px 25px rgba(0, 115, 255, 0.55), 0 0 30px rgba(56, 189, 248, 0.25);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  display: block;
   cursor: pointer;
   border: none;
   outline: none;
@@ -56,87 +448,46 @@ html, body {
 
 .btn-get-started:hover {
   background: var(--primary-blue-hover);
-  box-shadow: 0 6px 30px rgba(56, 189, 248, 0.65);
-  transform: translateY(-1px);
+  box-shadow: 0 6px 35px rgba(56, 189, 248, 0.75), 0 0 40px rgba(0, 115, 255, 0.4);
+  transform: translateY(-2px);
 }
 
 .btn-get-started:active {
   transform: scale(0.98);
 }
 
+/* Secondary Login Link */
 .btn-login-link {
   color: var(--primary-blue);
-  font-size: 14px;
+  font-size: 14.5px;
   font-weight: 600;
   text-align: center;
   background: transparent;
   border: none;
   cursor: pointer;
-  display: inline-block;
-  padding: 8px 16px;
-  transition: color 0.2s ease;
+  display: block;
+  margin: 0 auto;
+  padding: 6px 16px;
+  transition: all 0.2s ease;
 }
 
 .btn-login-link:hover {
   color: var(--accent-cyan);
+  text-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
 }
 
-/* Glassmorphism Surface Cards */
-.glass-surface {
-  background: rgba(11, 18, 32, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border-blue);
-  border-radius: 24px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.glass-surface:hover {
-  border-color: rgba(56, 189, 248, 0.4);
-  box-shadow: 0 12px 35px rgba(0, 115, 255, 0.2);
-}
-
-/* Provider Price Chips */
-.provider-chip {
-  background: #0B1220;
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  border-radius: 16px;
-  padding: 10px 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  transition: all 0.2s ease;
-  cursor: pointer;
-}
-
-.provider-chip:hover {
-  border-color: rgba(56, 189, 248, 0.5);
-  box-shadow: 0 4px 16px rgba(0, 115, 255, 0.25);
-  transform: translateY(-2px);
-}
-
-/* iOS Home Indicator Bar */
-.home-bar-exact {
-  width: 130px;
-  height: 4.5px;
-  background: rgba(255, 255, 255, 0.35);
-  border-radius: 9999px;
-  margin: 12px auto 8px auto;
-  flex-shrink: 0;
-}
-
-/* Subtle Floating Audio Toggle */
-.audio-toggle-btn {
+/* Subtle Floating Sound Toggle */
+.audio-floating-btn {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 18px;
+  right: 18px;
   z-index: 60;
-  background: rgba(11, 18, 32, 0.9);
+  background: rgba(7, 13, 30, 0.9);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(56, 189, 248, 0.25);
   color: #38BDF8;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   padding: 8px 14px;
   border-radius: 9999px;
@@ -148,10 +499,72 @@ html, body {
   transition: all 0.2s ease;
 }
 
-.audio-toggle-btn:hover {
-  background: rgba(15, 23, 42, 0.98);
+.audio-floating-btn:hover {
+  background: rgba(15, 23, 42, 0.95);
   border-color: #38BDF8;
   transform: scale(1.03);
+}
+
+/* ======================================================== */
+/* 4. MODALS & DRAWERS (FOR GET STARTED & LOGIN)            */
+/* ======================================================== */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 2, 10, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-sheet {
+  background: #070D1E;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95), 0 0 40px rgba(0, 115, 255, 0.2);
+  border-radius: 32px;
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: translateY(20px) scale(0.97);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-backdrop.open .modal-sheet {
+  transform: translateY(0) scale(1);
+}
+
+/* Comparison Card inside modal */
+.ride-item-card {
+  background: #0B1220;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 18px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.ride-item-card:hover {
+  border-color: rgba(56, 189, 248, 0.5);
+  background: #0F172A;
+  transform: scale(1.01);
+  box-shadow: 0 6px 20px rgba(0, 115, 255, 0.18);
 }
 
 /* Hide scrollbar */
