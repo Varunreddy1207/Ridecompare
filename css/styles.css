@@ -1,15 +1,24 @@
 /* ==========================================================================
-   VOZX RideCompare - Interactive Simulator Design System
-   Exact pixel-perfect match for Splash & Home Screens across Desktop, Tablet, and Mobile
+   VOZX RideCompare — Production-Ready Multi-Device Master Design System
+   Breakpoints:
+   - Mobile Small:     320px – 375px
+   - Mobile Large:     390px – 767px
+   - Tablet Portrait:  768px – 834px
+   - Tablet Landscape: 835px – 1023px
+   - Laptop:           1024px – 1365px
+   - Desktop:          1366px – 1919px
+   - Large Desktop:    1920px+
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 :root {
+  /* Colors */
   --bg-deep: #00020A;
   --bg-main: #020617;
   --surface-card: #0B1220;
   --surface-card-hover: #101B2E;
+  --surface-glass: rgba(11, 18, 32, 0.82);
 
   --primary-blue: #2563EB;
   --primary-blue-glow: #0073FF;
@@ -26,8 +35,20 @@
   --text-muted: #64748B;
   --text-body: #CBD5E1;
 
-  --border-subtle: rgba(59, 130, 246, 0.18);
+  --border-subtle: rgba(255, 255, 255, 0.08);
   --border-glow: rgba(56, 189, 248, 0.35);
+  --border-card: rgba(59, 130, 246, 0.18);
+
+  /* Dimensions */
+  --sidebar-width: 280px;
+  --topbar-height: 72px;
+  --bottom-nav-height: 64px;
+
+  /* Border Radii */
+  --radius-card: 24px;
+  --radius-btn: 18px;
+  --radius-input: 18px;
+  --radius-map-card: 28px;
 }
 
 *, *::before, *::after {
@@ -35,13 +56,12 @@
   margin: 0;
   padding: 0;
   -webkit-tap-highlight-color: transparent;
-  user-select: none;
 }
 
 html, body {
   width: 100%;
   min-height: 100%;
-  background-color: var(--bg-deep);
+  background-color: var(--bg-main);
   color: var(--text-white);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
   overflow-x: hidden;
@@ -49,204 +69,435 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Ambient Radial Glows in Background */
-.ambient-glow-bg {
+/* Fluid Typography Scales */
+.fluid-hero {
+  font-size: clamp(30px, 3.5vw, 48px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: var(--text-white);
+}
+
+.fluid-heading {
+  font-size: clamp(24px, 2.5vw, 36px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--text-white);
+}
+
+.fluid-subheading {
+  font-size: clamp(16px, 1.5vw, 20px);
+  font-weight: 600;
+  color: var(--text-white);
+}
+
+.fluid-body {
+  font-size: clamp(14px, 1.1vw, 17px);
+  line-height: 1.5;
+  color: var(--text-body);
+}
+
+.fluid-caption {
+  font-size: clamp(11px, 0.9vw, 13px);
+  color: var(--text-secondary);
+}
+
+/* Ambient Radial Glow Backdrop */
+.ambient-glow-mesh {
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 0;
   background: 
-    radial-gradient(circle at 50% 12%, rgba(0, 115, 255, 0.16) 0%, transparent 60%),
-    radial-gradient(circle at 50% 88%, rgba(56, 189, 248, 0.09) 0%, transparent 55%),
-    #00020A;
+    radial-gradient(circle at 18% 18%, rgba(37, 99, 235, 0.14) 0%, transparent 45%),
+    radial-gradient(circle at 82% 78%, rgba(34, 211, 238, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(0, 2, 10, 0.5) 0%, transparent 70%),
+    #020617;
 }
 
-/* ==========================================================================
-   TOP FLOATING CONTROL PILL (MATCHING media_1790576405053.png EXACTLY)
-   ========================================================================== */
+/* Glassmorphism Cards */
+.glass-panel {
+  background: var(--surface-glass);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 25px rgba(37, 99, 235, 0.08);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
 
-.glass-pill-nav {
+.glass-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-card);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.glass-card:hover {
+  border-color: var(--border-glow);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 115, 255, 0.2);
+}
+
+/* Primary CTA Buttons */
+.btn-primary-blue {
+  background: linear-gradient(135deg, #2563EB 0%, #0073FF 100%);
+  color: #FFFFFF;
+  font-weight: 700;
+  border-radius: var(--radius-btn);
+  padding: 14px 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  box-shadow: 0 4px 25px rgba(37, 99, 235, 0.5), 0 0 20px rgba(56, 189, 248, 0.25);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  min-height: 48px;
+}
+
+.btn-primary-blue:hover {
+  background: linear-gradient(135deg, #1D4ED8 0%, #0060E6 100%);
+  box-shadow: 0 6px 32px rgba(56, 189, 248, 0.7), 0 0 35px rgba(0, 115, 255, 0.45);
+  transform: translateY(-2px);
+}
+
+.btn-primary-blue:active {
+  transform: scale(0.98);
+}
+
+/* Top Device Preview Switcher (Desktop Header) */
+.device-preview-pill {
   background: rgba(11, 18, 32, 0.88);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(59, 130, 246, 0.25);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(37, 99, 235, 0.18);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
   border-radius: 9999px;
+  padding: 4px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 8px 16px;
-  transition: all 0.3s ease;
+  gap: 4px;
 }
 
-.simulator-active-pill {
-  padding: 6px 16px;
-  border-radius: 9999px;
-  font-size: 12px;
-  font-weight: 700;
-  background: #2563EB;
-  color: #FFFFFF;
-  box-shadow: 0 0 15px rgba(37, 99, 235, 0.65);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.device-switcher-btn {
+.preview-toggle-btn {
   padding: 5px 12px;
   border-radius: 9999px;
   font-size: 11px;
   font-weight: 600;
-  color: #94A3B8;
+  color: var(--text-secondary);
+  cursor: pointer;
   transition: all 0.2s ease;
+  background: transparent;
+  border: none;
   display: flex;
   align-items: center;
   gap: 4px;
-  cursor: pointer;
-  border: none;
-  background: transparent;
 }
 
-.device-switcher-btn:hover {
+.preview-toggle-btn:hover {
   color: #FFFFFF;
 }
 
-.device-switcher-btn.active {
-  background: rgba(37, 99, 235, 0.35);
-  border: 1px solid rgba(56, 189, 248, 0.4);
+.preview-toggle-btn.active {
+  background: #0073FF;
   color: #FFFFFF;
+  box-shadow: 0 0 12px rgba(0, 115, 255, 0.65);
   font-weight: 700;
 }
 
 /* ==========================================================================
-   INTERACTIVE SMARTPHONE SIMULATOR FRAME
+   NAVIGATION SYSTEMS
+   1. Desktop Sidebar (>= 1024px)
+   2. Tablet Navigation Dock (768px – 1023px)
+   3. Mobile Bottom Nav (320px – 767px)
    ========================================================================== */
 
-.interactive-simulator-frame {
-  width: 100%;
-  max-width: 395px;
-  height: 840px;
-  background: var(--bg-deep);
-  border-radius: 48px;
-  position: relative;
-  overflow: hidden;
-  border: 3.5px solid rgba(255, 255, 255, 0.16);
-  box-shadow: 
-    0 0 0 2px #1E293B,
-    0 35px 85px -15px rgba(0, 0, 0, 0.98),
-    0 0 50px rgba(0, 115, 255, 0.3);
+/* 1. Desktop Sidebar */
+#desktop-sidebar {
+  width: var(--sidebar-width);
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: #040813;
+  border-right: 1px solid var(--border-subtle);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  flex-shrink: 0;
-  margin: 10px auto;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 24px 18px;
+  z-index: 50;
+  box-shadow: 5px 0 30px rgba(0, 0, 0, 0.5);
+  transition: width 0.3s ease;
 }
 
-/* Tablet Simulator Mode */
-.interactive-simulator-frame.mode-tablet {
-  max-width: 680px;
-  height: 880px;
-  border-radius: 40px;
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
 }
 
-/* Full Responsive Desktop Simulator Mode */
-.interactive-simulator-frame.mode-full {
-  max-width: 980px;
-  height: 840px;
-  border-radius: 36px;
+.sidebar-link:hover {
+  color: #FFFFFF;
+  background: rgba(37, 99, 235, 0.08);
 }
 
-/* Native Mobile Device (< 640px viewport): 100% Edge-to-edge Native App */
-@media (max-width: 640px) {
-  .interactive-simulator-frame {
-    max-width: 100% !important;
-    height: 100dvh !important;
-    min-height: 100dvh !important;
-    border-radius: 0 !important;
-    border: none !important;
-    box-shadow: none !important;
-    margin: 0 !important;
-  }
+.sidebar-link.active {
+  color: #FFFFFF;
+  background: linear-gradient(90deg, rgba(37, 99, 235, 0.22) 0%, rgba(37, 99, 235, 0.05) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  box-shadow: 0 0 20px rgba(37, 99, 235, 0.25);
 }
 
-/* iOS Top Status Bar */
-.ios-status-bar {
-  height: 42px;
-  padding: 12px 24px 0 24px;
+.sidebar-link.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 25%;
+  height: 50%;
+  width: 3.5px;
+  background: var(--accent-cyan);
+  border-radius: 0 4px 4px 0;
+  box-shadow: 0 0 10px var(--accent-cyan);
+}
+
+/* 2. Desktop Top Bar */
+#desktop-topbar {
+  height: var(--topbar-height);
+  position: sticky;
+  top: 0;
+  background: rgba(2, 6, 23, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-subtle);
+  z-index: 40;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 13.5px;
-  font-weight: 600;
-  color: #FFFFFF;
-  z-index: 40;
-  flex-shrink: 0;
+  padding: 0 32px;
 }
 
-/* iOS Bottom Home Indicator */
-.ios-bottom-bar {
-  width: 130px;
-  height: 4.5px;
-  background: rgba(255, 255, 255, 0.35);
-  border-radius: 9999px;
-  margin: 8px auto 6px auto;
-  flex-shrink: 0;
-  z-index: 40;
+/* 3. Mobile Fixed Bottom Nav (< 768px) */
+#mobile-bottom-nav {
+  height: var(--bottom-nav-height);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(4, 8, 19, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 10px;
+  z-index: 60;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* Main Viewport Container inside Simulator */
-#simulator-viewport {
+.mob-nav-btn {
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  position: relative;
-  width: 100%;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 6px 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: transparent;
+  border: none;
+  min-height: 48px;
+}
+
+.mob-nav-btn.active {
+  color: #0073FF;
+  font-weight: 700;
+}
+
+.mob-nav-btn.active svg {
+  color: #0073FF;
+  filter: drop-shadow(0 0 8px rgba(0, 115, 255, 0.8));
+}
+
+/* 4. Tablet Navigation Dock (768px – 1023px) */
+#tablet-nav-dock {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(7, 13, 30, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 115, 255, 0.25);
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  z-index: 60;
+}
+
+.tab-dock-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: transparent;
+  border: none;
+  min-height: 48px;
+}
+
+.tab-dock-btn:hover {
+  color: #FFFFFF;
+}
+
+.tab-dock-btn.active {
+  background: #2563EB;
+  color: #FFFFFF;
+  box-shadow: 0 0 15px rgba(37, 99, 235, 0.65);
+  font-weight: 700;
+}
+
+/* Floating AI FAB Button (< 1024px) */
+#floating-ai-fab {
+  position: fixed;
+  bottom: 76px;
+  right: 18px;
+  width: 52px;
+  height: 52px;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #0073FF 0%, #818CF8 100%);
+  border: 2px solid rgba(56, 189, 248, 0.6);
+  box-shadow: 0 8px 25px rgba(0, 115, 255, 0.6), 0 0 20px rgba(34, 211, 238, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  z-index: 55;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#floating-ai-fab:hover {
+  transform: scale(1.08) rotate(6deg);
 }
 
 /* ==========================================================================
-   SCREEN 1: SPLASH SCREEN (MATCHING media_1790576405053.png EXACTLY)
+   APP SCREENS CONTAINER & ROUTING
    ========================================================================== */
 
-.sim-screen {
-  width: 100%;
-  height: 100%;
+#app-viewport-root {
   flex: 1;
-  display: none;
+  display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  min-height: 100vh;
+  width: 100%;
   position: relative;
-  overflow-y: auto;
-  animation: fadeIn 0.22s ease-out forwards;
+  transition: all 0.3s ease;
 }
 
-.sim-screen.active {
-  display: flex;
+/* On Desktop: offset content by sidebar width */
+@media (min-width: 1024px) {
+  #app-viewport-root {
+    margin-left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
+  }
+}
+
+.screen-page {
+  width: 100%;
+  flex: 1;
+  display: none;
+  animation: fadeIn 0.25s ease-out forwards;
+}
+
+.screen-page.active {
+  display: block;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Splash Hero Background (Sports car with neon taillights & city skyline) */
-.splash-bg-layer {
+/* ==========================================================================
+   SCREEN 1: SPLASH SCREEN (media_1790575850775.png)
+   ========================================================================== */
+
+.splash-hero-container {
+  width: 100%;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--bg-deep);
+  padding: 18px 22px;
+}
+
+@media (min-width: 768px) {
+  .splash-hero-container {
+    max-width: 580px;
+    min-height: 840px;
+    margin: 30px auto;
+    border-radius: 44px;
+    border: 2px solid rgba(56, 189, 248, 0.28);
+    box-shadow: 
+      0 0 0 1px #0F172A,
+      0 35px 90px -15px rgba(0, 0, 0, 0.98),
+      0 0 50px rgba(0, 115, 255, 0.3);
+    padding: 28px 36px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .splash-hero-container {
+    max-width: 720px;
+    min-height: 880px;
+  }
+}
+
+/* Car Hero Layer */
+.splash-car-skyline {
   position: absolute;
   inset: 0;
-  z-index: 0;
+  z-index: 1;
   pointer-events: none;
 }
 
-.splash-bg-layer img {
+.splash-car-skyline img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center bottom;
-  opacity: 0.95;
+  opacity: 0.92;
 }
 
-.splash-bg-layer::after {
+.splash-car-skyline::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -260,85 +511,31 @@ html, body {
   );
 }
 
-/* Primary CTA: "Get Started" Blue Pill Button */
-.btn-get-started {
-  background: #2563EB;
-  background: linear-gradient(135deg, #2563EB 0%, #0073FF 100%);
-  color: #FFFFFF;
-  font-weight: 700;
-  font-size: 16px;
-  border-radius: 9999px;
-  padding: 15px 24px;
-  width: 100%;
-  text-align: center;
-  box-shadow: 0 4px 25px rgba(37, 99, 235, 0.55), 0 0 20px rgba(56, 189, 248, 0.25);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  display: block;
-  cursor: pointer;
-  border: none;
-  outline: none;
-}
-
-.btn-get-started:hover {
-  background: linear-gradient(135deg, #1D4ED8 0%, #0060E6 100%);
-  box-shadow: 0 6px 30px rgba(56, 189, 248, 0.75), 0 0 35px rgba(0, 115, 255, 0.45);
-  transform: translateY(-2px);
-}
-
-.btn-get-started:active {
-  transform: scale(0.98);
-}
-
-/* Secondary Login Link */
-.btn-login-link {
-  color: #0073FF;
-  font-size: 14px;
-  font-weight: 600;
-  text-align: center;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  display: block;
-  margin: 0 auto;
-  padding: 6px 14px;
-  transition: color 0.2s ease;
-}
-
-.btn-login-link:hover {
-  color: #38BDF8;
-  text-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
-}
-
 /* ==========================================================================
-   SCREEN 2: HOME SCREEN (MATCHING media_1790575872052.png EXACTLY)
+   SCREEN 2: HOME SCREEN (media_1790575872052.png)
    ========================================================================== */
 
-.location-card-exact {
+.location-box-exact {
   background: #0B1220;
   border: 1px solid rgba(59, 130, 246, 0.18);
   border-radius: 20px;
-  padding: 15px 18px;
+  padding: 16px 18px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   transition: all 0.2s ease;
   cursor: pointer;
+  min-height: 54px;
 }
 
-.location-card-exact:hover {
+.location-box-exact:hover {
   border-color: rgba(56, 189, 248, 0.45);
   background: #0E1729;
   transform: translateY(-1px);
 }
 
-.location-card-exact:active {
-  transform: scale(0.99);
-}
-
-/* Search Rides Button (Exact Blue Rounded Capsule) */
-.btn-search-rides-exact {
-  background: #2563EB;
+.btn-search-rides-pill {
   background: linear-gradient(135deg, #2563EB 0%, #0073FF 100%);
   color: #FFFFFF;
   font-weight: 700;
@@ -353,98 +550,57 @@ html, body {
   cursor: pointer;
   border: none;
   outline: none;
+  min-height: 52px;
 }
 
-.btn-search-rides-exact:hover {
+.btn-search-rides-pill:hover {
   background: linear-gradient(135deg, #1D4ED8 0%, #0060E6 100%);
   box-shadow: 0 8px 30px rgba(56, 189, 248, 0.65), 0 0 30px rgba(0, 115, 255, 0.4);
   transform: translateY(-2px);
 }
 
-.btn-search-rides-exact:active {
-  transform: scale(0.98);
-}
-
 /* Recent Search Row (Exact match) */
-.recent-row-exact {
+.recent-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 4px;
+  padding: 12px 6px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   cursor: pointer;
   transition: all 0.15s ease;
+  min-height: 48px;
 }
 
-.recent-row-exact:last-child {
+.recent-row:last-child {
   border-bottom: none;
 }
 
-.recent-row-exact:hover {
+.recent-row:hover {
   background: rgba(37, 99, 235, 0.06);
-  border-radius: 12px;
-  padding-left: 8px;
-  padding-right: 8px;
+  border-radius: 14px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
-/* Exact Bottom Navigation (4 Tabs: Home, History, Saved, More) */
-.bottom-nav-exact {
-  height: 58px;
-  background: #040813;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  padding: 0 10px;
-  flex-shrink: 0;
-  z-index: 30;
-}
+/* ==========================================================================
+   INTERACTIVE DARK MAP CANVAS (APPLE MAPS / GOOGLE MAPS THEME)
+   ========================================================================== */
 
-.nav-link-exact {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #94A3B8;
-  font-size: 11px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  cursor: pointer;
-  padding: 4px 0;
-  border: none;
-  background: transparent;
-}
-
-.nav-link-exact:hover {
-  color: #FFFFFF;
-}
-
-.nav-link-exact.active {
-  color: #0073FF;
-  font-weight: 700;
-}
-
-.nav-link-exact.active svg {
-  color: #0073FF;
-  filter: drop-shadow(0 0 8px rgba(0, 115, 255, 0.8));
-}
-
-/* Map Route Canvas */
-.map-canvas-dark {
+.map-dark-canvas {
   background-color: #060B18;
   background-image: 
     radial-gradient(#152037 1.5px, transparent 1.5px),
     radial-gradient(#152037 1.5px, #060B18 1.5px);
-  background-size: 18px 18px;
-  background-position: 0 0, 9px 9px;
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
   position: relative;
   overflow: hidden;
+  border-radius: var(--radius-card);
 }
 
 .map-route-line {
   stroke: #0073FF;
-  stroke-width: 4;
+  stroke-width: 4.5;
   filter: drop-shadow(0 0 10px #0073FF);
   stroke-dasharray: 8 4;
   animation: routePulse 25s linear infinite;
@@ -454,19 +610,19 @@ html, body {
   to { stroke-dashoffset: -1000; }
 }
 
-/* Driver Beacon */
+/* Driver Beacon on Route */
 .driver-beacon {
   position: absolute;
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   border-radius: 9999px;
   background: #FACC15;
   color: #000;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
-  box-shadow: 0 0 12px #FACC15;
+  font-size: 13px;
+  box-shadow: 0 0 15px #FACC15;
   animation: driverFloat 3s ease-in-out infinite alternate;
 }
 
@@ -475,10 +631,221 @@ html, body {
   100% { transform: translate(6px, -4px); }
 }
 
-/* Interactive Feedback Toast */
+/* Provider Logos */
+.provider-logo-sq {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.provider-rapido { background: var(--yellow-rapido); color: #000000; }
+.provider-uber { background: #000000; color: #FFFFFF; border: 1px solid #1E293B; font-size: 12px; }
+.provider-ola { background: #FFFFFF; color: #000000; }
+.provider-blusmart { background: #00D2FF; color: #000000; }
+
+/* Status Badges */
+.badge-cheapest {
+  background: rgba(34, 197, 94, 0.18);
+  border: 1px solid rgba(34, 197, 94, 0.4);
+  color: var(--success-green);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 9999px;
+}
+
+.badge-fastest {
+  background: rgba(56, 189, 248, 0.18);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  color: var(--accent-cyan);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 9999px;
+}
+
+.badge-best {
+  background: rgba(245, 158, 11, 0.18);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: var(--warning-orange);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 9999px;
+}
+
+/* Modals */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 2, 10, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-window {
+  background: #070D1E;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95), 0 0 40px rgba(0, 115, 255, 0.2);
+  border-radius: 28px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: translateY(20px) scale(0.96);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-overlay.open .modal-window {
+  transform: translateY(0) scale(1);
+}
+
+/* Device Preview Frame Simulation */
+.sim-phone-frame {
+  max-width: 410px !important;
+  margin: 15px auto !important;
+  border-radius: 48px !important;
+  border: 4px solid rgba(255, 255, 255, 0.16) !important;
+  box-shadow: 0 0 0 2px #1E293B, 0 30px 80px rgba(0, 0, 0, 0.95), 0 0 45px rgba(0, 115, 255, 0.25) !important;
+  overflow: hidden !important;
+}
+
+.sim-tablet-frame {
+  max-width: 768px !important;
+  margin: 15px auto !important;
+  border-radius: 40px !important;
+  border: 4px solid rgba(255, 255, 255, 0.16) !important;
+  box-shadow: 0 0 0 2px #1E293B, 0 35px 90px rgba(0, 0, 0, 0.95), 0 0 45px rgba(0, 115, 255, 0.25) !important;
+  overflow: hidden !important;
+}
+
+/* Splash Screen Full Immersive Mode */
+body.is-splash #desktop-sidebar,
+body.is-splash #desktop-topbar,
+body.is-splash #mobile-bottom-nav,
+body.is-splash #tablet-nav-dock,
+body.is-splash #floating-ai-fab,
+body.is-splash header:not(.splash-header) {
+  display: none !important;
+}
+
+body.is-splash #app-viewport-root {
+  margin-left: 0 !important;
+  width: 100% !important;
+  min-height: 100vh !important;
+  padding: 0 !important;
+}
+
+body.is-splash #screen-splash {
+  display: flex !important;
+  min-height: 100vh;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Simulation view mode overrides */
+body.sim-mobile-active #desktop-sidebar,
+body.sim-mobile-active #desktop-topbar,
+body.sim-mobile-active #tablet-nav-dock {
+  display: none !important;
+}
+
+body.sim-mobile-active #mobile-bottom-nav {
+  display: flex !important;
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+}
+
+body.sim-mobile-active header {
+  display: flex !important;
+}
+
+body.sim-mobile-active #app-viewport-root {
+  margin-left: auto !important;
+  margin-right: auto !important;
+  max-width: 414px !important;
+  height: 840px !important;
+  min-height: 840px !important;
+  border-radius: 44px !important;
+  border: 4px solid rgba(255, 255, 255, 0.16) !important;
+  box-shadow: 0 0 0 2px #1E293B, 0 30px 80px rgba(0, 0, 0, 0.95), 0 0 45px rgba(0, 115, 255, 0.25) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  position: relative !important;
+  margin-top: 20px !important;
+  margin-bottom: 20px !important;
+}
+
+body.sim-tablet-active #desktop-sidebar,
+body.sim-tablet-active #desktop-topbar,
+body.sim-tablet-active #mobile-bottom-nav {
+  display: none !important;
+}
+
+body.sim-tablet-active #tablet-nav-dock {
+  display: flex !important;
+  position: absolute !important;
+  bottom: 20px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+}
+
+body.sim-tablet-active header {
+  display: flex !important;
+}
+
+body.sim-tablet-active #app-viewport-root {
+  margin-left: auto !important;
+  margin-right: auto !important;
+  max-width: 820px !important;
+  height: 880px !important;
+  min-height: 880px !important;
+  border-radius: 36px !important;
+  border: 4px solid rgba(255, 255, 255, 0.16) !important;
+  box-shadow: 0 0 0 2px #1E293B, 0 30px 80px rgba(0, 0, 0, 0.95), 0 0 45px rgba(0, 115, 255, 0.25) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  position: relative !important;
+  margin-top: 20px !important;
+  margin-bottom: 20px !important;
+}
+
+/* Floating device switcher when in simulator mode */
+.floating-sim-dock {
+  position: fixed;
+  top: 14px;
+  right: 18px;
+  z-index: 1000;
+  display: flex;
+}
+
+
+/* Toast */
 #app-toast {
   position: fixed;
-  top: 20px;
+  top: 24px;
   left: 50%;
   transform: translateX(-50%) translateY(-20px);
   z-index: 200;
@@ -504,6 +871,9 @@ html, body {
 
 /* Hide scrollbar */
 ::-webkit-scrollbar {
-  width: 0px;
-  height: 0px;
+  width: 6px;
+  height: 6px;
 }
+::-webkit-scrollbar-track { background: #020617; }
+::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: #334155; }
