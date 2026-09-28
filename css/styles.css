@@ -1,19 +1,25 @@
-/* VOZX RideCompare - Exact UI Pixel-Perfect Design System */
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
+/* VOZX RideCompare - Exact UI Pixel-Perfect Recreation */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 :root {
-  --app-bg: #050811;
-  --app-card: #0F1523;
-  --app-card-border: #182236;
-  --app-input: #0B101D;
-  --app-input-border: #1C273E;
-  --brand-blue: #2563EB;
-  --brand-blue-hover: #1D4ED8;
-  --brand-cyan: #22D3EE;
-  --brand-green: #10B981;
-  --brand-red: #EF4444;
-  --text-muted: #8492A6;
-  --text-sub: #64748B;
+  --bg-canvas: #030712;
+  --bg-phone: #030712;
+  --bg-card: #0F1420;
+  --bg-card-border: #161F30;
+  --bg-input: #0A0E18;
+  --bg-input-border: #182338;
+  --color-blue: #2563EB;
+  --color-blue-hover: #1D4ED8;
+  --color-green: #22C55E;
+  --color-green-bg: rgba(34, 197, 94, 0.15);
+  --color-green-border: rgba(34, 197, 94, 0.35);
+  --color-yellow: #EAB308;
+  --color-red: #EF4444;
+  --color-red-bg: rgba(239, 68, 68, 0.1);
+  --color-red-border: rgba(239, 68, 68, 0.4);
+  --text-primary: #FFFFFF;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
 }
 
 * {
@@ -24,118 +30,132 @@
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
-  background-color: #020408;
-  color: #FFFFFF;
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
   margin: 0;
   padding: 0;
   overflow-x: hidden;
   min-height: 100vh;
 }
 
-/* Exact Phone Canvas styling */
-.phone-mockup {
-  width: 380px;
-  height: 800px;
-  background: var(--app-bg);
-  border-radius: 46px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 
-    0 0 0 10px #111827,
-    0 0 0 12px #1f2937,
-    0 25px 50px -12px rgba(0, 0, 0, 0.9),
-    0 0 40px rgba(37, 99, 235, 0.15);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-/* In Grid View: Phone Mockups */
-.grid-phone-card {
+/* Exact Phone Bezel */
+.exact-phone {
   width: 320px;
   height: 680px;
-  background: var(--app-bg);
-  border-radius: 38px;
+  background: var(--bg-phone);
+  border-radius: 36px;
   position: relative;
   overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 
-    0 0 0 6px #111827,
-    0 0 0 8px #1f2937,
-    0 20px 40px -10px rgba(0, 0, 0, 0.85);
+    0 0 0 1px #0f172a,
+    0 25px 50px -12px rgba(0, 0, 0, 0.95),
+    0 0 35px rgba(0, 0, 0, 0.8);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  flex-shrink: 0;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-.grid-phone-card:hover {
+.exact-phone:hover {
   transform: translateY(-4px);
   box-shadow: 
-    0 0 0 6px #1D4ED8,
-    0 0 0 8px #2563EB,
-    0 25px 50px -10px rgba(37, 99, 235, 0.35);
+    0 0 0 1px #2563EB,
+    0 30px 60px -12px rgba(0, 0, 0, 0.95),
+    0 0 25px rgba(37, 99, 235, 0.25);
 }
 
-/* Status Bar */
+/* Single Focused Interactive Phone */
+.focused-phone {
+  width: 380px;
+  height: 800px;
+  border-radius: 46px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 
+    0 0 0 8px #0f172a,
+    0 0 0 10px #1e293b,
+    0 35px 70px -15px rgba(0, 0, 0, 0.95),
+    0 0 50px rgba(37, 99, 235, 0.25);
+}
+
+/* iOS Top Status Bar (9:41, Cellular, Wifi, Battery) */
 .ios-status-bar {
   height: 38px;
-  padding: 8px 24px 0 24px;
+  padding: 10px 20px 0 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: #FFFFFF;
-  z-index: 50;
-  shrink-0;
+  z-index: 30;
+  flex-shrink: 0;
 }
 
-/* Home Indicator Pill */
-.ios-home-indicator {
-  width: 120px;
+/* iOS Home Indicator Bar */
+.ios-home-bar {
+  width: 110px;
   height: 4px;
   background: rgba(255, 255, 255, 0.35);
   border-radius: 9999px;
-  margin: 6px auto 4px auto;
-  shrink-0;
+  margin: 6px auto 6px auto;
+  flex-shrink: 0;
 }
 
-/* Exact Cards & Containers */
-.rc-card {
-  background: var(--app-card);
-  border: 1px solid var(--app-card-border);
-  border-radius: 20px;
-}
-
-.rc-input-box {
-  background: var(--app-input);
-  border: 1px solid var(--app-input-border);
+/* Exact Card Container */
+.card-exact {
+  background: var(--bg-card);
+  border: 1px solid var(--bg-card-border);
   border-radius: 18px;
 }
 
-/* Blue Action Buttons */
-.btn-rc-blue {
-  background: var(--brand-blue);
+.input-capsule-exact {
+  background: var(--bg-input);
+  border: 1px solid var(--bg-input-border);
+  border-radius: 18px;
+}
+
+/* Vibrant Blue Pill Button */
+.btn-blue-pill {
+  background: var(--color-blue);
   color: #FFFFFF;
   font-weight: 700;
+  font-size: 13px;
+  padding: 13px 20px;
   border-radius: 9999px;
+  width: 100%;
+  text-align: center;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 18px rgba(37, 99, 235, 0.4);
+  box-shadow: 0 4px 18px rgba(37, 99, 235, 0.45);
+  display: block;
 }
 
-.btn-rc-blue:hover {
-  background: var(--brand-blue-hover);
-  box-shadow: 0 6px 24px rgba(37, 99, 235, 0.55);
+.btn-blue-pill:hover {
+  background: var(--color-blue-hover);
+  box-shadow: 0 6px 24px rgba(37, 99, 235, 0.65);
 }
 
-.btn-rc-blue:active {
+.btn-blue-pill:active {
   transform: scale(0.98);
 }
 
-/* Provider Icons */
-.provider-icon-rapido {
-  width: 44px;
-  height: 44px;
+/* Green Cheapest Badge */
+.badge-cheapest-exact {
+  background: var(--color-green-bg);
+  border: 1px solid var(--color-green-border);
+  color: var(--color-green);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  display: inline-block;
+}
+
+/* Provider Logos */
+.provider-logo-rapido {
+  width: 42px;
+  height: 42px;
   border-radius: 12px;
   background: #EAB308;
   display: flex;
@@ -145,42 +165,41 @@ body {
   flex-shrink: 0;
 }
 
-.provider-icon-ola {
-  width: 44px;
-  height: 44px;
+.provider-logo-ola {
+  width: 42px;
+  height: 42px;
   border-radius: 12px;
   background: #000000;
-  border: 1px solid #1e293b;
+  border: 1px solid #1E293B;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
   flex-shrink: 0;
 }
 
-.ola-ring {
+.ola-concentric-ring {
   width: 26px;
   height: 26px;
   border-radius: 9999px;
-  border: 4px solid #84CC16;
+  border: 3.5px solid #84CC16;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.ola-dot {
-  width: 6px;
-  height: 6px;
+.ola-center-dot {
+  width: 5px;
+  height: 5px;
   border-radius: 9999px;
   background: #84CC16;
 }
 
-.provider-icon-uber {
-  width: 44px;
-  height: 44px;
+.provider-logo-uber {
+  width: 42px;
+  height: 42px;
   border-radius: 12px;
   background: #000000;
-  border: 1px solid #1e293b;
+  border: 1px solid #1E293B;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -188,101 +207,75 @@ body {
   font-weight: 800;
   font-size: 11px;
   letter-spacing: -0.3px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
   flex-shrink: 0;
 }
 
-/* Cheapest Badge */
-.badge-cheapest {
-  background: rgba(16, 185, 129, 0.16);
-  border: 1px solid rgba(16, 185, 129, 0.35);
-  color: #10B981;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 9999px;
-}
-
-/* Bottom Navigation Bar */
-.exact-bottom-nav {
-  height: 64px;
-  background: #070B16;
+/* Exact 4-Tab Bottom Bar */
+.bottom-nav-exact {
+  height: 56px;
+  background: #040711;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding: 0 8px;
-  z-index: 40;
-  shrink-0;
+  padding: 0 6px;
+  flex-shrink: 0;
 }
 
-.exact-nav-item {
+.nav-item-exact {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   color: #64748B;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 500;
   transition: all 0.2s ease;
   cursor: pointer;
 }
 
-.exact-nav-item.active {
+.nav-item-exact.active {
   color: #2563EB;
   font-weight: 700;
 }
 
-.exact-nav-item.active svg {
+.nav-item-exact.active svg {
   color: #2563EB;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 0px;
-  height: 0px;
-}
-
-/* Active Screen Views */
-.app-screen {
-  display: none;
-  flex-direction: column;
-  height: 100%;
+/* Red Logout Pill */
+.btn-logout-exact {
+  border: 1.5px solid rgba(239, 68, 68, 0.45);
+  background: rgba(239, 68, 68, 0.05);
+  color: #EF4444;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 12px;
+  padding: 10px;
   width: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
+  text-align: center;
+  transition: all 0.2s ease;
+  display: block;
 }
 
-.app-screen.active {
-  display: flex;
+.btn-logout-exact:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: #EF4444;
 }
 
-/* Subtle Map Grid Pattern */
-.bg-map-grid {
+/* Map Simulation Layer */
+.map-canvas-exact {
   background-color: #060B18;
   background-image: 
     radial-gradient(#152037 1px, transparent 1px),
     radial-gradient(#152037 1px, #060B18 1px);
-  background-size: 20px 20px;
-  background-position: 0 0, 10px 10px;
+  background-size: 18px 18px;
+  background-position: 0 0, 9px 9px;
 }
 
-/* Logout button */
-.btn-logout {
-  border: 1px solid rgba(239, 68, 68, 0.5);
-  background: rgba(239, 68, 68, 0.06);
-  color: #EF4444;
-  border-radius: 9999px;
-  font-weight: 600;
-  font-size: 13px;
-  padding: 12px;
-  width: 100%;
-  text-align: center;
-  transition: all 0.2s ease;
-}
-
-.btn-logout:hover {
-  background: rgba(239, 68, 68, 0.15);
-  border-color: #EF4444;
+/* Scrollbar Hide */
+::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
 }

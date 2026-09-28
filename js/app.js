@@ -1,211 +1,356 @@
-// VOZX RideCompare - Exact UI Controller & Router
+// VOZX RideCompare - Exact UI Controller & Interaction Router
 
-class ExactRideCompareApp {
+class ExactAppController {
   constructor() {
-    this.currentScreen = 'screen-home';
-    this.viewMode = 'single'; // 'single' (interactive phone) or 'grid' (exact 8 screens side-by-side)
-    this.historyStack = [];
+    this.currentMode = 'board'; // 'board' (all 8 screens) or 'focus' (single large interactive phone)
+    this.focusedScreenId = 'screen-home';
     this.init();
   }
 
   init() {
     document.addEventListener('DOMContentLoaded', () => {
-      this.initExactMap();
-      this.updateNavBarState(this.currentScreen);
+      this.showBoardView();
     });
   }
 
-  // Switch between Interactive Single Phone and Exact 8-Screen Board
-  setViewMode(mode) {
-    this.viewMode = mode;
-    const singleContainer = document.getElementById('single-phone-container');
-    const gridContainer = document.getElementById('grid-board-container');
-    const btnSingle = document.getElementById('view-mode-single');
-    const btnGrid = document.getElementById('view-mode-grid');
+  showBoardView() {
+    this.currentMode = 'board';
+    const board = document.getElementById('board-container');
+    const focus = document.getElementById('focus-container');
+    const btnBoard = document.getElementById('btn-show-grid');
+    const btnFocus = document.getElementById('btn-show-focus');
 
-    if (mode === 'grid') {
-      if (singleContainer) singleContainer.classList.add('hidden');
-      if (gridContainer) gridContainer.classList.remove('hidden');
-      if (btnGrid) {
-        btnGrid.className = 'px-3 py-1 rounded-lg text-xs font-semibold bg-blue-600 text-white shadow-[0_0_12px_#2563EB] transition-all flex items-center gap-1.5';
-      }
-      if (btnSingle) {
-        btnSingle.className = 'px-3 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all flex items-center gap-1.5';
-      }
-    } else {
-      if (gridContainer) gridContainer.classList.add('hidden');
-      if (singleContainer) singleContainer.classList.remove('hidden');
-      if (btnSingle) {
-        btnSingle.className = 'px-3 py-1 rounded-lg text-xs font-semibold bg-blue-600 text-white shadow-[0_0_12px_#2563EB] transition-all flex items-center gap-1.5';
-      }
-      if (btnGrid) {
-        btnGrid.className = 'px-3 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all flex items-center gap-1.5';
-      }
+    if (board) board.classList.remove('hidden');
+    if (focus) focus.classList.add('hidden');
+
+    if (btnBoard) {
+      btnBoard.className = 'px-3.5 py-1 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-[0_0_12px_#2563EB] transition-all flex items-center gap-1.5';
+    }
+    if (btnFocus) {
+      btnFocus.className = 'px-3.5 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all flex items-center gap-1.5';
     }
 
     if (window.soundFX) window.soundFX.playSelect();
   }
 
-  // Navigate to screen
-  navigateTo(screenId, push = true) {
-    if (this.viewMode === 'grid') {
-      this.setViewMode('single');
+  showFocusView() {
+    this.currentMode = 'focus';
+    const board = document.getElementById('board-container');
+    const focus = document.getElementById('focus-container');
+    const btnBoard = document.getElementById('btn-show-grid');
+    const btnFocus = document.getElementById('btn-show-focus');
+
+    if (board) board.classList.add('hidden');
+    if (focus) focus.classList.remove('hidden');
+
+    if (btnFocus) {
+      btnFocus.className = 'px-3.5 py-1 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-[0_0_12px_#2563EB] transition-all flex items-center gap-1.5';
+    }
+    if (btnBoard) {
+      btnBoard.className = 'px-3.5 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all flex items-center gap-1.5';
     }
 
-    if (push && this.currentScreen && this.currentScreen !== screenId) {
-      this.historyStack.push(this.currentScreen);
-    }
+    this.renderFocusedScreen(this.focusedScreenId);
+    if (window.soundFX) window.soundFX.playSelect();
+  }
 
-    // Hide old screen
-    const prevEl = document.getElementById(this.currentScreen);
-    if (prevEl) prevEl.classList.remove('active');
+  focusScreen(screenId) {
+    this.focusedScreenId = screenId;
+    this.showFocusView();
+  }
 
-    // Show target screen
-    const targetEl = document.getElementById(screenId);
-    if (targetEl) targetEl.classList.add('active');
+  renderFocusedScreen(screenId) {
+    const viewport = document.getElementById('focus-screen-viewport');
+    if (!viewport) return;
 
-    this.currentScreen = screenId;
     if (window.soundFX) window.soundFX.playTap();
 
-    // Bottom Navigation Bar updates
-    this.updateNavBarState(screenId);
-
-    // Map resize if navigating to map
-    if (screenId === 'screen-map') {
-      setTimeout(() => {
-        if (this.mapInstance) {
-          this.mapInstance.invalidateSize();
-        } else {
-          this.initExactMap();
-        }
-      }, 150);
-    }
-  }
-
-  goBack() {
-    if (this.historyStack.length > 0) {
-      const prev = this.historyStack.pop();
-      const currentEl = document.getElementById(this.currentScreen);
-      if (currentEl) currentEl.classList.remove('active');
-
-      const targetEl = document.getElementById(prev);
-      if (targetEl) targetEl.classList.add('active');
-
-      this.currentScreen = prev;
-      if (window.soundFX) window.soundFX.playTap();
-      this.updateNavBarState(prev);
-    } else {
-      this.navigateTo('screen-home', false);
-    }
-  }
-
-  updateNavBarState(screenId) {
-    const navBar = document.getElementById('exact-nav-bar');
-    if (!navBar) return;
-
-    // Splash and Details screens hide the bottom nav
-    const noNavScreens = ['screen-splash', 'screen-details-rapido', 'screen-details-ola'];
-    if (noNavScreens.includes(screenId)) {
-      navBar.style.display = 'none';
-    } else {
-      navBar.style.display = 'flex';
-    }
-
-    // Reset all tabs
-    document.querySelectorAll('.exact-nav-item').forEach(item => {
-      item.classList.remove('active');
-    });
-
-    // Match active tab
-    if (screenId === 'screen-home') {
-      const el = document.querySelector('.exact-nav-item[data-tab="home"]');
-      if (el) el.classList.add('active');
-    } else if (screenId === 'screen-history') {
-      const el = document.querySelector('.exact-nav-item[data-tab="history"]');
-      if (el) el.classList.add('active');
-    } else if (screenId === 'screen-profile') {
-      const el = document.querySelector('.exact-nav-item[data-tab="more"]');
-      if (el) el.classList.add('active');
-    }
-  }
-
-  // Dark Map for Screen 3
-  initExactMap() {
-    const mapEl = document.getElementById('exact-map-view');
-    if (!mapEl || this.mapInstance) return;
-
-    try {
-      this.mapInstance = L.map('exact-map-view', {
-        zoomControl: false,
-        attributionControl: false
-      }).setView([16.721, 74.415], 12);
-
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        maxZoom: 19,
-        subdomains: 'abcd'
-      }).addTo(this.mapInstance);
-
-      // Route polyline coordinates from Ichalkaranji to Sanjay Ghodawat University
-      const coordinates = [
-        [16.6975, 74.4571], // Ichalkaranji
-        [16.7032, 74.4510],
-        [16.7115, 74.4420],
-        [16.7180, 74.4310],
-        [16.7240, 74.4180],
-        [16.7310, 74.4020],
-        [16.7390, 74.3850],
-        [16.7450, 74.3725]  // Sanjay Ghodawat University
-      ];
-
-      // Route Outer Glow
-      L.polyline(coordinates, {
-        color: '#1D4ED8',
-        weight: 8,
-        opacity: 0.4,
-        lineCap: 'round'
-      }).addTo(this.mapInstance);
-
-      // Route Core Line (Exact Blue)
-      this.routeLayer = L.polyline(coordinates, {
-        color: '#2563EB',
-        weight: 4,
-        opacity: 1,
-        lineCap: 'round'
-      }).addTo(this.mapInstance);
-
-      // Start Dot (Current Location / Ichalkaranji)
-      const startIcon = L.divIcon({
-        className: 'start-map-dot',
-        html: `
-          <div class="relative flex items-center justify-center">
-            <div class="w-4 h-4 rounded-full bg-blue-600 border-2 border-white shadow-[0_0_10px_#2563EB]"></div>
+    if (screenId === 'screen-splash') {
+      viewport.innerHTML = `
+        <div class="flex-1 flex flex-col justify-between p-6 text-center relative overflow-hidden">
+          <div class="absolute inset-0 z-0">
+            <img src="assets/images/splash_hero.jpg" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-[#030712] via-[#030712]/60 to-transparent"></div>
           </div>
-        `,
-        iconSize: [16, 16],
-        iconAnchor: [8, 8]
-      });
-      L.marker([16.6975, 74.4571], { icon: startIcon }).addTo(this.mapInstance);
+          <div class="relative z-10 pt-12">
+            <div class="w-24 h-24 mx-auto mb-4">
+              <svg viewBox="0 0 100 100" class="w-full h-full filter drop-shadow-[0_0_15px_#22D3EE]"><path d="M25 15 H60 C75 15 85 25 85 40 C85 53 76 62 64 64 L85 90 H65 L48 68 H40 V90 H25 V15 Z M40 30 V53 H58 C66 53 71 49 71 41 C71 34 66 30 58 30 H40 Z" fill="#2563EB"/></svg>
+            </div>
+            <h2 class="text-2xl font-bold text-white mb-1">RideCompare</h2>
+            <p class="text-xs text-slate-400 font-medium">One Ride. All Prices.</p>
+          </div>
+          <div class="relative z-10 space-y-4 pb-4">
+            <p class="text-xs text-slate-300 leading-relaxed">Compare prices from all ride apps. Choose the best. Save money. Travel smarter.</p>
+            <button onclick="app.renderFocusedScreen('screen-home')" class="btn-blue-pill">Get Started</button>
+            <button onclick="app.renderFocusedScreen('screen-home')" class="text-xs text-blue-400 hover:text-cyan-300 font-semibold block mx-auto">Login</button>
+          </div>
+        </div>
+      `;
+    } else if (screenId === 'screen-home') {
+      viewport.innerHTML = `
+        <div class="flex-1 p-5 flex flex-col justify-between overflow-y-auto">
+          <div>
+            <div class="flex items-center justify-between mb-5">
+              <div class="flex items-center gap-2">
+                <svg viewBox="0 0 100 100" class="w-6 h-6"><path d="M25 15 H60 C75 15 85 25 85 40 C85 53 76 62 64 64 L85 90 H65 L48 68 H40 V90 H25 V15 Z M40 30 V53 H58 C66 53 71 49 71 41 C71 34 66 30 58 30 H40 Z" fill="#2563EB"/></svg>
+                <span class="text-base font-bold text-white">RideCompare</span>
+              </div>
+              <div onclick="app.renderFocusedScreen('screen-profile')" class="w-9 h-9 rounded-full bg-[#0F1420] border border-[#161F30] flex items-center justify-center text-slate-300 cursor-pointer">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+              </div>
+            </div>
 
-      // End Pin (Red Flag / SGU)
-      const endIcon = L.divIcon({
-        className: 'end-map-pin',
-        html: `
-          <div class="relative flex flex-col items-center">
-            <div class="w-6 h-6 rounded-full bg-red-500 border-2 border-white shadow-lg flex items-center justify-center text-white">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
+            <h2 class="text-2xl font-bold text-white leading-tight mb-5">Where do you want<br>to go?</h2>
+
+            <div class="card-exact p-3.5 mb-4">
+              <div class="flex items-center justify-between py-1">
+                <div class="flex items-center gap-3">
+                  <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
+                  <div><span class="text-[10px] text-slate-400 font-medium block">Pickup Location</span><span class="text-xs font-bold text-white">Current Location</span></div>
+                </div>
+                <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </div>
+              <div class="h-px bg-[#161F30] my-2.5 ml-8"></div>
+              <div onclick="app.renderFocusedScreen('screen-map')" class="flex items-center justify-between py-1 cursor-pointer">
+                <div class="flex items-center gap-3">
+                  <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
+                  <div><span class="text-[10px] text-slate-400 font-medium block">Drop Location</span><span class="text-xs font-semibold text-slate-400">Select destination</span></div>
+                </div>
+                <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </div>
+            </div>
+
+            <button onclick="app.renderFocusedScreen('screen-map')" class="btn-blue-pill mb-5">Search Rides</button>
+
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-bold text-white">Recent Searches</span>
+              <button class="text-xs text-blue-500 font-semibold hover:underline">See all</button>
+            </div>
+            <div class="space-y-2 text-xs">
+              <div onclick="app.renderFocusedScreen('screen-map')" class="flex items-center gap-3 py-2 cursor-pointer border-b border-[#111827]">
+                <div class="w-8 h-8 rounded-full bg-[#0F1420] border border-[#161F30] flex items-center justify-center text-slate-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+                <div><h4 class="text-xs font-semibold text-white">Sanjay Ghodawat University</h4><p class="text-[10px] text-slate-400">Ichalkaranji</p></div>
+              </div>
+              <div onclick="app.renderFocusedScreen('screen-map')" class="flex items-center gap-3 py-2 cursor-pointer border-b border-[#111827]">
+                <div class="w-8 h-8 rounded-full bg-[#0F1420] border border-[#161F30] flex items-center justify-center text-slate-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+                <div><h4 class="text-xs font-semibold text-white">Pune Junction</h4><p class="text-[10px] text-slate-400">Pune</p></div>
+              </div>
+              <div onclick="app.renderFocusedScreen('screen-map')" class="flex items-center gap-3 py-2 cursor-pointer">
+                <div class="w-8 h-8 rounded-full bg-[#0F1420] border border-[#161F30] flex items-center justify-center text-slate-400"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg></div>
+                <div><h4 class="text-xs font-semibold text-white">Home</h4><p class="text-[10px] text-slate-400">Ichalkaranji</p></div>
+              </div>
             </div>
           </div>
-        `,
-        iconSize: [24, 24],
-        iconAnchor: [12, 24]
-      });
-      L.marker([16.7450, 74.3725], { icon: endIcon }).addTo(this.mapInstance);
 
-      this.mapInstance.fitBounds(this.routeLayer.getBounds(), {
-        padding: [60, 40]
-      });
-    } catch (e) {
-      console.warn("Exact map init warning:", e);
+          <div class="bottom-nav-exact">
+            <div class="nav-item-exact active"><svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg><span>Home</span></div>
+            <div onclick="app.renderFocusedScreen('screen-history')" class="nav-item-exact"><svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><span>History</span></div>
+            <div onclick="app.showToast('Saved Places')" class="nav-item-exact"><svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg><span>Saved</span></div>
+            <div onclick="app.renderFocusedScreen('screen-profile')" class="nav-item-exact"><svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg><span>More</span></div>
+          </div>
+        </div>
+      `;
+    } else if (screenId === 'screen-map') {
+      viewport.innerHTML = `
+        <div class="flex-1 map-canvas-exact flex flex-col justify-between p-4 relative overflow-hidden">
+          <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 380 660">
+            <path d="M 0 150 L 380 200 M 100 0 L 120 660 M 280 0 L 260 660" stroke="#0e172a" stroke-width="2"/>
+            <path d="M 80 480 Q 160 450, 210 380 T 270 210" fill="none" stroke="#2563EB" stroke-width="6" stroke-linecap="round" filter="drop-shadow(0 0 8px #2563EB)"/>
+            <path d="M 80 480 Q 160 450, 210 380 T 270 210" fill="none" stroke="#60A5FA" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="80" cy="480" r="8" fill="#2563EB" stroke="#FFFFFF" stroke-width="2.5"/>
+            <text x="60" y="515" fill="#94A3B8" font-size="12" font-weight="700">Ichalkaranji</text>
+            <circle cx="270" cy="210" r="8" fill="#EF4444" stroke="#FFFFFF" stroke-width="2.5"/>
+          </svg>
+          <div class="relative z-10 flex items-center gap-2.5">
+            <button onclick="app.renderFocusedScreen('screen-home')" class="w-8 h-8 rounded-full bg-[#0F1420] border border-[#161F30] flex items-center justify-center text-white shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <div class="flex-1 bg-[#0A0E18]/90 backdrop-blur-md border border-[#182338] rounded-2xl p-2.5 px-3 flex items-center justify-between text-xs">
+              <div class="space-y-1.5">
+                <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-blue-500"></span><span class="text-slate-300 font-medium">Current Location</span></div>
+                <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-red-500"></span><span class="text-white font-bold">Sanjay Ghodawat University</span></div>
+              </div>
+              <button class="w-6 h-6 rounded-full bg-[#161F30] text-white flex items-center justify-center text-xs font-bold">+</button>
+            </div>
+          </div>
+          <div class="relative z-10 space-y-3">
+            <div class="flex justify-end pr-1"><div class="w-9 h-9 rounded-full bg-[#0F1420]/90 border border-[#161F30] flex items-center justify-center text-slate-300"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" stroke-width="2"/><circle cx="12" cy="12" r="2" fill="currentColor"/><path stroke-linecap="round" stroke-width="2" d="M12 2v3m0 14v3M2 12h3m14 0h3"/></svg></div></div>
+            <div onclick="app.renderFocusedScreen('screen-options')" class="bg-[#080C16]/95 backdrop-blur-xl border border-[#161F30] rounded-3xl p-4 cursor-pointer shadow-2xl space-y-3">
+              <div class="flex items-center gap-2 text-xs text-slate-400"><div class="w-3.5 h-3.5 rounded-full border-2 border-blue-400 border-t-transparent animate-spin"></div><span>Comparing prices across 4 ride apps...</span></div>
+              <div class="flex items-center justify-around py-1">
+                <div class="flex flex-col items-center gap-1"><div class="w-12 h-12 rounded-full bg-black border border-[#1E293B] flex items-center justify-center text-white text-xs font-bold">Uber</div><span class="text-[10px] text-slate-400">Uber</span></div>
+                <div class="flex flex-col items-center gap-1"><div class="w-12 h-12 rounded-full bg-black border border-[#1E293B] flex items-center justify-center"><div class="ola-concentric-ring"><div class="ola-center-dot"></div></div></div><span class="text-[10px] text-slate-400">Ola</span></div>
+                <div class="flex flex-col items-center gap-1"><div class="w-12 h-12 rounded-full bg-[#EAB308] flex items-center justify-center text-black"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13.5A2.5 2.5 0 1 1 21.5 16 2.5 2.5 0 0 1 19 13.5m-14 0A2.5 2.5 0 1 1 7.5 16 2.5 2.5 0 0 1 5 13.5m10.5-8.5l-3.5 5h-4l3-5h4.5M19 11h-2l-2-3h-4l-2 3H3v2h2.2a4.49 4.49 0 0 1 7.6 0h2.4a4.49 4.49 0 0 1 7.6 0H21v-2h-2z"/></svg></div><span class="text-[10px] text-slate-400">Rapido</span></div>
+                <div class="flex flex-col items-center gap-1"><div class="w-12 h-12 rounded-full bg-[#111827] border border-[#1E293B] text-blue-400 flex items-center justify-center font-bold text-base">+</div><span class="text-[10px] text-slate-400">Others</span></div>
+              </div>
+              <div class="card-exact p-2.5 flex items-center justify-between">
+                <div class="flex items-center gap-2.5"><div class="w-8 h-8 rounded-lg bg-[#EAB308] flex items-center justify-center"><svg class="w-5 h-5 text-black" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13.5A2.5 2.5 0 1 1 21.5 16 2.5 2.5 0 0 1 19 13.5m-14 0A2.5 2.5 0 1 1 7.5 16 2.5 2.5 0 0 1 5 13.5m10.5-8.5l-3.5 5h-4l3-5h4.5M19 11h-2l-2-3h-4l-2 3H3v2h2.2a4.49 4.49 0 0 1 7.6 0h2.4a4.49 4.49 0 0 1 7.6 0H21v-2h-2z"/></svg></div><div><span class="text-[9px] text-emerald-400 font-bold block">★ Best Price</span><h5 class="text-xs font-bold text-white">Rapido</h5></div></div>
+                <div class="text-right"><span class="text-sm font-bold text-emerald-400">₹78</span><span class="text-[9px] text-slate-400 block">(Estimated)</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    } else if (screenId === 'screen-options') {
+      viewport.innerHTML = `
+        <div class="flex-1 p-5 flex flex-col justify-between overflow-y-auto">
+          <div>
+            <div class="flex items-center gap-3 mb-2">
+              <button onclick="app.renderFocusedScreen('screen-map')" class="w-8 h-8 rounded-full bg-[#0F1420] border border-[#161F30] flex items-center justify-center text-white"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg></button>
+              <h2 class="text-base font-bold text-white">Ride Options</h2>
+            </div>
+            <div class="mb-4">
+              <p class="text-xs text-slate-300 font-medium">Current Location &rarr; Sanjay Ghodawat University</p>
+              <p class="text-[11px] text-slate-500">4.2 km &bull; 12 min (approx)</p>
+            </div>
+            <div class="space-y-2.5">
+              <div onclick="app.renderFocusedScreen('screen-details-rapido')" class="card-exact p-3 flex items-center justify-between cursor-pointer hover:border-blue-500/40">
+                <div class="flex items-center gap-3"><div class="provider-logo-rapido"><svg class="w-6 h-6 text-black" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13.5A2.5 2.5 0 1 1 21.5 16 2.5 2.5 0 0 1 19 13.5m-14 0A2.5 2.5 0 1 1 7.5 16 2.5 2.5 0 0 1 5 13.5m10.5-8.5l-3.5 5h-4l3-5h4.5M19 11h-2l-2-3h-4l-2 3H3v2h2.2a4.49 4.49 0 0 1 7.6 0h2.4a4.49 4.49 0 0 1 7.6 0H21v-2h-2z"/></svg></div><div><h4 class="text-xs font-bold text-white">Rapido</h4><p class="text-[11px] text-slate-400">Bike &bull; 12 min</p></div></div>
+                <div class="flex items-center gap-2"><div class="text-right"><span class="text-sm font-bold text-white block">₹78</span><span class="badge-cheapest-exact">Cheapest</span></div><svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
+              </div>
+              <div onclick="app.renderFocusedScreen('screen-details-ola')" class="card-exact p-3 flex items-center justify-between cursor-pointer hover:border-blue-500/40">
+                <div class="flex items-center gap-3"><div class="provider-logo-ola"><div class="ola-concentric-ring"><div class="ola-center-dot"></div></div></div><div><h4 class="text-xs font-bold text-white">Ola</h4><p class="text-[11px] text-slate-400">Bike &bull; 14 min</p></div></div>
+                <div class="flex items-center gap-2"><span class="text-sm font-bold text-white">₹92</span><svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
+              </div>
+              <div onclick="app.renderFocusedScreen('screen-details-rapido')" class="card-exact p-3 flex items-center justify-between cursor-pointer hover:border-blue-500/40">
+                <div class="flex items-center gap-3"><div class="provider-logo-uber">Uber</div><div><h4 class="text-xs font-bold text-white">Uber</h4><p class="text-[11px] text-slate-400">Bike &bull; 15 min</p></div></div>
+                <div class="flex items-center gap-2"><span class="text-sm font-bold text-white">₹105</span><svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
+              </div>
+              <div onclick="app.renderFocusedScreen('screen-details-rapido')" class="card-exact p-3 flex items-center justify-between cursor-pointer hover:border-blue-500/40">
+                <div class="flex items-center gap-3"><div class="provider-logo-rapido"><svg class="w-6 h-6 text-black" viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg></div><div><h4 class="text-xs font-bold text-white">Rapido</h4><p class="text-[11px] text-slate-400">Auto &bull; 16 min</p></div></div>
+                <div class="flex items-center gap-2"><span class="text-sm font-bold text-white">₹118</span><svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
+              </div>
+              <div onclick="app.renderFocusedScreen('screen-details-ola')" class="card-exact p-3 flex items-center justify-between cursor-pointer hover:border-blue-500/40">
+                <div class="flex items-center gap-3"><div class="provider-logo-ola"><div class="ola-concentric-ring"><div class="ola-center-dot"></div></div></div><div><h4 class="text-xs font-bold text-white">Ola</h4><p class="text-[11px] text-slate-400">Auto &bull; 18 min</p></div></div>
+                <div class="flex items-center gap-2"><span class="text-sm font-bold text-white">₹142</span><svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
+              </div>
+              <div onclick="app.renderFocusedScreen('screen-details-ola')" class="card-exact p-3 flex items-center justify-between cursor-pointer hover:border-blue-500/40">
+                <div class="flex items-center gap-3"><div class="provider-logo-uber">Uber</div><div><h4 class="text-xs font-bold text-white">Uber</h4><p class="text-[11px] text-slate-400">Car &bull; 20 min</p></div></div>
+                <div class="flex items-center gap-2"><span class="text-sm font-bold text-white">₹168</span><svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    } else if (screenId === 'screen-details-rapido') {
+      viewport.innerHTML = `
+        <div class="flex-1 p-5 flex flex-col justify-between overflow-y-auto">
+          <div>
+            <button onclick="app.renderFocusedScreen('screen-options')" class="w-8 h-8 rounded-full bg-[#0F1420] border border-[#161F30] flex items-center justify-center text-white mb-4"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg></button>
+            <div class="flex items-center justify-between mb-6">
+              <div class="flex items-center gap-3"><div class="w-14 h-14 rounded-2xl bg-[#EAB308] flex items-center justify-center text-black"><svg class="w-8 h-8" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13.5A2.5 2.5 0 1 1 21.5 16 2.5 2.5 0 0 1 19 13.5m-14 0A2.5 2.5 0 1 1 7.5 16 2.5 2.5 0 0 1 5 13.5m10.5-8.5l-3.5 5h-4l3-5h4.5M19 11h-2l-2-3h-4l-2 3H3v2h2.2a4.49 4.49 0 0 1 7.6 0h2.4a4.49 4.49 0 0 1 7.6 0H21v-2h-2z"/></svg></div><div><h3 class="text-base font-bold text-white">Rapido</h3><p class="text-xs text-slate-400">Bike</p></div></div>
+              <div class="text-right"><span class="text-xl font-bold text-white block">₹78</span><span class="text-xs text-slate-400">12 min</span></div>
+            </div>
+            <div class="space-y-4 mb-6">
+              <h4 class="text-xs font-bold text-white">Ride Details</h4>
+              <div class="space-y-3.5 text-xs">
+                <div class="flex items-center gap-3"><svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg><div><span class="text-[10px] text-slate-400 block">Pickup</span><span class="text-xs font-semibold text-white">Your Location</span></div></div>
+                <div class="flex items-center gap-3"><svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg><div><span class="text-[10px] text-slate-400 block">Drop</span><span class="text-xs font-semibold text-white">Sanjay Ghodawat University</span></div></div>
+                <div class="flex items-center gap-3"><svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" stroke-width="2"/><path stroke-linecap="round" stroke-width="2" d="M12 12l3-3"/></svg><div><span class="text-[10px] text-slate-400 block">Distance</span><span class="text-xs font-semibold text-white">4.2 km</span></div></div>
+                <div class="flex items-center gap-3"><svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-width="2"/><path stroke-linecap="round" stroke-width="2" d="M12 7v5l3 3"/></svg><div><span class="text-[10px] text-slate-400 block">Estimated Time</span><span class="text-xs font-semibold text-white">12 min</span></div></div>
+              </div>
+            </div>
+            <div class="space-y-1 pt-2 border-t border-[#161F30]">
+              <h4 class="text-xs font-bold text-white">About Rapido</h4>
+              <p class="text-[11px] text-slate-400">Fast &bull; Affordable &bull; Bike Taxi</p>
+              <p class="text-[11px] text-slate-300 flex items-center gap-1"><span class="text-amber-400">★</span> 4.2 (1M+ reviews)</p>
+            </div>
+          </div>
+          <button onclick="app.showToast('Ride booked with Rapido! Driver assigned.'); setTimeout(() => app.renderFocusedScreen('screen-history'), 1000);" class="btn-blue-pill">Book Now</button>
+        </div>
+      `;
+    } else if (screenId === 'screen-details-ola') {
+      viewport.innerHTML = `
+        <div class="flex-1 p-5 flex flex-col justify-between overflow-y-auto">
+          <div>
+            <button onclick="app.renderFocusedScreen('screen-options')" class="w-8 h-8 rounded-full bg-[#0F1420] border border-[#161F30] flex items-center justify-center text-white mb-4"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg></button>
+            <div class="flex items-center justify-between mb-6">
+              <div class="flex items-center gap-3"><div class="w-14 h-14 rounded-2xl bg-black border border-[#161F30] flex items-center justify-center"><div class="ola-concentric-ring w-8 h-8 border-[5px]"><div class="ola-center-dot w-2 h-2"></div></div></div><div><h3 class="text-base font-bold text-white">Ola</h3><p class="text-xs text-slate-400">Car</p></div></div>
+              <div class="text-right"><span class="text-xl font-bold text-white block">₹142</span><span class="text-xs text-slate-400">18 min</span></div>
+            </div>
+            <div class="space-y-4 mb-6">
+              <h4 class="text-xs font-bold text-white">Ride Details</h4>
+              <div class="space-y-3.5 text-xs">
+                <div class="flex items-center gap-3"><svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg><div><span class="text-[10px] text-slate-400 block">Pickup</span><span class="text-xs font-semibold text-white">Your Location</span></div></div>
+                <div class="flex items-center gap-3"><svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg><div><span class="text-[10px] text-slate-400 block">Drop</span><span class="text-xs font-semibold text-white">Sanjay Ghodawat University</span></div></div>
+                <div class="flex items-center gap-3"><svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" stroke-width="2"/><path stroke-linecap="round" stroke-width="2" d="M12 12l3-3"/></svg><div><span class="text-[10px] text-slate-400 block">Distance</span><span class="text-xs font-semibold text-white">4.2 km</span></div></div>
+                <div class="flex items-center gap-3"><svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-width="2"/><path stroke-linecap="round" stroke-width="2" d="M12 7v5l3 3"/></svg><div><span class="text-[10px] text-slate-400 block">Estimated Time</span><span class="text-xs font-semibold text-white">18 min</span></div></div>
+              </div>
+            </div>
+            <div class="space-y-1 pt-2 border-t border-[#161F30]">
+              <h4 class="text-xs font-bold text-white">About Ola</h4>
+              <p class="text-[11px] text-slate-400">Reliable &bull; Safe &bull; Comfortable</p>
+              <p class="text-[11px] text-slate-300 flex items-center gap-1"><span class="text-amber-400">★</span> 4.1 (2M+ reviews)</p>
+            </div>
+          </div>
+          <button onclick="app.showToast('Ride booked with Ola! Driver assigned.'); setTimeout(() => app.renderFocusedScreen('screen-history'), 1000);" class="btn-blue-pill">Book Now</button>
+        </div>
+      `;
+    } else if (screenId === 'screen-history') {
+      viewport.innerHTML = `
+        <div class="flex-1 p-5 flex flex-col justify-between overflow-y-auto">
+          <div>
+            <h2 class="text-lg font-bold text-white mb-4">Ride History</h2>
+            <div class="space-y-2.5">
+              <div onclick="app.renderFocusedScreen('screen-options')" class="card-exact p-3 flex items-center justify-between cursor-pointer hover:border-blue-500/40">
+                <div class="flex items-center gap-3"><div class="provider-logo-ola"><div class="ola-concentric-ring"><div class="ola-center-dot"></div></div></div><div><h4 class="text-xs font-bold text-white">Ola &bull; <span class="font-normal text-slate-400">Bike</span></h4><p class="text-[11px] text-slate-300">Sanjay Ghodawat University &rarr; Home</p><p class="text-[10px] text-slate-500">12 Sep, 07:45 PM</p></div></div>
+                <div class="flex items-center gap-2"><span class="text-xs font-bold text-white">₹96</span><svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
+              </div>
+              <div onclick="app.renderFocusedScreen('screen-options')" class="card-exact p-3 flex items-center justify-between cursor-pointer hover:border-blue-500/40">
+                <div class="flex items-center gap-3"><div class="provider-logo-rapido"><svg class="w-6 h-6 text-black" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13.5A2.5 2.5 0 1 1 21.5 16 2.5 2.5 0 0 1 19 13.5m-14 0A2.5 2.5 0 1 1 7.5 16 2.5 2.5 0 0 1 5 13.5m10.5-8.5l-3.5 5h-4l3-5h4.5M19 11h-2l-2-3h-4l-2 3H3v2h2.2a4.49 4.49 0 0 1 7.6 0h2.4a4.49 4.49 0 0 1 7.6 0H21v-2h-2z"/></svg></div><div><h4 class="text-xs font-bold text-white">Rapido &bull; <span class="font-normal text-slate-400">Bike</span></h4><p class="text-[11px] text-slate-300">College &rarr; City Center</p><p class="text-[10px] text-slate-500">10 Sep, 06:20 PM</p></div></div>
+                <div class="flex items-center gap-2"><span class="text-xs font-bold text-white">₹82</span><svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
+              </div>
+              <div onclick="app.renderFocusedScreen('screen-options')" class="card-exact p-3 flex items-center justify-between cursor-pointer hover:border-blue-500/40">
+                <div class="flex items-center gap-3"><div class="provider-logo-uber">Uber</div><div><h4 class="text-xs font-bold text-white">Uber &bull; <span class="font-normal text-slate-400">Auto</span></h4><p class="text-[11px] text-slate-300">Railway Station &rarr; College</p><p class="text-[10px] text-slate-500">8 Sep, 05:10 PM</p></div></div>
+                <div class="flex items-center gap-2"><span class="text-xs font-bold text-white">₹138</span><svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
+              </div>
+              <div onclick="app.renderFocusedScreen('screen-options')" class="card-exact p-3 flex items-center justify-between cursor-pointer hover:border-blue-500/40">
+                <div class="flex items-center gap-3"><div class="provider-logo-ola"><div class="ola-concentric-ring"><div class="ola-center-dot"></div></div></div><div><h4 class="text-xs font-bold text-white">Ola &bull; <span class="font-normal text-slate-400">Car</span></h4><p class="text-[11px] text-slate-300">Airport &rarr; Home</p><p class="text-[10px] text-slate-500">5 Sep, 09:30 AM</p></div></div>
+                <div class="flex items-center gap-2"><span class="text-xs font-bold text-white">₹165</span><svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
+              </div>
+              <div onclick="app.renderFocusedScreen('screen-options')" class="card-exact p-3 flex items-center justify-between cursor-pointer hover:border-blue-500/40">
+                <div class="flex items-center gap-3"><div class="provider-logo-rapido"><svg class="w-6 h-6 text-black" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13.5A2.5 2.5 0 1 1 21.5 16 2.5 2.5 0 0 1 19 13.5m-14 0A2.5 2.5 0 1 1 7.5 16 2.5 2.5 0 0 1 5 13.5m10.5-8.5l-3.5 5h-4l3-5h4.5M19 11h-2l-2-3h-4l-2 3H3v2h2.2a4.49 4.49 0 0 1 7.6 0h2.4a4.49 4.49 0 0 1 7.6 0H21v-2h-2z"/></svg></div><div><h4 class="text-xs font-bold text-white">Rapido &bull; <span class="font-normal text-slate-400">Bike</span></h4><p class="text-[11px] text-slate-300">College &rarr; Market</p><p class="text-[10px] text-slate-500">2 Sep, 08:15 PM</p></div></div>
+                <div class="flex items-center gap-2"><span class="text-xs font-bold text-white">₹74</span><svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
+              </div>
+            </div>
+          </div>
+          <div class="bottom-nav-exact">
+            <div onclick="app.renderFocusedScreen('screen-home')" class="nav-item-exact"><svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg><span>Home</span></div>
+            <div class="nav-item-exact active"><svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><span>History</span></div>
+            <div onclick="app.showToast('Saved Places')" class="nav-item-exact"><svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg><span>Saved</span></div>
+            <div onclick="app.renderFocusedScreen('screen-profile')" class="nav-item-exact"><svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg><span>More</span></div>
+          </div>
+        </div>
+      `;
+    } else if (screenId === 'screen-profile') {
+      viewport.innerHTML = `
+        <div class="flex-1 p-5 flex flex-col justify-between overflow-y-auto">
+          <div>
+            <h2 class="text-lg font-bold text-white mb-4">Profile</h2>
+            <div class="flex items-center gap-3.5 mb-6">
+              <div class="w-14 h-14 rounded-full bg-slate-400 flex items-center justify-center text-slate-800"><svg class="w-9 h-9 fill-current" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+              <div><h3 class="text-sm font-bold text-white">Varun Reddy</h3><p class="text-xs text-slate-400">varunreddy@gmail.com</p></div>
+            </div>
+            <div class="space-y-4 mb-6 text-xs text-slate-300">
+              <div class="flex items-center justify-between cursor-pointer hover:text-white"><div class="flex items-center gap-3"><svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg><span>Saved Locations</span></div><svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
+              <div class="flex items-center justify-between cursor-pointer hover:text-white"><div class="flex items-center gap-3"><svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg><span>Payment Methods</span></div><svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
+              <div class="flex items-center justify-between cursor-pointer hover:text-white"><div class="flex items-center gap-3"><svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg><div><span class="block">Ride Preferences</span><span class="text-[10px] text-slate-500">Bike, Auto, Car</span></div></div><svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
+              <div class="flex items-center justify-between cursor-pointer hover:text-white"><div class="flex items-center gap-3"><svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg><span>Notifications</span></div><svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
+              <div class="flex items-center justify-between cursor-pointer hover:text-white"><div class="flex items-center gap-3"><svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-width="2"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3m.08 4h.01"/></svg><span>Help & Support</span></div><svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
+              <div class="flex items-center justify-between cursor-pointer hover:text-white"><div class="flex items-center gap-3"><svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-width="2"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 16v-4m0-4h.01"/></svg><span>About RideCompare</span></div><svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
+            </div>
+          </div>
+          <div>
+            <button onclick="app.renderFocusedScreen('screen-splash')" class="btn-logout-exact mb-3">Log Out</button>
+            <div class="bottom-nav-exact">
+              <div onclick="app.renderFocusedScreen('screen-home')" class="nav-item-exact"><svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg><span>Home</span></div>
+              <div onclick="app.renderFocusedScreen('screen-history')" class="nav-item-exact"><svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><span>History</span></div>
+              <div onclick="app.showToast('Saved Places')" class="nav-item-exact"><svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg><span>Saved</span></div>
+              <div class="nav-item-exact active"><svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg><span>More</span></div>
+            </div>
+          </div>
+        </div>
+      `;
     }
   }
 
@@ -222,8 +367,8 @@ class ExactRideCompareApp {
     setTimeout(() => {
       toast.classList.remove('opacity-100', 'translate-y-0');
       toast.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
-    }, 2500);
+    }, 2200);
   }
 }
 
-window.app = new ExactRideCompareApp();
+window.app = new ExactAppController();
