@@ -1,27 +1,21 @@
 /* ==========================================================================
    VOZX RideCompare - Comprehensive Responsive Design System
-   Breakpoints:
-   - Mobile:        320px - 767px
-   - Tablet:        768px - 1023px
-   - Desktop:       1024px - 1439px
-   - Large Desktop: 1440px - 2560px+
+   Exact match for Splash & Home Screens across Mobile, Tablet, and Desktop
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 :root {
-  /* Color Palette - Spec Exact */
   --bg-main: #020617;
   --bg-deep: #00020A;
   --surface-card: #0B1220;
   --surface-card-hover: #101B2E;
-  --surface-overlay: rgba(11, 18, 32, 0.85);
-
+  
   --primary-blue: #2563EB;
   --primary-blue-glow: #0073FF;
   --accent-cyan: #38BDF8;
   --neon-glow: #22D3EE;
-  
+
   --success-green: #22C55E;
   --warning-orange: #F59E0B;
   --error-red: #EF4444;
@@ -35,13 +29,9 @@
   --border-subtle: rgba(59, 130, 246, 0.18);
   --border-glow: rgba(56, 189, 248, 0.35);
 
-  /* Layout dimensions */
-  --sidebar-width: 280px;
-  --topbar-height: 70px;
-  --bottom-nav-height: 64px;
+  --sidebar-width: 270px;
 }
 
-/* Reset & Box Sizing */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -52,7 +42,7 @@
 html, body {
   width: 100%;
   min-height: 100%;
-  background-color: var(--bg-main);
+  background-color: var(--bg-deep);
   color: var(--text-white);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
   overflow-x: hidden;
@@ -60,446 +50,384 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Typography Scaling across Breakpoints */
-.resp-heading {
-  font-weight: 800;
-  letter-spacing: -0.025em;
-  color: var(--text-white);
-  line-height: 1.15;
-}
-
-.resp-body {
-  color: var(--text-body);
-  line-height: 1.5;
-}
-
-.resp-btn {
-  font-weight: 700;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 9999px;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  cursor: pointer;
-  border: none;
-  outline: none;
-}
-
-/* Mobile Typography (320px - 767px) */
-@media (max-width: 767px) {
-  .resp-heading { font-size: 28px; }
-  .resp-body { font-size: 14px; }
-  .resp-btn { font-size: 15px; padding: 13px 20px; }
-}
-
-/* Tablet Typography (768px - 1023px) */
-@media (min-width: 768px) and (max-width: 1023px) {
-  .resp-heading { font-size: 32px; }
-  .resp-body { font-size: 15px; }
-  .resp-btn { font-size: 16px; padding: 14px 24px; }
-}
-
-/* Desktop Typography (1024px+) */
-@media (min-width: 1024px) {
-  .resp-heading { font-size: 36px; }
-  .resp-body { font-size: 16px; }
-  .resp-btn { font-size: 17px; padding: 15px 28px; }
-}
-
-/* Ambient Radial Glows (Tesla / Apple Dark Aesthetic) */
-.ambient-glow {
+/* Ambient Radial Glows */
+.ambient-glow-bg {
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 0;
   background: 
-    radial-gradient(circle at 15% 15%, rgba(37, 99, 235, 0.12) 0%, transparent 45%),
-    radial-gradient(circle at 85% 75%, rgba(34, 211, 238, 0.08) 0%, transparent 45%),
-    #020617;
+    radial-gradient(circle at 50% 10%, rgba(0, 115, 255, 0.14) 0%, transparent 55%),
+    radial-gradient(circle at 50% 85%, rgba(56, 189, 248, 0.08) 0%, transparent 50%),
+    #00020A;
 }
 
-/* Glassmorphism Cards & Panels */
-.glass-panel {
-  background: rgba(11, 18, 32, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border-subtle);
-  border-radius: 24px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.glass-card {
-  background: var(--surface-card);
-  border: 1px solid var(--border-subtle);
-  border-radius: 20px;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
-}
-
-.glass-card:hover {
-  border-color: var(--border-glow);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(0, 115, 255, 0.16);
-}
-
-.glass-card-interactive {
-  cursor: pointer;
-}
-
-.glass-card-interactive:active {
-  transform: scale(0.98);
-}
-
-/* Neon Glow Button (Primary) */
-.btn-primary-glow {
-  background: linear-gradient(135deg, #2563EB 0%, #0073FF 100%);
-  color: #FFFFFF;
-  box-shadow: 0 0 25px rgba(0, 115, 255, 0.55), 0 4px 15px rgba(37, 99, 235, 0.4);
-}
-
-.btn-primary-glow:hover {
-  background: linear-gradient(135deg, #1D4ED8 0%, #0060E6 100%);
-  box-shadow: 0 0 35px rgba(56, 189, 248, 0.7), 0 6px 20px rgba(0, 115, 255, 0.5);
-  transform: translateY(-1px);
-}
-
-.btn-primary-glow:active {
-  transform: scale(0.98);
-}
-
-/* Provider Logos */
-.provider-logo-sq {
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-.provider-rapido {
-  background: var(--yellow-rapido);
-  color: #000000;
-}
-
-.provider-uber {
-  background: #000000;
-  color: #FFFFFF;
-  border: 1px solid #1E293B;
-  font-size: 12px;
-}
-
-.provider-ola {
-  background: #FFFFFF;
-  color: #000000;
-}
-
-.provider-blusmart {
-  background: #00D2FF;
-  color: #000000;
-}
-
-.provider-namma {
-  background: #FF6600;
-  color: #FFFFFF;
-}
-
-/* Status Badges */
-.badge-cheapest {
-  background: rgba(34, 197, 94, 0.18);
-  border: 1px solid rgba(34, 197, 94, 0.4);
-  color: var(--success-green);
-  font-size: 11px;
-  font-weight: 700;
-  padding: 3px 9px;
-  border-radius: 9999px;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.badge-fastest {
-  background: rgba(56, 189, 248, 0.18);
-  border: 1px solid rgba(56, 189, 248, 0.4);
-  color: var(--accent-cyan);
-  font-size: 11px;
-  font-weight: 700;
-  padding: 3px 9px;
-  border-radius: 9999px;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.badge-best {
-  background: rgba(245, 158, 11, 0.18);
-  border: 1px solid rgba(245, 158, 11, 0.4);
-  color: var(--warning-orange);
-  font-size: 11px;
-  font-weight: 700;
-  padding: 3px 9px;
-  border-radius: 9999px;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
-/* ==========================================================================
-   NAVIGATION STYLING:
-   - Mobile: Fixed Bottom Nav + Floating AI FAB
-   - Tablet: Floating Rounded Navigation Dock
-   - Desktop: Permanent Left Sidebar (280px)
-   ========================================================================== */
-
-/* 1. Desktop Left Sidebar (>= 1024px) */
-#desktop-sidebar {
-  width: var(--sidebar-width);
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  background: #040813;
-  border-right: 1px solid var(--border-subtle);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 24px 18px;
-  z-index: 50;
-  box-shadow: 5px 0 30px rgba(0, 0, 0, 0.5);
-}
-
-.sidebar-nav-item {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 12px 16px;
-  border-radius: 14px;
-  color: var(--text-secondary);
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  position: relative;
-}
-
-.sidebar-nav-item:hover {
-  color: #FFFFFF;
-  background: rgba(37, 99, 235, 0.08);
-}
-
-.sidebar-nav-item.active {
-  color: #FFFFFF;
-  background: linear-gradient(90deg, rgba(37, 99, 235, 0.22) 0%, rgba(37, 99, 235, 0.05) 100%);
-  border: 1px solid rgba(59, 130, 246, 0.35);
-  box-shadow: 0 0 20px rgba(37, 99, 235, 0.25);
-}
-
-.sidebar-nav-item.active::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 25%;
-  height: 50%;
-  width: 3.5px;
-  background: var(--accent-cyan);
-  border-radius: 0 4px 4px 0;
-  box-shadow: 0 0 10px var(--accent-cyan);
-}
-
-/* 2. Desktop Top Bar (>= 1024px) */
-#desktop-topbar {
-  height: var(--topbar-height);
-  position: sticky;
-  top: 0;
-  background: rgba(2, 6, 23, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border-subtle);
-  z-index: 40;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 32px;
-}
-
-/* 3. Mobile Fixed Bottom Nav (< 768px) */
-#mobile-bottom-nav {
-  height: var(--bottom-nav-height);
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(4, 8, 19, 0.94);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  padding: 0 10px;
-  z-index: 60;
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-}
-
-.mobile-nav-btn {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-secondary);
-  font-size: 11px;
-  font-weight: 500;
-  padding: 6px 0;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  background: transparent;
-  border: none;
-}
-
-.mobile-nav-btn.active {
-  color: var(--accent-cyan);
-  font-weight: 700;
-}
-
-.mobile-nav-btn.active svg {
-  color: var(--accent-cyan);
-  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.7));
-}
-
-/* 4. Tablet Floating Navigation Dock (768px - 1023px) */
-#tablet-nav-dock {
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
+/* Top Device Switcher Header (Visible on Desktop / Tablets) */
+.device-control-bar {
   background: rgba(7, 13, 30, 0.88);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(56, 189, 248, 0.3);
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 115, 255, 0.2);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 115, 255, 0.15);
   border-radius: 9999px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  z-index: 60;
-}
-
-.tablet-dock-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  border-radius: 9999px;
-  color: var(--text-secondary);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  background: transparent;
-  border: none;
-}
-
-.tablet-dock-btn:hover {
-  color: #FFFFFF;
-}
-
-.tablet-dock-btn.active {
-  background: var(--primary-blue);
-  color: #FFFFFF;
-  box-shadow: 0 0 16px rgba(0, 115, 255, 0.6);
-  font-weight: 700;
-}
-
-/* 5. Floating AI Assistant FAB (< 1024px) */
-#floating-ai-fab {
-  position: fixed;
-  bottom: 78px;
-  right: 18px;
-  width: 52px;
-  height: 52px;
-  border-radius: 9999px;
-  background: linear-gradient(135deg, #0073FF 0%, #818CF8 100%);
-  border: 2px solid rgba(56, 189, 248, 0.6);
-  box-shadow: 0 8px 25px rgba(0, 115, 255, 0.6), 0 0 20px rgba(34, 211, 238, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #FFFFFF;
-  z-index: 55;
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-#floating-ai-fab:hover {
-  transform: scale(1.08) rotate(5deg);
-  box-shadow: 0 10px 30px rgba(0, 115, 255, 0.8);
-}
-
-/* ==========================================================================
-   MAIN CONTENT AREA LAYOUT (RESPONSIVE WRAPPER)
-   ========================================================================== */
-
-#app-root {
-  min-height: 100vh;
-  display: flex;
-  width: 100%;
-  position: relative;
-  z-index: 1;
-}
-
-#content-container {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  width: 100%;
   transition: all 0.3s ease;
 }
 
-/* Desktop layout: Content pushed right by sidebar width */
-@media (min-width: 1024px) {
-  #content-container {
-    margin-left: var(--sidebar-width);
-    width: calc(100% - var(--sidebar-width));
-  }
+.device-btn {
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #94A3B8;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
 }
 
-/* Screen Views */
-.screen-view {
+.device-btn:hover {
+  color: #FFFFFF;
+}
+
+.device-btn.active {
+  background: #0073FF;
+  color: #FFFFFF;
+  box-shadow: 0 0 15px rgba(0, 115, 255, 0.6);
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   APP SCREENS (SPLASH, HOME, COMPARE, DETAILS, HISTORY, PROFILE)
+   ========================================================================== */
+
+.app-screen {
   width: 100%;
-  flex: 1;
   display: none;
-  animation: fadeInView 0.25s ease-out forwards;
+  animation: fadeInScreen 0.25s ease-out forwards;
 }
 
-.screen-view.active {
-  display: block;
+.app-screen.active {
+  display: flex;
+  flex-direction: column;
 }
 
-@keyframes fadeInView {
+@keyframes fadeInScreen {
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 /* ==========================================================================
-   DARK FUTURISTIC MAP CANVAS
+   SCREEN 1: SPLASH SCREEN (MATCHING media_1790575850775.png EXACTLY)
    ========================================================================== */
 
-.map-dark-canvas {
+.splash-canvas {
+  width: 100%;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--bg-deep);
+  padding: 16px 20px 24px 20px;
+}
+
+/* Responsive Splash Container */
+@media (min-width: 768px) {
+  .splash-canvas {
+    max-width: 540px;
+    min-height: 840px;
+    margin: 20px auto;
+    border-radius: 44px;
+    border: 2px solid rgba(56, 189, 248, 0.25);
+    box-shadow: 
+      0 0 0 1px #0F172A,
+      0 30px 80px -15px rgba(0, 0, 0, 0.95),
+      0 0 45px rgba(0, 115, 255, 0.25);
+    padding: 24px 32px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .splash-canvas {
+    max-width: 620px;
+    min-height: 880px;
+  }
+}
+
+/* Splash Hero Background: Sports car & City skyline */
+.splash-hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.splash-hero-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.9;
+}
+
+.splash-hero-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 2, 10, 0.92) 0%,
+    rgba(0, 2, 10, 0.4) 30%,
+    rgba(0, 2, 10, 0.2) 50%,
+    rgba(0, 2, 10, 0.75) 75%,
+    rgba(0, 2, 10, 0.98) 100%
+  );
+}
+
+/* Primary CTA Button: "Get Started" (Solid Electric Blue Pill) */
+.btn-get-started {
+  background: #2563EB;
+  background: linear-gradient(135deg, #2563EB 0%, #0073FF 100%);
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 16px;
+  border-radius: 9999px;
+  padding: 16px 24px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 4px 25px rgba(37, 99, 235, 0.55), 0 0 20px rgba(56, 189, 248, 0.25);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: block;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+.btn-get-started:hover {
+  background: linear-gradient(135deg, #1D4ED8 0%, #0060E6 100%);
+  box-shadow: 0 6px 30px rgba(56, 189, 248, 0.75), 0 0 35px rgba(0, 115, 255, 0.45);
+  transform: translateY(-2px);
+}
+
+.btn-get-started:active {
+  transform: scale(0.98);
+}
+
+/* Secondary Login Link */
+.btn-login-link {
+  color: #0073FF;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: block;
+  margin: 0 auto;
+  padding: 6px 14px;
+  transition: color 0.2s ease;
+}
+
+.btn-login-link:hover {
+  color: #38BDF8;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+}
+
+/* ==========================================================================
+   SCREEN 2: HOME SCREEN (MATCHING media_1790575872052.png EXACTLY)
+   ========================================================================== */
+
+.home-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px 18px;
+  position: relative;
+}
+
+/* Location Card (Exact match for Pickup & Drop cards) */
+.location-card {
+  background: #0B1220;
+  border: 1px solid rgba(59, 130, 246, 0.18);
+  border-radius: 20px;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.location-card:hover {
+  border-color: rgba(56, 189, 248, 0.45);
+  background: #0E1729;
+  transform: translateY(-1px);
+}
+
+.location-card:active {
+  transform: scale(0.99);
+}
+
+/* Search Rides Button (Exact Blue Rounded Capsule) */
+.btn-search-rides {
+  background: #2563EB;
+  background: linear-gradient(135deg, #2563EB 0%, #0073FF 100%);
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 16px;
+  border-radius: 20px;
+  padding: 16px 24px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 6px 25px rgba(37, 99, 235, 0.5), 0 0 20px rgba(0, 115, 255, 0.3);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: block;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+.btn-search-rides:hover {
+  background: linear-gradient(135deg, #1D4ED8 0%, #0060E6 100%);
+  box-shadow: 0 8px 30px rgba(56, 189, 248, 0.65), 0 0 30px rgba(0, 115, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+.btn-search-rides:active {
+  transform: scale(0.98);
+}
+
+/* Recent Search Item (Exact match) */
+.recent-search-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.recent-search-row:last-child {
+  border-bottom: none;
+}
+
+.recent-search-row:hover {
+  background: rgba(37, 99, 235, 0.06);
+  border-radius: 12px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+/* Bottom Navigation Bar (Exact 4 Tabs: Home, History, Saved, More) */
+.exact-bottom-nav {
+  height: 64px;
+  background: #040813;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 10px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.exact-nav-link {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #94A3B8;
+  font-size: 11px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  padding: 6px 0;
+  border: none;
+  background: transparent;
+}
+
+.exact-nav-link:hover {
+  color: #FFFFFF;
+}
+
+.exact-nav-link.active {
+  color: #0073FF;
+  font-weight: 700;
+}
+
+.exact-nav-link.active svg {
+  color: #0073FF;
+  filter: drop-shadow(0 0 8px rgba(0, 115, 255, 0.8));
+}
+
+/* Desktop Sidebar adaptation */
+@media (min-width: 1024px) {
+  .exact-bottom-nav {
+    display: none; /* Hide bottom nav on desktop */
+  }
+
+  .home-desktop-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+}
+
+/* Tablet layout adaptation */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .exact-bottom-nav {
+    max-width: 480px;
+    margin: 0 auto 16px auto;
+    border-radius: 9999px;
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8);
+    left: 20px;
+    right: 20px;
+  }
+
+  .home-desktop-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+}
+
+/* ==========================================================================
+   INTERACTIVE MAP CANVAS (FOR TABLET & DESKTOP HOME SCREEN PREVIEW)
+   ========================================================================== */
+
+.map-preview-canvas {
   background-color: #060B18;
   background-image: 
     radial-gradient(#152037 1.5px, transparent 1.5px),
     radial-gradient(#152037 1.5px, #060B18 1.5px);
-  background-size: 20px 20px;
-  background-position: 0 0, 10px 10px;
+  background-size: 18px 18px;
+  background-position: 0 0, 9px 9px;
+  border-radius: 24px;
+  border: 1px solid var(--border-subtle);
   position: relative;
   overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .map-route-line {
@@ -507,14 +435,14 @@ html, body {
   stroke-width: 4;
   filter: drop-shadow(0 0 10px #0073FF);
   stroke-dasharray: 8 4;
-  animation: routePulse 30s linear infinite;
+  animation: routePulse 25s linear infinite;
 }
 
 @keyframes routePulse {
   to { stroke-dashoffset: -1000; }
 }
 
-/* Driver Moving Beacon */
+/* Driver Beacon */
 .driver-beacon {
   position: absolute;
   width: 28px;
@@ -536,40 +464,12 @@ html, body {
 }
 
 /* ==========================================================================
-   DEVICE PREVIEW TOOLBAR (OPTIONAL TESTING MODE)
+   SIMULATION FRAMES (WHEN FORCED VIA TOP BAR)
    ========================================================================== */
 
-#preview-switcher-bar {
-  background: rgba(7, 13, 30, 0.9);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(56, 189, 248, 0.25);
-  border-radius: 9999px;
-  padding: 4px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
-}
-
-.preview-btn {
-  padding: 5px 12px;
-  border-radius: 9999px;
-  font-size: 11px;
-  font-weight: 600;
-  color: #94A3B8;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  background: transparent;
-  border: none;
-}
-
-.preview-btn.active {
-  background: var(--primary-blue);
-  color: #FFFFFF;
-  box-shadow: 0 0 12px rgba(0, 115, 255, 0.6);
-}
-
-/* Simulated Device Frames when testing */
 .sim-frame-mobile {
-  max-width: 390px !important;
-  margin: 20px auto !important;
+  max-width: 410px !important;
+  margin: 15px auto !important;
   border-radius: 48px !important;
   border: 4px solid rgba(255, 255, 255, 0.16) !important;
   box-shadow: 0 0 0 2px #1E293B, 0 30px 80px rgba(0, 0, 0, 0.95), 0 0 45px rgba(0, 115, 255, 0.25) !important;
@@ -578,7 +478,7 @@ html, body {
 
 .sim-frame-tablet {
   max-width: 768px !important;
-  margin: 20px auto !important;
+  margin: 15px auto !important;
   border-radius: 40px !important;
   border: 4px solid rgba(255, 255, 255, 0.16) !important;
   box-shadow: 0 0 0 2px #1E293B, 0 35px 90px rgba(0, 0, 0, 0.95), 0 0 45px rgba(0, 115, 255, 0.25) !important;
@@ -586,49 +486,12 @@ html, body {
 }
 
 /* ==========================================================================
-   MODALS AND TOAST NOTIFICATIONS
+   TOAST NOTIFICATION
    ========================================================================== */
-
-.modal-backdrop-full {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 2, 10, 0.85);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.modal-backdrop-full.open {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.modal-box {
-  background: #070D1E;
-  border: 1px solid rgba(56, 189, 248, 0.3);
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95), 0 0 40px rgba(0, 115, 255, 0.2);
-  border-radius: 28px;
-  width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-  transform: translateY(20px) scale(0.96);
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.modal-backdrop-full.open .modal-box {
-  transform: translateY(0) scale(1);
-}
 
 #app-toast {
   position: fixed;
-  top: 24px;
+  top: 20px;
   left: 50%;
   transform: translateX(-50%) translateY(-20px);
   z-index: 200;
@@ -650,23 +513,4 @@ html, body {
 #app-toast.visible {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
-}
-
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: #020617;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #1E293B;
-  border-radius: 9999px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #334155;
 }
