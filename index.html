@@ -6,13 +6,29 @@
   <title>VOZX RideCompare - One Ride. All Prices.</title>
 
   <link rel="icon" type="image/png" href="assets/images/logo.png">
-  <meta name="theme-color" content="#020617">
+  <meta name="theme-color" content="#FFFFFF" id="meta-theme-color">
+
+  <!-- Instant Theme Bootstrap: Defaults to Light Mode (white background) unless explicitly saved as dark -->
+  <script>
+    (function() {
+      try {
+        const savedTheme = localStorage.getItem('ridecompare_theme');
+        if (savedTheme === 'dark') {
+          document.documentElement.classList.add('theme-dark');
+          document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+          document.documentElement.classList.add('theme-light');
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      } catch(e) {}
+    })();
+  </script>
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=24">
+  <link rel="stylesheet" href="css/styles.css?v=25">
 
   <style>
     /* Strict Responsive Display Rules: Bottom Nav for Mobile & Tablet (< 1024px) */
@@ -39,7 +55,7 @@
     }
   </style>
 </head>
-<body class="bg-[#020617] text-white min-h-screen selection:bg-blue-600 selection:text-white antialiased">
+<body class="min-h-screen selection:bg-blue-600 selection:text-white antialiased theme-light">
 
   <!-- Ambient Radial Glow Mesh Backdrop -->
   <div class="ambient-glow-mesh"></div>
@@ -196,6 +212,21 @@
             <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-blue-500"></span>
           </button>
 
+          <!-- Theme Mode Toggle (Beside Profile on top) -->
+          <button type="button" onclick="app.toggleTheme()" class="theme-toggle-btn w-9 h-9" aria-label="Toggle Dark / Light Theme" title="Toggle Theme">
+            <span class="theme-icon-light hidden">
+              <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="4"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41m14.14-14.14l-1.41 1.41"/>
+              </svg>
+            </span>
+            <span class="theme-icon-dark flex">
+              <svg class="w-4 h-4 text-slate-700" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/>
+              </svg>
+            </span>
+          </button>
+
           <button type="button" onclick="app.openProfile()" class="w-9 h-9 rounded-full bg-[#93C5FD] border border-blue-400/40 flex items-center justify-center text-[#1E3A8A] cursor-pointer hover:ring-2 hover:ring-blue-400 transition-all shadow-md active:scale-95" title="View Profile (Varun Reddy)">
             <svg class="w-5 h-5 text-[#1E3A8A]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
           </button>
@@ -209,11 +240,28 @@
           <span>Ride<span class="text-blue">Compare</span></span>
         </div>
 
-        <button type="button" onclick="app.openProfile()" class="w-9 h-9 rounded-full bg-[#93C5FD] flex items-center justify-center text-[#1E3A8A] shadow-md active:scale-95 transition-all" aria-label="Profile (Varun Reddy)">
-          <svg class="w-5 h-5 text-[#1E3A8A]" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
-          </svg>
-        </button>
+        <div class="flex items-center gap-2.5">
+          <!-- Theme Mode Toggle (Beside Profile on top) -->
+          <button type="button" onclick="app.toggleTheme()" class="theme-toggle-btn w-9 h-9" aria-label="Toggle Dark / Light Theme" title="Toggle Theme">
+            <span class="theme-icon-light hidden">
+              <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="4"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41m14.14-14.14l-1.41 1.41"/>
+              </svg>
+            </span>
+            <span class="theme-icon-dark flex">
+              <svg class="w-4 h-4 text-slate-700" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/>
+              </svg>
+            </span>
+          </button>
+
+          <button type="button" onclick="app.openProfile()" class="w-9 h-9 rounded-full bg-[#93C5FD] flex items-center justify-center text-[#1E3A8A] shadow-md active:scale-95 transition-all" aria-label="Profile (Varun Reddy)" title="Profile">
+            <svg class="w-5 h-5 text-[#1E3A8A]" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+            </svg>
+          </button>
+        </div>
       </header>
 
       <!-- RESPONSIVE 2-PANEL / MASTER GRID -->
@@ -778,7 +826,16 @@
           <span class="text-xs text-slate-400 font-medium">Home &gt; <span class="text-white font-semibold">Ride History</span></span>
         </div>
 
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3">
+          <!-- Theme Mode Toggle -->
+          <button type="button" onclick="app.toggleTheme()" class="theme-toggle-btn w-9 h-9" aria-label="Toggle Dark / Light Theme" title="Toggle Theme">
+            <span class="theme-icon-light hidden">
+              <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41m14.14-14.14l-1.41 1.41"/></svg>
+            </span>
+            <span class="theme-icon-dark flex">
+              <svg class="w-4 h-4 text-slate-700" fill="currentColor" viewBox="0 0 24 24"><path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>
+            </span>
+          </button>
           <div class="px-3 py-1 rounded-full bg-blue-950/40 border border-blue-800/40 text-[11px] font-semibold text-sky-400">
             5 Trips Completed • ₹555 Total Spent
           </div>
@@ -798,8 +855,19 @@
             </button>
             <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Ride History</h1>
           </div>
-          <div class="px-2.5 py-1 rounded-full bg-slate-800/80 border border-slate-700/50 text-[11px] font-bold text-slate-300">
-            5 Trips
+          <div class="flex items-center gap-2">
+            <!-- Theme Mode Toggle -->
+            <button type="button" onclick="app.toggleTheme()" class="theme-toggle-btn w-8 h-8" aria-label="Toggle Dark / Light Theme" title="Toggle Theme">
+              <span class="theme-icon-light hidden">
+                <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41m14.14-14.14l-1.41 1.41"/></svg>
+              </span>
+              <span class="theme-icon-dark flex">
+                <svg class="w-3.5 h-3.5 text-slate-700" fill="currentColor" viewBox="0 0 24 24"><path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>
+              </span>
+            </button>
+            <div class="px-2.5 py-1 rounded-full bg-slate-800/80 border border-slate-700/50 text-[11px] font-bold text-slate-300">
+              5 Trips
+            </div>
           </div>
         </div>
 
@@ -1223,6 +1291,15 @@
         </div>
 
         <div class="flex items-center gap-3">
+          <!-- Theme Mode Toggle -->
+          <button type="button" onclick="app.toggleTheme()" class="theme-toggle-btn w-9 h-9" aria-label="Toggle Dark / Light Theme" title="Toggle Theme">
+            <span class="theme-icon-light hidden">
+              <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41m14.14-14.14l-1.41 1.41"/></svg>
+            </span>
+            <span class="theme-icon-dark flex">
+              <svg class="w-4 h-4 text-slate-700" fill="currentColor" viewBox="0 0 24 24"><path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>
+            </span>
+          </button>
           <span class="text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full font-semibold">
             ● Verified Account
           </span>
@@ -1242,9 +1319,20 @@
           </button>
           <h2 class="text-lg font-bold text-white tracking-tight">Profile</h2>
         </div>
-        <button onclick="app.showToast('Profile sync active')" class="text-xs font-semibold text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2.5 py-1 rounded-full">
-          Verified
-        </button>
+        <div class="flex items-center gap-2">
+          <!-- Theme Mode Toggle -->
+          <button type="button" onclick="app.toggleTheme()" class="theme-toggle-btn w-8 h-8" aria-label="Toggle Dark / Light Theme" title="Toggle Theme">
+            <span class="theme-icon-light hidden">
+              <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41m14.14-14.14l-1.41 1.41"/></svg>
+            </span>
+            <span class="theme-icon-dark flex">
+              <svg class="w-3.5 h-3.5 text-slate-700" fill="currentColor" viewBox="0 0 24 24"><path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>
+            </span>
+          </button>
+          <button onclick="app.showToast('Profile sync active')" class="text-xs font-semibold text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2.5 py-1 rounded-full">
+            Verified
+          </button>
+        </div>
       </header>
 
       <!-- PROFILE CONTENT CONTAINER (Exact Match to media_1790665329406.png) -->
@@ -1687,7 +1775,7 @@
   <div id="app-toast">Welcome to VOZX RideCompare! 🚀</div>
 
   <!-- Scripts -->
-  <script src="js/audio.js?v=24"></script>
-  <script src="js/app.js?v=24"></script>
+  <script src="js/audio.js?v=25"></script>
+  <script src="js/app.js?v=25"></script>
 </body>
 </html>

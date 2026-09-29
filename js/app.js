@@ -119,7 +119,9 @@ class RideCompareApp {
   }
 
   init() {
+    this.initTheme();
     document.addEventListener('DOMContentLoaded', () => {
+      this.initTheme();
       // Check initial hash routing (#home, #history, or splash)
       this.handleHashRoute();
 
@@ -148,6 +150,66 @@ class RideCompareApp {
         }
       });
     });
+  }
+
+  // =========================================================================
+  // THEME MANAGEMENT (Light Mode White Background by Default + Dark Mode Toggle)
+  // =========================================================================
+  initTheme() {
+    const savedTheme = localStorage.getItem('ridecompare_theme');
+    // Default to 'light' (white background) unless explicitly saved as 'dark'
+    const theme = (savedTheme === 'dark') ? 'dark' : 'light';
+    this.applyTheme(theme, false);
+  }
+
+  toggleTheme() {
+    const isDark = document.body.classList.contains('theme-dark') || 
+                   document.documentElement.getAttribute('data-theme') === 'dark';
+    const newTheme = isDark ? 'light' : 'dark';
+    this.applyTheme(newTheme, true);
+  }
+
+  applyTheme(theme, showFeedback = false) {
+    const metaTheme = document.getElementById('meta-theme-color');
+    if (theme === 'dark') {
+      document.body.classList.add('theme-dark');
+      document.body.classList.remove('theme-light');
+      document.documentElement.classList.add('theme-dark');
+      document.documentElement.classList.remove('theme-light');
+      document.documentElement.setAttribute('data-theme', 'dark');
+      localStorage.setItem('ridecompare_theme', 'dark');
+      if (metaTheme) metaTheme.setAttribute('content', '#020617');
+
+      // Update button accessibility labels
+      document.querySelectorAll('.theme-toggle-btn').forEach(btn => {
+        btn.setAttribute('title', 'Switch to Light Mode (☀️)');
+        btn.setAttribute('aria-label', 'Switch to Light Mode');
+      });
+
+      if (showFeedback) {
+        if (window.soundFX && window.soundFX.playTap) window.soundFX.playTap();
+        this.showToast('Dark Mode Activated 🌙');
+      }
+    } else {
+      document.body.classList.remove('theme-dark');
+      document.body.classList.add('theme-light');
+      document.documentElement.classList.remove('theme-dark');
+      document.documentElement.classList.add('theme-light');
+      document.documentElement.setAttribute('data-theme', 'light');
+      localStorage.setItem('ridecompare_theme', 'light');
+      if (metaTheme) metaTheme.setAttribute('content', '#FFFFFF');
+
+      // Update button accessibility labels
+      document.querySelectorAll('.theme-toggle-btn').forEach(btn => {
+        btn.setAttribute('title', 'Switch to Dark Mode (🌙)');
+        btn.setAttribute('aria-label', 'Switch to Dark Mode');
+      });
+
+      if (showFeedback) {
+        if (window.soundFX && window.soundFX.playTap) window.soundFX.playTap();
+        this.showToast('Light Mode Activated ☀️');
+      }
+    }
   }
 
   handleHashRoute() {
