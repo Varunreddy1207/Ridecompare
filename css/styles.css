@@ -153,17 +153,7 @@ html, body {
    UI COMPONENTS & TYPOGRAPHY HIERARCHY (Exact Match)
    ========================================================================== */
 
-/* Top Status Bar (Mobile & Tablet) */
-.ios-status-bar {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-white);
-  padding: 0 4px 12px 4px;
-}
+
 
 /* 3D Metallic R Logo Emblem */
 .logo-emblem-container {
