@@ -324,14 +324,7 @@ html, body {
   text-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
 }
 
-/* Bottom iOS indicator bar */
-.ios-indicator-bar {
-  width: 120px;
-  height: 4px;
-  border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.3);
-  margin-top: 6px;
-}
+
 
 /* Feedback Toast Notification */
 #app-toast {
