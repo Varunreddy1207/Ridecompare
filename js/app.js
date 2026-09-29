@@ -338,13 +338,7 @@ class RideCompareApp {
   showResultsPanel() {
     const panel = document.getElementById('home-results-panel');
     const searchContainer = document.getElementById('home-search-container');
-    const desktopPreview = document.getElementById('desktop-home-preview');
     if (!panel) return;
-
-    if (desktopPreview) {
-      desktopPreview.classList.add('hidden');
-      desktopPreview.classList.remove('lg:flex');
-    }
 
     // Reset animation state to ensure it plays freshly
     panel.classList.remove('results-panel-hidden');
@@ -356,17 +350,6 @@ class RideCompareApp {
     if (searchContainer) {
       searchContainer.classList.remove('max-w-xl', 'mx-auto', 'lg:col-span-12');
       searchContainer.classList.add('lg:col-span-4');
-    }
-
-    // On Desktop: automatically expand more rides so all 9 rides are visible immediately
-    if (window.innerWidth >= 1024) {
-      const section = document.getElementById('more-rides-section');
-      const toggleText = document.getElementById('more-toggle-text');
-      if (section && section.classList.contains('hidden')) {
-        section.classList.remove('hidden');
-        section.classList.add('flex');
-        if (toggleText) toggleText.textContent = 'Hide ▴';
-      }
     }
 
     // On mobile (< 768px): scroll results into view smoothly
@@ -387,7 +370,6 @@ class RideCompareApp {
 
     const panel = document.getElementById('home-results-panel');
     const searchContainer = document.getElementById('home-search-container');
-    const desktopPreview = document.getElementById('desktop-home-preview');
     const moreSection = document.getElementById('more-rides-section');
     const toggleText = document.getElementById('more-toggle-text');
     if (moreSection) {
@@ -401,14 +383,9 @@ class RideCompareApp {
     panel.classList.remove('results-panel-visible');
     panel.classList.add('results-panel-hidden');
 
-    if (desktopPreview) {
-      desktopPreview.classList.remove('hidden');
-      desktopPreview.classList.add('lg:flex');
-    }
-
     if (searchContainer) {
-      searchContainer.classList.remove('max-w-xl', 'mx-auto');
-      searchContainer.classList.add('lg:col-span-4');
+      searchContainer.classList.remove('lg:col-span-4', 'lg:col-span-5');
+      searchContainer.classList.add('max-w-xl', 'mx-auto');
     }
 
     window.scrollTo({ top: 0, behavior: 'smooth' });

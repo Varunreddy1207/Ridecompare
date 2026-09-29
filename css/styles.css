@@ -1112,10 +1112,6 @@ html, body {
 
 /* More Options Card Highlight */
 .provider-card.more-options-deal {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  justify-content: space-between !important;
   border-color: rgba(168, 85, 247, 0.4);
   background: linear-gradient(135deg, rgba(10, 17, 36, 0.95) 0%, rgba(168, 85, 247, 0.12) 100%);
 }
