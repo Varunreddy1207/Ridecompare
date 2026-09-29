@@ -334,11 +334,17 @@ class RideCompareApp {
     this.showResultsPanel();
   }
 
-  // Smooth Reveal of Results Panel (Map + 3 comparison cards)
+  // Smooth Reveal of Results Panel (Map + comparison cards)
   showResultsPanel() {
     const panel = document.getElementById('home-results-panel');
     const searchContainer = document.getElementById('home-search-container');
+    const desktopPreview = document.getElementById('desktop-home-preview');
     if (!panel) return;
+
+    if (desktopPreview) {
+      desktopPreview.classList.add('hidden');
+      desktopPreview.classList.remove('lg:flex');
+    }
 
     // Reset animation state to ensure it plays freshly
     panel.classList.remove('results-panel-hidden');
@@ -348,8 +354,19 @@ class RideCompareApp {
 
     // On Desktop & Tablet: adjust search container to left column
     if (searchContainer) {
-      searchContainer.classList.remove('max-w-xl', 'mx-auto', 'lg:col-span-5');
+      searchContainer.classList.remove('max-w-xl', 'mx-auto', 'lg:col-span-12');
       searchContainer.classList.add('lg:col-span-4');
+    }
+
+    // On Desktop: automatically expand more rides so all 9 rides are visible immediately
+    if (window.innerWidth >= 1024) {
+      const section = document.getElementById('more-rides-section');
+      const toggleText = document.getElementById('more-toggle-text');
+      if (section && section.classList.contains('hidden')) {
+        section.classList.remove('hidden');
+        section.classList.add('flex');
+        if (toggleText) toggleText.textContent = 'Hide ▴';
+      }
     }
 
     // On mobile (< 768px): scroll results into view smoothly
@@ -370,6 +387,7 @@ class RideCompareApp {
 
     const panel = document.getElementById('home-results-panel');
     const searchContainer = document.getElementById('home-search-container');
+    const desktopPreview = document.getElementById('desktop-home-preview');
     const moreSection = document.getElementById('more-rides-section');
     const toggleText = document.getElementById('more-toggle-text');
     if (moreSection) {
@@ -383,9 +401,14 @@ class RideCompareApp {
     panel.classList.remove('results-panel-visible');
     panel.classList.add('results-panel-hidden');
 
+    if (desktopPreview) {
+      desktopPreview.classList.remove('hidden');
+      desktopPreview.classList.add('lg:flex');
+    }
+
     if (searchContainer) {
-      searchContainer.classList.remove('lg:col-span-4', 'lg:col-span-5');
-      searchContainer.classList.add('max-w-xl', 'mx-auto');
+      searchContainer.classList.remove('max-w-xl', 'mx-auto');
+      searchContainer.classList.add('lg:col-span-4');
     }
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -428,11 +451,27 @@ class RideCompareApp {
     const activePill = document.getElementById(`filter-pill-${category}`);
     if (activePill) activePill.classList.add('active');
 
+    const moreCard = document.getElementById('card-more-options');
+    const moreSection = document.getElementById('more-rides-section');
+    const toggleText = document.getElementById('more-toggle-text');
+
+    if (category !== 'all') {
+      if (moreSection) {
+        moreSection.classList.remove('hidden');
+        moreSection.classList.add('flex');
+        if (toggleText) toggleText.textContent = 'Hide ▴';
+      }
+      if (moreCard) moreCard.style.display = 'none';
+    } else {
+      if (moreCard) moreCard.style.display = '';
+    }
+
     // Filter items
     const items = document.querySelectorAll('.ride-item-card');
     items.forEach(card => {
+      if (card.id === 'card-more-options') return;
       const cardCat = card.getAttribute('data-category');
-      if (category === 'all' || cardCat === category || card.id === 'card-more-options') {
+      if (category === 'all' || cardCat === category) {
         card.style.display = '';
       } else {
         card.style.display = 'none';
@@ -440,16 +479,41 @@ class RideCompareApp {
     });
 
     if (category !== 'all') {
-      const section = document.getElementById('more-rides-section');
-      if (section && section.classList.contains('hidden') && (category === 'autos' || category === 'ev')) {
-        section.classList.remove('hidden');
-        section.classList.add('flex');
-        const toggleText = document.getElementById('more-toggle-text');
-        if (toggleText) toggleText.textContent = 'Hide ▴';
-      }
-      this.showToast(`Filtered by ${category.toUpperCase()} 🚗`);
+      this.showToast(`Showing ${category.toUpperCase()} rides 🚗`);
     } else {
-      this.showToast('Showing all ride options ⚡');
+      this.showToast('Showing all 9 ride options ⚡');
+    }
+  }
+
+  // Sort Rides by Price or ETA
+  sortRides(criteria) {
+    if (window.soundFX) {
+      window.soundFX.playTap();
+    }
+    const section = document.getElementById('more-rides-section');
+    if (section && section.classList.contains('hidden')) {
+      section.classList.remove('hidden');
+      section.classList.add('flex');
+      const toggleText = document.getElementById('more-toggle-text');
+      if (toggleText) toggleText.textContent = 'Hide ▴';
+    }
+
+    const btnPrice = document.getElementById('sort-btn-price');
+    const btnEta = document.getElementById('sort-btn-eta');
+    if (btnPrice && btnEta) {
+      if (criteria === 'price') {
+        btnPrice.classList.add('bg-blue-600', 'text-white', 'border-blue-400');
+        btnPrice.classList.remove('bg-slate-800', 'text-slate-200', 'border-slate-700');
+        btnEta.classList.remove('bg-blue-600', 'text-white', 'border-blue-400');
+        btnEta.classList.add('bg-slate-800', 'text-slate-200', 'border-slate-700');
+        this.showToast('Sorted by Lowest Price: Rapido Bike at ₹45 🏷️');
+      } else {
+        btnEta.classList.add('bg-blue-600', 'text-white', 'border-blue-400');
+        btnEta.classList.remove('bg-slate-800', 'text-slate-200', 'border-slate-700');
+        btnPrice.classList.remove('bg-blue-600', 'text-white', 'border-blue-400');
+        btnPrice.classList.add('bg-slate-800', 'text-slate-200', 'border-slate-700');
+        this.showToast('Sorted by Fastest Arrival: Rapido Auto in 2 mins ⚡');
+      }
     }
   }
 

@@ -896,7 +896,7 @@ html, body {
 
 /* Live Provider Price Comparison Cards */
 .provider-card {
-  background: rgba(10, 17, 36, 0.92);
+  background: linear-gradient(180deg, rgba(13, 21, 45, 0.95) 0%, rgba(8, 14, 30, 0.98) 100%);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   padding: 16px 18px;
@@ -907,6 +907,7 @@ html, body {
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .provider-card:hover {
@@ -1150,6 +1151,14 @@ html, body {
   border-color: #38BDF8;
   color: #FFFFFF;
   box-shadow: 0 0 12px rgba(0, 115, 255, 0.4);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+}
+.no-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
 }
 
 /* Expandable More Rides Container */
