@@ -2151,6 +2151,137 @@ body:not(.theme-dark) button.bg-amber-600 * {
   color: #FFFFFF !important;
 }
 
+/* ==========================================================================
+   14. LIGHT MODE: BACK TO HOME & NOTIFICATION BELL BUTTONS (BLUE BACKGROUND)
+   Styles "← Back to Home" button and Notification Bell icon button
+   with vibrant primary blue background (#0073FF) in Light Mode,
+   crisp pure white text/icons (#FFFFFF), and glowing elevation.
+   ========================================================================== */
+
+/* 1. "Back to Home" Button in Light Mode — Blue Background */
+body:not(.theme-dark) .btn-back-home,
+body:not(.theme-dark) #screen-history .btn-back-home,
+body:not(.theme-dark) #screen-profile .btn-back-home,
+body:not(.theme-dark) .desktop-topbar .btn-back-home,
+body:not(.theme-dark) .desktop-topbar button[onclick*="switchTab('home')"],
+body:not(.theme-dark) header button[onclick*="switchTab('home')"],
+body.theme-light .btn-back-home,
+[data-theme="light"] .btn-back-home,
+html:not(.theme-dark) .btn-back-home {
+  background-color: #0073FF !important;
+  background: linear-gradient(135deg, #0073FF 0%, #0060E6 100%) !important;
+  border: 1px solid #0060E6 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 14px rgba(0, 115, 255, 0.35) !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+body:not(.theme-dark) .btn-back-home *,
+body:not(.theme-dark) #screen-history .btn-back-home *,
+body:not(.theme-dark) #screen-profile .btn-back-home *,
+body:not(.theme-dark) .desktop-topbar .btn-back-home *,
+body:not(.theme-dark) .desktop-topbar button[onclick*="switchTab('home')"] *,
+body:not(.theme-dark) header button[onclick*="switchTab('home')"] *,
+body.theme-light .btn-back-home *,
+[data-theme="light"] .btn-back-home *,
+html:not(.theme-dark) .btn-back-home * {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+body:not(.theme-dark) .btn-back-home:hover,
+body:not(.theme-dark) #screen-history .btn-back-home:hover,
+body:not(.theme-dark) #screen-profile .btn-back-home:hover,
+body.theme-light .btn-back-home:hover,
+[data-theme="light"] .btn-back-home:hover,
+body:not(.theme-dark) .desktop-topbar button[onclick*="switchTab('home')"]:hover,
+body:not(.theme-dark) header button[onclick*="switchTab('home')"]:hover {
+  background-color: #0060E6 !important;
+  background: linear-gradient(135deg, #0069FB 0%, #0050CC 100%) !important;
+  border-color: #0050CC !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 6px 18px rgba(0, 115, 255, 0.45) !important;
+  transform: translateY(-1px) !important;
+}
+
+body:not(.theme-dark) .btn-back-home:active,
+body:not(.theme-dark) #screen-history .btn-back-home:active,
+body:not(.theme-dark) #screen-profile .btn-back-home:active,
+body.theme-light .btn-back-home:active,
+[data-theme="light"] .btn-back-home:active,
+body:not(.theme-dark) .desktop-topbar button[onclick*="switchTab('home')"]:active,
+body:not(.theme-dark) header button[onclick*="switchTab('home')"]:active {
+  transform: translateY(0) scale(0.97) !important;
+}
+
+/* 2. Notification Bell Button in Light Mode — Blue Background */
+body:not(.theme-dark) .btn-notification-bell,
+body:not(.theme-dark) #btn-notification-bell,
+body:not(.theme-dark) #screen-home #btn-notification-bell,
+body:not(.theme-dark) .desktop-topbar #btn-notification-bell,
+body:not(.theme-dark) .desktop-topbar .btn-notification-bell,
+body:not(.theme-dark) button[onclick*="No new notifications"],
+body.theme-light .btn-notification-bell,
+body.theme-light #btn-notification-bell,
+[data-theme="light"] .btn-notification-bell,
+[data-theme="light"] #btn-notification-bell,
+html:not(.theme-dark) .btn-notification-bell {
+  background-color: #0073FF !important;
+  background: linear-gradient(135deg, #0073FF 0%, #0060E6 100%) !important;
+  border: 1px solid #0060E6 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 14px rgba(0, 115, 255, 0.35) !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+body:not(.theme-dark) .btn-notification-bell svg,
+body.theme-light .btn-notification-bell svg,
+[data-theme="light"] .btn-notification-bell svg,
+body:not(.theme-dark) #btn-notification-bell svg,
+body.theme-light #btn-notification-bell svg,
+[data-theme="light"] #btn-notification-bell svg,
+body:not(.theme-dark) button[onclick*="No new notifications"] svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+body:not(.theme-dark) .btn-notification-bell .notification-dot,
+body.theme-light .btn-notification-bell .notification-dot,
+[data-theme="light"] .btn-notification-bell .notification-dot,
+body:not(.theme-dark) #btn-notification-bell .notification-dot,
+body.theme-light #btn-notification-bell .notification-dot,
+[data-theme="light"] #btn-notification-bell .notification-dot,
+body:not(.theme-dark) button[onclick*="No new notifications"] span {
+  background-color: #FFFFFF !important;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.9) !important;
+}
+
+body:not(.theme-dark) .btn-notification-bell:hover,
+body.theme-light .btn-notification-bell:hover,
+[data-theme="light"] .btn-notification-bell:hover,
+body:not(.theme-dark) #btn-notification-bell:hover,
+body.theme-light #btn-notification-bell:hover,
+[data-theme="light"] #btn-notification-bell:hover,
+body:not(.theme-dark) button[onclick*="No new notifications"]:hover {
+  background-color: #0060E6 !important;
+  background: linear-gradient(135deg, #0069FB 0%, #0050CC 100%) !important;
+  border-color: #0050CC !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 6px 18px rgba(0, 115, 255, 0.45) !important;
+  transform: translateY(-1px) scale(1.04) !important;
+}
+
+body:not(.theme-dark) .btn-notification-bell:active,
+body.theme-light .btn-notification-bell:active,
+[data-theme="light"] .btn-notification-bell:active,
+body:not(.theme-dark) #btn-notification-bell:active,
+body.theme-light #btn-notification-bell:active,
+[data-theme="light"] #btn-notification-bell:active,
+body:not(.theme-dark) button[onclick*="No new notifications"]:active {
+  transform: translateY(0) scale(0.95) !important;
+}
+
+
 
 
 
