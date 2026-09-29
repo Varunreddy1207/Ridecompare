@@ -71,9 +71,9 @@ html, body {
 }
 
 .screen-page.active {
-  display: flex;
-  opacity: 1;
-  transform: translateY(0);
+  display: flex !important;
+  opacity: 1 !important;
+  transform: translateY(0) !important;
 }
 
 /* ==========================================================================

@@ -503,9 +503,9 @@ class RideCompareApp {
 
   // Select History Trip (syncs Desktop Receipt Panel and Mobile/Tablet Modal)
   selectHistoryTrip(id, openMobileModal = true) {
-    const trip = this.historyTrips.find(t => t.id === id);
+    const trip = this.historyTrips.find(t => t.id == id);
     if (!trip) return;
-    this.selectedHistoryTripId = id;
+    this.selectedHistoryTripId = parseInt(id, 10) || 1;
 
     if (window.soundFX) {
       window.soundFX.playTap();
@@ -515,7 +515,7 @@ class RideCompareApp {
     const cards = document.querySelectorAll('.history-item');
     cards.forEach(card => {
       const cardId = parseInt(card.getAttribute('data-id'), 10);
-      card.classList.toggle('selected-trip', cardId === id);
+      card.classList.toggle('selected-trip', cardId == id);
     });
 
     // 1. Update Desktop Receipt Panel

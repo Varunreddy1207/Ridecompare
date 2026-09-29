@@ -12,19 +12,21 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=11">
+  <link rel="stylesheet" href="css/styles.css?v=14">
 
   <style>
     /* Strict Responsive Display Rules */
     @media (min-width: 768px) {
-      #mobile-bottom-nav {
+      #mobile-bottom-nav,
+      .mobile-bottom-nav {
         display: none !important;
         visibility: hidden !important;
         pointer-events: none !important;
       }
     }
     @media (max-width: 767px), (min-width: 1024px) {
-      #tablet-nav-dock {
+      #tablet-nav-dock,
+      .tablet-nav-dock {
         display: none !important;
         visibility: hidden !important;
         pointer-events: none !important;
@@ -32,6 +34,7 @@
     }
     @media (max-width: 1023px) {
       #desktop-sidebar,
+      .desktop-sidebar,
       .desktop-topbar {
         display: none !important;
         visibility: hidden !important;
@@ -281,7 +284,7 @@
             <div class="pt-1">
               <div class="recent-searches-header">
                 <h3>Recent Searches</h3>
-                <button onclick="app.showToast('Showing all history')" class="see-all-link">See all</button>
+                <button onclick="app.switchTab('history')" class="see-all-link">See all</button>
               </div>
 
               <div class="recent-searches-list">
@@ -681,7 +684,7 @@
   <!-- SCREEN 3: RIDE HISTORY (Exact Match to media_1790658953621.png)         -->
   <!-- Responsive layout for Mobile, Tablet, and Desktop SaaS Dashboard        -->
   <!-- ====================================================================== -->
-  <section id="screen-history" class="screen-page flex-col">
+  <section id="screen-history" class="screen-page">
 
     <!-- DESKTOP PERMANENT LEFT SIDEBAR (>= 1024px) -->
     <aside class="desktop-sidebar hidden lg:flex">
@@ -1171,7 +1174,7 @@
   <div id="app-toast">Welcome to VOZX RideCompare! 🚀</div>
 
   <!-- Scripts -->
-  <script src="js/audio.js?v=12"></script>
-  <script src="js/app.js?v=12"></script>
+  <script src="js/audio.js?v=14"></script>
+  <script src="js/app.js?v=14"></script>
 </body>
 </html>
