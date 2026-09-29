@@ -12,7 +12,33 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=6">
+  <link rel="stylesheet" href="css/styles.css?v=7">
+
+  <style>
+    /* Strict Responsive Display Rules */
+    @media (min-width: 768px) {
+      #mobile-bottom-nav {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+      }
+    }
+    @media (max-width: 767px), (min-width: 1024px) {
+      #tablet-nav-dock {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+      }
+    }
+    @media (max-width: 1023px) {
+      #desktop-sidebar,
+      .desktop-topbar {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+      }
+    }
+  </style>
 </head>
 <body class="bg-[#020617] text-white min-h-screen selection:bg-blue-600 selection:text-white antialiased">
 
@@ -432,7 +458,7 @@
 
     <!-- ==================================================================== -->
     <!-- MOBILE FIXED BOTTOM NAVIGATION (< 768px)                             -->
-    <!-- 3 Icons: Home, History, Saved                                       -->
+    <!-- Exact 4 Icons Matching media_1790644185007.png: Home, History, Saved, More -->
     <!-- ==================================================================== -->
     <nav id="mobile-bottom-nav" class="flex md:hidden">
       <!-- 1. Home -->
@@ -555,7 +581,7 @@
   <div id="app-toast">Welcome to VOZX RideCompare! 🚀</div>
 
   <!-- Scripts -->
-  <script src="js/audio.js?v=6"></script>
-  <script src="js/app.js?v=6"></script>
+  <script src="js/audio.js?v=4"></script>
+  <script src="js/app.js?v=4"></script>
 </body>
 </html>
