@@ -1423,4 +1423,39 @@ html, body {
   transform: scale(0.98);
 }
 
+/* ==========================================================================
+   MOBILE SCREEN OPTIMIZATION (< 768px): Remove extra bottom dead space
+   ========================================================================== */
+@media (max-width: 767px) {
+  #screen-profile main {
+    min-height: calc(100vh - 58px - 64px);
+    min-height: calc(100dvh - 58px - 64px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .profile-menu-item {
+    padding: 13px 4px;
+  }
+  @media (min-height: 750px) {
+    .profile-menu-item {
+      padding: 15px 4px;
+    }
+  }
+  #home-search-container {
+    min-height: calc(100vh - 58px - 64px);
+    min-height: calc(100dvh - 58px - 64px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .search-input-card {
+    padding: 15px 16px;
+  }
+  .recent-search-item {
+    padding: 14px 6px;
+  }
+}
+
+
 
