@@ -12,75 +12,562 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=3">
+  <link rel="stylesheet" href="css/styles.css?v=4">
 </head>
-<body class="bg-[#020617] text-white min-h-screen flex items-center justify-center relative selection:bg-blue-600 selection:text-white">
+<body class="bg-[#020617] text-white min-h-screen selection:bg-blue-600 selection:text-white antialiased">
 
-  <!-- Ambient Radial Glow Backdrop for Desktop & Tablet -->
+  <!-- Ambient Radial Glow Mesh Backdrop -->
   <div class="ambient-glow-mesh"></div>
 
-  <!-- Master Stage Wrapper -->
-  <main class="stage-wrapper">
+  <!-- ====================================================================== -->
+  <!-- SCREEN 1: GET STARTED (Exact Match to media_1790643107597.png)         -->
+  <!-- ====================================================================== -->
+  <section id="screen-splash" class="screen-page active">
+    <div class="stage-wrapper">
+      <div class="get-started-card">
 
-    <!-- Get Started Hero Card (Adapts automatically to Mobile, Tablet, and Desktop) -->
-    <div class="get-started-card">
+        <!-- Top Section: 3D Logo + Titles + Description -->
+        <div class="w-full flex flex-col items-center">
+          <!-- 3D Metallic R Logo Emblem with Electric Blue/Cyan Glow -->
+          <div class="logo-emblem-container">
+            <img src="assets/images/logo_cropped_clean.png" alt="VOZX Logo" class="logo-emblem-img">
+          </div>
 
-      <!-- Top Section: 3D Logo + Titles + Description -->
-      <div class="w-full flex flex-col items-center">
+          <!-- Title: Ride in White, Compare in Electric Blue -->
+          <h1 class="brand-title">
+            Ride<span class="text-blue">Compare</span>
+          </h1>
 
-        <!-- 3D Metallic R Logo Emblem with Electric Blue/Cyan Glow -->
-        <div class="logo-emblem-container">
-          <img src="assets/images/logo_cropped_clean.png" alt="VOZX Logo" class="logo-emblem-img">
+          <!-- Tagline: One Ride. All Prices. -->
+          <p class="brand-tagline">
+            One Ride. All Prices.
+          </p>
+
+          <!-- Paragraph Description -->
+          <p class="brand-description">
+            Compare prices from<br>
+            all ride apps. Choose the best.<br>
+            Save money. Travel smarter.
+          </p>
         </div>
 
-        <!-- Title: Ride in White, Compare in Electric Blue -->
-        <h1 class="brand-title">
-          Ride<span class="text-blue">Compare</span>
-        </h1>
+        <!-- Middle Section: Luxury Black Sports Car & Cyberpunk Skyline Hero -->
+        <div class="car-hero-wrapper">
+          <img src="assets/images/car_skyline_hero.png" alt="Luxury Sports Car in Cyberpunk City" class="car-hero-img">
+        </div>
 
-        <!-- Tagline: One Ride. All Prices. -->
-        <p class="brand-tagline">
-          One Ride. All Prices.
-        </p>
+        <!-- Bottom Section: "Get Started" Primary Button + "Login" Link -->
+        <div class="actions-wrapper">
+          <button id="btn-get-started" onclick="app.onGetStarted()" class="btn-get-started">
+            Get Started
+          </button>
 
-        <!-- Paragraph Description -->
-        <p class="brand-description">
-          Compare prices from<br>
-          all ride apps. Choose the best.<br>
-          Save money. Travel smarter.
-        </p>
+          <button id="btn-login" onclick="app.onLogin()" class="btn-login">
+            Login
+          </button>
+        </div>
 
       </div>
+    </div>
+  </section>
 
-      <!-- Middle Section: Luxury Black Sports Car & Cyberpunk Skyline Hero -->
-      <div class="car-hero-wrapper">
-        <img src="assets/images/car_skyline_hero.png" alt="Luxury Sports Car in Cyberpunk City" class="car-hero-img">
+  <!-- ====================================================================== -->
+  <!-- SCREEN 2: HOME SCREEN (Exact Match to media_1790644185007.png)         -->
+  <!-- Adapts dynamically to Mobile, Tablet, and Desktop SaaS Dashboard        -->
+  <!-- ====================================================================== -->
+  <section id="screen-home" class="screen-page">
+
+    <!-- DESKTOP PERMANENT LEFT SIDEBAR (>= 1024px) -->
+    <aside id="desktop-sidebar" class="hidden lg:flex">
+      <div>
+        <!-- Brand Header with 3D Logo Emblem -->
+        <div onclick="app.navigateTo('screen-splash')" class="flex items-center gap-3 px-2 py-2 cursor-pointer hover:opacity-90 transition-opacity">
+          <img src="assets/images/logo_cropped_clean.png" alt="VOZX Logo" class="w-9 h-9 object-contain filter drop-shadow-[0_0_8px_#38BDF8]">
+          <div>
+            <h1 class="text-base font-extrabold tracking-tight text-white flex items-center">
+              Ride<span class="text-[#0073FF] ml-0.5">Compare</span>
+            </h1>
+            <span class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">VOZX Ecosystem</span>
+          </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="desktop-nav-list">
+          <button onclick="app.switchTab('home')" class="sidebar-nav-item active" id="desk-nav-home">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            <span>Home</span>
+          </button>
+
+          <button onclick="app.switchTab('history')" class="sidebar-nav-item" id="desk-nav-history">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span>History / Trips</span>
+          </button>
+
+          <button onclick="app.switchTab('compare')" class="sidebar-nav-item" id="desk-nav-compare">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            <span>Compare Rates</span>
+          </button>
+
+          <button onclick="app.switchTab('saved')" class="sidebar-nav-item" id="desk-nav-saved">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+            <span>Saved Places</span>
+          </button>
+
+          <button onclick="app.showToast('Wallet balance: ₹450.00')" class="sidebar-nav-item">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+            <span>Wallet & Offers</span>
+          </button>
+
+          <button onclick="app.showToast('AI Ride Optimizer: Lowest fares locked in')" class="sidebar-nav-item">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            <span>AI Assistant</span>
+          </button>
+        </nav>
       </div>
 
-      <!-- Bottom Section: "Get Started" Primary Button + "Login" Link -->
-      <div class="actions-wrapper">
-        <!-- Get Started Button -->
-        <button id="btn-get-started" onclick="app.onGetStarted()" class="btn-get-started">
-          Get Started
+      <!-- Bottom Profile & Return to Splash -->
+      <div class="pt-4 border-t border-slate-800/80">
+        <div class="flex items-center justify-between p-2 rounded-xl bg-slate-900/60 border border-slate-800">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-full bg-blue-600/30 border border-blue-500/50 flex items-center justify-center text-blue-300 font-bold text-xs">
+              VM
+            </div>
+            <div>
+              <p class="text-xs font-bold text-white">Varun M.</p>
+              <p class="text-[10px] text-green-400 font-medium">● Connected</p>
+            </div>
+          </div>
+          <button onclick="app.navigateTo('screen-splash')" title="Return to Get Started" class="text-slate-400 hover:text-white p-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN HOME CONTENT WRAPPER -->
+    <div class="w-full flex-1 flex flex-col lg:pl-[260px] pb-24 md:pb-28 lg:pb-12">
+
+      <!-- DESKTOP TOP BAR (>= 1024px) -->
+      <header class="desktop-topbar hidden lg:flex">
+        <!-- Search bar with '/' shortcut -->
+        <div class="relative w-80">
+          <input id="desktop-search-input" type="text" placeholder="Where do you want to go? (Press '/' to search)" class="w-full bg-[#0A1124] border border-slate-700/80 rounded-full py-2 pl-9 pr-4 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors">
+          <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </div>
+
+        <!-- Live Status Indicators -->
+        <div class="flex items-center gap-4">
+          <div class="flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs text-slate-300">
+            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+            <span>GPS Active: Ichalkaranji / Pune</span>
+          </div>
+
+          <div class="flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs text-slate-300">
+            <span>☀️ 28°C Clear</span>
+          </div>
+
+          <button onclick="app.showToast('No new notifications')" class="relative p-2 rounded-full bg-slate-900 border border-slate-800 text-slate-300 hover:text-white">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+            <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-blue-500"></span>
+          </button>
+
+          <div onclick="app.showToast('Profile: Varun M.')" class="w-9 h-9 rounded-full bg-[#0B132A] border border-blue-500/40 flex items-center justify-center text-slate-200 cursor-pointer hover:border-cyan-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+          </div>
+        </div>
+      </header>
+
+      <!-- MOBILE & TABLET TOP HEADER (Exact Match to media_1790644185007.png) -->
+      <header class="home-mobile-header flex lg:hidden">
+        <div onclick="app.navigateTo('screen-splash')" class="brand-emblem-small">
+          <img src="assets/images/logo_cropped_clean.png" alt="VOZX Logo">
+          <span>Ride<span class="text-blue">Compare</span></span>
+        </div>
+
+        <button onclick="app.showToast('Profile: Varun M.')" class="profile-avatar-btn" aria-label="Profile">
+          <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+          </svg>
         </button>
+      </header>
 
-        <!-- Login Text Button -->
-        <button id="btn-login" onclick="app.onLogin()" class="btn-login">
-          Login
-        </button>
+      <!-- RESPONSIVE 2-PANEL / MASTER GRID -->
+      <main class="w-full max-w-7xl mx-auto px-5 lg:px-8 pt-2">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-start">
 
+          <!-- LEFT COLUMN: SEARCH & RECENT SEARCHES (Exact Match to media_1790644185007.png) -->
+          <div class="col-span-12 md:col-span-5 space-y-4">
 
-      </div>
+            <!-- Title: Where do you want to go? -->
+            <h2 class="home-title">
+              Where do you want<br>to go?
+            </h2>
+
+            <!-- Search Cards Container -->
+            <div class="search-card-container">
+
+              <!-- Card 1: Pickup Location -->
+              <div onclick="app.openLocationPicker('pickup')" class="search-input-card">
+                <div class="input-left-group">
+                  <div class="pin-icon-box">
+                    <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                  </div>
+                  <div class="input-text-stack">
+                    <span class="input-label">Pickup Location</span>
+                    <span id="home-pickup-text" class="input-value">Current Location</span>
+                  </div>
+                </div>
+                <svg class="chevron-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+              </div>
+
+              <!-- Card 2: Drop Location -->
+              <div onclick="app.openLocationPicker('drop')" class="search-input-card">
+                <div class="input-left-group">
+                  <div class="pin-icon-box drop-pin">
+                    <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                  </div>
+                  <div class="input-text-stack">
+                    <span class="input-label">Drop Location</span>
+                    <span id="home-drop-text" class="input-value placeholder">Select destination</span>
+                  </div>
+                </div>
+                <svg class="chevron-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+              </div>
+
+            </div>
+
+            <!-- "Search Rides" Primary Button -->
+            <button id="btn-search-rides" onclick="app.onSearchRides()" class="btn-search-rides">
+              <span>Search Rides</span>
+            </button>
+
+            <!-- Recent Searches Section (Exact Match to media_1790644185007.png) -->
+            <div class="pt-1">
+              <div class="recent-searches-header">
+                <h3>Recent Searches</h3>
+                <button onclick="app.showToast('Showing all history')" class="see-all-link">See all</button>
+              </div>
+
+              <div class="recent-searches-list">
+                <!-- Item 1: Sanjay Ghodawat University -->
+                <div onclick="app.selectRecent('Sanjay Ghodawat University', 'Ichalkaranji')" class="recent-search-item">
+                  <div class="recent-item-left">
+                    <div class="recent-icon-badge">
+                      <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                      </svg>
+                    </div>
+                    <div class="recent-item-text">
+                      <h4 class="recent-item-title">Sanjay Ghodawat University</h4>
+                      <p class="recent-item-subtitle">Ichalkaranji</p>
+                    </div>
+                  </div>
+                  <span class="recent-fare-tag hidden md:inline-block">₹78</span>
+                </div>
+
+                <!-- Item 2: Pune Junction -->
+                <div onclick="app.selectRecent('Pune Junction', 'Pune')" class="recent-search-item">
+                  <div class="recent-item-left">
+                    <div class="recent-icon-badge">
+                      <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                      </svg>
+                    </div>
+                    <div class="recent-item-text">
+                      <h4 class="recent-item-title">Pune Junction</h4>
+                      <p class="recent-item-subtitle">Pune</p>
+                    </div>
+                  </div>
+                  <span class="recent-fare-tag hidden md:inline-block">₹240</span>
+                </div>
+
+                <!-- Item 3: Home -->
+                <div onclick="app.selectRecent('Home', 'Ichalkaranji')" class="recent-search-item">
+                  <div class="recent-item-left">
+                    <div class="recent-icon-badge">
+                      <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                      </svg>
+                    </div>
+                    <div class="recent-item-text">
+                      <h4 class="recent-item-title">Home</h4>
+                      <p class="recent-item-subtitle">Ichalkaranji</p>
+                    </div>
+                  </div>
+                  <span class="recent-fare-tag hidden md:inline-block">₹65</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- RIGHT COLUMN: LIVE INTERACTIVE MAP & COMPARISON MATRIX (Tablet & Desktop) -->
+          <div class="hidden md:flex col-span-12 md:col-span-7 flex-col gap-5">
+
+            <!-- Live Dark Cyberpunk Map Canvas -->
+            <div class="map-dark-canvas p-4 flex flex-col justify-between">
+              <div class="map-grid-bg"></div>
+
+              <!-- Top Map Route Information Bar -->
+              <div class="relative z-10 bg-[#070D1E]/90 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-slate-800 flex items-center justify-between">
+                <div>
+                  <h4 id="map-route-title" class="text-xs font-bold text-white">Current GPS ➔ Sanjay Ghodawat University</h4>
+                  <p id="map-route-sub" class="text-[10px] text-slate-400">4.2 km • 11 mins via Ring Road • Traffic: Low</p>
+                </div>
+                <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-green-500/15 text-green-400 border border-green-500/30">
+                  Live Fares
+                </span>
+              </div>
+
+              <!-- Route Path Vector Animation -->
+              <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 600 400">
+                <!-- Glowing background path -->
+                <path d="M 120 310 Q 280 180 480 120" fill="none" stroke="#0073FF" stroke-width="6" opacity="0.3" filter="blur(4px)"/>
+                <!-- Dashed live line -->
+                <path class="map-route-line" d="M 120 310 Q 280 180 480 120" fill="none"/>
+              </svg>
+
+              <!-- Pickup GPS Radar Pulse (Current Location) -->
+              <div class="absolute left-[120px] top-[310px] -translate-x-1/2 -translate-y-1/2 z-20">
+                <div class="w-10 h-10 gps-radar-pulse"></div>
+                <div class="w-4 h-4 rounded-full bg-blue-500 border-2 border-white shadow-[0_0_12px_#38BDF8]"></div>
+                <span class="absolute left-6 top-0 text-[10px] font-bold text-white bg-slate-900/90 px-2 py-0.5 rounded border border-slate-700 whitespace-nowrap">You are here</span>
+              </div>
+
+              <!-- Drop Pin Marker (SGU) -->
+              <div class="absolute left-[480px] top-[120px] -translate-x-1/2 -translate-y-1/2 z-20">
+                <div class="w-7 h-7 rounded-full bg-red-500/30 border border-red-500 flex items-center justify-center text-white shadow-[0_0_15px_#EF4444]">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
+                </div>
+                <span class="absolute right-8 top-0 text-[10px] font-bold text-white bg-slate-900/90 px-2 py-0.5 rounded border border-slate-700 whitespace-nowrap">Destination</span>
+              </div>
+
+              <!-- Dynamic Moving Vehicle Markers -->
+              <div class="vehicle-marker left-[230px] top-[240px]" title="Uber Go (3 min)">🚗</div>
+              <div class="vehicle-marker left-[340px] top-[175px]" title="Rapido Bike (2 min)">🏍️</div>
+              <div class="vehicle-marker left-[180px] top-[280px]" title="Ola Auto (4 min)">🛺</div>
+
+              <!-- Bottom Map Summary Badge -->
+              <div class="relative z-10 flex items-center justify-between text-[11px] text-slate-400 bg-slate-950/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-800">
+                <span>📍 3 Available Ride Options Nearby</span>
+                <span class="text-green-400 font-semibold">Cheapest: ₹45 (Save ₹33)</span>
+              </div>
+            </div>
+
+            <!-- Live Provider Comparison Cards (Tablet & Desktop) -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+
+              <!-- Uber Go -->
+              <div class="provider-card">
+                <div>
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="text-sm font-bold text-white">Uber Go</span>
+                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">Value</span>
+                  </div>
+                  <p class="text-[11px] text-slate-400">3 mins away • 4 seats</p>
+                  <div class="mt-2 flex items-baseline gap-1.5">
+                    <span class="text-base font-extrabold text-white">₹78</span>
+                    <span class="text-[11px] text-slate-500 line-through">₹95</span>
+                  </div>
+                </div>
+                <button onclick="app.bookRide('Uber Go', 78)" class="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white transition-colors">
+                  Book
+                </button>
+              </div>
+
+              <!-- Rapido Bike (Cheapest) -->
+              <div class="provider-card cheapest-deal">
+                <div>
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="text-sm font-bold text-white">Rapido Bike</span>
+                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-green-500/20 text-green-400 border border-green-500/30">Cheapest</span>
+                  </div>
+                  <p class="text-[11px] text-slate-400">2 mins away • 1 helmet</p>
+                  <div class="mt-2 flex items-baseline gap-1.5">
+                    <span class="text-base font-extrabold text-green-400">₹45</span>
+                    <span class="text-[11px] text-slate-500 line-through">₹55</span>
+                  </div>
+                </div>
+                <button onclick="app.bookRide('Rapido Bike', 45)" class="px-3 py-1.5 rounded-xl bg-green-600 hover:bg-green-500 text-xs font-bold text-white transition-colors">
+                  Book
+                </button>
+              </div>
+
+              <!-- Ola Mini -->
+              <div class="provider-card">
+                <div>
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="text-sm font-bold text-white">Ola Mini</span>
+                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-400 border border-yellow-500/30">Fastest</span>
+                  </div>
+                  <p class="text-[11px] text-slate-400">4 mins away • AC Sedan</p>
+                  <div class="mt-2 flex items-baseline gap-1.5">
+                    <span class="text-base font-extrabold text-white">₹82</span>
+                    <span class="text-[11px] text-slate-500 line-through">₹99</span>
+                  </div>
+                </div>
+                <button onclick="app.bookRide('Ola Mini', 82)" class="px-3 py-1.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-xs font-bold text-white transition-colors">
+                  Book
+                </button>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      </main>
 
     </div>
 
-  </main>
+    <!-- ==================================================================== -->
+    <!-- MOBILE FIXED BOTTOM NAVIGATION (< 768px)                             -->
+    <!-- Exact 4 Icons Matching media_1790644185007.png: Home, History, Saved, More -->
+    <!-- ==================================================================== -->
+    <nav id="mobile-bottom-nav" class="flex md:hidden">
+      <!-- 1. Home -->
+      <button id="mob-nav-home" onclick="app.switchTab('home')" class="mob-nav-btn active">
+        <svg fill="currentColor" viewBox="0 0 24 24">
+          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </svg>
+        <span>Home</span>
+      </button>
+
+      <!-- 2. History -->
+      <button id="mob-nav-history" onclick="app.switchTab('history')" class="mob-nav-btn">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <span>History</span>
+      </button>
+
+      <!-- 3. Saved -->
+      <button id="mob-nav-saved" onclick="app.switchTab('saved')" class="mob-nav-btn">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+        </svg>
+        <span>Saved</span>
+      </button>
+
+      <!-- 4. More -->
+      <button id="mob-nav-more" onclick="app.switchTab('more')" class="mob-nav-btn">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+        <span>More</span>
+      </button>
+    </nav>
+
+    <!-- ==================================================================== -->
+    <!-- TABLET FLOATING NAVIGATION DOCK (768px – 1023px)                     -->
+    <!-- ==================================================================== -->
+    <nav id="tablet-nav-dock" class="hidden md:flex lg:hidden">
+      <button onclick="app.switchTab('home')" class="tab-dock-btn active" id="tab-btn-home">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <span>Home</span>
+      </button>
+      <button onclick="app.switchTab('history')" class="tab-dock-btn" id="tab-btn-history">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span>History</span>
+      </button>
+      <button onclick="app.switchTab('saved')" class="tab-dock-btn" id="tab-btn-saved">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+        <span>Saved</span>
+      </button>
+      <button onclick="app.switchTab('more')" class="tab-dock-btn" id="tab-btn-more">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        <span>More</span>
+      </button>
+    </nav>
+
+  </section>
+
+  <!-- ====================================================================== -->
+  <!-- MOBILE RIDE COMPARISON DRAWER / MODAL                                  -->
+  <!-- ====================================================================== -->
+  <div id="mobile-compare-sheet" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden flex-col justify-end transition-opacity">
+    <div class="w-full bg-[#060B17] border-t border-slate-700/80 rounded-t-3xl p-5 space-y-4 max-h-[85vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+        <div>
+          <h3 class="text-base font-bold text-white">Compare Fares</h3>
+          <p id="sheet-dest-subtitle" class="text-xs text-slate-400">Current Location ➔ SGU University</p>
+        </div>
+        <button onclick="app.closeCompareSheet()" class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white">✕</button>
+      </div>
+
+      <div class="space-y-3">
+        <!-- Rapido (Cheapest) -->
+        <div class="provider-card cheapest-deal">
+          <div class="flex items-center gap-3">
+            <span class="text-2xl">🏍️</span>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-bold text-white">Rapido Bike</span>
+                <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-green-500/20 text-green-400">Cheapest</span>
+              </div>
+              <p class="text-xs text-slate-400">2 min away • Save ₹33</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-base font-black text-green-400">₹45</span>
+            <button onclick="app.bookRide('Rapido Bike', 45)" class="px-4 py-1.5 rounded-xl bg-green-600 text-xs font-bold text-white">Book</button>
+          </div>
+        </div>
+
+        <!-- Uber Go -->
+        <div class="provider-card">
+          <div class="flex items-center gap-3">
+            <span class="text-2xl">🚗</span>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-bold text-white">Uber Go</span>
+                <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400">Best Value</span>
+              </div>
+              <p class="text-xs text-slate-400">3 min away • AC Hatchback</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-base font-black text-white">₹78</span>
+            <button onclick="app.bookRide('Uber Go', 78)" class="px-4 py-1.5 rounded-xl bg-blue-600 text-xs font-bold text-white">Book</button>
+          </div>
+        </div>
+
+        <!-- Ola Mini -->
+        <div class="provider-card">
+          <div class="flex items-center gap-3">
+            <span class="text-2xl">🚕</span>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-bold text-white">Ola Mini</span>
+                <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-400">Fastest</span>
+              </div>
+              <p class="text-xs text-slate-400">4 min away • AC Sedan</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-base font-black text-white">₹82</span>
+            <button onclick="app.bookRide('Ola Mini', 82)" class="px-4 py-1.5 rounded-xl bg-slate-700 text-xs font-bold text-white">Book</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Interactive Feedback Toast -->
   <div id="app-toast">Welcome to VOZX RideCompare! 🚀</div>
 
   <!-- Scripts -->
-  <script src="js/audio.js?v=3"></script>
-  <script src="js/app.js?v=3"></script>
+  <script src="js/audio.js?v=4"></script>
+  <script src="js/app.js?v=4"></script>
 </body>
 </html>
