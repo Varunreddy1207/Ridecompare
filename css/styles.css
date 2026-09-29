@@ -932,3 +932,48 @@ html, body {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
+
+/* Animation for radar spinner */
+.animate-spin-slow {
+  animation: spinSlow 3s linear infinite;
+}
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Ride Comparison Screen Responsive Scoping */
+@media (max-width: 767px) {
+  #screen-compare .compare-sheet-panel {
+    border-radius: 28px 28px 0 0;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.8);
+    position: relative;
+    z-index: 30;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  #screen-compare .compare-sheet-panel {
+    width: 400px;
+    height: 100vh;
+    overflow-y: auto;
+    border-radius: 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  #screen-compare .compare-sheet-panel {
+    width: 440px;
+    height: calc(100vh - 70px);
+    overflow-y: auto;
+    border-radius: 0;
+  }
+}
+
+.provider-filter-chip {
+  transition: transform 0.2s ease;
+}
+.provider-filter-chip:hover {
+  transform: translateY(-2px);
+}
+

@@ -12,7 +12,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=7">
+  <link rel="stylesheet" href="css/styles.css?v=8">
 
   <style>
     /* Strict Responsive Display Rules */
@@ -507,81 +507,301 @@
   </section>
 
   <!-- ====================================================================== -->
-  <!-- MOBILE RIDE COMPARISON DRAWER / MODAL                                  -->
+  <!-- SCREEN 3: RIDE COMPARISON SCREEN (Exact Match to media_1790645801924.png) -->
+  <!-- Fully Responsive across Mobile, Tablet, and Desktop                    -->
   <!-- ====================================================================== -->
-  <div id="mobile-compare-sheet" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden flex-col justify-end transition-opacity">
-    <div class="w-full bg-[#060B17] border-t border-slate-700/80 rounded-t-3xl p-5 space-y-4 max-h-[85vh] overflow-y-auto">
-      <div class="flex items-center justify-between pb-2 border-b border-slate-800">
-        <div>
-          <h3 class="text-base font-bold text-white">Compare Fares</h3>
-          <p id="sheet-dest-subtitle" class="text-xs text-slate-400">Current Location ➔ SGU University</p>
-        </div>
-        <button onclick="app.closeCompareSheet()" class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white">✕</button>
+  <section id="screen-compare" class="screen-page w-full min-h-screen relative flex flex-col justify-between overflow-hidden bg-[#020617]">
+
+    <!-- DESKTOP TOP BAR FOR COMPARE SCREEN (>= 1024px) -->
+    <header class="desktop-topbar hidden lg:flex">
+      <div class="flex items-center gap-3">
+        <button onclick="app.navigateTo('screen-home')" class="flex items-center gap-2 text-xs font-bold text-slate-300 hover:text-white px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+          <span>Back to Home</span>
+        </button>
+        <div class="h-4 w-px bg-slate-800"></div>
+        <span class="text-xs font-bold text-white flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+          Live Rate Comparison Matrix
+        </span>
       </div>
 
-      <div class="space-y-3">
-        <!-- Rapido (Cheapest) -->
-        <div class="provider-card cheapest-deal">
-          <div class="flex items-center gap-3">
-            <span class="text-2xl">🏍️</span>
-            <div>
-              <div class="flex items-center gap-2">
-                <span class="text-sm font-bold text-white">Rapido Bike</span>
-                <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-green-500/20 text-green-400">Cheapest</span>
-              </div>
-              <p class="text-xs text-slate-400">2 min away • Save ₹33</p>
-            </div>
-          </div>
-          <div class="flex items-center gap-3">
-            <span class="text-base font-black text-green-400">₹45</span>
-            <button onclick="app.bookRide('Rapido Bike', 45)" class="px-4 py-1.5 rounded-xl bg-green-600 text-xs font-bold text-white">Book</button>
-          </div>
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs text-slate-300">
+          <span>Comparing 4 Apps simultaneously</span>
         </div>
-
-        <!-- Uber Go -->
-        <div class="provider-card">
-          <div class="flex items-center gap-3">
-            <span class="text-2xl">🚗</span>
-            <div>
-              <div class="flex items-center gap-2">
-                <span class="text-sm font-bold text-white">Uber Go</span>
-                <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400">Best Value</span>
-              </div>
-              <p class="text-xs text-slate-400">3 min away • AC Hatchback</p>
-            </div>
-          </div>
-          <div class="flex items-center gap-3">
-            <span class="text-base font-black text-white">₹78</span>
-            <button onclick="app.bookRide('Uber Go', 78)" class="px-4 py-1.5 rounded-xl bg-blue-600 text-xs font-bold text-white">Book</button>
-          </div>
-        </div>
-
-        <!-- Ola Mini -->
-        <div class="provider-card">
-          <div class="flex items-center gap-3">
-            <span class="text-2xl">🚕</span>
-            <div>
-              <div class="flex items-center gap-2">
-                <span class="text-sm font-bold text-white">Ola Mini</span>
-                <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-400">Fastest</span>
-              </div>
-              <p class="text-xs text-slate-400">4 min away • AC Sedan</p>
-            </div>
-          </div>
-          <div class="flex items-center gap-3">
-            <span class="text-base font-black text-white">₹82</span>
-            <button onclick="app.bookRide('Ola Mini', 82)" class="px-4 py-1.5 rounded-xl bg-slate-700 text-xs font-bold text-white">Book</button>
-          </div>
+        <div class="w-8 h-8 rounded-full bg-blue-600/30 border border-blue-500/50 flex items-center justify-center text-blue-300 font-bold text-xs">
+          VM
         </div>
       </div>
+    </header>
+
+    <!-- MOBILE & TABLET FLOATING HEADER (Exact Match to media_1790645801924.png) -->
+    <div class="floating-compare-header w-full max-w-2xl mx-auto pt-4 px-4 relative z-30 flex lg:hidden items-center gap-3">
+      <!-- Back Circle Button -->
+      <button onclick="app.navigateTo('screen-home')" class="w-10 h-10 rounded-full bg-[#0A1124]/90 backdrop-blur-md border border-slate-700/80 flex items-center justify-center text-white hover:border-[#38BDF8] active:scale-95 transition-all shadow-lg flex-shrink-0" aria-label="Back to Search">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 19l-7-7 7-7"/>
+        </svg>
+      </button>
+
+      <!-- Center Route Card (Current Location / Destination) -->
+      <div class="flex-1 bg-[#0A1124]/90 backdrop-blur-md border border-slate-700/80 rounded-2xl p-2.5 px-3.5 flex flex-col gap-1.5 shadow-xl">
+        <!-- Origin -->
+        <div class="flex items-center gap-2.5">
+          <div class="w-4 h-4 rounded-full bg-blue-500/20 border border-blue-500 flex items-center justify-center flex-shrink-0">
+            <div class="w-1.5 h-1.5 rounded-full bg-blue-400"></div>
+          </div>
+          <span class="text-xs font-semibold text-white truncate">Current Location</span>
+        </div>
+
+        <!-- Divider -->
+        <div class="w-full h-px bg-slate-800/80"></div>
+
+        <!-- Destination -->
+        <div class="flex items-center gap-2.5">
+          <svg class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+          <span id="compare-dest-name" class="text-xs font-semibold text-white truncate">Sanjay Ghodawat University</span>
+        </div>
+      </div>
+
+      <!-- Plus (+) Button -->
+      <button onclick="app.showToast('Add a Stop along the route 📍')" class="w-10 h-10 rounded-full bg-[#0A1124]/90 backdrop-blur-md border border-slate-700/80 flex items-center justify-center text-white hover:border-[#38BDF8] active:scale-95 transition-all shadow-lg flex-shrink-0" aria-label="Add Stop">
+        <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 4v16m8-8H4"/>
+        </svg>
+      </button>
     </div>
-  </div>
+
+    <!-- MAIN RESPONSIVE CONTENT AREA -->
+    <div class="w-full flex-1 flex flex-col md:flex-row items-stretch lg:pl-[260px] relative">
+
+      <!-- INTERACTIVE MAP CONTAINER -->
+      <div class="relative flex-1 min-h-[340px] md:min-h-full overflow-hidden bg-[#040C1A]">
+        <!-- Map Canvas Graphic with Vector Network -->
+        <svg class="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 500 500">
+          <defs>
+            <filter id="routeGlowCompare" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="3" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+
+          <!-- Midnight Blue Background Grids & Terrains -->
+          <rect width="100%" height="100%" fill="#050E1D" />
+
+          <!-- Road Network lines matching media_1790645801924.png -->
+          <path d="M 0 100 Q 150 120 300 80 T 500 110" stroke="#0C1F38" stroke-width="2" fill="none"/>
+          <path d="M 0 280 Q 200 240 380 290 T 500 260" stroke="#0C1F38" stroke-width="2.5" fill="none"/>
+          <path d="M 0 420 Q 250 400 500 440" stroke="#0C1F38" stroke-width="2" fill="none"/>
+          <path d="M 120 0 Q 100 250 140 500" stroke="#0C1F38" stroke-width="2" fill="none"/>
+          <path d="M 320 0 Q 300 250 340 500" stroke="#0C1F38" stroke-width="2.5" fill="none"/>
+          <path d="M 450 0 Q 420 200 470 500" stroke="#0C1F38" stroke-width="2" fill="none"/>
+
+          <!-- Secondary Grid Details -->
+          <path d="M 50 150 L 220 320 M 180 80 L 350 250 M 260 200 L 450 380" stroke="#09182D" stroke-width="1.5" fill="none"/>
+
+          <!-- Exact Blue Route Line Matching media_1790645801924.png -->
+          <path d="M 110 320 L 160 320 L 195 305 L 220 295 L 245 255 L 255 250 L 305 230 L 315 200 L 360 160 L 372 160"
+                fill="none"
+                stroke="#0073FF"
+                stroke-width="5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                filter="url(#routeGlowCompare)" />
+
+          <!-- Animated Route Pulse Dash Overlay -->
+          <path d="M 110 320 L 160 320 L 195 305 L 220 295 L 245 255 L 255 250 L 305 230 L 315 200 L 360 160 L 372 160"
+                fill="none"
+                stroke="#38BDF8"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-dasharray="6 14"
+                class="map-route-line" />
+        </svg>
+
+        <!-- City Label: Ichalkaranji (Exact Match) -->
+        <div class="absolute left-[80px] top-[345px] text-xs font-bold text-slate-400/80 tracking-wide select-none pointer-events-none">
+          Ichalkaranji
+        </div>
+
+        <!-- Origin Marker (Circle with blue dot and white border at Ichalkaranji) -->
+        <div class="absolute left-[110px] top-[320px] -translate-x-1/2 -translate-y-1/2 z-20">
+          <div class="w-6 h-6 rounded-full bg-blue-500/30 flex items-center justify-center animate-ping"></div>
+          <div class="absolute inset-0 m-auto w-4 h-4 rounded-full bg-white flex items-center justify-center shadow-[0_0_12px_#0073FF]">
+            <div class="w-2.5 h-2.5 rounded-full bg-[#0073FF]"></div>
+          </div>
+        </div>
+
+        <!-- Destination Marker (Red Teardrop Pin at SGU) -->
+        <div class="absolute left-[372px] top-[160px] -translate-x-1/2 -translate-y-full z-20">
+          <div class="w-7 h-7 text-red-500 filter drop-shadow-[0_4px_8px_rgba(239,68,68,0.6)]">
+            <svg fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Floating GPS Crosshair/Compass Button (Bottom-Right of Map) -->
+        <button onclick="app.showToast('GPS Centered: Current Location')" class="absolute right-4 bottom-5 w-11 h-11 rounded-full bg-[#0A1124]/90 backdrop-blur-md border border-slate-700/80 flex items-center justify-center text-slate-300 hover:text-white hover:border-[#38BDF8] active:scale-95 transition-all shadow-xl z-20" aria-label="Center GPS">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="7" stroke-width="2"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2v3m0 14v3M2 12h3m14 0h3"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- COMPARISON SHEET / PANEL (Exact Match to media_1790645801924.png) -->
+      <div class="compare-sheet-panel w-full md:w-[380px] lg:w-[440px] bg-[#060B17]/95 backdrop-blur-xl border-t md:border-t-0 md:border-l border-slate-800 rounded-t-3xl md:rounded-none p-5 space-y-4 z-30 flex-shrink-0">
+
+        <!-- Comparing Prices Status Header (Exact Match) -->
+        <div class="flex items-center justify-between pb-1">
+          <div class="flex items-center gap-2">
+            <div class="w-5 h-5 text-cyan-400 flex items-center justify-center">
+              <svg class="w-4 h-4 animate-spin-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="9" stroke-width="2" stroke-dasharray="8 6"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 7v5l3 2"/>
+              </svg>
+            </div>
+            <span class="text-xs font-semibold text-slate-300">Comparing prices across 4 ride apps...</span>
+          </div>
+          <div class="flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse delay-75"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse delay-150"></span>
+          </div>
+        </div>
+
+        <!-- 4 Provider Filter Icons Row (Exact Match) -->
+        <div class="grid grid-cols-4 gap-3 pt-1">
+          <!-- 1. Uber -->
+          <div onclick="app.selectProvider('Uber')" class="provider-filter-chip flex flex-col items-center cursor-pointer group">
+            <div class="w-full aspect-square max-w-[58px] rounded-2xl bg-black border border-slate-700/80 flex items-center justify-center group-hover:border-slate-500 transition-all shadow-md">
+              <span class="text-white font-black text-xs tracking-tighter">Uber</span>
+            </div>
+            <span class="text-xs text-slate-400 font-medium mt-1.5 group-hover:text-white transition-colors">Uber</span>
+          </div>
+
+          <!-- 2. Ola -->
+          <div onclick="app.selectProvider('Ola')" class="provider-filter-chip flex flex-col items-center cursor-pointer group">
+            <div class="w-full aspect-square max-w-[58px] rounded-2xl bg-black border border-slate-700/80 flex items-center justify-center group-hover:border-slate-500 transition-all shadow-md">
+              <div class="w-6 h-6 rounded-full border-2 border-lime-400/40 flex items-center justify-center">
+                <div class="w-3.5 h-3.5 rounded-full bg-lime-400 shadow-[0_0_8px_#A3E635]"></div>
+              </div>
+            </div>
+            <span class="text-xs text-slate-400 font-medium mt-1.5 group-hover:text-white transition-colors">Ola</span>
+          </div>
+
+          <!-- 3. Rapido (Active Highlighted) -->
+          <div onclick="app.selectProvider('Rapido')" class="provider-filter-chip flex flex-col items-center cursor-pointer group">
+            <div class="w-full aspect-square max-w-[58px] rounded-2xl bg-[#FACC15] flex items-center justify-center text-slate-900 shadow-[0_0_15px_rgba(250,204,21,0.35)] transition-all">
+              <svg class="w-6 h-6 text-slate-900" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14.5h-2v-2h2v2zm0-4h-2V7h2v5.5z"/>
+              </svg>
+            </div>
+            <span class="text-xs text-yellow-400 font-semibold mt-1.5">Rapido</span>
+          </div>
+
+          <!-- 4. Others -->
+          <div onclick="app.selectProvider('Others')" class="provider-filter-chip flex flex-col items-center cursor-pointer group">
+            <div class="w-full aspect-square max-w-[58px] rounded-2xl bg-[#1E293B] border border-slate-700/80 flex items-center justify-center group-hover:border-slate-500 transition-all shadow-md">
+              <svg class="w-6 h-6 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+              </svg>
+            </div>
+            <span class="text-xs text-slate-400 font-medium mt-1.5 group-hover:text-white transition-colors">Others</span>
+          </div>
+        </div>
+
+        <!-- "Best Price" Highlight Card (Exact Match to media_1790645801924.png) -->
+        <div onclick="app.bookRide('Rapido', 78)" class="bg-[#0A1124] border border-green-500/40 rounded-2xl p-4 cursor-pointer hover:border-green-400 transition-all shadow-[0_4px_20px_rgba(34,197,94,0.12)]">
+          <div class="flex items-center gap-1.5 text-xs font-bold text-[#22C55E] mb-2.5">
+            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+              <path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6.4-4.8-6.4 4.8 2.4-7.2-6-4.8h7.6z"/>
+            </svg>
+            <span>Best Price</span>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-xl bg-[#FACC15] flex items-center justify-center text-slate-900 shadow-sm flex-shrink-0">
+                <svg class="w-5 h-5 text-slate-900" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14.5h-2v-2h2v2zm0-4h-2V7h2v5.5z"/>
+                </svg>
+              </div>
+              <div>
+                <h4 class="text-base font-bold text-white leading-tight">Rapido</h4>
+                <p class="text-xs text-[#94A3B8] leading-tight mt-0.5">Rapido</p>
+              </div>
+            </div>
+
+            <div class="text-right">
+              <span class="text-xl font-black text-[#22C55E] block leading-none">₹78</span>
+              <span class="text-[11px] text-[#64748B] block mt-1">(Estimated)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Secondary Providers List -->
+        <div class="space-y-2.5 pt-1">
+          <!-- Uber Go -->
+          <div onclick="app.bookRide('Uber Go', 95)" class="provider-card p-3 flex items-center justify-between cursor-pointer">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-xl bg-black border border-slate-700 flex items-center justify-center">
+                <span class="text-[11px] font-black text-white">Uber</span>
+              </div>
+              <div>
+                <h4 class="text-sm font-bold text-white leading-tight">Uber Go</h4>
+                <p class="text-[11px] text-slate-400">3 mins away • 4 seats</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-base font-bold text-white">₹95</span>
+              <span class="text-[10px] text-slate-500 block">(Estimated)</span>
+            </div>
+          </div>
+
+          <!-- Ola Mini -->
+          <div onclick="app.bookRide('Ola Mini', 88)" class="provider-card p-3 flex items-center justify-between cursor-pointer">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-xl bg-black border border-slate-700 flex items-center justify-center">
+                <div class="w-2.5 h-2.5 rounded-full bg-lime-400"></div>
+              </div>
+              <div>
+                <h4 class="text-sm font-bold text-white leading-tight">Ola Mini</h4>
+                <p class="text-[11px] text-slate-400">4 mins away • AC Hatchback</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-base font-bold text-white">₹88</span>
+              <span class="text-[10px] text-slate-500 block">(Estimated)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Primary Booking Button -->
+        <button onclick="app.bookRide('Rapido', 78)" class="w-full bg-[#0073FF] hover:bg-[#0060E6] text-white font-bold text-base py-3.5 rounded-2xl shadow-[0_8px_25px_rgba(0,115,255,0.45)] transition-all active:scale-[0.98] flex items-center justify-center gap-2 mt-2">
+          <span>Book Lowest Fare (₹78)</span>
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
 
   <!-- Interactive Feedback Toast -->
   <div id="app-toast">Welcome to VOZX RideCompare! 🚀</div>
 
   <!-- Scripts -->
-  <script src="js/audio.js?v=4"></script>
-  <script src="js/app.js?v=4"></script>
+  <script src="js/audio.js?v=8"></script>
+  <script src="js/app.js?v=8"></script>
 </body>
 </html>
