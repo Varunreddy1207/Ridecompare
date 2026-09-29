@@ -615,7 +615,8 @@ html, body {
    NAVIGATION: MOBILE FIXED BOTTOM NAV (< 768px ONLY)
    ========================================================================== */
 @media (max-width: 767px) {
-  #mobile-bottom-nav {
+  #mobile-bottom-nav,
+  .mobile-bottom-nav {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -633,7 +634,8 @@ html, body {
 }
 
 @media (min-width: 768px) {
-  #mobile-bottom-nav {
+  #mobile-bottom-nav,
+  .mobile-bottom-nav {
     display: none !important;
     visibility: hidden !important;
     pointer-events: none !important;
@@ -680,7 +682,8 @@ html, body {
    NAVIGATION: TABLET FLOATING DOCK (768px – 1023px ONLY)
    ========================================================================== */
 @media (min-width: 768px) and (max-width: 1023px) {
-  #tablet-nav-dock {
+  #tablet-nav-dock,
+  .tablet-nav-dock {
     position: fixed;
     bottom: 24px;
     left: 50%;
@@ -700,7 +703,8 @@ html, body {
 }
 
 @media (max-width: 767px), (min-width: 1024px) {
-  #tablet-nav-dock {
+  #tablet-nav-dock,
+  .tablet-nav-dock {
     display: none !important;
     visibility: hidden !important;
     pointer-events: none !important;
@@ -737,7 +741,8 @@ html, body {
    NAVIGATION: DESKTOP LEFT SIDEBAR & TOP BAR (>= 1024px ONLY)
    ========================================================================== */
 @media (min-width: 1024px) {
-  #desktop-sidebar {
+  #desktop-sidebar,
+  .desktop-sidebar {
     width: 260px;
     height: 100vh;
     position: fixed;
@@ -771,6 +776,7 @@ html, body {
 
 @media (max-width: 1023px) {
   #desktop-sidebar,
+  .desktop-sidebar,
   .desktop-topbar {
     display: none !important;
     visibility: hidden !important;
@@ -1138,5 +1144,147 @@ html, body {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
+}
+
+/* ==========================================================================
+   SCREEN 3: RIDE HISTORY SCREEN (Exact Match to media_1790658953621.png)
+   ========================================================================== */
+.history-card {
+  background: rgba(10, 17, 36, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.16);
+  border-radius: 20px;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.history-card:hover {
+  border-color: rgba(56, 189, 248, 0.45);
+  background: rgba(14, 25, 52, 0.92);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5), 0 0 20px rgba(56, 189, 248, 0.15);
+}
+
+.history-card.selected-trip {
+  border-color: #0073FF;
+  background: rgba(14, 30, 64, 0.95);
+  box-shadow: 0 0 25px rgba(0, 115, 255, 0.35);
+}
+
+.history-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: transparent;
+  transition: background 0.2s ease;
+}
+
+.history-card.selected-trip::before {
+  background: #0073FF;
+}
+
+/* Provider Icon Boxes */
+.provider-box-ola {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.provider-box-ola .ola-ring {
+  width: 28px;
+  height: 28px;
+  border-radius: 9999px;
+  background: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.provider-box-ola .ola-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: #84CC16;
+  box-shadow: 0 0 8px #84CC16;
+}
+
+.provider-box-rapido {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: #FACC15;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #0F172A;
+  box-shadow: 0 4px 12px rgba(250, 204, 21, 0.35);
+}
+
+.provider-box-uber {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+/* History Filter Pills */
+.history-filter-pill {
+  padding: 6px 14px;
+  border-radius: 9999px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  color: #94A3B8;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.history-filter-pill:hover {
+  color: #FFFFFF;
+  border-color: rgba(56, 189, 248, 0.45);
+}
+
+.history-filter-pill.active {
+  background: #0073FF;
+  border-color: #38BDF8;
+  color: #FFFFFF;
+  box-shadow: 0 0 14px rgba(0, 115, 255, 0.45);
+}
+
+/* Slide-up Receipt Modal */
+#history-detail-modal.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#history-detail-modal.show .history-modal-panel {
+  transform: translateY(0);
 }
 

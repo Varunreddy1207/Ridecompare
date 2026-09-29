@@ -677,11 +677,501 @@
 
   </section>
 
+  <!-- ====================================================================== -->
+  <!-- SCREEN 3: RIDE HISTORY (Exact Match to media_1790658953621.png)         -->
+  <!-- Responsive layout for Mobile, Tablet, and Desktop SaaS Dashboard        -->
+  <!-- ====================================================================== -->
+  <section id="screen-history" class="screen-page flex-col">
+
+    <!-- DESKTOP PERMANENT LEFT SIDEBAR (>= 1024px) -->
+    <aside class="desktop-sidebar hidden lg:flex">
+      <div>
+        <!-- Brand Header with 3D Logo Emblem -->
+        <div onclick="app.switchTab('home')" class="flex items-center gap-3 px-2 py-2 cursor-pointer hover:opacity-90 transition-opacity">
+          <img src="assets/images/logo_cropped_clean.png" alt="VOZX Logo" class="w-9 h-9 object-contain filter drop-shadow-[0_0_8px_#38BDF8]">
+          <div>
+            <h1 class="text-base font-extrabold tracking-tight text-white flex items-center">
+              Ride<span class="text-[#0073FF] ml-0.5">Compare</span>
+            </h1>
+            <span class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">VOZX Ecosystem</span>
+          </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="desktop-nav-list">
+          <button onclick="app.switchTab('home')" class="sidebar-nav-item" data-tab="home">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            <span>Home</span>
+          </button>
+
+          <button onclick="app.switchTab('history')" class="sidebar-nav-item active" data-tab="history">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span>History / Trips</span>
+          </button>
+
+          <button onclick="app.switchTab('compare')" class="sidebar-nav-item" data-tab="compare">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            <span>Compare Rates</span>
+          </button>
+
+          <button onclick="app.switchTab('saved')" class="sidebar-nav-item" data-tab="saved">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+            <span>Saved Places</span>
+          </button>
+
+          <button onclick="app.showToast('Wallet balance: ₹450.00')" class="sidebar-nav-item">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+            <span>Wallet & Offers</span>
+          </button>
+
+          <button onclick="app.showToast('AI Ride Optimizer: Lowest fares locked in')" class="sidebar-nav-item">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            <span>AI Assistant</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Bottom Profile -->
+      <div class="pt-4 border-t border-slate-800/80">
+        <div class="flex items-center justify-between p-2 rounded-xl bg-slate-900/60 border border-slate-800">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-full bg-blue-600/30 border border-blue-500/50 flex items-center justify-center text-blue-300 font-bold text-xs">
+              VM
+            </div>
+            <div>
+              <p class="text-xs font-bold text-white">Varun M.</p>
+              <p class="text-[10px] text-green-400 font-medium">● Connected</p>
+            </div>
+          </div>
+          <button onclick="app.navigateTo('screen-splash')" title="Return to Get Started" class="text-slate-400 hover:text-white p-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN HISTORY CONTENT WRAPPER -->
+    <div class="w-full flex-1 flex flex-col lg:pl-[260px] pb-24 md:pb-28 lg:pb-12">
+
+      <!-- DESKTOP TOP BAR (>= 1024px) -->
+      <header class="desktop-topbar hidden lg:flex">
+        <div class="flex items-center gap-3">
+          <button onclick="app.switchTab('home')" class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-xs font-semibold text-slate-300 hover:text-white border border-slate-700/60 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+            Back to Home
+          </button>
+          <div class="h-4 w-px bg-slate-800"></div>
+          <span class="text-xs text-slate-400 font-medium">Home &gt; <span class="text-white font-semibold">Ride History</span></span>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <div class="px-3 py-1 rounded-full bg-blue-950/40 border border-blue-800/40 text-[11px] font-semibold text-sky-400">
+            5 Trips Completed • ₹555 Total Spent
+          </div>
+          <button onclick="app.exportHistory()" class="px-3 py-1.5 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-xs font-semibold text-white border border-slate-700 transition-all flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            Export CSV
+          </button>
+        </div>
+      </header>
+
+      <!-- MOBILE / TABLET HEADER (< 1024px) -->
+      <div class="lg:hidden px-4 md:px-8 pt-5 pb-3">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-3">
+            <button onclick="app.switchTab('home')" class="w-9 h-9 rounded-full bg-slate-800/80 border border-slate-700/60 flex items-center justify-center text-slate-300 hover:text-white transition-all active:scale-95">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Ride History</h1>
+          </div>
+          <div class="px-2.5 py-1 rounded-full bg-slate-800/80 border border-slate-700/50 text-[11px] font-bold text-slate-300">
+            5 Trips
+          </div>
+        </div>
+
+        <!-- Filter Chips Row -->
+        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+          <button onclick="app.filterHistory('all')" class="history-filter-pill active" data-filter="all">All (5)</button>
+          <button onclick="app.filterHistory('ola')" class="history-filter-pill" data-filter="ola">Ola (2)</button>
+          <button onclick="app.filterHistory('rapido')" class="history-filter-pill" data-filter="rapido">Rapido (2)</button>
+          <button onclick="app.filterHistory('uber')" class="history-filter-pill" data-filter="uber">Uber (1)</button>
+        </div>
+      </div>
+
+      <!-- MAIN RESPONSIVE CONTAINER -->
+      <div class="max-w-7xl w-full mx-auto px-4 md:px-8 py-2 md:py-6 flex-1">
+        
+        <!-- DESKTOP HEADER BAR (>= 1024px) -->
+        <div class="hidden lg:flex items-center justify-between mb-6">
+          <div>
+            <h1 class="text-2xl font-extrabold text-white tracking-tight">Ride History</h1>
+            <p class="text-xs text-slate-400 mt-1">Review past journeys, receipts, and re-book in 1-click</p>
+          </div>
+          <!-- Desktop Filter Pills -->
+          <div class="flex items-center gap-2">
+            <button onclick="app.filterHistory('all')" class="history-filter-pill active" data-filter="all">All Rides (5)</button>
+            <button onclick="app.filterHistory('ola')" class="history-filter-pill" data-filter="ola">Ola (2)</button>
+            <button onclick="app.filterHistory('rapido')" class="history-filter-pill" data-filter="rapido">Rapido (2)</button>
+            <button onclick="app.filterHistory('uber')" class="history-filter-pill" data-filter="uber">Uber (1)</button>
+          </div>
+        </div>
+
+        <!-- RESPONSIVE GRID / SPLIT PANE -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          
+          <!-- LEFT COLUMN: THE 5 CARDS MATCHING media_1790658953621.png (Mobile: 100%, Desktop: 7 cols) -->
+          <div class="lg:col-span-7 space-y-3.5" id="history-cards-container">
+
+            <!-- Card 1: Ola Bike -->
+            <div onclick="app.selectHistoryTrip(1)" class="history-card selected-trip history-item" data-provider="ola" data-id="1">
+              <div class="flex items-center gap-3.5 min-w-0 flex-1">
+                <!-- Ola Icon: Rounded white box, black ring with neon lime green circle -->
+                <div class="provider-box-ola">
+                  <div class="ola-ring">
+                    <div class="ola-dot"></div>
+                  </div>
+                </div>
+                <!-- Trip Meta -->
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-white font-bold text-sm md:text-[15px] tracking-tight">Ola</span>
+                    <span class="text-slate-400 text-xs font-medium">• Bike</span>
+                  </div>
+                  <p class="text-slate-300 text-xs md:text-sm font-normal mt-1 truncate flex items-center gap-1.5">
+                    <span class="truncate">Sanjay Ghodawat University</span>
+                    <span class="text-slate-500 font-bold">➔</span>
+                    <span class="truncate">Home</span>
+                  </p>
+                  <p class="text-slate-500 text-[11px] md:text-xs font-medium mt-1">12 Sep, 07:45 PM</p>
+                </div>
+              </div>
+              <!-- Price & Chevron -->
+              <div class="flex items-center gap-2 flex-shrink-0 pl-2">
+                <span class="text-white font-extrabold text-base md:text-lg">₹96</span>
+                <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+              </div>
+            </div>
+
+            <!-- Card 2: Rapido Bike -->
+            <div onclick="app.selectHistoryTrip(2)" class="history-card history-item" data-provider="rapido" data-id="2">
+              <div class="flex items-center gap-3.5 min-w-0 flex-1">
+                <!-- Rapido Icon: Rounded yellow box with bike icon -->
+                <div class="provider-box-rapido">
+                  <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M19 12c-1.65 0-3 1.35-3 3s1.35 3 3 3 3-1.35 3-3-1.35-3-3-3zm0 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-14-4.5c-1.65 0-3 1.35-3 3s1.35 3 3 3 3-1.35 3-3-1.35-3-3-3zm0 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm6.5-6.5h3.25l1.62 3.25c.34-.16.72-.25 1.13-.25 1.65 0 3 1.35 3 3h-2.1c-.4-1.18-1.52-2-2.9-2-.41 0-.8.09-1.15.25l-1.35-2.7V17h-2v-4.5l-2.6-3.9H5v-2h4.5l2 3z"/></svg>
+                </div>
+                <!-- Trip Meta -->
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-white font-bold text-sm md:text-[15px] tracking-tight">Rapido</span>
+                    <span class="text-slate-400 text-xs font-medium">• Bike</span>
+                  </div>
+                  <p class="text-slate-300 text-xs md:text-sm font-normal mt-1 truncate flex items-center gap-1.5">
+                    <span class="truncate">College</span>
+                    <span class="text-slate-500 font-bold">➔</span>
+                    <span class="truncate">City Center</span>
+                  </p>
+                  <p class="text-slate-500 text-[11px] md:text-xs font-medium mt-1">10 Sep, 06:20 PM</p>
+                </div>
+              </div>
+              <!-- Price & Chevron -->
+              <div class="flex items-center gap-2 flex-shrink-0 pl-2">
+                <span class="text-white font-extrabold text-base md:text-lg">₹82</span>
+                <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+              </div>
+            </div>
+
+            <!-- Card 3: Uber Auto -->
+            <div onclick="app.selectHistoryTrip(3)" class="history-card history-item" data-provider="uber" data-id="3">
+              <div class="flex items-center gap-3.5 min-w-0 flex-1">
+                <!-- Uber Icon: Jet black box with white Uber logo -->
+                <div class="provider-box-uber">
+                  <span class="text-white font-black text-xs tracking-tight">Uber</span>
+                </div>
+                <!-- Trip Meta -->
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-white font-bold text-sm md:text-[15px] tracking-tight">Uber</span>
+                    <span class="text-slate-400 text-xs font-medium">• Auto</span>
+                  </div>
+                  <p class="text-slate-300 text-xs md:text-sm font-normal mt-1 truncate flex items-center gap-1.5">
+                    <span class="truncate">Railway Station</span>
+                    <span class="text-slate-500 font-bold">➔</span>
+                    <span class="truncate">College</span>
+                  </p>
+                  <p class="text-slate-500 text-[11px] md:text-xs font-medium mt-1">8 Sep, 05:10 PM</p>
+                </div>
+              </div>
+              <!-- Price & Chevron -->
+              <div class="flex items-center gap-2 flex-shrink-0 pl-2">
+                <span class="text-white font-extrabold text-base md:text-lg">₹138</span>
+                <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+              </div>
+            </div>
+
+            <!-- Card 4: Ola Car -->
+            <div onclick="app.selectHistoryTrip(4)" class="history-card history-item" data-provider="ola" data-id="4">
+              <div class="flex items-center gap-3.5 min-w-0 flex-1">
+                <!-- Ola Icon -->
+                <div class="provider-box-ola">
+                  <div class="ola-ring">
+                    <div class="ola-dot"></div>
+                  </div>
+                </div>
+                <!-- Trip Meta -->
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-white font-bold text-sm md:text-[15px] tracking-tight">Ola</span>
+                    <span class="text-slate-400 text-xs font-medium">• Car</span>
+                  </div>
+                  <p class="text-slate-300 text-xs md:text-sm font-normal mt-1 truncate flex items-center gap-1.5">
+                    <span class="truncate">Airport</span>
+                    <span class="text-slate-500 font-bold">➔</span>
+                    <span class="truncate">Home</span>
+                  </p>
+                  <p class="text-slate-500 text-[11px] md:text-xs font-medium mt-1">5 Sep, 09:30 AM</p>
+                </div>
+              </div>
+              <!-- Price & Chevron -->
+              <div class="flex items-center gap-2 flex-shrink-0 pl-2">
+                <span class="text-white font-extrabold text-base md:text-lg">₹165</span>
+                <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+              </div>
+            </div>
+
+            <!-- Card 5: Rapido Bike -->
+            <div onclick="app.selectHistoryTrip(5)" class="history-card history-item" data-provider="rapido" data-id="5">
+              <div class="flex items-center gap-3.5 min-w-0 flex-1">
+                <!-- Rapido Icon -->
+                <div class="provider-box-rapido">
+                  <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M19 12c-1.65 0-3 1.35-3 3s1.35 3 3 3 3-1.35 3-3-1.35-3-3-3zm0 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-14-4.5c-1.65 0-3 1.35-3 3s1.35 3 3 3 3-1.35 3-3-1.35-3-3-3zm0 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm6.5-6.5h3.25l1.62 3.25c.34-.16.72-.25 1.13-.25 1.65 0 3 1.35 3 3h-2.1c-.4-1.18-1.52-2-2.9-2-.41 0-.8.09-1.15.25l-1.35-2.7V17h-2v-4.5l-2.6-3.9H5v-2h4.5l2 3z"/></svg>
+                </div>
+                <!-- Trip Meta -->
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-white font-bold text-sm md:text-[15px] tracking-tight">Rapido</span>
+                    <span class="text-slate-400 text-xs font-medium">• Bike</span>
+                  </div>
+                  <p class="text-slate-300 text-xs md:text-sm font-normal mt-1 truncate flex items-center gap-1.5">
+                    <span class="truncate">College</span>
+                    <span class="text-slate-500 font-bold">➔</span>
+                    <span class="truncate">Market</span>
+                  </p>
+                  <p class="text-slate-500 text-[11px] md:text-xs font-medium mt-1">2 Sep, 08:15 PM</p>
+                </div>
+              </div>
+              <!-- Price & Chevron -->
+              <div class="flex items-center gap-2 flex-shrink-0 pl-2">
+                <span class="text-white font-extrabold text-base md:text-lg">₹74</span>
+                <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- RIGHT COLUMN: DESKTOP DETAILED RECEIPT PANE (Desktop >= 1024px ONLY) -->
+          <div class="hidden lg:block lg:col-span-5 sticky top-24">
+            <div id="desktop-receipt-panel" class="p-6 rounded-2xl bg-[#0A1124]/90 border border-slate-800/80 backdrop-blur-xl shadow-2xl space-y-5">
+              <!-- Header -->
+              <div class="flex items-center justify-between pb-4 border-b border-slate-800/80">
+                <div>
+                  <span id="receipt-provider-badge" class="px-2.5 py-1 rounded-full text-xs font-bold bg-white text-black">Ola • Bike</span>
+                  <p id="receipt-datetime" class="text-xs text-slate-400 font-medium mt-1.5">12 Sep, 07:45 PM</p>
+                </div>
+                <div class="text-right">
+                  <span class="text-xs text-slate-400 block">Total Paid</span>
+                  <span id="receipt-total-fare" class="text-2xl font-black text-white">₹96</span>
+                </div>
+              </div>
+
+              <!-- Route Visual Timeline -->
+              <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800/70 space-y-3">
+                <div class="flex items-start gap-3">
+                  <div class="w-2.5 h-2.5 rounded-full bg-emerald-400 mt-1.5 flex-shrink-0 ring-4 ring-emerald-500/20"></div>
+                  <div class="min-w-0">
+                    <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">Pickup</span>
+                    <p id="receipt-origin" class="text-xs font-bold text-white truncate">Sanjay Ghodawat University</p>
+                  </div>
+                </div>
+                <div class="ml-1 pl-3.5 border-l-2 border-dashed border-slate-700 py-1 text-[11px] text-slate-500 flex items-center gap-3">
+                  <span id="receipt-distance">6.4 km</span>
+                  <span>•</span>
+                  <span id="receipt-duration">18 mins</span>
+                </div>
+                <div class="flex items-start gap-3">
+                  <div class="w-2.5 h-2.5 rounded-full bg-blue-500 mt-1.5 flex-shrink-0 ring-4 ring-blue-500/20"></div>
+                  <div class="min-w-0">
+                    <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">Dropoff</span>
+                    <p id="receipt-destination" class="text-xs font-bold text-white truncate">Home</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Driver & Vehicle Details -->
+              <div class="flex items-center justify-between p-3.5 rounded-xl bg-slate-900/40 border border-slate-800/60 text-xs">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-white text-xs">
+                    RK
+                  </div>
+                  <div>
+                    <p id="receipt-driver-name" class="font-bold text-white">Ramesh K.</p>
+                    <p id="receipt-driver-rating" class="text-slate-400 text-[11px]">★ 4.9 (420 rides)</p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <span id="receipt-plate" class="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-[10px] font-mono font-bold text-slate-300">MH 09 CZ 4821</span>
+                  <p id="receipt-payment-method" class="text-[11px] text-emerald-400 font-medium mt-1">Paid via UPI (GPay)</p>
+                </div>
+              </div>
+
+              <!-- Fare Breakdown -->
+              <div class="space-y-2 text-xs text-slate-400 pt-2 border-t border-slate-800/80">
+                <div class="flex justify-between">
+                  <span>Base Fare</span>
+                  <span id="receipt-base-fare" class="text-slate-200">₹45.00</span>
+                </div>
+                <div class="flex justify-between">
+                  <span>Distance & Time Fare</span>
+                  <span id="receipt-dist-fare" class="text-slate-200">₹41.00</span>
+                </div>
+                <div class="flex justify-between">
+                  <span>Taxes & Access Fee</span>
+                  <span id="receipt-tax-fare" class="text-slate-200">₹10.00</span>
+                </div>
+                <div class="flex justify-between pt-2 border-t border-slate-800 font-bold text-sm text-white">
+                  <span>Final Amount</span>
+                  <span id="receipt-final-fare" class="text-sky-400">₹96.00</span>
+                </div>
+              </div>
+
+              <!-- Primary CTA: Re-Book Route -->
+              <button id="btn-rebook-trip" onclick="app.rebookCurrentTrip()" class="w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold text-sm shadow-[0_4px_18px_rgba(0,115,255,0.4)] transition-all active:scale-98 flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                ⚡ Re-Book This Ride
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ==================================================================== -->
+    <!-- MOBILE FIXED BOTTOM NAVIGATION (< 768px)                             -->
+    <!-- ==================================================================== -->
+    <nav class="mobile-bottom-nav flex md:hidden">
+      <!-- 1. Home -->
+      <button onclick="app.switchTab('home')" class="mob-nav-btn" data-tab="home">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <span>Home</span>
+      </button>
+
+      <!-- 2. History (Active on this screen) -->
+      <button onclick="app.switchTab('history')" class="mob-nav-btn active" data-tab="history">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span>History</span>
+      </button>
+
+      <!-- 3. Saved -->
+      <button onclick="app.switchTab('saved')" class="mob-nav-btn" data-tab="saved">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+        <span>Saved</span>
+      </button>
+    </nav>
+
+    <!-- ==================================================================== -->
+    <!-- TABLET FLOATING NAVIGATION DOCK (768px – 1023px)                     -->
+    <!-- ==================================================================== -->
+    <nav class="tablet-nav-dock hidden md:flex lg:hidden">
+      <button onclick="app.switchTab('home')" class="tab-dock-btn" data-tab="home">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <span>Home</span>
+      </button>
+      <button onclick="app.switchTab('history')" class="tab-dock-btn active" data-tab="history">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span>History</span>
+      </button>
+      <button onclick="app.switchTab('saved')" class="tab-dock-btn" data-tab="saved">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+        <span>Saved</span>
+      </button>
+    </nav>
+
+  </section>
+
+  <!-- ==================================================================== -->
+  <!-- MOBILE / TABLET TRIP DETAILS MODAL (Slide-up Receipt)                 -->
+  <!-- ==================================================================== -->
+  <div id="history-detail-modal" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/75 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300">
+    <div class="history-modal-panel w-full sm:max-w-md bg-[#0A1124] border border-slate-700/80 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl transform translate-y-full transition-transform duration-300 max-h-[90vh] overflow-y-auto">
+      
+      <!-- Top Bar with Handle & Close -->
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div class="flex items-center gap-2">
+          <span id="modal-provider-badge" class="px-2.5 py-1 rounded-full text-xs font-bold bg-white text-black">Ola • Bike</span>
+          <span class="text-xs text-emerald-400 font-semibold">● Completed</span>
+        </div>
+        <button onclick="app.closeHistoryModal()" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center">
+          ✕
+        </button>
+      </div>
+
+      <!-- Price Header -->
+      <div class="flex items-baseline justify-between py-4">
+        <div>
+          <span class="text-xs text-slate-400 block">Total Ride Fare</span>
+          <span id="modal-datetime" class="text-xs text-slate-500 font-medium">12 Sep, 07:45 PM</span>
+        </div>
+        <span id="modal-fare" class="text-3xl font-black text-white">₹96</span>
+      </div>
+
+      <!-- Route Timeline -->
+      <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800/80 space-y-3 mb-4">
+        <div class="flex items-start gap-3">
+          <div class="w-2.5 h-2.5 rounded-full bg-emerald-400 mt-1.5 flex-shrink-0 ring-4 ring-emerald-500/20"></div>
+          <div>
+            <span class="text-[10px] uppercase font-bold text-slate-400">Pickup</span>
+            <p id="modal-origin" class="text-xs font-bold text-white">Sanjay Ghodawat University</p>
+          </div>
+        </div>
+        <div class="ml-1 pl-3.5 border-l-2 border-dashed border-slate-700 py-1 text-[11px] text-slate-400 flex items-center gap-3">
+          <span id="modal-distance">6.4 km</span>
+          <span>•</span>
+          <span id="modal-duration">18 mins</span>
+        </div>
+        <div class="flex items-start gap-3">
+          <div class="w-2.5 h-2.5 rounded-full bg-blue-500 mt-1.5 flex-shrink-0 ring-4 ring-blue-500/20"></div>
+          <div>
+            <span class="text-[10px] uppercase font-bold text-slate-400">Destination</span>
+            <p id="modal-destination" class="text-xs font-bold text-white">Home</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Driver & Vehicle -->
+      <div class="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center justify-between text-xs mb-4">
+        <div>
+          <p id="modal-driver" class="font-bold text-white">Ramesh K.</p>
+          <p id="modal-rating" class="text-slate-400 text-[11px]">★ 4.9 • Plate: <span id="modal-plate" class="text-slate-200 font-mono">MH 09 CZ 4821</span></p>
+        </div>
+        <span id="modal-payment" class="text-emerald-400 font-semibold text-[11px]">UPI Paid</span>
+      </div>
+
+      <!-- Action Button -->
+      <button onclick="app.rebookCurrentTrip()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold text-sm shadow-[0_4px_16px_rgba(0,115,255,0.4)] transition-all active:scale-95 flex items-center justify-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        Re-Book This Ride Now
+      </button>
+
+    </div>
+  </div>
+
   <!-- Interactive Feedback Toast -->
   <div id="app-toast">Welcome to VOZX RideCompare! 🚀</div>
 
   <!-- Scripts -->
-  <script src="js/audio.js?v=11"></script>
-  <script src="js/app.js?v=11"></script>
+  <script src="js/audio.js?v=12"></script>
+  <script src="js/app.js?v=12"></script>
 </body>
 </html>
