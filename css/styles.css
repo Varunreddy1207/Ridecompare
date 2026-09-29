@@ -287,7 +287,7 @@ html, body {
   height: 54px;
   background-color: var(--primary-blue);
   background: linear-gradient(180deg, #0A7BFF 0%, #0060E6 100%);
-  color: var(--text-white);
+  color: #FFFFFF !important;
   font-size: 16px;
   font-weight: 700;
   letter-spacing: 0.01em;
@@ -500,7 +500,7 @@ html, body {
   height: 52px;
   background-color: var(--primary-blue);
   background: linear-gradient(180deg, #0A7BFF 0%, #0060E6 100%);
-  color: var(--text-white);
+  color: #FFFFFF !important;
   font-size: 16px;
   font-weight: 700;
   border: none;
@@ -1582,7 +1582,7 @@ body:not(.theme-dark) #desktop-sidebar .bg-blue-950\/40 {
   border: 1px solid #E2E8F0 !important;
 }
 
-body:not(.theme-dark) #desktop-sidebar .text-white {
+body:not(.theme-dark) #desktop-sidebar .text-white:not(button):not(button *) {
   color: #0F172A !important;
 }
 
@@ -1789,7 +1789,7 @@ body:not(.theme-dark) .provider-card:hover {
   box-shadow: 0 8px 24px rgba(0, 115, 255, 0.12) !important;
 }
 
-body:not(.theme-dark) .provider-card .text-white {
+body:not(.theme-dark) .provider-card .text-white:not(button):not(button *) {
   color: #0F172A !important;
 }
 
@@ -1805,7 +1805,13 @@ body:not(.theme-dark) .provider-card .border-slate-800\/80 {
   border-color: #F1F5F9 !important;
 }
 
-body:not(.theme-dark) .provider-card button {
+body:not(.theme-dark) .provider-card button,
+body:not(.theme-dark) .provider-card button *,
+body:not(.theme-dark) .provider-card button.text-white,
+body:not(.theme-dark) .ride-item-card button,
+body:not(.theme-dark) .ride-item-card button *,
+body:not(.theme-dark) button[onclick*="bookRide"],
+body:not(.theme-dark) button[onclick*="bookRide"] * {
   color: #FFFFFF !important;
 }
 
@@ -1867,7 +1873,7 @@ body:not(.theme-dark) #screen-profile .text-slate-400 {
   color: #64748B !important;
 }
 
-body:not(.theme-dark) #screen-profile .text-white {
+body:not(.theme-dark) #screen-profile .text-white:not(button):not(button *) {
   color: #0F172A !important;
 }
 
@@ -1922,7 +1928,7 @@ body:not(.theme-dark) #screen-history h1 {
   color: #0F172A !important;
 }
 
-body:not(.theme-dark) #screen-history .text-white {
+body:not(.theme-dark) #screen-history .text-white:not(button):not(button *) {
   color: #0F172A !important;
 }
 
@@ -1959,7 +1965,7 @@ body:not(.theme-dark) .history-card:hover {
   box-shadow: 0 6px 20px rgba(0, 115, 255, 0.08) !important;
 }
 
-body:not(.theme-dark) .history-card .text-white {
+body:not(.theme-dark) .history-card .text-white:not(button):not(button *) {
   color: #0F172A !important;
 }
 
@@ -1978,6 +1984,7 @@ body:not(.theme-dark) #screen-booking {
   background: #F8FAFC !important;
 }
 
+body:not(.theme-dark) #screen-booking .bg-\[\#070E1E\],
 body:not(.theme-dark) #screen-booking .bg-\[\#0A1124\],
 body:not(.theme-dark) #screen-booking .bg-slate-900,
 body:not(.theme-dark) #screen-booking .bg-slate-950 {
@@ -1985,7 +1992,24 @@ body:not(.theme-dark) #screen-booking .bg-slate-950 {
   border-color: #E2E8F0 !important;
 }
 
-body:not(.theme-dark) #screen-booking .text-white {
+body:not(.theme-dark) #screen-booking .border-slate-800\/80,
+body:not(.theme-dark) #screen-booking .border-slate-800\/90,
+body:not(.theme-dark) #screen-booking .border-slate-800 {
+  border-color: #E2E8F0 !important;
+}
+
+body:not(.theme-dark) #screen-booking button[onclick*="closeBookingScreen"] {
+  background-color: #FFFFFF !important;
+  border: 1px solid #CBD5E1 !important;
+  color: #0F172A !important;
+}
+
+body:not(.theme-dark) #screen-booking button[onclick*="closeBookingScreen"] svg {
+  color: #0F172A !important;
+  stroke: #0F172A !important;
+}
+
+body:not(.theme-dark) #screen-booking .text-white:not(button):not(button *) {
   color: #0F172A !important;
 }
 
@@ -1998,7 +2022,11 @@ body:not(.theme-dark) #screen-booking .text-slate-300 {
 }
 
 body:not(.theme-dark) #screen-booking button.bg-blue-600,
-body:not(.theme-dark) #screen-booking button.bg-emerald-600 {
+body:not(.theme-dark) #screen-booking button.bg-blue-600 *,
+body:not(.theme-dark) #screen-booking button.bg-emerald-600,
+body:not(.theme-dark) #screen-booking button.bg-emerald-600 *,
+body:not(.theme-dark) #screen-booking #btn-confirm-book-now,
+body:not(.theme-dark) #screen-booking #btn-confirm-book-now * {
   color: #FFFFFF !important;
 }
 
@@ -2020,7 +2048,7 @@ body:not(.theme-dark) .location-sheet-card h3 {
   color: #0F172A !important;
 }
 
-body:not(.theme-dark) .location-sheet-card .text-white {
+body:not(.theme-dark) .location-sheet-card .text-white:not(button):not(button *) {
   color: #0F172A !important;
 }
 
@@ -2031,6 +2059,67 @@ body:not(.theme-dark) .location-sheet-card .text-slate-400 {
 body:not(.theme-dark) .location-sheet-card .hover\:bg-slate-800\/60:hover {
   background-color: #F1F5F9 !important;
 }
+
+/* ==========================================================================
+   13. LIGHT MODE: ALL ACTION & CTA BUTTONS HAVE PURE WHITE TEXT (#FFFFFF)
+   Guarantees that all "Book", "Search Rides", "Get Started", "Confirm Ride",
+   active selection pills, and primary colored action buttons have crisp,
+   high-contrast white text in Light Mode.
+   ========================================================================== */
+body:not(.theme-dark) button.text-white,
+body:not(.theme-dark) button .text-white,
+body:not(.theme-dark) button.btn-get-started,
+body:not(.theme-dark) .btn-get-started,
+body:not(.theme-dark) .btn-get-started *,
+body:not(.theme-dark) button.btn-search-rides,
+body:not(.theme-dark) .btn-search-rides,
+body:not(.theme-dark) .btn-search-rides *,
+body:not(.theme-dark) .provider-card button,
+body:not(.theme-dark) .provider-card button *,
+body:not(.theme-dark) .provider-card button span,
+body:not(.theme-dark) .ride-item-card button,
+body:not(.theme-dark) .ride-item-card button *,
+body:not(.theme-dark) button[onclick*="bookRide"],
+body:not(.theme-dark) button[onclick*="bookRide"] *,
+body:not(.theme-dark) #btn-more-toggle-badge,
+body:not(.theme-dark) #btn-more-toggle-badge *,
+body:not(.theme-dark) #btn-confirm-book-now,
+body:not(.theme-dark) #btn-confirm-book-now *,
+body:not(.theme-dark) .btn-confirm-booking,
+body:not(.theme-dark) .btn-confirm-booking *,
+body:not(.theme-dark) button[onclick*="closeConfirmedModal"],
+body:not(.theme-dark) button[onclick*="closeConfirmedModal"] *,
+body:not(.theme-dark) .ride-filter-pill.active,
+body:not(.theme-dark) .ride-filter-pill.active *,
+body:not(.theme-dark) .history-filter-pill.active,
+body:not(.theme-dark) .history-filter-pill.active *,
+body:not(.theme-dark) #sort-btn-price.bg-blue-600,
+body:not(.theme-dark) #sort-btn-price.bg-blue-600 *,
+body:not(.theme-dark) #sort-btn-eta.bg-blue-600,
+body:not(.theme-dark) #sort-btn-eta.bg-blue-600 *,
+body:not(.theme-dark) button.bg-blue-600,
+body:not(.theme-dark) button.bg-blue-600 *,
+body:not(.theme-dark) button.bg-blue-500,
+body:not(.theme-dark) button.bg-blue-500 *,
+body:not(.theme-dark) button.bg-emerald-600,
+body:not(.theme-dark) button.bg-emerald-600 *,
+body:not(.theme-dark) button.bg-emerald-500,
+body:not(.theme-dark) button.bg-emerald-500 *,
+body:not(.theme-dark) button.bg-slate-800,
+body:not(.theme-dark) button.bg-slate-800 *,
+body:not(.theme-dark) button.bg-slate-900,
+body:not(.theme-dark) button.bg-slate-900 *,
+body:not(.theme-dark) button.bg-purple-600,
+body:not(.theme-dark) button.bg-purple-600 *,
+body:not(.theme-dark) button.bg-lime-600,
+body:not(.theme-dark) button.bg-lime-600 *,
+body:not(.theme-dark) button.bg-cyan-600,
+body:not(.theme-dark) button.bg-cyan-600 *,
+body:not(.theme-dark) button.bg-amber-600,
+body:not(.theme-dark) button.bg-amber-600 * {
+  color: #FFFFFF !important;
+}
+
 
 
 
