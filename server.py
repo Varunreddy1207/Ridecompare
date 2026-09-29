@@ -21,9 +21,8 @@ def run_server(port=PORT):
         try:
             server = http.server.ThreadingHTTPServer(("", p), CustomHTTPRequestHandler)
             print(f"============================================================")
-            print(f"  VOZX RideCompare App Server running at:")
+            print(f"  VOZX RideCompare Get Started UI running at:")
             print(f"  http://localhost:{p}")
-            print(f"  Press Ctrl+C to stop the server")
             print(f"============================================================")
             sys.stdout.flush()
             server.serve_forever()
