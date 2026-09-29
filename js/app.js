@@ -210,6 +210,74 @@ class RideCompareApp {
         this.showToast('Light Mode Activated ☀️');
       }
     }
+    this.updateTopbarActionButtons(theme === 'dark');
+  }
+
+  // Ensure "Back to Home" and Notification Bell buttons have blue background in light mode
+  updateTopbarActionButtons(isDark = false) {
+    const isDarkMode = isDark || document.body.classList.contains('theme-dark') || document.documentElement.getAttribute('data-theme') === 'dark';
+    const bellBtn = document.getElementById('btn-notification-bell') || document.querySelector('.btn-notification-bell') || document.querySelector('button[onclick*="No new notifications"]');
+    const backBtns = document.querySelectorAll('.btn-back-home, button[onclick*="switchTab(\'home\')"]:not(.sidebar-nav-item):not(.mob-nav-btn)');
+
+    if (isDarkMode) {
+      if (bellBtn) {
+        bellBtn.style.removeProperty('background');
+        bellBtn.style.removeProperty('background-color');
+        bellBtn.style.removeProperty('border-color');
+        bellBtn.style.removeProperty('color');
+        bellBtn.style.removeProperty('box-shadow');
+        const dot = bellBtn.querySelector('.notification-dot') || bellBtn.querySelector('span');
+        if (dot) {
+          dot.style.removeProperty('background-color');
+          dot.style.removeProperty('box-shadow');
+        }
+        const svg = bellBtn.querySelector('svg');
+        if (svg) {
+          svg.style.removeProperty('color');
+          svg.style.removeProperty('stroke');
+        }
+      }
+      backBtns.forEach(btn => {
+        btn.style.removeProperty('background');
+        btn.style.removeProperty('background-color');
+        btn.style.removeProperty('border-color');
+        btn.style.removeProperty('color');
+        btn.style.removeProperty('box-shadow');
+        btn.querySelectorAll('*').forEach(child => {
+          child.style.removeProperty('color');
+          child.style.removeProperty('stroke');
+        });
+      });
+    } else {
+      if (bellBtn) {
+        bellBtn.style.setProperty('background', 'linear-gradient(135deg, #0073FF 0%, #0060E6 100%)', 'important');
+        bellBtn.style.setProperty('border-color', '#0060E6', 'important');
+        bellBtn.style.setProperty('color', '#FFFFFF', 'important');
+        bellBtn.style.setProperty('box-shadow', '0 4px 14px rgba(0, 115, 255, 0.35)', 'important');
+        const dot = bellBtn.querySelector('.notification-dot') || bellBtn.querySelector('span');
+        if (dot) {
+          dot.style.setProperty('background-color', '#FFFFFF', 'important');
+          dot.style.setProperty('box-shadow', '0 0 6px rgba(255, 255, 255, 0.9)', 'important');
+        }
+        const svg = bellBtn.querySelector('svg');
+        if (svg) {
+          svg.style.setProperty('color', '#FFFFFF', 'important');
+          svg.style.setProperty('stroke', '#FFFFFF', 'important');
+        }
+      }
+      backBtns.forEach(btn => {
+        btn.style.setProperty('background', 'linear-gradient(135deg, #0073FF 0%, #0060E6 100%)', 'important');
+        btn.style.setProperty('border-color', '#0060E6', 'important');
+        btn.style.setProperty('color', '#FFFFFF', 'important');
+        btn.style.setProperty('box-shadow', '0 4px 14px rgba(0, 115, 255, 0.35)', 'important');
+        btn.querySelectorAll('*').forEach(child => {
+          child.style.setProperty('color', '#FFFFFF', 'important');
+          if (child.tagName.toLowerCase() === 'svg' || child.tagName.toLowerCase() === 'path') {
+            child.style.setProperty('stroke', '#FFFFFF', 'important');
+          }
+        });
+      });
+    }
   }
 
   handleHashRoute() {
@@ -333,6 +401,7 @@ class RideCompareApp {
       target.classList.add('active');
       this.currentScreen = screenId;
       this.enforceResponsiveNav();
+      this.updateTopbarActionButtons();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
