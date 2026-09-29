@@ -30,6 +30,10 @@ class RideCompareApp {
         }
       });
 
+      // Responsive Navigation Enforcement
+      this.enforceResponsiveNav();
+      window.addEventListener('resize', () => this.enforceResponsiveNav());
+
       // Desktop keyboard shortcut: Press '/' to focus search
       document.addEventListener('keydown', (e) => {
         if (e.key === '/' && this.currentScreen === 'screen-home') {
@@ -45,6 +49,46 @@ class RideCompareApp {
         }
       });
     });
+  }
+
+  // Strict Responsive Navigation Display Enforcement
+  enforceResponsiveNav() {
+    // Remove any stray More buttons from DOM
+    const moreBtn1 = document.getElementById('mob-nav-more');
+    if (moreBtn1) moreBtn1.remove();
+    const moreBtn2 = document.getElementById('tab-btn-more');
+    if (moreBtn2) moreBtn2.remove();
+
+    const mobNav = document.getElementById('mobile-bottom-nav');
+    const tabDock = document.getElementById('tablet-nav-dock');
+    const deskSidebar = document.getElementById('desktop-sidebar');
+    const deskTopbar = document.querySelector('.desktop-topbar');
+    const width = window.innerWidth;
+
+    if (this.currentScreen === 'screen-splash') {
+      if (mobNav) mobNav.style.setProperty('display', 'none', 'important');
+      if (tabDock) tabDock.style.setProperty('display', 'none', 'important');
+      if (deskSidebar) deskSidebar.style.setProperty('display', 'none', 'important');
+      if (deskTopbar) deskTopbar.style.setProperty('display', 'none', 'important');
+      return;
+    }
+
+    if (width >= 1024) {
+      if (mobNav) mobNav.style.setProperty('display', 'none', 'important');
+      if (tabDock) tabDock.style.setProperty('display', 'none', 'important');
+      if (deskSidebar) deskSidebar.style.setProperty('display', 'flex', 'important');
+      if (deskTopbar) deskTopbar.style.setProperty('display', 'flex', 'important');
+    } else if (width >= 768) {
+      if (mobNav) mobNav.style.setProperty('display', 'none', 'important');
+      if (tabDock) tabDock.style.setProperty('display', 'flex', 'important');
+      if (deskSidebar) deskSidebar.style.setProperty('display', 'none', 'important');
+      if (deskTopbar) deskTopbar.style.setProperty('display', 'none', 'important');
+    } else {
+      if (mobNav) mobNav.style.setProperty('display', 'flex', 'important');
+      if (tabDock) tabDock.style.setProperty('display', 'none', 'important');
+      if (deskSidebar) deskSidebar.style.setProperty('display', 'none', 'important');
+      if (deskTopbar) deskTopbar.style.setProperty('display', 'none', 'important');
+    }
   }
 
   // Primary Action on Get Started Screen
@@ -91,6 +135,7 @@ class RideCompareApp {
     if (target) {
       target.classList.add('active');
       this.currentScreen = screenId;
+      this.enforceResponsiveNav();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
