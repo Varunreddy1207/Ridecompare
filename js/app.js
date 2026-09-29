@@ -173,22 +173,18 @@ class RideCompareApp {
 
   // Strict Responsive Navigation Display Enforcement across Mobile, Tablet, Desktop
   enforceResponsiveNav() {
-    // Permanently remove any stray More buttons from DOM
-    const moreBtn1 = document.getElementById('mob-nav-more');
-    if (moreBtn1) moreBtn1.remove();
-    const moreBtn2 = document.getElementById('tab-btn-more');
-    if (moreBtn2) moreBtn2.remove();
-
-    const mobNavs = document.querySelectorAll('#mobile-bottom-nav, .mobile-bottom-nav');
-    const tabDocks = document.querySelectorAll('#tablet-nav-dock, .tablet-nav-dock');
+    const bottomNav = document.getElementById('app-bottom-nav') || document.querySelector('.app-bottom-nav');
+    const legacyMobNavs = document.querySelectorAll('#mobile-bottom-nav, .mobile-bottom-nav');
+    const legacyTabDocks = document.querySelectorAll('#tablet-nav-dock, .tablet-nav-dock');
     const deskSidebars = document.querySelectorAll('#desktop-sidebar, .desktop-sidebar');
     const deskTopbars = document.querySelectorAll('.desktop-topbar');
     const width = window.innerWidth;
 
     // When on Get Started (Splash) Screen OR Booking Confirmation Screen
     if (this.currentScreen === 'screen-splash' || this.currentScreen === 'screen-booking') {
-      mobNavs.forEach(el => el.style.setProperty('display', 'none', 'important'));
-      tabDocks.forEach(el => el.style.setProperty('display', 'none', 'important'));
+      if (bottomNav) bottomNav.style.setProperty('display', 'none', 'important');
+      legacyMobNavs.forEach(el => el.style.setProperty('display', 'none', 'important'));
+      legacyTabDocks.forEach(el => el.style.setProperty('display', 'none', 'important'));
       if (this.currentScreen === 'screen-splash') {
         deskSidebars.forEach(el => el.style.setProperty('display', 'none', 'important'));
         deskTopbars.forEach(tb => tb.style.setProperty('display', 'none', 'important'));
@@ -196,23 +192,18 @@ class RideCompareApp {
       return;
     }
 
-    // When on Home or History Screen
     if (width >= 1024) {
       // Desktop: Sidebar + Topbar ONLY
-      mobNavs.forEach(el => el.style.setProperty('display', 'none', 'important'));
-      tabDocks.forEach(el => el.style.setProperty('display', 'none', 'important'));
+      if (bottomNav) bottomNav.style.setProperty('display', 'none', 'important');
+      legacyMobNavs.forEach(el => el.style.setProperty('display', 'none', 'important'));
+      legacyTabDocks.forEach(el => el.style.setProperty('display', 'none', 'important'));
       deskSidebars.forEach(el => el.style.setProperty('display', 'flex', 'important'));
       deskTopbars.forEach(tb => tb.style.setProperty('display', 'flex', 'important'));
-    } else if (width >= 768) {
-      // Tablet: Floating dock ONLY (NEVER mobile bottom nav)
-      mobNavs.forEach(el => el.style.setProperty('display', 'none', 'important'));
-      tabDocks.forEach(el => el.style.setProperty('display', 'flex', 'important'));
-      deskSidebars.forEach(el => el.style.setProperty('display', 'none', 'important'));
-      deskTopbars.forEach(tb => tb.style.setProperty('display', 'none', 'important'));
     } else {
-      // Mobile: Mobile bottom nav ONLY
-      mobNavs.forEach(el => el.style.setProperty('display', 'flex', 'important'));
-      tabDocks.forEach(el => el.style.setProperty('display', 'none', 'important'));
+      // Mobile and Tablet: Unified Fixed Bottom Navigation Bar (< 1024px)
+      if (bottomNav) bottomNav.style.setProperty('display', 'flex', 'important');
+      legacyMobNavs.forEach(el => el.style.setProperty('display', 'none', 'important'));
+      legacyTabDocks.forEach(el => el.style.setProperty('display', 'none', 'important'));
       deskSidebars.forEach(el => el.style.setProperty('display', 'none', 'important'));
       deskTopbars.forEach(tb => tb.style.setProperty('display', 'none', 'important'));
     }
@@ -225,12 +216,6 @@ class RideCompareApp {
     const mobBtns = document.querySelectorAll('.mob-nav-btn');
     mobBtns.forEach(btn => {
       const match = btn.getAttribute('data-tab') === tab || btn.id === `mob-nav-${tab}`;
-      btn.classList.toggle('active', !!match);
-    });
-
-    const tabBtns = document.querySelectorAll('.tab-dock-btn');
-    tabBtns.forEach(btn => {
-      const match = btn.getAttribute('data-tab') === tab || btn.id === `tab-btn-${tab}`;
       btn.classList.toggle('active', !!match);
     });
 

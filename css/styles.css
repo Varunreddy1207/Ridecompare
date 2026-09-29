@@ -612,30 +612,47 @@ html, body {
 }
 
 /* ==========================================================================
-   NAVIGATION: MOBILE FIXED BOTTOM NAV (< 768px ONLY)
+/* ==========================================================================
+   NAVIGATION: UNIFIED FIXED BOTTOM NAV (MOBILE & TABLET < 1024px)
+   Exact Match to media_1790678833044.jpg
    ========================================================================== */
-@media (max-width: 767px) {
-  #mobile-bottom-nav,
-  .mobile-bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 50;
-    background: rgba(6, 11, 23, 0.94);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-top: 1px solid rgba(30, 41, 59, 0.8);
-    padding: 8px 16px max(10px, env(safe-area-inset-bottom, 10px)) 16px;
-    display: flex !important;
-    align-items: center;
-    justify-content: space-around;
-  }
+#app-bottom-nav,
+.app-bottom-nav,
+#mobile-bottom-nav,
+.mobile-bottom-nav {
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  z-index: 1000 !important;
+  background: rgba(6, 12, 27, 0.94) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  padding: 8px 16px max(10px, env(safe-area-inset-bottom, 10px)) 16px !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
 }
 
-@media (min-width: 768px) {
+.bottom-nav-inner {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin: 0 auto;
+}
+
+@media (min-width: 1024px) {
+  #app-bottom-nav,
+  .app-bottom-nav,
   #mobile-bottom-nav,
-  .mobile-bottom-nav {
+  .mobile-bottom-nav,
+  #tablet-nav-dock,
+  .tablet-nav-dock {
     display: none !important;
     visibility: hidden !important;
     pointer-events: none !important;
@@ -654,87 +671,31 @@ html, body {
   font-weight: 500;
   gap: 3px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  min-width: 60px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  min-width: 64px;
+  padding: 4px 8px;
+  border-radius: 12px;
 }
 
 .mob-nav-btn svg {
   width: 22px;
   height: 22px;
-  transition: transform 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mob-nav-btn:hover {
+  color: #E2E8F0;
 }
 
 .mob-nav-btn.active {
-  color: #0073FF;
+  color: #0073FF !important;
   font-weight: 700;
 }
 
 .mob-nav-btn.active svg {
+  color: #0073FF !important;
+  filter: drop-shadow(0 0 10px rgba(0, 115, 255, 0.8));
   transform: translateY(-1px);
-  filter: drop-shadow(0 0 8px rgba(0, 115, 255, 0.7));
-}
-
-.mob-nav-btn:hover {
-  color: #FFFFFF;
-}
-
-/* ==========================================================================
-   NAVIGATION: TABLET FLOATING DOCK (768px – 1023px ONLY)
-   ========================================================================== */
-@media (min-width: 768px) and (max-width: 1023px) {
-  #tablet-nav-dock,
-  .tablet-nav-dock {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 50;
-    background: rgba(10, 17, 36, 0.88);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(56, 189, 248, 0.25);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.75), 0 0 25px rgba(0, 115, 255, 0.25);
-    border-radius: 9999px;
-    padding: 6px 16px;
-    display: flex !important;
-    align-items: center;
-    gap: 8px;
-  }
-}
-
-@media (max-width: 767px), (min-width: 1024px) {
-  #tablet-nav-dock,
-  .tablet-nav-dock {
-    display: none !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-  }
-}
-
-.tab-dock-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  border-radius: 9999px;
-  background: transparent;
-  border: none;
-  color: #94A3B8;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.tab-dock-btn.active {
-  background: #0073FF;
-  color: #FFFFFF;
-  box-shadow: 0 4px 15px rgba(0, 115, 255, 0.5);
-}
-
-.tab-dock-btn:hover:not(.active) {
-  color: #FFFFFF;
-  background: rgba(255, 255, 255, 0.06);
 }
 
 /* ==========================================================================
