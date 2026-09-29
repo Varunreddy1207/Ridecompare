@@ -28,7 +28,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=30">
+  <link rel="stylesheet" href="css/styles.css?v=31">
 
   <style>
     /* Strict Responsive Display Rules: Bottom Nav for Mobile & Tablet (< 1024px) */
@@ -126,6 +126,77 @@
       color: #FFFFFF !important;
       box-shadow: 0 6px 18px rgba(0, 115, 255, 0.45) !important;
       transform: translateY(-1px) scale(1.04) !important;
+    }
+
+    /* RIDE CONFIRMED MODAL: Pure White Background in Light Mode (All Devices) */
+    body:not(.theme-dark) #booking-confirmed-modal,
+    body.theme-light #booking-confirmed-modal,
+    [data-theme="light"] #booking-confirmed-modal {
+      background-color: rgba(15, 23, 42, 0.45) !important;
+      backdrop-filter: blur(8px) !important;
+      -webkit-backdrop-filter: blur(8px) !important;
+    }
+
+    body:not(.theme-dark) #booking-confirmed-modal .confirmed-modal-panel,
+    body.theme-light #booking-confirmed-modal .confirmed-modal-panel,
+    [data-theme="light"] #booking-confirmed-modal .confirmed-modal-panel {
+      background-color: #FFFFFF !important;
+      background: #FFFFFF !important;
+      border: 1px solid #E2E8F0 !important;
+      box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.04) !important;
+      color: #0F172A !important;
+    }
+
+    body:not(.theme-dark) #booking-confirmed-modal .bg-emerald-500\/20 {
+      background-color: #ECFDF5 !important;
+      border-color: #A7F3D0 !important;
+      color: #059669 !important;
+    }
+
+    body:not(.theme-dark) #booking-confirmed-modal h3,
+    body:not(.theme-dark) #booking-confirmed-modal .text-white:not(button):not(button *) {
+      color: #0F172A !important;
+    }
+
+    body:not(.theme-dark) #booking-confirmed-modal p.text-slate-400,
+    body:not(.theme-dark) #booking-confirmed-modal span.text-slate-400,
+    body:not(.theme-dark) #booking-confirmed-modal .text-slate-400 {
+      color: #64748B !important;
+    }
+
+    body:not(.theme-dark) #booking-confirmed-modal .text-slate-300 {
+      color: #334155 !important;
+    }
+
+    body:not(.theme-dark) #booking-confirmed-modal .bg-slate-900\/80,
+    body:not(.theme-dark) #booking-confirmed-modal .bg-slate-900\/60,
+    body:not(.theme-dark) #booking-confirmed-modal .bg-slate-900 {
+      background-color: #F8FAFC !important;
+      border-color: #E2E8F0 !important;
+    }
+
+    body:not(.theme-dark) #booking-confirmed-modal .bg-sky-950\/60 {
+      background-color: #EFF6FF !important;
+      color: #0073FF !important;
+      border-color: #BFDBFE !important;
+    }
+
+    body:not(.theme-dark) #booking-confirmed-modal .bg-blue-600\/30 {
+      background-color: #DBEAFE !important;
+      border-color: #93C5FD !important;
+      color: #1D4ED8 !important;
+    }
+
+    body:not(.theme-dark) #booking-confirmed-modal .bg-slate-800 {
+      background-color: #F1F5F9 !important;
+      border-color: #CBD5E1 !important;
+      color: #0F172A !important;
+    }
+
+    body:not(.theme-dark) #booking-confirmed-modal button {
+      background: linear-gradient(135deg, #0073FF 0%, #0060E6 100%) !important;
+      color: #FFFFFF !important;
+      box-shadow: 0 4px 16px rgba(0, 115, 255, 0.4) !important;
     }
   </style>
 </head>

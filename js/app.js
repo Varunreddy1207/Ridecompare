@@ -211,6 +211,7 @@ class RideCompareApp {
       }
     }
     this.updateTopbarActionButtons(theme === 'dark');
+    this.updateConfirmedModalTheme(theme === 'dark');
   }
 
   // Ensure "Back to Home" and Notification Bell buttons have blue background in light mode
@@ -277,6 +278,24 @@ class RideCompareApp {
           }
         });
       });
+    }
+  }
+
+  // Ensure Ride Confirmed modal has pure white background in light mode
+  updateConfirmedModalTheme(isDark = false) {
+    const isDarkMode = isDark || document.body.classList.contains('theme-dark') || document.documentElement.getAttribute('data-theme') === 'dark';
+    const modalPanel = document.querySelector('#booking-confirmed-modal .confirmed-modal-panel');
+    if (!modalPanel) return;
+    if (isDarkMode) {
+      modalPanel.style.removeProperty('background');
+      modalPanel.style.removeProperty('background-color');
+      modalPanel.style.removeProperty('border-color');
+      modalPanel.style.removeProperty('color');
+    } else {
+      modalPanel.style.setProperty('background', '#FFFFFF', 'important');
+      modalPanel.style.setProperty('background-color', '#FFFFFF', 'important');
+      modalPanel.style.setProperty('border-color', '#E2E8F0', 'important');
+      modalPanel.style.setProperty('color', '#0F172A', 'important');
     }
   }
 
@@ -766,6 +785,7 @@ class RideCompareApp {
       const modal = document.getElementById('booking-confirmed-modal');
       if (modal) {
         modal.classList.add('show');
+        this.updateConfirmedModalTheme();
       }
       this.showToast('Ride Confirmed! Pilot is on the way 🚗⚡');
     }, 700);
