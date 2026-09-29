@@ -95,7 +95,7 @@ html, body {
     border: none !important;
     border-radius: 0 !important;
     box-shadow: none !important;
-    padding: 16px 20px 20px 20px;
+    padding: max(24px, env(safe-area-inset-top, 24px)) 20px max(24px, env(safe-area-inset-bottom, 24px)) 20px;
   }
   .car-hero-wrapper {
     max-height: 240px;
