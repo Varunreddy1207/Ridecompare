@@ -152,7 +152,7 @@ class RideCompareApp {
 
   handleHashRoute() {
     if (window.location.hash === '#booking') {
-      this.navigateTo('screen-booking', false);
+      this.openBookingScreen(this.lastSelectedProvider || 'Rapido Bike', this.lastSelectedFare || 78);
     } else if (window.location.hash === '#history') {
       this.currentTab = 'history';
       this.navigateTo('screen-history', false);
@@ -466,7 +466,9 @@ class RideCompareApp {
     if (window.soundFX) {
       window.soundFX.playTap();
     }
-    this.openBookingScreen(provider, fare);
+    this.lastSelectedProvider = provider || 'Rapido Bike';
+    this.lastSelectedFare = fare || 78;
+    this.openBookingScreen(this.lastSelectedProvider, this.lastSelectedFare);
   }
 
   // Open Booking Confirmation Screen (Matches media_1790660374330.png & media_1790660393523.png)
@@ -571,7 +573,9 @@ class RideCompareApp {
 
     // Navigate to Booking Screen
     this.navigateTo('screen-booking', false);
-    window.location.hash = '#booking';
+    if (window.location.hash !== '#booking') {
+      window.location.hash = '#booking';
+    }
   }
 
   // Close Booking Screen and return to Home comparison
@@ -580,7 +584,9 @@ class RideCompareApp {
       window.soundFX.playTap();
     }
     this.navigateTo('screen-home', false);
-    window.location.hash = '#home';
+    if (window.location.hash !== '#home') {
+      window.location.hash = '#home';
+    }
     this.showResultsPanel();
   }
 
@@ -781,7 +787,7 @@ class RideCompareApp {
     this.showToast(`Showing ${visibleCount} ${label} trips`);
   }
 
-  // Re-Book Current Trip (Pre-fills Home inputs and opens Live Compare rates)
+  // Re-Book Current Trip (Directly opens Booking Details & Confirmation screen)
   rebookCurrentTrip() {
     const trip = this.historyTrips.find(t => t.id === this.selectedHistoryTripId) || this.historyTrips[0];
     this.closeHistoryModal();
@@ -798,12 +804,9 @@ class RideCompareApp {
     const deskSearchInput = document.getElementById('desktop-search-input');
     if (deskSearchInput) deskSearchInput.value = trip.destination;
 
-    // Switch to Home screen and open results panel
-    this.switchTab('home');
-    setTimeout(() => {
-      this.showResultsPanel();
-      this.showToast(`Re-booking: ${trip.origin} ➔ ${trip.destination} ⚡`);
-    }, 150);
+    // Directly open the Booking Details & Confirmation screen
+    this.openBookingScreen(trip.provider, trip.fare);
+    this.showToast(`Booking ${trip.provider} for ₹${trip.fare} ⚡`);
   }
 
   // Export History as CSV

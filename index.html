@@ -12,7 +12,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=15">
+  <link rel="stylesheet" href="css/styles.css?v=16">
 
   <style>
     /* Strict Responsive Display Rules */
@@ -420,7 +420,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
 
               <!-- 1. Uber Go -->
-              <div class="provider-card ride-item-card" data-category="cabs">
+              <div onclick="app.bookRide('Uber Go', 78)" class="provider-card ride-item-card cursor-pointer hover:border-blue-500/80 transition-all active:scale-[0.99]" data-category="cabs" role="button" tabindex="0">
                 <div>
                   <div class="flex items-center gap-2 mb-1">
                     <span class="text-sm font-bold text-white">Uber Go</span>
@@ -432,13 +432,13 @@
                     <span class="text-[11px] text-slate-500 line-through">₹95</span>
                   </div>
                 </div>
-                <button onclick="app.bookRide('Uber Go', 78)" class="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white transition-all active:scale-95 shadow-[0_4px_12px_rgba(0,115,255,0.35)]">
+                <button type="button" onclick="event.stopPropagation(); app.bookRide('Uber Go', 78)" class="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white transition-all active:scale-95 shadow-[0_4px_12px_rgba(0,115,255,0.35)]">
                   Book
                 </button>
               </div>
 
               <!-- 2. Rapido Bike (Cheapest) -->
-              <div class="provider-card cheapest-deal ride-item-card" data-category="bikes">
+              <div onclick="app.bookRide('Rapido Bike', 45)" class="provider-card cheapest-deal ride-item-card cursor-pointer hover:border-green-500/80 transition-all active:scale-[0.99]" data-category="bikes" role="button" tabindex="0">
                 <div>
                   <div class="flex items-center gap-2 mb-1">
                     <span class="text-sm font-bold text-white">Rapido Bike</span>
@@ -450,13 +450,13 @@
                     <span class="text-[11px] text-slate-500 line-through">₹55</span>
                   </div>
                 </div>
-                <button onclick="app.bookRide('Rapido Bike', 45)" class="px-3.5 py-1.5 rounded-xl bg-green-600 hover:bg-green-500 text-xs font-bold text-white transition-all active:scale-95 shadow-[0_4px_12px_rgba(34,197,94,0.35)]">
+                <button type="button" onclick="event.stopPropagation(); app.bookRide('Rapido Bike', 45)" class="px-3.5 py-1.5 rounded-xl bg-green-600 hover:bg-green-500 text-xs font-bold text-white transition-all active:scale-95 shadow-[0_4px_12px_rgba(34,197,94,0.35)]">
                   Book
                 </button>
               </div>
 
               <!-- 3. Ola Mini -->
-              <div class="provider-card ride-item-card" data-category="cabs">
+              <div onclick="app.bookRide('Ola Mini', 82)" class="provider-card ride-item-card cursor-pointer hover:border-yellow-500/80 transition-all active:scale-[0.99]" data-category="cabs" role="button" tabindex="0">
                 <div>
                   <div class="flex items-center gap-2 mb-1">
                     <span class="text-sm font-bold text-white">Ola Mini</span>
@@ -468,7 +468,7 @@
                     <span class="text-[11px] text-slate-500 line-through">₹99</span>
                   </div>
                 </div>
-                <button onclick="app.bookRide('Ola Mini', 82)" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white border border-slate-700 transition-all active:scale-95">
+                <button type="button" onclick="event.stopPropagation(); app.bookRide('Ola Mini', 82)" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white border border-slate-700 transition-all active:scale-95">
                   Book
                 </button>
               </div>
@@ -513,7 +513,7 @@
               <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
 
                 <!-- 5. Rapido Auto -->
-                <div class="provider-card ride-item-card" data-category="autos">
+                <div onclick="app.bookRide('Rapido Auto', 52)" class="provider-card ride-item-card cursor-pointer hover:border-yellow-500/80 transition-all active:scale-[0.99]" data-category="autos" role="button" tabindex="0">
                   <div>
                     <div class="flex items-center gap-2 mb-1">
                       <span class="text-sm font-bold text-white">🛺 Rapido Auto</span>
@@ -525,13 +525,13 @@
                       <span class="text-[11px] text-slate-500 line-through">₹62</span>
                     </div>
                   </div>
-                  <button onclick="app.bookRide('Rapido Auto', 52)" class="px-3.5 py-1.5 rounded-xl bg-yellow-500 hover:bg-yellow-400 text-xs font-bold text-slate-950 transition-all active:scale-95 shadow-[0_4px_12px_rgba(234,179,8,0.3)]">
+                  <button type="button" onclick="event.stopPropagation(); app.bookRide('Rapido Auto', 52)" class="px-3.5 py-1.5 rounded-xl bg-yellow-500 hover:bg-yellow-400 text-xs font-bold text-slate-950 transition-all active:scale-95 shadow-[0_4px_12px_rgba(234,179,8,0.3)]">
                     Book
                   </button>
                 </div>
 
                 <!-- 6. Uber Auto -->
-                <div class="provider-card ride-item-card" data-category="autos">
+                <div onclick="app.bookRide('Uber Auto', 55)" class="provider-card ride-item-card cursor-pointer hover:border-blue-500/80 transition-all active:scale-[0.99]" data-category="autos" role="button" tabindex="0">
                   <div>
                     <div class="flex items-center gap-2 mb-1">
                       <span class="text-sm font-bold text-white">🛺 Uber Auto</span>
@@ -543,13 +543,13 @@
                       <span class="text-[11px] text-slate-500 line-through">₹65</span>
                     </div>
                   </div>
-                  <button onclick="app.bookRide('Uber Auto', 55)" class="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white transition-all active:scale-95 shadow-[0_4px_12px_rgba(0,115,255,0.35)]">
+                  <button type="button" onclick="event.stopPropagation(); app.bookRide('Uber Auto', 55)" class="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white transition-all active:scale-95 shadow-[0_4px_12px_rgba(0,115,255,0.35)]">
                     Book
                   </button>
                 </div>
 
                 <!-- 7. Ola Auto -->
-                <div class="provider-card ride-item-card" data-category="autos">
+                <div onclick="app.bookRide('Ola Auto', 54)" class="provider-card ride-item-card cursor-pointer hover:border-lime-500/80 transition-all active:scale-[0.99]" data-category="autos" role="button" tabindex="0">
                   <div>
                     <div class="flex items-center gap-2 mb-1">
                       <span class="text-sm font-bold text-white">🛺 Ola Auto</span>
@@ -561,13 +561,13 @@
                       <span class="text-[11px] text-slate-500 line-through">₹62</span>
                     </div>
                   </div>
-                  <button onclick="app.bookRide('Ola Auto', 54)" class="px-3.5 py-1.5 rounded-xl bg-lime-600 hover:bg-lime-500 text-xs font-bold text-white transition-all active:scale-95 shadow-[0_4px_12px_rgba(101,163,13,0.35)]">
+                  <button type="button" onclick="event.stopPropagation(); app.bookRide('Ola Auto', 54)" class="px-3.5 py-1.5 rounded-xl bg-lime-600 hover:bg-lime-500 text-xs font-bold text-white transition-all active:scale-95 shadow-[0_4px_12px_rgba(101,163,13,0.35)]">
                     Book
                   </button>
                 </div>
 
                 <!-- 8. BluSmart EV -->
-                <div class="provider-card ride-item-card" data-category="ev">
+                <div onclick="app.bookRide('BluSmart EV', 95)" class="provider-card ride-item-card cursor-pointer hover:border-cyan-500/80 transition-all active:scale-[0.99]" data-category="ev" role="button" tabindex="0">
                   <div>
                     <div class="flex items-center gap-2 mb-1">
                       <span class="text-sm font-bold text-white">⚡ BluSmart EV</span>
@@ -579,13 +579,13 @@
                       <span class="text-[11px] text-slate-500 line-through">₹110</span>
                     </div>
                   </div>
-                  <button onclick="app.bookRide('BluSmart EV', 95)" class="px-3.5 py-1.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-xs font-bold text-white transition-all active:scale-95 shadow-[0_4px_12px_rgba(6,182,212,0.35)]">
+                  <button type="button" onclick="event.stopPropagation(); app.bookRide('BluSmart EV', 95)" class="px-3.5 py-1.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-xs font-bold text-white transition-all active:scale-95 shadow-[0_4px_12px_rgba(6,182,212,0.35)]">
                     Book
                   </button>
                 </div>
 
                 <!-- 9. Uber Premier -->
-                <div class="provider-card ride-item-card" data-category="cabs">
+                <div onclick="app.bookRide('Uber Premier', 115)" class="provider-card ride-item-card cursor-pointer hover:border-amber-500/80 transition-all active:scale-[0.99]" data-category="cabs" role="button" tabindex="0">
                   <div>
                     <div class="flex items-center gap-2 mb-1">
                       <span class="text-sm font-bold text-white">🚗 Uber Premier</span>
@@ -597,13 +597,13 @@
                       <span class="text-[11px] text-slate-500 line-through">₹135</span>
                     </div>
                   </div>
-                  <button onclick="app.bookRide('Uber Premier', 115)" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white border border-slate-700 transition-all active:scale-95">
+                  <button type="button" onclick="event.stopPropagation(); app.bookRide('Uber Premier', 115)" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white border border-slate-700 transition-all active:scale-95">
                     Book
                   </button>
                 </div>
 
                 <!-- 10. Ola Prime Sedan -->
-                <div class="provider-card ride-item-card" data-category="cabs">
+                <div onclick="app.bookRide('Ola Prime', 110)" class="provider-card ride-item-card cursor-pointer hover:border-emerald-500/80 transition-all active:scale-[0.99]" data-category="cabs" role="button" tabindex="0">
                   <div>
                     <div class="flex items-center gap-2 mb-1">
                       <span class="text-sm font-bold text-white">🚕 Ola Prime</span>
@@ -615,7 +615,7 @@
                       <span class="text-[11px] text-slate-500 line-through">₹128</span>
                     </div>
                   </div>
-                  <button onclick="app.bookRide('Ola Prime', 110)" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white border border-slate-700 transition-all active:scale-95">
+                  <button type="button" onclick="event.stopPropagation(); app.bookRide('Ola Prime', 110)" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white border border-slate-700 transition-all active:scale-95">
                     Book
                   </button>
                 </div>
@@ -1379,8 +1379,8 @@
         </div>
 
         <!-- BOTTOM PRIMARY CTA BUTTON (Exact match: Bright Blue Full-Width "Book Now") -->
-        <div class="pt-4 pb-2">
-          <button id="btn-confirm-book-now" onclick="app.confirmBooking()" class="w-full py-4 rounded-2xl bg-[#0073FF] hover:bg-[#0062dd] text-white font-bold text-base tracking-wide shadow-[0_6px_25px_rgba(0,115,255,0.45)] transition-all active:scale-[0.98] flex items-center justify-center gap-2">
+        <div class="pt-3 pb-3 sticky bottom-0 bg-[#070E1E] z-10">
+          <button id="btn-confirm-book-now" type="button" onclick="app.confirmBooking()" class="w-full py-4 rounded-2xl bg-[#0073FF] hover:bg-[#0062dd] text-white font-bold text-base tracking-wide shadow-[0_6px_25px_rgba(0,115,255,0.45)] transition-all active:scale-[0.98] flex items-center justify-center gap-2">
             <span>Book Now</span>
           </button>
         </div>
@@ -1448,7 +1448,7 @@
   <div id="app-toast">Welcome to VOZX RideCompare! 🚀</div>
 
   <!-- Scripts -->
-  <script src="js/audio.js?v=15"></script>
-  <script src="js/app.js?v=15"></script>
+  <script src="js/audio.js?v=16"></script>
+  <script src="js/app.js?v=16"></script>
 </body>
 </html>
