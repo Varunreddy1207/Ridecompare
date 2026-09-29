@@ -64,7 +64,7 @@ html, body {
   width: 100%;
   min-height: 100vh;
   min-height: 100dvh;
-  display: none !important;
+  display: none;
   opacity: 0;
   transform: translateY(6px);
   transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
@@ -76,14 +76,6 @@ html, body {
   transform: translateY(0) !important;
 }
 
-#screen-splash {
-  height: 100vh;
-  height: 100dvh;
-  max-height: 100vh;
-  max-height: 100dvh;
-  overflow: hidden !important;
-}
-
 /* ==========================================================================
    SCREEN 1: GET STARTED (Exact Match to media_1790643107597.png)
    ========================================================================== */
@@ -91,20 +83,19 @@ html, body {
   position: relative;
   z-index: 10;
   width: 100%;
-  height: 100%;
   min-height: 100vh;
   min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
-  overflow: hidden;
 }
 
 .get-started-card {
   position: relative;
   width: 100%;
-  min-height: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -123,67 +114,59 @@ html, body {
   .get-started-card {
     width: 100% !important;
     max-width: 100% !important;
-    height: 100dvh !important;
     min-height: 100dvh !important;
-    max-height: 100dvh !important;
     border: none !important;
     border-radius: 0 !important;
     box-shadow: none !important;
-    padding: max(20px, env(safe-area-inset-top, 20px)) 20px max(20px, env(safe-area-inset-bottom, 20px)) 20px;
+    padding: max(24px, env(safe-area-inset-top, 24px)) 20px max(24px, env(safe-area-inset-bottom, 24px)) 20px;
   }
   .car-hero-wrapper {
-    max-height: 220px;
+    max-height: 240px;
     margin: 8px 0;
   }
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {
   .stage-wrapper {
-    padding: 24px 16px;
+    padding: 32px 16px;
   }
   .get-started-card {
-    max-width: 480px;
-    width: 100%;
-    min-height: 0;
-    max-height: calc(100vh - 48px);
-    max-height: calc(100dvh - 48px);
-    border-radius: 32px;
+    max-width: 520px;
+    min-height: 840px;
+    border-radius: 36px;
     border: 1px solid var(--card-border);
     box-shadow: 
       0 0 0 1px rgba(15, 23, 42, 0.8),
       0 30px 80px rgba(0, 0, 0, 0.95),
       0 0 45px rgba(0, 115, 255, 0.25);
-    padding: 28px 24px 20px 24px;
+    padding: 36px 32px 28px 32px;
   }
   .car-hero-wrapper {
-    max-height: 220px;
-    margin: 12px 0;
+    max-height: 270px;
+    margin: 16px 0;
   }
 }
 
 @media (min-width: 1024px) {
   .stage-wrapper {
-    padding: 28px 20px;
+    padding: 40px 20px;
   }
   .get-started-card {
-    max-width: 500px;
-    width: 100%;
-    min-height: 0;
-    max-height: calc(100vh - 56px);
-    max-height: calc(100dvh - 56px);
-    border-radius: 36px;
+    max-width: 560px;
+    min-height: 880px;
+    border-radius: 40px;
     border: 1px solid rgba(56, 189, 248, 0.28);
     box-shadow: 
       0 0 0 1px rgba(15, 23, 42, 0.9),
       0 35px 90px rgba(0, 0, 0, 0.98),
       0 0 60px rgba(0, 115, 255, 0.3);
-    padding: 32px 32px 24px 32px;
+    padding: 44px 36px 32px 36px;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
   }
   .car-hero-wrapper {
-    max-height: 250px;
-    margin: 14px 0;
+    max-height: 300px;
+    margin: 20px 0;
   }
 }
 
@@ -1373,4 +1356,71 @@ html, body {
 #booking-confirmed-modal.show .confirmed-modal-panel {
   transform: translateY(0) scale(1);
 }
+
+/* ==========================================================================
+   SCREEN 5: PROFILE SCREEN (Exact Match to media_1790665329406.png)
+   ========================================================================== */
+.profile-panel-card {
+  background: rgba(10, 17, 36, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.profile-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.profile-menu-item:last-child {
+  border-bottom: none;
+}
+
+.profile-menu-item:hover {
+  background: rgba(255, 255, 255, 0.03);
+  padding-left: 8px;
+  padding-right: 8px;
+  border-radius: 14px;
+}
+
+.profile-menu-item:active {
+  transform: scale(0.99);
+}
+
+.profile-logout-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 18px;
+  border: 1.5px solid rgba(239, 68, 68, 0.7);
+  background: rgba(239, 68, 68, 0.06);
+  color: #EF4444;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.1);
+}
+
+.profile-logout-btn:hover {
+  border-color: #EF4444;
+  background: rgba(239, 68, 68, 0.16);
+  box-shadow: 0 0 24px rgba(239, 68, 68, 0.3);
+  color: #F87171;
+  transform: translateY(-1px);
+}
+
+.profile-logout-btn:active {
+  transform: scale(0.98);
+}
+
 

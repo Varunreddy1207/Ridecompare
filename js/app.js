@@ -158,6 +158,10 @@ class RideCompareApp {
       this.navigateTo('screen-history', false);
       this.updateActiveNavs('history');
       this.selectHistoryTrip(this.selectedHistoryTripId || 1, false);
+    } else if (window.location.hash === '#profile') {
+      this.currentTab = 'profile';
+      this.navigateTo('screen-profile', false);
+      this.updateActiveNavs('profile');
     } else if (window.location.hash === '#home') {
       this.currentTab = 'home';
       this.navigateTo('screen-home', false);
@@ -694,9 +698,32 @@ class RideCompareApp {
       this.navigateTo('screen-home', false);
       window.location.hash = '#home';
       this.showResultsPanel();
+    } else if (tab === 'profile') {
+      this.navigateTo('screen-profile', false);
+      window.location.hash = '#profile';
     } else {
       this.showToast(`${tab.charAt(0).toUpperCase() + tab.slice(1)} view selected`);
     }
+  }
+
+  // Open Profile Screen
+  openProfile() {
+    if (window.soundFX) {
+      window.soundFX.playTap();
+    }
+    this.switchTab('profile');
+  }
+
+  // Log Out Action
+  logout() {
+    if (window.soundFX) {
+      window.soundFX.playTap();
+    }
+    this.showToast('Logged out of Varun Reddy successfully 👋');
+    setTimeout(() => {
+      this.navigateTo('screen-splash', false);
+      window.location.hash = '#';
+    }, 350);
   }
 
   // Select History Trip (syncs Desktop Receipt Panel and Mobile/Tablet Modal)
