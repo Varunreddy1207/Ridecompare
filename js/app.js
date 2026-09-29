@@ -14,7 +14,7 @@ class RideCompareApp {
 
   init() {
     document.addEventListener('DOMContentLoaded', () => {
-      // Check initial hash routing (#home, #compare, or default splash)
+      // Check initial hash routing (#home or default splash)
       this.handleHashRoute();
 
       // Handle browser back/forward buttons
@@ -36,17 +36,15 @@ class RideCompareApp {
           }
         } else if (e.key === 'Enter' && this.currentScreen === 'screen-splash') {
           this.onGetStarted();
-        } else if (e.key === 'Escape' && this.currentScreen === 'screen-compare') {
-          this.navigateTo('screen-home');
+        } else if (e.key === 'Escape') {
+          this.hideResultsPanel();
         }
       });
     });
   }
 
   handleHashRoute() {
-    if (window.location.hash === '#compare') {
-      this.navigateTo('screen-compare', false);
-    } else if (window.location.hash === '#home') {
+    if (window.location.hash === '#home') {
       this.navigateTo('screen-home', false);
     } else {
       this.navigateTo('screen-splash', false);
@@ -73,26 +71,6 @@ class RideCompareApp {
       if (tabDock) tabDock.style.setProperty('display', 'none', 'important');
       if (deskSidebar) deskSidebar.style.setProperty('display', 'none', 'important');
       deskTopbars.forEach(tb => tb.style.setProperty('display', 'none', 'important'));
-      return;
-    }
-
-    // When on Ride Comparison Screen
-    if (this.currentScreen === 'screen-compare') {
-      if (mobNav) mobNav.style.setProperty('display', 'none', 'important');
-      if (tabDock) tabDock.style.setProperty('display', 'none', 'important');
-
-      if (width >= 1024) {
-        if (deskSidebar) deskSidebar.style.setProperty('display', 'flex', 'important');
-        deskTopbars.forEach(tb => tb.style.setProperty('display', 'flex', 'important'));
-        // Set compare nav active
-        const deskBtns = document.querySelectorAll('.sidebar-nav-item');
-        deskBtns.forEach(btn => btn.classList.remove('active'));
-        const activeDesk = document.getElementById('desk-nav-compare');
-        if (activeDesk) activeDesk.classList.add('active');
-      } else {
-        if (deskSidebar) deskSidebar.style.setProperty('display', 'none', 'important');
-        deskTopbars.forEach(tb => tb.style.setProperty('display', 'none', 'important'));
-      }
       return;
     }
 
@@ -188,13 +166,7 @@ class RideCompareApp {
       dropText.classList.add('text-white');
     }
 
-    // Update Compare Screen destination pill
-    const compDest = document.getElementById('compare-dest-name');
-    if (compDest) {
-      compDest.textContent = name;
-    }
-
-    // Update Map Title if on tablet/desktop
+    // Update Map Title
     const mapTitle = document.getElementById('map-route-title');
     const mapSub = document.getElementById('map-route-sub');
     if (mapTitle) {
@@ -204,10 +176,15 @@ class RideCompareApp {
       mapSub.textContent = `Destination: ${city} • Live comparison updated`;
     }
 
-    this.showToast(`Selected: ${name} 📍`);
+    const panel = document.getElementById('home-results-panel');
+    if (panel && panel.classList.contains('results-panel-visible')) {
+      this.showToast(`Updated destination: ${name} 📍`);
+    } else {
+      this.showToast(`Selected: ${name} 📍`);
+    }
   }
 
-  // Primary "Search Rides" Click Handler — Opens Compare Screen on all device sizes
+  // Primary "Search Rides" Click Handler — Reveals results panel with animation across all screen sizes
   onSearchRides() {
     if (window.soundFX) {
       window.soundFX.playGetStarted();
@@ -218,12 +195,57 @@ class RideCompareApp {
       this.selectRecent('Sanjay Ghodawat University', 'Ichalkaranji');
     }
 
-    // Navigate to Screen 3 (Ride Comparison)
-    setTimeout(() => {
-      this.navigateTo('screen-compare', false);
-      window.location.hash = '#compare';
-      this.showToast('Comparing prices across 4 ride apps... 🚀');
-    }, 120);
+    this.showResultsPanel();
+  }
+
+  // Smooth Reveal of Results Panel (Map + 3 comparison cards)
+  showResultsPanel() {
+    const panel = document.getElementById('home-results-panel');
+    const searchContainer = document.getElementById('home-search-container');
+    if (!panel) return;
+
+    // Reset animation state to ensure it plays freshly
+    panel.classList.remove('results-panel-hidden');
+    panel.classList.remove('results-panel-visible');
+    void panel.offsetWidth; // Trigger DOM reflow
+    panel.classList.add('results-panel-visible');
+
+    // On Desktop & Tablet: adjust search container to left column
+    if (searchContainer) {
+      searchContainer.classList.remove('max-w-xl', 'mx-auto');
+      searchContainer.classList.add('lg:col-span-5');
+    }
+
+    // On mobile (< 768px): scroll results into view smoothly
+    if (window.innerWidth < 768) {
+      setTimeout(() => {
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+
+    this.showToast('Live ride fares found! Lowest: ₹45 with Rapido ⚡');
+  }
+
+  // Hide Results Panel and return to clean search form
+  hideResultsPanel() {
+    if (window.soundFX) {
+      window.soundFX.playTap();
+    }
+
+    const panel = document.getElementById('home-results-panel');
+    const searchContainer = document.getElementById('home-search-container');
+    if (!panel) return;
+
+    panel.classList.remove('results-panel-visible');
+    panel.classList.add('results-panel-hidden');
+
+    if (searchContainer) {
+      searchContainer.classList.remove('lg:col-span-5');
+      searchContainer.classList.add('max-w-xl', 'mx-auto');
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    this.showToast('Search options updated 📍');
   }
 
   // Provider Filter Selection
@@ -283,8 +305,9 @@ class RideCompareApp {
       this.navigateTo('screen-home', false);
       window.location.hash = '#home';
     } else if (tab === 'compare') {
-      this.navigateTo('screen-compare', false);
-      window.location.hash = '#compare';
+      this.navigateTo('screen-home', false);
+      window.location.hash = '#home';
+      this.showResultsPanel();
     } else {
       this.showToast(`${tab.charAt(0).toUpperCase() + tab.slice(1)} view selected`);
     }
