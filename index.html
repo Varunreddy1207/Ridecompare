@@ -12,7 +12,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=10">
+  <link rel="stylesheet" href="css/styles.css?v=11">
 
   <style>
     /* Strict Responsive Display Rules */
@@ -403,11 +403,21 @@
               </div>
             </div>
 
-            <!-- Live Provider Comparison Cards (Exact Match to media_1790646294329.png) -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <!-- Ride Category Filter Pills -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs no-scrollbar">
+              <button onclick="app.filterRideCategory('all')" id="filter-pill-all" class="ride-filter-pill active">All (9)</button>
+              <button onclick="app.filterRideCategory('cabs')" id="filter-pill-cabs" class="ride-filter-pill">🚗 Cabs</button>
+              <button onclick="app.filterRideCategory('autos')" id="filter-pill-autos" class="ride-filter-pill">🛺 Autos</button>
+              <button onclick="app.filterRideCategory('bikes')" id="filter-pill-bikes" class="ride-filter-pill">🏍️ Bikes</button>
+              <button onclick="app.filterRideCategory('ev')" id="filter-pill-ev" class="ride-filter-pill">⚡ Electric</button>
+              <button onclick="app.toggleMoreRides()" class="ride-filter-pill text-purple-400 border-purple-500/40 hover:bg-purple-950/40">✨ More Options</button>
+            </div>
 
-              <!-- Uber Go -->
-              <div class="provider-card">
+            <!-- Live Provider Comparison Cards (4 Cards across Desktop, Tablet & Mobile) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+
+              <!-- 1. Uber Go -->
+              <div class="provider-card ride-item-card" data-category="cabs">
                 <div>
                   <div class="flex items-center gap-2 mb-1">
                     <span class="text-sm font-bold text-white">Uber Go</span>
@@ -424,8 +434,8 @@
                 </button>
               </div>
 
-              <!-- Rapido Bike (Cheapest) -->
-              <div class="provider-card cheapest-deal">
+              <!-- 2. Rapido Bike (Cheapest) -->
+              <div class="provider-card cheapest-deal ride-item-card" data-category="bikes">
                 <div>
                   <div class="flex items-center gap-2 mb-1">
                     <span class="text-sm font-bold text-white">Rapido Bike</span>
@@ -442,8 +452,8 @@
                 </button>
               </div>
 
-              <!-- Ola Mini -->
-              <div class="provider-card">
+              <!-- 3. Ola Mini -->
+              <div class="provider-card ride-item-card" data-category="cabs">
                 <div>
                   <div class="flex items-center gap-2 mb-1">
                     <span class="text-sm font-bold text-white">Ola Mini</span>
@@ -460,6 +470,154 @@
                 </button>
               </div>
 
+              <!-- 4. More Options Card (Exact requested More Option) -->
+              <div id="card-more-options" onclick="app.toggleMoreRides()" class="provider-card more-options-deal cursor-pointer group hover:border-purple-400/80 transition-all ride-item-card" data-category="all">
+                <div>
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="text-sm font-bold text-white flex items-center gap-1">
+                      <span>More Options</span>
+                      <svg class="w-3.5 h-3.5 text-purple-400 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </span>
+                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">+6 Apps</span>
+                  </div>
+                  <p class="text-[11px] text-slate-400">Autos, EV, Premier & more</p>
+                  <div class="mt-2 flex items-baseline gap-1.5">
+                    <span class="text-base font-extrabold text-purple-300">From ₹52</span>
+                    <span class="text-[11px] text-slate-500 line-through">₹65</span>
+                  </div>
+                </div>
+                <button id="btn-more-toggle-badge" onclick="event.stopPropagation(); app.toggleMoreRides()" class="px-3 py-1.5 rounded-xl bg-purple-600/90 hover:bg-purple-500 text-xs font-bold text-white transition-all active:scale-95 shadow-[0_4px_12px_rgba(168,85,247,0.35)] flex items-center gap-1">
+                  <span id="more-toggle-text">More ▾</span>
+                </button>
+              </div>
+
+            </div>
+
+            <!-- Expandable More Options Section (Reveals 6 more ride tiers) -->
+            <div id="more-rides-section" class="hidden flex-col gap-3 transition-all duration-300">
+              <div class="flex items-center justify-between px-1 pt-1 border-t border-slate-800/80">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+                    <span>⚡ Additional Available Rides Nearby</span>
+                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-purple-300 font-semibold border border-purple-500/20">6 more found</span>
+                  </span>
+                </div>
+                <button onclick="app.toggleMoreRides()" class="text-xs font-bold text-purple-400 hover:text-purple-300 flex items-center gap-1">
+                  <span>Hide ▴</span>
+                </button>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+
+                <!-- 5. Rapido Auto -->
+                <div class="provider-card ride-item-card" data-category="autos">
+                  <div>
+                    <div class="flex items-center gap-2 mb-1">
+                      <span class="text-sm font-bold text-white">🛺 Rapido Auto</span>
+                      <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-300 border border-yellow-500/30">Cheapest Auto</span>
+                    </div>
+                    <p class="text-[11px] text-slate-400">2 mins away • 3 seats • Meter rate</p>
+                    <div class="mt-2 flex items-baseline gap-1.5">
+                      <span class="text-base font-extrabold text-yellow-400">₹52</span>
+                      <span class="text-[11px] text-slate-500 line-through">₹62</span>
+                    </div>
+                  </div>
+                  <button onclick="app.bookRide('Rapido Auto', 52)" class="px-3.5 py-1.5 rounded-xl bg-yellow-500 hover:bg-yellow-400 text-xs font-bold text-slate-950 transition-all active:scale-95 shadow-[0_4px_12px_rgba(234,179,8,0.3)]">
+                    Book
+                  </button>
+                </div>
+
+                <!-- 6. Uber Auto -->
+                <div class="provider-card ride-item-card" data-category="autos">
+                  <div>
+                    <div class="flex items-center gap-2 mb-1">
+                      <span class="text-sm font-bold text-white">🛺 Uber Auto</span>
+                      <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">Popular</span>
+                    </div>
+                    <p class="text-[11px] text-slate-400">3 mins away • Doorstep pickup</p>
+                    <div class="mt-2 flex items-baseline gap-1.5">
+                      <span class="text-base font-extrabold text-white">₹55</span>
+                      <span class="text-[11px] text-slate-500 line-through">₹65</span>
+                    </div>
+                  </div>
+                  <button onclick="app.bookRide('Uber Auto', 55)" class="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white transition-all active:scale-95 shadow-[0_4px_12px_rgba(0,115,255,0.35)]">
+                    Book
+                  </button>
+                </div>
+
+                <!-- 7. Ola Auto -->
+                <div class="provider-card ride-item-card" data-category="autos">
+                  <div>
+                    <div class="flex items-center gap-2 mb-1">
+                      <span class="text-sm font-bold text-white">🛺 Ola Auto</span>
+                      <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-lime-500/20 text-lime-400 border border-lime-500/30">Fast</span>
+                    </div>
+                    <p class="text-[11px] text-slate-400">4 mins away • OTP ride</p>
+                    <div class="mt-2 flex items-baseline gap-1.5">
+                      <span class="text-base font-extrabold text-white">₹54</span>
+                      <span class="text-[11px] text-slate-500 line-through">₹62</span>
+                    </div>
+                  </div>
+                  <button onclick="app.bookRide('Ola Auto', 54)" class="px-3.5 py-1.5 rounded-xl bg-lime-600 hover:bg-lime-500 text-xs font-bold text-white transition-all active:scale-95 shadow-[0_4px_12px_rgba(101,163,13,0.35)]">
+                    Book
+                  </button>
+                </div>
+
+                <!-- 8. BluSmart EV -->
+                <div class="provider-card ride-item-card" data-category="ev">
+                  <div>
+                    <div class="flex items-center gap-2 mb-1">
+                      <span class="text-sm font-bold text-white">⚡ BluSmart EV</span>
+                      <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">Zero Surge</span>
+                    </div>
+                    <p class="text-[11px] text-slate-400">5 mins away • 100% Electric Sedan</p>
+                    <div class="mt-2 flex items-baseline gap-1.5">
+                      <span class="text-base font-extrabold text-cyan-400">₹95</span>
+                      <span class="text-[11px] text-slate-500 line-through">₹110</span>
+                    </div>
+                  </div>
+                  <button onclick="app.bookRide('BluSmart EV', 95)" class="px-3.5 py-1.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-xs font-bold text-white transition-all active:scale-95 shadow-[0_4px_12px_rgba(6,182,212,0.35)]">
+                    Book
+                  </button>
+                </div>
+
+                <!-- 9. Uber Premier -->
+                <div class="provider-card ride-item-card" data-category="cabs">
+                  <div>
+                    <div class="flex items-center gap-2 mb-1">
+                      <span class="text-sm font-bold text-white">🚗 Uber Premier</span>
+                      <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">Luxury</span>
+                    </div>
+                    <p class="text-[11px] text-slate-400">3 mins away • Top rated drivers • Sedan</p>
+                    <div class="mt-2 flex items-baseline gap-1.5">
+                      <span class="text-base font-extrabold text-white">₹115</span>
+                      <span class="text-[11px] text-slate-500 line-through">₹135</span>
+                    </div>
+                  </div>
+                  <button onclick="app.bookRide('Uber Premier', 115)" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white border border-slate-700 transition-all active:scale-95">
+                    Book
+                  </button>
+                </div>
+
+                <!-- 10. Ola Prime Sedan -->
+                <div class="provider-card ride-item-card" data-category="cabs">
+                  <div>
+                    <div class="flex items-center gap-2 mb-1">
+                      <span class="text-sm font-bold text-white">🚕 Ola Prime</span>
+                      <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Comfort</span>
+                    </div>
+                    <p class="text-[11px] text-slate-400">4 mins away • Prime Play • Extra legroom</p>
+                    <div class="mt-2 flex items-baseline gap-1.5">
+                      <span class="text-base font-extrabold text-white">₹110</span>
+                      <span class="text-[11px] text-slate-500 line-through">₹128</span>
+                    </div>
+                  </div>
+                  <button onclick="app.bookRide('Ola Prime', 110)" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white border border-slate-700 transition-all active:scale-95">
+                    Book
+                  </button>
+                </div>
+
+              </div>
             </div>
 
           </div>
@@ -523,7 +681,7 @@
   <div id="app-toast">Welcome to VOZX RideCompare! 🚀</div>
 
   <!-- Scripts -->
-  <script src="js/audio.js?v=10"></script>
-  <script src="js/app.js?v=10"></script>
+  <script src="js/audio.js?v=11"></script>
+  <script src="js/app.js?v=11"></script>
 </body>
 </html>

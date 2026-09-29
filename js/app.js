@@ -234,6 +234,14 @@ class RideCompareApp {
 
     const panel = document.getElementById('home-results-panel');
     const searchContainer = document.getElementById('home-search-container');
+    const moreSection = document.getElementById('more-rides-section');
+    const toggleText = document.getElementById('more-toggle-text');
+    if (moreSection) {
+      moreSection.classList.add('hidden');
+      moreSection.classList.remove('flex');
+      if (toggleText) toggleText.textContent = 'More ▾';
+    }
+
     if (!panel) return;
 
     panel.classList.remove('results-panel-visible');
@@ -246,6 +254,67 @@ class RideCompareApp {
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
     this.showToast('Search options updated 📍');
+  }
+
+  // Toggle More Ride Options Section
+  toggleMoreRides() {
+    if (window.soundFX) {
+      window.soundFX.playTap();
+    }
+    const section = document.getElementById('more-rides-section');
+    const toggleText = document.getElementById('more-toggle-text');
+    if (!section) return;
+
+    if (section.classList.contains('hidden')) {
+      section.classList.remove('hidden');
+      section.classList.add('flex');
+      if (toggleText) toggleText.textContent = 'Hide ▴';
+      this.showToast('Showing 6 more ride options! 🛺🚗⚡');
+      setTimeout(() => {
+        section.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 100);
+    } else {
+      section.classList.add('hidden');
+      section.classList.remove('flex');
+      if (toggleText) toggleText.textContent = 'More ▾';
+    }
+  }
+
+  // Filter Rides by Category (All, Cabs, Autos, Bikes, EV)
+  filterRideCategory(category) {
+    if (window.soundFX) {
+      window.soundFX.playTap();
+    }
+
+    // Update active pill
+    const pills = document.querySelectorAll('.ride-filter-pill');
+    pills.forEach(p => p.classList.remove('active'));
+    const activePill = document.getElementById(`filter-pill-${category}`);
+    if (activePill) activePill.classList.add('active');
+
+    // Filter items
+    const items = document.querySelectorAll('.ride-item-card');
+    items.forEach(card => {
+      const cardCat = card.getAttribute('data-category');
+      if (category === 'all' || cardCat === category || card.id === 'card-more-options') {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    if (category !== 'all') {
+      const section = document.getElementById('more-rides-section');
+      if (section && section.classList.contains('hidden') && (category === 'autos' || category === 'ev')) {
+        section.classList.remove('hidden');
+        section.classList.add('flex');
+        const toggleText = document.getElementById('more-toggle-text');
+        if (toggleText) toggleText.textContent = 'Hide ▴';
+      }
+      this.showToast(`Filtered by ${category.toUpperCase()} 🚗`);
+    } else {
+      this.showToast('Showing all ride options ⚡');
+    }
   }
 
   // Provider Filter Selection
