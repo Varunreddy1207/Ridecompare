@@ -12,7 +12,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=14">
+  <link rel="stylesheet" href="css/styles.css?v=15">
 
   <style>
     /* Strict Responsive Display Rules */
@@ -1170,11 +1170,285 @@
     </div>
   </div>
 
+  <!-- ====================================================================== -->
+  <!-- SCREEN 4: RIDE BOOKING CONFIRMATION SCREEN                             -->
+  <!-- Exact Match to media_1790660374330.png & media_1790660393523.png      -->
+  <!-- Adapts responsively across Mobile, Tablet, and Desktop SaaS Dashboard  -->
+  <!-- ====================================================================== -->
+  <section id="screen-booking" class="screen-page w-full min-h-screen relative flex flex-col lg:flex-row overflow-x-hidden bg-[#020617]">
+
+    <!-- ================================================================== -->
+    <!-- LEFT / TOP: LIVE NIGHT MAP VIEWPORT WITH ROUTE & BACK BUTTON       -->
+    <!-- ================================================================== -->
+    <div class="relative w-full h-[34vh] sm:h-[38vh] md:h-[42vh] lg:h-full lg:flex-1 bg-[#050C1B] overflow-hidden">
+      
+      <!-- Realistic SVG Night Map with Roads, Polylines, Route & Pulse Pins -->
+      <svg class="w-full h-full object-cover" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="routeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#00D2FF" />
+            <stop offset="100%" stop-color="#0073FF" />
+          </linearGradient>
+          <filter id="routeGlow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="4" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+        </defs>
+
+        <!-- Deep Night Map Base -->
+        <rect width="800" height="600" fill="#040915" />
+
+        <!-- Road Network - Minor Arterials -->
+        <g stroke="#0F1F38" stroke-width="2.5" fill="none">
+          <path d="M-50,120 Q150,180 320,100 T680,240 T850,200" />
+          <path d="M-50,280 Q200,320 400,260 T750,380" />
+          <path d="M-50,450 Q300,420 520,490 T850,440" />
+          <path d="M120,-50 Q160,200 240,400 T300,650" />
+          <path d="M480,-50 Q450,220 560,420 T620,650" />
+          <path d="M680,-50 Q720,280 690,650" />
+        </g>
+
+        <!-- Road Network - Major Highways (Glow) -->
+        <g stroke="#18365E" stroke-width="4.5" fill="none">
+          <path d="M-50,220 C220,190 380,310 850,290" />
+          <path d="M380,-50 C360,200 420,400 460,650" />
+          <path d="M100,550 C280,380 500,200 750,80" />
+        </g>
+
+        <!-- Dynamic Transit Route Line (Pulsing Cyan-Blue Glow) -->
+        <path d="M 220,380 C 260,320 330,300 410,260 S 520,190 580,160" 
+              stroke="url(#routeGradient)" 
+              stroke-width="6" 
+              stroke-linecap="round" 
+              fill="none" 
+              filter="url(#routeGlow)" 
+              stroke-dasharray="8 3" 
+              class="animate-pulse" />
+
+        <!-- Moving Nearby Driver/Pilot Markers -->
+        <g id="map-moving-drivers">
+          <!-- Driver 1: Near Pickup -->
+          <circle cx="280" cy="340" r="9" fill="#FACC15" opacity="0.9" />
+          <circle cx="280" cy="340" r="16" fill="#FACC15" opacity="0.25" class="animate-ping" />
+          <!-- Driver 2 -->
+          <circle cx="370" cy="275" r="8" fill="#38BDF8" opacity="0.85" />
+          <!-- Driver 3 -->
+          <circle cx="490" cy="210" r="8" fill="#10B981" opacity="0.85" />
+        </g>
+
+        <!-- Origin Pin (Pickup: concentric radar rings) -->
+        <circle cx="220" cy="380" r="16" fill="#0073FF" opacity="0.2" class="animate-ping" />
+        <circle cx="220" cy="380" r="10" fill="#0073FF" opacity="0.5" />
+        <circle cx="220" cy="380" r="5" fill="#FFFFFF" />
+
+        <!-- Destination Pin (Drop: Pin marker) -->
+        <g transform="translate(580, 160)">
+          <path d="M0,0 C-8,-8 -12,-16 -12,-24 A12,12 0 1,1 12,-24 C12,-16 8,-8 0,0 Z" fill="#EF4444" />
+          <circle cx="0" cy="-24" r="5" fill="#FFFFFF" />
+        </g>
+      </svg>
+
+      <!-- Floating Circular Back Arrow Button (Exact Match to screenshots) -->
+      <button onclick="app.closeBookingScreen()" class="absolute top-5 left-5 z-20 w-10 h-10 rounded-full bg-[#081124]/90 hover:bg-[#0E1E40] border border-slate-700/80 text-white flex items-center justify-center shadow-xl backdrop-blur-md transition-all active:scale-90">
+        <svg class="w-5 h-5 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+
+      <!-- Live GPS ETA Badge Floating on Map -->
+      <div class="absolute top-5 right-5 z-20 px-3 py-1.5 rounded-full bg-[#081124]/85 border border-slate-700/70 backdrop-blur-md flex items-center gap-2 text-xs font-semibold text-sky-400 shadow-lg">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+        <span id="booking-map-eta">Fastest Route • 4.2 km</span>
+      </div>
+
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- RIGHT / BOTTOM: EXACT RIDE DETAILS & BOOK NOW CARD                 -->
+    <!-- Matching media_1790660374330.png & media_1790660393523.png         -->
+    <!-- ================================================================== -->
+    <div class="w-full lg:w-[460px] xl:w-[500px] flex-shrink-0 z-10 flex flex-col justify-between">
+      <div class="w-full bg-[#070E1E] rounded-t-[32px] lg:rounded-none lg:rounded-l-[32px] border-t lg:border-t-0 lg:border-l border-slate-800/90 shadow-2xl p-6 sm:p-7 md:p-8 flex flex-col justify-between min-h-[66vh] lg:min-h-screen">
+        
+        <div>
+          <!-- Drag Handle for Mobile View -->
+          <div class="w-10 h-1 bg-slate-700/60 rounded-full mx-auto mb-4 lg:hidden"></div>
+
+          <!-- TOP ROW: PROVIDER LOGO + TITLE + PRICE & ETA (Exact match) -->
+          <div class="flex items-center justify-between pb-5 border-b border-slate-800/80">
+            <div class="flex items-center gap-4">
+              <!-- Dynamic Provider Icon Box -->
+              <div id="booking-provider-icon-box" class="provider-box-rapido">
+                <!-- Inner Icon populated by JS -->
+                <svg class="w-7 h-7" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19 12c-1.65 0-3 1.35-3 3s1.35 3 3 3 3-1.35 3-3-1.35-3-3-3zm0 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-14-4.5c-1.65 0-3 1.35-3 3s1.35 3 3 3 3-1.35 3-3-1.35-3-3-3zm0 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm6.5-6.5h3.25l1.62 3.25c.34-.16.72-.25 1.13-.25 1.65 0 3 1.35 3 3h-2.1c-.4-1.18-1.52-2-2.9-2-.41 0-.8.09-1.15.25l-1.35-2.7V17h-2v-4.5l-2.6-3.9H5v-2h4.5l2 3z"/>
+                </svg>
+              </div>
+
+              <div>
+                <h2 id="booking-provider-name" class="text-xl sm:text-2xl font-black text-white tracking-tight leading-none">Rapido</h2>
+                <p id="booking-vehicle-type" class="text-sm text-slate-400 font-medium mt-1.5">Bike</p>
+              </div>
+            </div>
+
+            <div class="text-right">
+              <span id="booking-fare" class="text-2xl sm:text-3xl font-black text-white block tracking-tight leading-none">₹78</span>
+              <span id="booking-eta" class="text-xs sm:text-sm text-slate-400 font-medium block mt-1.5">12 min</span>
+            </div>
+          </div>
+
+          <!-- RIDE DETAILS SECTION (Exact match to screenshots) -->
+          <div class="py-5 space-y-4">
+            <h3 class="text-sm sm:text-base font-bold text-white tracking-tight">Ride Details</h3>
+
+            <!-- 1. Pickup -->
+            <div class="flex items-start gap-3.5">
+              <div class="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center flex-shrink-0 mt-0.5 text-slate-400">
+                <!-- Concentric circle target icon -->
+                <svg class="w-4 h-4 text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="9" />
+                  <circle cx="12" cy="12" r="4" />
+                  <circle cx="12" cy="12" r="1" fill="currentColor" />
+                </svg>
+              </div>
+              <div class="min-w-0 flex-1">
+                <span class="text-xs text-slate-400 font-normal block leading-tight">Pickup</span>
+                <p id="booking-pickup-location" class="text-xs sm:text-sm text-white font-medium mt-0.5 truncate">Your Location</p>
+              </div>
+            </div>
+
+            <!-- 2. Drop -->
+            <div class="flex items-start gap-3.5">
+              <div class="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center flex-shrink-0 mt-0.5 text-slate-400">
+                <!-- Location Pin icon -->
+                <svg class="w-4 h-4 text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <circle cx="12" cy="11" r="3" />
+                </svg>
+              </div>
+              <div class="min-w-0 flex-1">
+                <span class="text-xs text-slate-400 font-normal block leading-tight">Drop</span>
+                <p id="booking-drop-location" class="text-xs sm:text-sm text-white font-medium mt-0.5 truncate">Sanjay Ghodawat University</p>
+              </div>
+            </div>
+
+            <!-- 3. Distance -->
+            <div class="flex items-start gap-3.5">
+              <div class="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center flex-shrink-0 mt-0.5 text-slate-400">
+                <!-- Winding road / path icon -->
+                <svg class="w-4 h-4 text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                </svg>
+              </div>
+              <div class="min-w-0 flex-1">
+                <span class="text-xs text-slate-400 font-normal block leading-tight">Distance</span>
+                <p id="booking-distance" class="text-xs sm:text-sm text-white font-medium mt-0.5">4.2 km</p>
+              </div>
+            </div>
+
+            <!-- 4. Estimated Time -->
+            <div class="flex items-start gap-3.5">
+              <div class="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center flex-shrink-0 mt-0.5 text-slate-400">
+                <!-- Clock icon -->
+                <svg class="w-4 h-4 text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </div>
+              <div class="min-w-0 flex-1">
+                <span class="text-xs text-slate-400 font-normal block leading-tight">Estimated Time</span>
+                <p id="booking-estimated-time" class="text-xs sm:text-sm text-white font-medium mt-0.5">12 min</p>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- DIVIDER -->
+          <div class="border-t border-slate-800/80 my-2"></div>
+
+          <!-- ABOUT SECTION (Exact match to screenshots) -->
+          <div class="py-3">
+            <h4 id="booking-about-title" class="text-xs sm:text-sm font-bold text-white tracking-tight">About Rapido</h4>
+            <p id="booking-about-tagline" class="text-xs text-slate-400 font-normal mt-1">Fast • Affordable • Bike Taxi</p>
+            <div class="flex items-center gap-1.5 mt-2">
+              <span class="text-amber-400 text-xs">★</span>
+              <span id="booking-about-rating" class="text-xs text-slate-300 font-medium">4.2 (1M+ reviews)</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- BOTTOM PRIMARY CTA BUTTON (Exact match: Bright Blue Full-Width "Book Now") -->
+        <div class="pt-4 pb-2">
+          <button id="btn-confirm-book-now" onclick="app.confirmBooking()" class="w-full py-4 rounded-2xl bg-[#0073FF] hover:bg-[#0062dd] text-white font-bold text-base tracking-wide shadow-[0_6px_25px_rgba(0,115,255,0.45)] transition-all active:scale-[0.98] flex items-center justify-center gap-2">
+            <span>Book Now</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ==================================================================== -->
+  <!-- RIDE BOOKED CONFIRMATION MODAL (Driver Dispatched & Live Tracking)    -->
+  <!-- ==================================================================== -->
+  <div id="booking-confirmed-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300">
+    <div class="confirmed-modal-panel w-full max-w-sm bg-[#0A1124] border border-slate-700/80 rounded-3xl p-6 shadow-2xl transform scale-95 transition-transform duration-300 text-center space-y-4">
+      
+      <!-- Animated Success Ring -->
+      <div class="w-16 h-16 rounded-full bg-emerald-500/20 border-2 border-emerald-500/40 flex items-center justify-center mx-auto text-emerald-400">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-black text-white">Ride Confirmed!</h3>
+        <p class="text-xs text-slate-400 mt-1">Your driver is en route to your location</p>
+      </div>
+
+      <!-- OTP Card -->
+      <div class="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-between">
+        <div class="text-left">
+          <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Start Ride OTP</span>
+          <p class="text-xs text-slate-300 font-medium">Share with driver upon arrival</p>
+        </div>
+        <span class="text-xl font-mono font-black text-sky-400 tracking-widest bg-sky-950/60 px-3 py-1 rounded-xl border border-sky-800/60">4921</span>
+      </div>
+
+      <!-- Driver Details -->
+      <div class="p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex items-center justify-between text-left text-xs">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-blue-600/30 border border-blue-500/50 flex items-center justify-center font-bold text-white text-xs">
+            RK
+          </div>
+          <div>
+            <p id="confirmed-driver-name" class="font-bold text-white text-sm">Ramesh K.</p>
+            <p id="confirmed-driver-meta" class="text-slate-400 text-[11px]">★ 4.9 • Verified Pilot</p>
+          </div>
+        </div>
+        <div class="text-right">
+          <span class="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono font-bold text-[11px] text-white">MH 09 CZ 4821</span>
+          <p class="text-emerald-400 text-[11px] font-semibold mt-1">Arriving in 3 mins</p>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="space-y-2 pt-2">
+        <button onclick="app.closeConfirmedModal()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold text-sm shadow-[0_4px_16px_rgba(0,115,255,0.4)] transition-all active:scale-95">
+          Done • Return to Home
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Interactive Feedback Toast -->
   <div id="app-toast">Welcome to VOZX RideCompare! 🚀</div>
 
   <!-- Scripts -->
-  <script src="js/audio.js?v=14"></script>
-  <script src="js/app.js?v=14"></script>
+  <script src="js/audio.js?v=15"></script>
+  <script src="js/app.js?v=15"></script>
 </body>
 </html>

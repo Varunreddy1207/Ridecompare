@@ -151,7 +151,9 @@ class RideCompareApp {
   }
 
   handleHashRoute() {
-    if (window.location.hash === '#history') {
+    if (window.location.hash === '#booking') {
+      this.navigateTo('screen-booking', false);
+    } else if (window.location.hash === '#history') {
       this.currentTab = 'history';
       this.navigateTo('screen-history', false);
       this.updateActiveNavs('history');
@@ -179,12 +181,14 @@ class RideCompareApp {
     const deskTopbars = document.querySelectorAll('.desktop-topbar');
     const width = window.innerWidth;
 
-    // When on Get Started (Splash) Screen
-    if (this.currentScreen === 'screen-splash') {
+    // When on Get Started (Splash) Screen OR Booking Confirmation Screen
+    if (this.currentScreen === 'screen-splash' || this.currentScreen === 'screen-booking') {
       mobNavs.forEach(el => el.style.setProperty('display', 'none', 'important'));
       tabDocks.forEach(el => el.style.setProperty('display', 'none', 'important'));
-      deskSidebars.forEach(el => el.style.setProperty('display', 'none', 'important'));
-      deskTopbars.forEach(tb => tb.style.setProperty('display', 'none', 'important'));
+      if (this.currentScreen === 'screen-splash') {
+        deskSidebars.forEach(el => el.style.setProperty('display', 'none', 'important'));
+        deskTopbars.forEach(tb => tb.style.setProperty('display', 'none', 'important'));
+      }
       return;
     }
 
@@ -457,12 +461,165 @@ class RideCompareApp {
     this.showToast(`Filtered: ${providerName} rides`);
   }
 
-  // Booking a Ride
+  // Booking a Ride - Opens the requested Ride Details & Confirmation UI
   bookRide(provider, fare) {
+    if (window.soundFX) {
+      window.soundFX.playTap();
+    }
+    this.openBookingScreen(provider, fare);
+  }
+
+  // Open Booking Confirmation Screen (Matches media_1790660374330.png & media_1790660393523.png)
+  openBookingScreen(provider, fare) {
+    const provLower = (provider || '').toLowerCase();
+    let pName = 'Rapido';
+    let pVehicle = 'Bike';
+    let pFare = fare || 78;
+    let pEta = '12 min';
+    let pDistance = '4.2 km';
+    let pAboutTitle = 'About Rapido';
+    let pAboutTagline = 'Fast • Affordable • Bike Taxi';
+    let pRating = '4.2 (1M+ reviews)';
+    let pBoxClass = 'provider-box-rapido';
+    let pIconSvg = `
+      <svg class="w-7 h-7 text-slate-900" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M19 12c-1.65 0-3 1.35-3 3s1.35 3 3 3 3-1.35 3-3-1.35-3-3-3zm0 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-14-4.5c-1.65 0-3 1.35-3 3s1.35 3 3 3 3-1.35 3-3-1.35-3-3-3zm0 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm6.5-6.5h3.25l1.62 3.25c.34-.16.72-.25 1.13-.25 1.65 0 3 1.35 3 3h-2.1c-.4-1.18-1.52-2-2.9-2-.41 0-.8.09-1.15.25l-1.35-2.7V17h-2v-4.5l-2.6-3.9H5v-2h4.5l2 3z"/>
+      </svg>
+    `;
+
+    if (provLower.includes('ola')) {
+      pName = 'Ola';
+      pVehicle = provLower.includes('auto') ? 'Auto' : 'Car';
+      pFare = fare || 142;
+      pEta = '18 min';
+      pAboutTitle = 'About Ola';
+      pAboutTagline = 'Reliable • Safe • Comfortable';
+      pRating = '4.1 (2M+ reviews)';
+      pBoxClass = 'provider-box-ola';
+      pIconSvg = `
+        <div class="ola-ring">
+          <div class="ola-dot"></div>
+        </div>
+      `;
+    } else if (provLower.includes('uber')) {
+      pName = 'Uber';
+      pVehicle = provLower.includes('auto') ? 'Auto' : (provLower.includes('premier') ? 'Premier' : 'Go');
+      pFare = fare || (provLower.includes('auto') ? 85 : 120);
+      pEta = '10 min';
+      pAboutTitle = 'About Uber';
+      pAboutTagline = 'Reliable • Door-to-Door • Global Standard';
+      pRating = '4.7 (5M+ reviews)';
+      pBoxClass = 'provider-box-uber';
+      pIconSvg = `<span class="text-white font-black text-xs tracking-tight">Uber</span>`;
+    } else if (provLower.includes('blusmart')) {
+      pName = 'BluSmart';
+      pVehicle = 'EV Sedan';
+      pFare = fare || 95;
+      pEta = '8 min';
+      pAboutTitle = 'About BluSmart';
+      pAboutTagline = '100% Electric • Zero Surge • Clean Cabs';
+      pRating = '4.9 (500k+ reviews)';
+      pBoxClass = 'provider-box-blusmart';
+      pIconSvg = `
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+      `;
+    }
+
+    // Populate Booking UI Elements
+    const iconBox = document.getElementById('booking-provider-icon-box');
+    if (iconBox) {
+      iconBox.className = pBoxClass;
+      iconBox.innerHTML = pIconSvg;
+    }
+    const nameEl = document.getElementById('booking-provider-name');
+    if (nameEl) nameEl.textContent = pName;
+    const vehicleEl = document.getElementById('booking-vehicle-type');
+    if (vehicleEl) vehicleEl.textContent = pVehicle;
+    const fareEl = document.getElementById('booking-fare');
+    if (fareEl) fareEl.textContent = `₹${pFare}`;
+    const etaEl = document.getElementById('booking-eta');
+    if (etaEl) etaEl.textContent = pEta;
+
+    const pickupEl = document.getElementById('booking-pickup-location');
+    if (pickupEl) pickupEl.textContent = 'Your Location';
+    const dropEl = document.getElementById('booking-drop-location');
+    if (dropEl) dropEl.textContent = this.selectedDestination || 'Sanjay Ghodawat University';
+    const distEl = document.getElementById('booking-distance');
+    if (distEl) distEl.textContent = pDistance;
+    const timeEl = document.getElementById('booking-estimated-time');
+    if (timeEl) timeEl.textContent = pEta;
+
+    const aboutTitleEl = document.getElementById('booking-about-title');
+    if (aboutTitleEl) aboutTitleEl.textContent = pAboutTitle;
+    const aboutTagEl = document.getElementById('booking-about-tagline');
+    if (aboutTagEl) aboutTagEl.textContent = pAboutTagline;
+    const aboutRatingEl = document.getElementById('booking-about-rating');
+    if (aboutRatingEl) aboutRatingEl.textContent = pRating;
+
+    const mapEta = document.getElementById('booking-map-eta');
+    if (mapEta) mapEta.textContent = `Fastest Route • ${pEta} (${pDistance})`;
+
+    // Reset Book Now CTA state
+    const btnBook = document.getElementById('btn-confirm-book-now');
+    if (btnBook) {
+      btnBook.innerHTML = '<span>Book Now</span>';
+      btnBook.disabled = false;
+      btnBook.className = 'w-full py-4 rounded-2xl bg-[#0073FF] hover:bg-[#0062dd] text-white font-bold text-base tracking-wide shadow-[0_6px_25px_rgba(0,115,255,0.45)] transition-all active:scale-[0.98] flex items-center justify-center gap-2';
+    }
+
+    // Navigate to Booking Screen
+    this.navigateTo('screen-booking', false);
+    window.location.hash = '#booking';
+  }
+
+  // Close Booking Screen and return to Home comparison
+  closeBookingScreen() {
+    if (window.soundFX) {
+      window.soundFX.playTap();
+    }
+    this.navigateTo('screen-home', false);
+    window.location.hash = '#home';
+    this.showResultsPanel();
+  }
+
+  // Confirm Booking Action on Blue Button
+  confirmBooking() {
     if (window.soundFX) {
       window.soundFX.playGetStarted();
     }
-    this.showToast(`Booking ${provider} for ₹${fare}... Opening app! 🚗`);
+    const btn = document.getElementById('btn-confirm-book-now');
+    if (btn) {
+      btn.innerHTML = `
+        <svg class="animate-spin w-5 h-5 text-white" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span>Confirming with Driver...</span>
+      `;
+      btn.disabled = true;
+    }
+
+    setTimeout(() => {
+      const modal = document.getElementById('booking-confirmed-modal');
+      if (modal) {
+        modal.classList.add('show');
+      }
+      this.showToast('Ride Confirmed! Pilot is on the way 🚗⚡');
+    }, 700);
+  }
+
+  // Close Confirmed Modal and return to Home
+  closeConfirmedModal() {
+    if (window.soundFX) {
+      window.soundFX.playTap();
+    }
+    const modal = document.getElementById('booking-confirmed-modal');
+    if (modal) {
+      modal.classList.remove('show');
+    }
+    this.switchTab('home');
   }
 
   // Location Picker Prompt
