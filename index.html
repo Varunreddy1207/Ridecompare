@@ -12,7 +12,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=16">
+  <link rel="stylesheet" href="css/styles.css?v=18">
 
   <style>
     /* Strict Responsive Display Rules */
@@ -342,7 +342,7 @@
 
           <!-- RIGHT COLUMN: LIVE INTERACTIVE MAP & COMPARISON MATRIX (Hidden until Search Rides is clicked) -->
           <!-- Exact Match to media_1790646294329.png with entrance animation -->
-          <div id="home-results-panel" class="results-panel-hidden col-span-12 lg:col-span-7 flex flex-col gap-4 w-full">
+          <div id="home-results-panel" class="results-panel-hidden col-span-12 lg:col-span-8 flex flex-col gap-4 w-full">
 
             <!-- Control Bar with Back / Modify Search button -->
             <div class="flex items-center justify-between px-1">
@@ -416,84 +416,119 @@
               <button onclick="app.toggleMoreRides()" class="ride-filter-pill text-purple-400 border-purple-500/40 hover:bg-purple-950/40">✨ More Options</button>
             </div>
 
-            <!-- Live Provider Comparison Cards (4 Cards across Desktop, Tablet & Mobile) -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <!-- Live Primary Comparison Cards (3 Spacious Featured Cards in Desktop Grid) -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
 
               <!-- 1. Uber Go -->
-              <div onclick="app.bookRide('Uber Go', 78)" class="provider-card ride-item-card cursor-pointer hover:border-blue-500/80 transition-all active:scale-[0.99]" data-category="cabs" role="button" tabindex="0">
-                <div>
-                  <div class="flex items-center gap-2 mb-1">
-                    <span class="text-sm font-bold text-white">Uber Go</span>
-                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">Value</span>
+              <div onclick="app.bookRide('Uber Go', 78)" class="provider-card ride-item-card cursor-pointer group hover:border-blue-400 transition-all p-4 rounded-2xl flex flex-col justify-between" data-category="cabs" role="button" tabindex="0">
+                <!-- Card Header: Brand Icon + Title + Value Badge -->
+                <div class="flex items-center gap-2.5">
+                  <div class="w-9 h-9 rounded-xl bg-black border border-slate-700/80 flex items-center justify-center flex-shrink-0 shadow-md">
+                    <span class="text-[10px] font-black text-white tracking-tighter">Uber</span>
                   </div>
-                  <p class="text-[11px] text-slate-400">3 mins away • 4 seats</p>
-                  <div class="mt-2 flex items-baseline gap-1.5">
-                    <span class="text-base font-extrabold text-white">₹78</span>
-                    <span class="text-[11px] text-slate-500 line-through">₹95</span>
-                  </div>
-                </div>
-                <button type="button" onclick="event.stopPropagation(); app.bookRide('Uber Go', 78)" class="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white transition-all active:scale-95 shadow-[0_4px_12px_rgba(0,115,255,0.35)]">
-                  Book
-                </button>
-              </div>
-
-              <!-- 2. Rapido Bike (Cheapest) -->
-              <div onclick="app.bookRide('Rapido Bike', 45)" class="provider-card cheapest-deal ride-item-card cursor-pointer hover:border-green-500/80 transition-all active:scale-[0.99]" data-category="bikes" role="button" tabindex="0">
-                <div>
-                  <div class="flex items-center gap-2 mb-1">
-                    <span class="text-sm font-bold text-white">Rapido Bike</span>
-                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-green-500/20 text-green-400 border border-green-500/30">Cheapest</span>
-                  </div>
-                  <p class="text-[11px] text-slate-400">2 mins away • 1 helmet</p>
-                  <div class="mt-2 flex items-baseline gap-1.5">
-                    <span class="text-base font-extrabold text-green-400">₹45</span>
-                    <span class="text-[11px] text-slate-500 line-through">₹55</span>
+                  <div>
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                      <h4 class="text-sm font-bold text-white tracking-tight whitespace-nowrap leading-none">Uber Go</h4>
+                      <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30">Value</span>
+                    </div>
+                    <p class="text-[11px] text-slate-400 font-medium whitespace-nowrap mt-1">3 mins away • 4 seats</p>
                   </div>
                 </div>
-                <button type="button" onclick="event.stopPropagation(); app.bookRide('Rapido Bike', 45)" class="px-3.5 py-1.5 rounded-xl bg-green-600 hover:bg-green-500 text-xs font-bold text-white transition-all active:scale-95 shadow-[0_4px_12px_rgba(34,197,94,0.35)]">
-                  Book
-                </button>
+
+                <!-- Card Footer: Price & Book Button -->
+                <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-800/80">
+                  <div class="flex items-baseline gap-1.5">
+                    <span class="text-lg font-black text-white tracking-tight leading-none">₹78</span>
+                    <span class="text-xs text-slate-500 line-through">₹95</span>
+                  </div>
+                  <button type="button" onclick="event.stopPropagation(); app.bookRide('Uber Go', 78)" class="px-4 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white transition-all active:scale-95 shadow-[0_4px_14px_rgba(0,115,255,0.4)]">
+                    Book
+                  </button>
+                </div>
               </div>
 
-              <!-- 3. Ola Mini -->
-              <div onclick="app.bookRide('Ola Mini', 82)" class="provider-card ride-item-card cursor-pointer hover:border-yellow-500/80 transition-all active:scale-[0.99]" data-category="cabs" role="button" tabindex="0">
-                <div>
-                  <div class="flex items-center gap-2 mb-1">
-                    <span class="text-sm font-bold text-white">Ola Mini</span>
-                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-400 border border-yellow-500/30">Fastest</span>
+              <!-- 2. Rapido Bike (Cheapest Deal) -->
+              <div onclick="app.bookRide('Rapido Bike', 45)" class="provider-card cheapest-deal ride-item-card cursor-pointer group hover:border-emerald-400 transition-all p-4 rounded-2xl flex flex-col justify-between" data-category="bikes" role="button" tabindex="0">
+                <!-- Card Header: Brand Icon + Title + Cheapest Badge -->
+                <div class="flex items-center gap-2.5">
+                  <div class="w-9 h-9 rounded-xl bg-[#FFDE00] flex items-center justify-center flex-shrink-0 shadow-md">
+                    <svg class="w-5 h-5 text-slate-950" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M19 12c-1.65 0-3 1.35-3 3s1.35 3 3 3 3-1.35 3-3-1.35-3-3-3zm0 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-14-4.5c-1.65 0-3 1.35-3 3s1.35 3 3 3 3-1.35 3-3-1.35-3-3-3zm0 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm6.5-6.5h3.25l1.62 3.25c.34-.16.72-.25 1.13-.25 1.65 0 3 1.35 3 3h-2.1c-.4-1.18-1.52-2-2.9-2-.41 0-.8.09-1.15.25l-1.35-2.7V17h-2v-4.5l-2.6-3.9H5v-2h4.5l2 3z"/>
+                    </svg>
                   </div>
-                  <p class="text-[11px] text-slate-400">4 mins away • AC Sedan</p>
-                  <div class="mt-2 flex items-baseline gap-1.5">
-                    <span class="text-base font-extrabold text-white">₹82</span>
-                    <span class="text-[11px] text-slate-500 line-through">₹99</span>
+                  <div>
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                      <h4 class="text-sm font-bold text-white tracking-tight whitespace-nowrap leading-none">Rapido Bike</h4>
+                      <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">Cheapest</span>
+                    </div>
+                    <p class="text-[11px] text-slate-400 font-medium whitespace-nowrap mt-1">2 mins away • 1 helmet</p>
                   </div>
                 </div>
-                <button type="button" onclick="event.stopPropagation(); app.bookRide('Ola Mini', 82)" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white border border-slate-700 transition-all active:scale-95">
-                  Book
-                </button>
+
+                <!-- Card Footer: Price & Book Button -->
+                <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-800/80">
+                  <div class="flex items-baseline gap-1.5">
+                    <span class="text-lg font-black text-emerald-400 tracking-tight leading-none">₹45</span>
+                    <span class="text-xs text-slate-500 line-through">₹55</span>
+                  </div>
+                  <button type="button" onclick="event.stopPropagation(); app.bookRide('Rapido Bike', 45)" class="px-4 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-xs font-bold text-slate-950 transition-all active:scale-95 shadow-[0_4px_14px_rgba(16,185,129,0.4)]">
+                    Book
+                  </button>
+                </div>
               </div>
 
-              <!-- 4. More Options Card (Exact requested More Option) -->
-              <div id="card-more-options" onclick="app.toggleMoreRides()" class="provider-card more-options-deal cursor-pointer group hover:border-purple-400/80 transition-all ride-item-card" data-category="all">
-                <div>
-                  <div class="flex items-center gap-2 mb-1">
-                    <span class="text-sm font-bold text-white flex items-center gap-1">
-                      <span>More Options</span>
-                      <svg class="w-3.5 h-3.5 text-purple-400 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    </span>
-                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">+6 Apps</span>
+              <!-- 3. Ola Mini (Fastest ETA) -->
+              <div onclick="app.bookRide('Ola Mini', 82)" class="provider-card fastest-deal ride-item-card cursor-pointer group hover:border-yellow-400 transition-all p-4 rounded-2xl flex flex-col justify-between" data-category="cabs" role="button" tabindex="0">
+                <!-- Card Header: Brand Icon + Title + Fastest Badge -->
+                <div class="flex items-center gap-2.5">
+                  <div class="w-9 h-9 rounded-xl bg-white border border-slate-300/80 flex items-center justify-center flex-shrink-0 shadow-md">
+                    <div class="w-5 h-5 rounded-full border-2 border-[#10B981] flex items-center justify-center">
+                      <div class="w-2 h-2 rounded-full bg-[#10B981]"></div>
+                    </div>
                   </div>
-                  <p class="text-[11px] text-slate-400">Autos, EV, Premier & more</p>
-                  <div class="mt-2 flex items-baseline gap-1.5">
-                    <span class="text-base font-extrabold text-purple-300">From ₹52</span>
-                    <span class="text-[11px] text-slate-500 line-through">₹65</span>
+                  <div>
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                      <h4 class="text-sm font-bold text-white tracking-tight whitespace-nowrap leading-none">Ola Mini</h4>
+                      <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-yellow-500/20 text-yellow-300 border border-yellow-500/40">Fastest</span>
+                    </div>
+                    <p class="text-[11px] text-slate-400 font-medium whitespace-nowrap mt-1">4 mins away • AC Sedan</p>
                   </div>
                 </div>
-                <button id="btn-more-toggle-badge" onclick="event.stopPropagation(); app.toggleMoreRides()" class="px-3 py-1.5 rounded-xl bg-purple-600/90 hover:bg-purple-500 text-xs font-bold text-white transition-all active:scale-95 shadow-[0_4px_12px_rgba(168,85,247,0.35)] flex items-center gap-1">
-                  <span id="more-toggle-text">More ▾</span>
-                </button>
+
+                <!-- Card Footer: Price & Book Button -->
+                <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-800/80">
+                  <div class="flex items-baseline gap-1.5">
+                    <span class="text-lg font-black text-white tracking-tight leading-none">₹82</span>
+                    <span class="text-xs text-slate-500 line-through">₹99</span>
+                  </div>
+                  <button type="button" onclick="event.stopPropagation(); app.bookRide('Ola Mini', 82)" class="px-4 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white border border-slate-700 transition-all active:scale-95">
+                    Book
+                  </button>
+                </div>
               </div>
 
+            </div>
+
+            <!-- 4. Dedicated Full-Width "More Options" Interactive Card -->
+            <div id="card-more-options" onclick="app.toggleMoreRides()" class="provider-card more-options-deal cursor-pointer group hover:border-purple-400/80 transition-all ride-item-card w-full p-3.5 sm:p-4 rounded-2xl flex items-center justify-between shadow-lg" data-category="all" role="button" tabindex="0">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 group-hover:scale-105 transition-transform flex-shrink-0">
+                  <svg class="w-5 h-5 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-bold text-white group-hover:text-purple-300 transition-colors">Compare 6 More Ride Options</span>
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">+6 Apps</span>
+                    <span class="text-xs text-purple-300 font-bold hidden sm:inline">• From ₹52</span>
+                  </div>
+                  <p class="text-xs text-slate-400 mt-0.5">Rapido Auto, Uber Auto, Ola Auto, BluSmart EV Sedan & Luxury Premier</p>
+                </div>
+              </div>
+              <button id="btn-more-toggle-badge" type="button" onclick="event.stopPropagation(); app.toggleMoreRides()" class="px-4 py-2 rounded-xl bg-purple-600/90 hover:bg-purple-500 text-xs font-bold text-white transition-all active:scale-95 shadow-[0_4px_14px_rgba(168,85,247,0.35)] flex items-center gap-1.5 flex-shrink-0 ml-3">
+                <span id="more-toggle-text">More Options ▾</span>
+              </button>
             </div>
 
             <!-- Expandable More Options Section (Reveals 6 more ride tiers) -->
@@ -510,114 +545,156 @@
                 </button>
               </div>
 
-              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
 
                 <!-- 5. Rapido Auto -->
-                <div onclick="app.bookRide('Rapido Auto', 52)" class="provider-card ride-item-card cursor-pointer hover:border-yellow-500/80 transition-all active:scale-[0.99]" data-category="autos" role="button" tabindex="0">
-                  <div>
-                    <div class="flex items-center gap-2 mb-1">
-                      <span class="text-sm font-bold text-white">🛺 Rapido Auto</span>
-                      <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-300 border border-yellow-500/30">Cheapest Auto</span>
+                <div onclick="app.bookRide('Rapido Auto', 52)" class="provider-card ride-item-card cursor-pointer group hover:border-yellow-400 transition-all p-4 rounded-2xl flex flex-col justify-between" data-category="autos" role="button" tabindex="0">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-yellow-500/20 border border-yellow-500/40 flex items-center justify-center text-base flex-shrink-0 shadow-md">
+                      🛺
                     </div>
-                    <p class="text-[11px] text-slate-400">2 mins away • 3 seats • Meter rate</p>
-                    <div class="mt-2 flex items-baseline gap-1.5">
-                      <span class="text-base font-extrabold text-yellow-400">₹52</span>
-                      <span class="text-[11px] text-slate-500 line-through">₹62</span>
+                    <div>
+                      <div class="flex items-center gap-1.5 flex-wrap">
+                        <h4 class="text-sm font-bold text-white tracking-tight whitespace-nowrap leading-none">Rapido Auto</h4>
+                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-yellow-500/20 text-yellow-300 border border-yellow-500/40">Cheapest Auto</span>
+                      </div>
+                      <p class="text-[11px] text-slate-400 font-medium whitespace-nowrap mt-1">2 mins away • 3 seats</p>
                     </div>
                   </div>
-                  <button type="button" onclick="event.stopPropagation(); app.bookRide('Rapido Auto', 52)" class="px-3.5 py-1.5 rounded-xl bg-yellow-500 hover:bg-yellow-400 text-xs font-bold text-slate-950 transition-all active:scale-95 shadow-[0_4px_12px_rgba(234,179,8,0.3)]">
-                    Book
-                  </button>
+                  <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-800/80">
+                    <div class="flex items-baseline gap-1.5">
+                      <span class="text-lg font-black text-yellow-400 tracking-tight leading-none">₹52</span>
+                      <span class="text-xs text-slate-500 line-through">₹62</span>
+                    </div>
+                    <button type="button" onclick="event.stopPropagation(); app.bookRide('Rapido Auto', 52)" class="px-4 py-1.5 rounded-xl bg-yellow-500 hover:bg-yellow-400 text-xs font-bold text-slate-950 transition-all active:scale-95 shadow-[0_4px_12px_rgba(234,179,8,0.35)]">
+                      Book
+                    </button>
+                  </div>
                 </div>
 
                 <!-- 6. Uber Auto -->
-                <div onclick="app.bookRide('Uber Auto', 55)" class="provider-card ride-item-card cursor-pointer hover:border-blue-500/80 transition-all active:scale-[0.99]" data-category="autos" role="button" tabindex="0">
-                  <div>
-                    <div class="flex items-center gap-2 mb-1">
-                      <span class="text-sm font-bold text-white">🛺 Uber Auto</span>
-                      <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">Popular</span>
+                <div onclick="app.bookRide('Uber Auto', 55)" class="provider-card ride-item-card cursor-pointer group hover:border-blue-400 transition-all p-4 rounded-2xl flex flex-col justify-between" data-category="autos" role="button" tabindex="0">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-base flex-shrink-0 shadow-md">
+                      🛺
                     </div>
-                    <p class="text-[11px] text-slate-400">3 mins away • Doorstep pickup</p>
-                    <div class="mt-2 flex items-baseline gap-1.5">
-                      <span class="text-base font-extrabold text-white">₹55</span>
-                      <span class="text-[11px] text-slate-500 line-through">₹65</span>
+                    <div>
+                      <div class="flex items-center gap-1.5 flex-wrap">
+                        <h4 class="text-sm font-bold text-white tracking-tight whitespace-nowrap leading-none">Uber Auto</h4>
+                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/40">Popular</span>
+                      </div>
+                      <p class="text-[11px] text-slate-400 font-medium whitespace-nowrap mt-1">3 mins away • Doorstep pickup</p>
                     </div>
                   </div>
-                  <button type="button" onclick="event.stopPropagation(); app.bookRide('Uber Auto', 55)" class="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white transition-all active:scale-95 shadow-[0_4px_12px_rgba(0,115,255,0.35)]">
-                    Book
-                  </button>
+                  <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-800/80">
+                    <div class="flex items-baseline gap-1.5">
+                      <span class="text-lg font-black text-white tracking-tight leading-none">₹55</span>
+                      <span class="text-xs text-slate-500 line-through">₹65</span>
+                    </div>
+                    <button type="button" onclick="event.stopPropagation(); app.bookRide('Uber Auto', 55)" class="px-4 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white transition-all active:scale-95 shadow-[0_4px_12px_rgba(0,115,255,0.35)]">
+                      Book
+                    </button>
+                  </div>
                 </div>
 
                 <!-- 7. Ola Auto -->
-                <div onclick="app.bookRide('Ola Auto', 54)" class="provider-card ride-item-card cursor-pointer hover:border-lime-500/80 transition-all active:scale-[0.99]" data-category="autos" role="button" tabindex="0">
-                  <div>
-                    <div class="flex items-center gap-2 mb-1">
-                      <span class="text-sm font-bold text-white">🛺 Ola Auto</span>
-                      <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-lime-500/20 text-lime-400 border border-lime-500/30">Fast</span>
+                <div onclick="app.bookRide('Ola Auto', 54)" class="provider-card ride-item-card cursor-pointer group hover:border-lime-400 transition-all p-4 rounded-2xl flex flex-col justify-between" data-category="autos" role="button" tabindex="0">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-lime-500/20 border border-lime-500/40 flex items-center justify-center text-base flex-shrink-0 shadow-md">
+                      🛺
                     </div>
-                    <p class="text-[11px] text-slate-400">4 mins away • OTP ride</p>
-                    <div class="mt-2 flex items-baseline gap-1.5">
-                      <span class="text-base font-extrabold text-white">₹54</span>
-                      <span class="text-[11px] text-slate-500 line-through">₹62</span>
+                    <div>
+                      <div class="flex items-center gap-1.5 flex-wrap">
+                        <h4 class="text-sm font-bold text-white tracking-tight whitespace-nowrap leading-none">Ola Auto</h4>
+                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-lime-500/20 text-lime-300 border border-lime-500/40">Fast</span>
+                      </div>
+                      <p class="text-[11px] text-slate-400 font-medium whitespace-nowrap mt-1">4 mins away • Fast OTP</p>
                     </div>
                   </div>
-                  <button type="button" onclick="event.stopPropagation(); app.bookRide('Ola Auto', 54)" class="px-3.5 py-1.5 rounded-xl bg-lime-600 hover:bg-lime-500 text-xs font-bold text-white transition-all active:scale-95 shadow-[0_4px_12px_rgba(101,163,13,0.35)]">
-                    Book
-                  </button>
+                  <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-800/80">
+                    <div class="flex items-baseline gap-1.5">
+                      <span class="text-lg font-black text-white tracking-tight leading-none">₹54</span>
+                      <span class="text-xs text-slate-500 line-through">₹62</span>
+                    </div>
+                    <button type="button" onclick="event.stopPropagation(); app.bookRide('Ola Auto', 54)" class="px-4 py-1.5 rounded-xl bg-lime-600 hover:bg-lime-500 text-xs font-bold text-white transition-all active:scale-95 shadow-[0_4px_12px_rgba(101,163,13,0.35)]">
+                      Book
+                    </button>
+                  </div>
                 </div>
 
                 <!-- 8. BluSmart EV -->
-                <div onclick="app.bookRide('BluSmart EV', 95)" class="provider-card ride-item-card cursor-pointer hover:border-cyan-500/80 transition-all active:scale-[0.99]" data-category="ev" role="button" tabindex="0">
-                  <div>
-                    <div class="flex items-center gap-2 mb-1">
-                      <span class="text-sm font-bold text-white">⚡ BluSmart EV</span>
-                      <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">Zero Surge</span>
+                <div onclick="app.bookRide('BluSmart EV', 95)" class="provider-card ride-item-card cursor-pointer group hover:border-cyan-400 transition-all p-4 rounded-2xl flex flex-col justify-between" data-category="ev" role="button" tabindex="0">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 flex-shrink-0 shadow-md">
+                      <svg class="w-5 h-5 text-cyan-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                     </div>
-                    <p class="text-[11px] text-slate-400">5 mins away • 100% Electric Sedan</p>
-                    <div class="mt-2 flex items-baseline gap-1.5">
-                      <span class="text-base font-extrabold text-cyan-400">₹95</span>
-                      <span class="text-[11px] text-slate-500 line-through">₹110</span>
+                    <div>
+                      <div class="flex items-center gap-1.5 flex-wrap">
+                        <h4 class="text-sm font-bold text-white tracking-tight whitespace-nowrap leading-none">BluSmart EV</h4>
+                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">Zero Surge</span>
+                      </div>
+                      <p class="text-[11px] text-slate-400 font-medium whitespace-nowrap mt-1">5 mins away • 100% Electric</p>
                     </div>
                   </div>
-                  <button type="button" onclick="event.stopPropagation(); app.bookRide('BluSmart EV', 95)" class="px-3.5 py-1.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-xs font-bold text-white transition-all active:scale-95 shadow-[0_4px_12px_rgba(6,182,212,0.35)]">
-                    Book
-                  </button>
+                  <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-800/80">
+                    <div class="flex items-baseline gap-1.5">
+                      <span class="text-lg font-black text-cyan-400 tracking-tight leading-none">₹95</span>
+                      <span class="text-xs text-slate-500 line-through">₹110</span>
+                    </div>
+                    <button type="button" onclick="event.stopPropagation(); app.bookRide('BluSmart EV', 95)" class="px-4 py-1.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-xs font-bold text-white transition-all active:scale-95 shadow-[0_4px_12px_rgba(6,182,212,0.35)]">
+                      Book
+                    </button>
+                  </div>
                 </div>
 
                 <!-- 9. Uber Premier -->
-                <div onclick="app.bookRide('Uber Premier', 115)" class="provider-card ride-item-card cursor-pointer hover:border-amber-500/80 transition-all active:scale-[0.99]" data-category="cabs" role="button" tabindex="0">
-                  <div>
-                    <div class="flex items-center gap-2 mb-1">
-                      <span class="text-sm font-bold text-white">🚗 Uber Premier</span>
-                      <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">Luxury</span>
+                <div onclick="app.bookRide('Uber Premier', 115)" class="provider-card ride-item-card cursor-pointer group hover:border-amber-400 transition-all p-4 rounded-2xl flex flex-col justify-between" data-category="cabs" role="button" tabindex="0">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-base flex-shrink-0 shadow-md">
+                      🚗
                     </div>
-                    <p class="text-[11px] text-slate-400">3 mins away • Top rated drivers • Sedan</p>
-                    <div class="mt-2 flex items-baseline gap-1.5">
-                      <span class="text-base font-extrabold text-white">₹115</span>
-                      <span class="text-[11px] text-slate-500 line-through">₹135</span>
+                    <div>
+                      <div class="flex items-center gap-1.5 flex-wrap">
+                        <h4 class="text-sm font-bold text-white tracking-tight whitespace-nowrap leading-none">Uber Premier</h4>
+                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">Luxury</span>
+                      </div>
+                      <p class="text-[11px] text-slate-400 font-medium whitespace-nowrap mt-1">3 mins away • Top Drivers</p>
                     </div>
                   </div>
-                  <button type="button" onclick="event.stopPropagation(); app.bookRide('Uber Premier', 115)" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white border border-slate-700 transition-all active:scale-95">
-                    Book
-                  </button>
+                  <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-800/80">
+                    <div class="flex items-baseline gap-1.5">
+                      <span class="text-lg font-black text-white tracking-tight leading-none">₹115</span>
+                      <span class="text-xs text-slate-500 line-through">₹135</span>
+                    </div>
+                    <button type="button" onclick="event.stopPropagation(); app.bookRide('Uber Premier', 115)" class="px-4 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white border border-slate-700 transition-all active:scale-95">
+                      Book
+                    </button>
+                  </div>
                 </div>
 
                 <!-- 10. Ola Prime Sedan -->
-                <div onclick="app.bookRide('Ola Prime', 110)" class="provider-card ride-item-card cursor-pointer hover:border-emerald-500/80 transition-all active:scale-[0.99]" data-category="cabs" role="button" tabindex="0">
-                  <div>
-                    <div class="flex items-center gap-2 mb-1">
-                      <span class="text-sm font-bold text-white">🚕 Ola Prime</span>
-                      <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Comfort</span>
+                <div onclick="app.bookRide('Ola Prime', 110)" class="provider-card ride-item-card cursor-pointer group hover:border-emerald-400 transition-all p-4 rounded-2xl flex flex-col justify-between" data-category="cabs" role="button" tabindex="0">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-base flex-shrink-0 shadow-md">
+                      🚕
                     </div>
-                    <p class="text-[11px] text-slate-400">4 mins away • Prime Play • Extra legroom</p>
-                    <div class="mt-2 flex items-baseline gap-1.5">
-                      <span class="text-base font-extrabold text-white">₹110</span>
-                      <span class="text-[11px] text-slate-500 line-through">₹128</span>
+                    <div>
+                      <div class="flex items-center gap-1.5 flex-wrap">
+                        <h4 class="text-sm font-bold text-white tracking-tight whitespace-nowrap leading-none">Ola Prime</h4>
+                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">Comfort</span>
+                      </div>
+                      <p class="text-[11px] text-slate-400 font-medium whitespace-nowrap mt-1">4 mins away • Extra legroom</p>
                     </div>
                   </div>
-                  <button type="button" onclick="event.stopPropagation(); app.bookRide('Ola Prime', 110)" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white border border-slate-700 transition-all active:scale-95">
-                    Book
-                  </button>
+                  <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-800/80">
+                    <div class="flex items-baseline gap-1.5">
+                      <span class="text-lg font-black text-white tracking-tight leading-none">₹110</span>
+                      <span class="text-xs text-slate-500 line-through">₹128</span>
+                    </div>
+                    <button type="button" onclick="event.stopPropagation(); app.bookRide('Ola Prime', 110)" class="px-4 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white border border-slate-700 transition-all active:scale-95">
+                      Book
+                    </button>
+                  </div>
                 </div>
 
               </div>
@@ -1379,8 +1456,8 @@
         </div>
 
         <!-- BOTTOM PRIMARY CTA BUTTON (Exact match: Bright Blue Full-Width "Book Now") -->
-        <div class="pt-3 pb-3 sticky bottom-0 bg-[#070E1E] z-10">
-          <button id="btn-confirm-book-now" type="button" onclick="app.confirmBooking()" class="w-full py-4 rounded-2xl bg-[#0073FF] hover:bg-[#0062dd] text-white font-bold text-base tracking-wide shadow-[0_6px_25px_rgba(0,115,255,0.45)] transition-all active:scale-[0.98] flex items-center justify-center gap-2">
+        <div class="pt-4 pb-2">
+          <button id="btn-confirm-book-now" onclick="app.confirmBooking()" class="w-full py-4 rounded-2xl bg-[#0073FF] hover:bg-[#0062dd] text-white font-bold text-base tracking-wide shadow-[0_6px_25px_rgba(0,115,255,0.45)] transition-all active:scale-[0.98] flex items-center justify-center gap-2">
             <span>Book Now</span>
           </button>
         </div>
@@ -1448,7 +1525,7 @@
   <div id="app-toast">Welcome to VOZX RideCompare! 🚀</div>
 
   <!-- Scripts -->
-  <script src="js/audio.js?v=16"></script>
-  <script src="js/app.js?v=16"></script>
+  <script src="js/audio.js?v=18"></script>
+  <script src="js/app.js?v=18"></script>
 </body>
 </html>

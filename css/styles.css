@@ -898,24 +898,41 @@ html, body {
 .provider-card {
   background: rgba(10, 17, 36, 0.92);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 18px;
-  padding: 14px 16px;
+  border-radius: 20px;
+  padding: 16px 18px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: space-between;
-  backdrop-filter: blur(12px);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(14px);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
 }
 
 .provider-card:hover {
   border-color: #38BDF8;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 115, 255, 0.2);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 24px rgba(0, 115, 255, 0.25);
 }
 
 .provider-card.cheapest-deal {
   border-color: rgba(34, 197, 94, 0.5);
-  background: linear-gradient(135deg, rgba(10, 17, 36, 0.95) 0%, rgba(34, 197, 94, 0.08) 100%);
+  background: linear-gradient(135deg, rgba(10, 17, 36, 0.95) 0%, rgba(34, 197, 94, 0.1) 100%);
+}
+
+.provider-card.cheapest-deal:hover {
+  border-color: #4ade80;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 24px rgba(34, 197, 94, 0.3);
+}
+
+.provider-card.fastest-deal {
+  border-color: rgba(234, 179, 8, 0.5);
+  background: linear-gradient(135deg, rgba(10, 17, 36, 0.95) 0%, rgba(234, 179, 8, 0.08) 100%);
+}
+
+.provider-card.fastest-deal:hover {
+  border-color: #facc15;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 24px rgba(234, 179, 8, 0.3);
 }
 
 /* Feedback Toast Notification */
@@ -1087,20 +1104,25 @@ html, body {
   }
 }
 
+.results-panel-visible #card-more-options,
 .results-panel-visible .provider-card:nth-child(4) {
   animation: cardSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.34s both;
 }
 
 /* More Options Card Highlight */
 .provider-card.more-options-deal {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
   border-color: rgba(168, 85, 247, 0.4);
-  background: linear-gradient(135deg, rgba(10, 17, 36, 0.95) 0%, rgba(168, 85, 247, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(10, 17, 36, 0.95) 0%, rgba(168, 85, 247, 0.12) 100%);
 }
 
 .provider-card.more-options-deal:hover {
   border-color: #C084FC;
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 20px rgba(168, 85, 247, 0.25);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 24px rgba(168, 85, 247, 0.3);
 }
 
 /* Category Filter Pills */

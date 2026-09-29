@@ -152,7 +152,7 @@ class RideCompareApp {
 
   handleHashRoute() {
     if (window.location.hash === '#booking') {
-      this.openBookingScreen(this.lastSelectedProvider || 'Rapido Bike', this.lastSelectedFare || 78);
+      this.navigateTo('screen-booking', false);
     } else if (window.location.hash === '#history') {
       this.currentTab = 'history';
       this.navigateTo('screen-history', false);
@@ -348,8 +348,8 @@ class RideCompareApp {
 
     // On Desktop & Tablet: adjust search container to left column
     if (searchContainer) {
-      searchContainer.classList.remove('max-w-xl', 'mx-auto');
-      searchContainer.classList.add('lg:col-span-5');
+      searchContainer.classList.remove('max-w-xl', 'mx-auto', 'lg:col-span-5');
+      searchContainer.classList.add('lg:col-span-4');
     }
 
     // On mobile (< 768px): scroll results into view smoothly
@@ -384,7 +384,7 @@ class RideCompareApp {
     panel.classList.add('results-panel-hidden');
 
     if (searchContainer) {
-      searchContainer.classList.remove('lg:col-span-5');
+      searchContainer.classList.remove('lg:col-span-4', 'lg:col-span-5');
       searchContainer.classList.add('max-w-xl', 'mx-auto');
     }
 
@@ -466,9 +466,7 @@ class RideCompareApp {
     if (window.soundFX) {
       window.soundFX.playTap();
     }
-    this.lastSelectedProvider = provider || 'Rapido Bike';
-    this.lastSelectedFare = fare || 78;
-    this.openBookingScreen(this.lastSelectedProvider, this.lastSelectedFare);
+    this.openBookingScreen(provider, fare);
   }
 
   // Open Booking Confirmation Screen (Matches media_1790660374330.png & media_1790660393523.png)
@@ -573,9 +571,7 @@ class RideCompareApp {
 
     // Navigate to Booking Screen
     this.navigateTo('screen-booking', false);
-    if (window.location.hash !== '#booking') {
-      window.location.hash = '#booking';
-    }
+    window.location.hash = '#booking';
   }
 
   // Close Booking Screen and return to Home comparison
@@ -584,9 +580,7 @@ class RideCompareApp {
       window.soundFX.playTap();
     }
     this.navigateTo('screen-home', false);
-    if (window.location.hash !== '#home') {
-      window.location.hash = '#home';
-    }
+    window.location.hash = '#home';
     this.showResultsPanel();
   }
 
@@ -787,7 +781,7 @@ class RideCompareApp {
     this.showToast(`Showing ${visibleCount} ${label} trips`);
   }
 
-  // Re-Book Current Trip (Directly opens Booking Details & Confirmation screen)
+  // Re-Book Current Trip (Pre-fills Home inputs and opens Live Compare rates)
   rebookCurrentTrip() {
     const trip = this.historyTrips.find(t => t.id === this.selectedHistoryTripId) || this.historyTrips[0];
     this.closeHistoryModal();
@@ -804,9 +798,12 @@ class RideCompareApp {
     const deskSearchInput = document.getElementById('desktop-search-input');
     if (deskSearchInput) deskSearchInput.value = trip.destination;
 
-    // Directly open the Booking Details & Confirmation screen
-    this.openBookingScreen(trip.provider, trip.fare);
-    this.showToast(`Booking ${trip.provider} for ₹${trip.fare} ⚡`);
+    // Switch to Home screen and open results panel
+    this.switchTab('home');
+    setTimeout(() => {
+      this.showResultsPanel();
+      this.showToast(`Re-booking: ${trip.origin} ➔ ${trip.destination} ⚡`);
+    }, 150);
   }
 
   // Export History as CSV
