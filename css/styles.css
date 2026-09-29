@@ -612,22 +612,32 @@ html, body {
 }
 
 /* ==========================================================================
-   NAVIGATION: MOBILE FIXED BOTTOM NAV (< 768px)
+   NAVIGATION: MOBILE FIXED BOTTOM NAV (< 768px ONLY)
    ========================================================================== */
-#mobile-bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 50;
-  background: rgba(6, 11, 23, 0.94);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(30, 41, 59, 0.8);
-  padding: 8px 16px max(10px, env(safe-area-inset-bottom, 10px)) 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
+@media (max-width: 767px) {
+  #mobile-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background: rgba(6, 11, 23, 0.94);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(30, 41, 59, 0.8);
+    padding: 8px 16px max(10px, env(safe-area-inset-bottom, 10px)) 16px;
+    display: flex !important;
+    align-items: center;
+    justify-content: space-around;
+  }
+}
+
+@media (min-width: 768px) {
+  #mobile-bottom-nav {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
 }
 
 .mob-nav-btn {
@@ -667,24 +677,34 @@ html, body {
 }
 
 /* ==========================================================================
-   NAVIGATION: TABLET FLOATING DOCK (768px – 1023px)
+   NAVIGATION: TABLET FLOATING DOCK (768px – 1023px ONLY)
    ========================================================================== */
-#tablet-nav-dock {
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 50;
-  background: rgba(10, 17, 36, 0.88);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(56, 189, 248, 0.25);
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.75), 0 0 25px rgba(0, 115, 255, 0.25);
-  border-radius: 9999px;
-  padding: 6px 16px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+@media (min-width: 768px) and (max-width: 1023px) {
+  #tablet-nav-dock {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 50;
+    background: rgba(10, 17, 36, 0.88);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.75), 0 0 25px rgba(0, 115, 255, 0.25);
+    border-radius: 9999px;
+    padding: 6px 16px;
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 767px), (min-width: 1024px) {
+  #tablet-nav-dock {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
 }
 
 .tab-dock-btn {
@@ -714,22 +734,48 @@ html, body {
 }
 
 /* ==========================================================================
-   NAVIGATION: DESKTOP LEFT SIDEBAR & TOP BAR (>= 1024px)
+   NAVIGATION: DESKTOP LEFT SIDEBAR & TOP BAR (>= 1024px ONLY)
    ========================================================================== */
-#desktop-sidebar {
-  width: 260px;
-  height: 100vh;
-  position: fixed;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  background: #060B17;
-  border-right: 1px solid rgba(30, 41, 59, 0.7);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 24px 16px;
-  z-index: 40;
+@media (min-width: 1024px) {
+  #desktop-sidebar {
+    width: 260px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    background: #060B17;
+    border-right: 1px solid rgba(30, 41, 59, 0.7);
+    display: flex !important;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 24px 16px;
+    z-index: 40;
+  }
+
+  .desktop-topbar {
+    height: 70px;
+    background: rgba(6, 11, 23, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(30, 41, 59, 0.7);
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    position: sticky;
+    top: 0;
+    z-index: 30;
+  }
+}
+
+@media (max-width: 1023px) {
+  #desktop-sidebar,
+  .desktop-topbar {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
 }
 
 .desktop-nav-list {
@@ -768,21 +814,6 @@ html, body {
 .sidebar-nav-item:hover:not(.active) {
   background: rgba(255, 255, 255, 0.04);
   color: #FFFFFF;
-}
-
-.desktop-topbar {
-  height: 70px;
-  background: rgba(6, 11, 23, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(30, 41, 59, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 32px;
-  position: sticky;
-  top: 0;
-  z-index: 30;
 }
 
 /* ==========================================================================
