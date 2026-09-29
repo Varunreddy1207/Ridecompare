@@ -12,7 +12,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=5">
+  <link rel="stylesheet" href="css/styles.css?v=6">
 </head>
 <body class="bg-[#020617] text-white min-h-screen selection:bg-blue-600 selection:text-white antialiased">
 
@@ -432,7 +432,7 @@
 
     <!-- ==================================================================== -->
     <!-- MOBILE FIXED BOTTOM NAVIGATION (< 768px)                             -->
-    <!-- Exact 4 Icons Matching media_1790644185007.png: Home, History, Saved, More -->
+    <!-- 3 Icons: Home, History, Saved                                       -->
     <!-- ==================================================================== -->
     <nav id="mobile-bottom-nav" class="flex md:hidden">
       <!-- 1. Home -->
@@ -458,14 +458,6 @@
         </svg>
         <span>Saved</span>
       </button>
-
-      <!-- 4. More -->
-      <button id="mob-nav-more" onclick="app.switchTab('more')" class="mob-nav-btn">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-        </svg>
-        <span>More</span>
-      </button>
     </nav>
 
     <!-- ==================================================================== -->
@@ -483,10 +475,6 @@
       <button onclick="app.switchTab('saved')" class="tab-dock-btn" id="tab-btn-saved">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
         <span>Saved</span>
-      </button>
-      <button onclick="app.switchTab('more')" class="tab-dock-btn" id="tab-btn-more">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-        <span>More</span>
       </button>
     </nav>
 
@@ -567,7 +555,7 @@
   <div id="app-toast">Welcome to VOZX RideCompare! 🚀</div>
 
   <!-- Scripts -->
-  <script src="js/audio.js?v=5"></script>
-  <script src="js/app.js?v=5"></script>
+  <script src="js/audio.js?v=6"></script>
+  <script src="js/app.js?v=6"></script>
 </body>
 </html>
