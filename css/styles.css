@@ -1546,44 +1546,75 @@ body:not(.theme-dark) .desktop-topbar .bg-slate-900 {
   color: #334155 !important;
 }
 
-/* 3. Desktop Permanent Sidebar */
-body:not(.theme-dark) #desktop-sidebar {
+/* 3. Desktop Permanent Sidebar (All Screens: Home, History, Profile) */
+body:not(.theme-dark) #desktop-sidebar,
+body:not(.theme-dark) .desktop-sidebar {
   background-color: #FFFFFF !important;
   border-right: 1px solid #E2E8F0 !important;
   box-shadow: 2px 0 16px rgba(15, 23, 42, 0.03) !important;
 }
 
-body:not(.theme-dark) #desktop-sidebar h1 {
+body:not(.theme-dark) #desktop-sidebar h1,
+body:not(.theme-dark) .desktop-sidebar h1 {
   color: #0F172A !important;
 }
 
-body:not(.theme-dark) #desktop-sidebar .sidebar-nav-item {
-  color: #475569 !important;
+body:not(.theme-dark) #desktop-sidebar .text-slate-400,
+body:not(.theme-dark) .desktop-sidebar .text-slate-400 {
+  color: #64748B !important;
 }
 
-body:not(.theme-dark) #desktop-sidebar .sidebar-nav-item:hover {
+body:not(.theme-dark) #desktop-sidebar .sidebar-nav-item,
+body:not(.theme-dark) .desktop-sidebar .sidebar-nav-item {
+  color: #475569 !important;
+  background-color: transparent !important;
+}
+
+body:not(.theme-dark) #desktop-sidebar .sidebar-nav-item:hover,
+body:not(.theme-dark) .desktop-sidebar .sidebar-nav-item:hover {
   background-color: #F8FAFC !important;
   color: #0F172A !important;
 }
 
-body:not(.theme-dark) #desktop-sidebar .sidebar-nav-item.active {
+body:not(.theme-dark) #desktop-sidebar .sidebar-nav-item.active,
+body:not(.theme-dark) .desktop-sidebar .sidebar-nav-item.active {
   background-color: #EFF6FF !important;
   color: #0073FF !important;
   font-weight: 700 !important;
+  border-left: 3px solid #0073FF !important;
 }
 
-body:not(.theme-dark) #desktop-sidebar .border-slate-800\/80 {
+body:not(.theme-dark) #desktop-sidebar .sidebar-nav-item svg,
+body:not(.theme-dark) .desktop-sidebar .sidebar-nav-item svg {
+  color: inherit !important;
+}
+
+body:not(.theme-dark) #desktop-sidebar .border-slate-800\/80,
+body:not(.theme-dark) .desktop-sidebar .border-slate-800\/80 {
   border-color: #E2E8F0 !important;
 }
 
 body:not(.theme-dark) #desktop-sidebar .bg-slate-900\/60,
-body:not(.theme-dark) #desktop-sidebar .bg-blue-950\/40 {
-  background-color: #F8FAFC !important;
-  border: 1px solid #E2E8F0 !important;
+body:not(.theme-dark) .desktop-sidebar .bg-slate-900\/60,
+body:not(.theme-dark) #desktop-sidebar .bg-blue-950\/40,
+body:not(.theme-dark) .desktop-sidebar .bg-blue-950\/40 {
+  background-color: #EFF6FF !important;
+  border: 1px solid #BFDBFE !important;
 }
 
-body:not(.theme-dark) #desktop-sidebar .text-white:not(button):not(button *) {
+body:not(.theme-dark) #desktop-sidebar .text-white:not(button):not(button *),
+body:not(.theme-dark) .desktop-sidebar .text-white:not(button):not(button *) {
   color: #0F172A !important;
+}
+
+body:not(.theme-dark) #desktop-sidebar button[title="Log Out"],
+body:not(.theme-dark) .desktop-sidebar button[title="Log Out"] {
+  color: #64748B !important;
+}
+
+body:not(.theme-dark) #desktop-sidebar button[title="Log Out"]:hover,
+body:not(.theme-dark) .desktop-sidebar button[title="Log Out"]:hover {
+  color: #EF4444 !important;
 }
 
 /* 4. Get Started Splash Screen */
