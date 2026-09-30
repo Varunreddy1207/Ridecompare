@@ -28,7 +28,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=34">
+  <link rel="stylesheet" href="css/styles.css?v=35">
 
   <style>
     /* Strict Responsive Display Rules: Bottom Nav for Mobile & Tablet (< 1024px) */
@@ -461,6 +461,186 @@
         justify-content: flex-start;
       }
     }
+
+/* ==========================================================================
+   HISTORY SCREEN LIGHT MODE THEME (White Receipt & Clean Filter Pills)
+   ========================================================================== */
+
+/* 1. History Filter Pills in Light Mode */
+body:not(.theme-dark) .history-filter-pill,
+body.theme-light .history-filter-pill,
+[data-theme="light"] .history-filter-pill {
+  background: #FFFFFF !important;
+  border: 1px solid #CBD5E1 !important;
+  color: #475569 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+body:not(.theme-dark) .history-filter-pill:hover,
+body.theme-light .history-filter-pill:hover,
+[data-theme="light"] .history-filter-pill:hover {
+  background: #F8FAFC !important;
+  border-color: #94A3B8 !important;
+  color: #0F172A !important;
+}
+
+body:not(.theme-dark) .history-filter-pill.active,
+body.theme-light .history-filter-pill.active,
+[data-theme="light"] .history-filter-pill.active {
+  background: #0073FF !important;
+  border-color: #0073FF !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 14px rgba(0, 115, 255, 0.35) !important;
+}
+
+/* 2. Desktop Receipt Panel: Crisp White Theme */
+body:not(.theme-dark) #desktop-receipt-panel,
+body.theme-light #desktop-receipt-panel,
+[data-theme="light"] #desktop-receipt-panel,
+body:not(.theme-dark) #history-detail-modal .history-modal-panel,
+body.theme-light #history-detail-modal .history-modal-panel,
+[data-theme="light"] #history-detail-modal .history-modal-panel {
+  background: #FFFFFF !important;
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+  color: #0F172A !important;
+}
+
+/* 3. Modal and Receipt Header Borders & Dividers */
+body:not(.theme-dark) #desktop-receipt-panel .border-b,
+body:not(.theme-dark) #desktop-receipt-panel .border-t,
+body:not(.theme-dark) #desktop-receipt-panel .border-slate-800,
+body:not(.theme-dark) #desktop-receipt-panel .border-slate-800\/80,
+body:not(.theme-dark) #history-detail-modal .border-b,
+body:not(.theme-dark) #history-detail-modal .border-slate-800,
+body.theme-light #desktop-receipt-panel .border-b,
+body.theme-light #desktop-receipt-panel .border-t,
+body.theme-light #desktop-receipt-panel .border-slate-800,
+body.theme-light #desktop-receipt-panel .border-slate-800\/80,
+body.theme-light #history-detail-modal .border-b,
+body.theme-light #history-detail-modal .border-slate-800 {
+  border-color: #E2E8F0 !important;
+}
+
+/* 4. Sub-Cards (Route Timeline & Driver Box) */
+body:not(.theme-dark) #desktop-receipt-panel .bg-slate-900\/60,
+body:not(.theme-dark) #desktop-receipt-panel .bg-slate-900\/40,
+body:not(.theme-dark) #desktop-receipt-panel .bg-slate-900,
+body:not(.theme-dark) #history-detail-modal .bg-slate-900\/80,
+body:not(.theme-dark) #history-detail-modal .bg-slate-900\/60,
+body:not(.theme-dark) #history-detail-modal .bg-slate-900,
+body.theme-light #desktop-receipt-panel .bg-slate-900\/60,
+body.theme-light #desktop-receipt-panel .bg-slate-900\/40,
+body.theme-light #desktop-receipt-panel .bg-slate-900,
+body.theme-light #history-detail-modal .bg-slate-900\/80,
+body.theme-light #history-detail-modal .bg-slate-900\/60,
+body.theme-light #history-detail-modal .bg-slate-900 {
+  background-color: #F8FAFC !important;
+  border: 1px solid #E2E8F0 !important;
+}
+
+/* 5. Dashed Route Line */
+body:not(.theme-dark) #desktop-receipt-panel .border-dashed,
+body:not(.theme-dark) #history-detail-modal .border-dashed,
+body.theme-light #desktop-receipt-panel .border-dashed,
+body.theme-light #history-detail-modal .border-dashed {
+  border-color: #CBD5E1 !important;
+}
+
+/* 6. Typography */
+body:not(.theme-dark) #desktop-receipt-panel .text-white:not(button):not(button *),
+body:not(.theme-dark) #history-detail-modal .text-white:not(button):not(button *),
+body.theme-light #desktop-receipt-panel .text-white:not(button):not(button *),
+body.theme-light #history-detail-modal .text-white:not(button):not(button *) {
+  color: #0F172A !important;
+}
+
+body:not(.theme-dark) #desktop-receipt-panel .text-slate-200,
+body:not(.theme-dark) #history-detail-modal .text-slate-200,
+body.theme-light #desktop-receipt-panel .text-slate-200,
+body.theme-light #history-detail-modal .text-slate-200 {
+  color: #1E293B !important;
+}
+
+body:not(.theme-dark) #desktop-receipt-panel .text-slate-300,
+body:not(.theme-dark) #history-detail-modal .text-slate-300,
+body.theme-light #desktop-receipt-panel .text-slate-300,
+body.theme-light #history-detail-modal .text-slate-300 {
+  color: #334155 !important;
+}
+
+body:not(.theme-dark) #desktop-receipt-panel .text-slate-400,
+body:not(.theme-dark) #history-detail-modal .text-slate-400,
+body.theme-light #desktop-receipt-panel .text-slate-400,
+body.theme-light #history-detail-modal .text-slate-400 {
+  color: #64748B !important;
+}
+
+body:not(.theme-dark) #desktop-receipt-panel .text-slate-500,
+body:not(.theme-dark) #history-detail-modal .text-slate-500,
+body.theme-light #desktop-receipt-panel .text-slate-500,
+body.theme-light #history-detail-modal .text-slate-500 {
+  color: #64748B !important;
+}
+
+body:not(.theme-dark) #desktop-receipt-panel #receipt-final-fare,
+body.theme-light #desktop-receipt-panel #receipt-final-fare {
+  color: #0073FF !important;
+}
+
+/* 7. Badges and Sub-elements */
+body:not(.theme-dark) #desktop-receipt-panel .bg-slate-800,
+body:not(.theme-dark) #history-detail-modal .bg-slate-800,
+body.theme-light #desktop-receipt-panel .bg-slate-800,
+body.theme-light #history-detail-modal .bg-slate-800 {
+  background-color: #EEF2F6 !important;
+  border-color: #CBD5E1 !important;
+  color: #0F172A !important;
+}
+
+body:not(.theme-dark) #receipt-provider-badge.bg-white,
+body.theme-light #receipt-provider-badge.bg-white,
+body:not(.theme-dark) #modal-provider-badge.bg-white,
+body.theme-light #modal-provider-badge.bg-white {
+  background-color: #F1F5F9 !important;
+  color: #0F172A !important;
+  border: 1px solid #CBD5E1 !important;
+}
+
+/* 8. Modal Close Button */
+body:not(.theme-dark) #history-detail-modal button[onclick*="closeHistoryModal"],
+body.theme-light #history-detail-modal button[onclick*="closeHistoryModal"] {
+  background-color: #F1F5F9 !important;
+  color: #475569 !important;
+  border: 1px solid #E2E8F0 !important;
+}
+body:not(.theme-dark) #history-detail-modal button[onclick*="closeHistoryModal"]:hover,
+body.theme-light #history-detail-modal button[onclick*="closeHistoryModal"]:hover {
+  background-color: #E2E8F0 !important;
+  color: #0F172A !important;
+}
+
+/* 9. Re-Book CTA Button (Both Desktop & Modal) */
+body:not(.theme-dark) #btn-rebook-trip,
+body:not(.theme-dark) #btn-rebook-trip *,
+body.theme-light #btn-rebook-trip,
+body.theme-light #btn-rebook-trip *,
+body:not(.theme-dark) #history-detail-modal button.bg-gradient-to-r,
+body:not(.theme-dark) #history-detail-modal button.bg-gradient-to-r *,
+body.theme-light #history-detail-modal button.bg-gradient-to-r,
+body.theme-light #history-detail-modal button.bg-gradient-to-r * {
+  color: #FFFFFF !important;
+}
+
+body:not(.theme-dark) #btn-rebook-trip,
+body.theme-light #btn-rebook-trip,
+body:not(.theme-dark) #history-detail-modal button.bg-gradient-to-r,
+body.theme-light #history-detail-modal button.bg-gradient-to-r {
+  background: linear-gradient(135deg, #0073FF 0%, #0056CC 100%) !important;
+  box-shadow: 0 4px 18px rgba(0, 115, 255, 0.4) !important;
+}
+
   </style>
 </head>
 <body class="min-h-screen selection:bg-blue-600 selection:text-white antialiased theme-light">

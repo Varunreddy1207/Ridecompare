@@ -212,6 +212,7 @@ class RideCompareApp {
     }
     this.updateTopbarActionButtons(theme === 'dark');
     this.updateConfirmedModalTheme(theme === 'dark');
+    this.updateHistoryReceiptTheme(theme === 'dark');
   }
 
   // Ensure "Back to Home" and Notification Bell buttons have blue background in light mode
@@ -282,6 +283,38 @@ class RideCompareApp {
   }
 
   // Ensure Ride Confirmed modal has pure white background in light mode
+  
+  // Ensure History Receipt and Modals have pure white theme in light mode
+  updateHistoryReceiptTheme(isDark = false) {
+    const isDarkMode = isDark || document.body.classList.contains('theme-dark') || document.documentElement.getAttribute('data-theme') === 'dark';
+    const panel = document.getElementById('desktop-receipt-panel');
+    const modalPanel = document.querySelector('#history-detail-modal .history-modal-panel');
+
+    if (isDarkMode) {
+      if (panel) {
+        panel.style.removeProperty('background');
+        panel.style.removeProperty('background-color');
+        panel.style.removeProperty('border-color');
+      }
+      if (modalPanel) {
+        modalPanel.style.removeProperty('background');
+        modalPanel.style.removeProperty('background-color');
+        modalPanel.style.removeProperty('border-color');
+      }
+    } else {
+      if (panel) {
+        panel.style.setProperty('background', '#FFFFFF', 'important');
+        panel.style.setProperty('background-color', '#FFFFFF', 'important');
+        panel.style.setProperty('border-color', '#E2E8F0', 'important');
+      }
+      if (modalPanel) {
+        modalPanel.style.setProperty('background', '#FFFFFF', 'important');
+        modalPanel.style.setProperty('background-color', '#FFFFFF', 'important');
+        modalPanel.style.setProperty('border-color', '#E2E8F0', 'important');
+      }
+    }
+  }
+
   updateConfirmedModalTheme(isDark = false) {
     const isDarkMode = isDark || document.body.classList.contains('theme-dark') || document.documentElement.getAttribute('data-theme') === 'dark';
     const modalPanel = document.querySelector('#booking-confirmed-modal .confirmed-modal-panel');
@@ -880,6 +913,7 @@ class RideCompareApp {
     });
 
     // 1. Update Desktop Receipt Panel
+    this.updateHistoryReceiptTheme();
     const recBadge = document.getElementById('receipt-provider-badge');
     if (recBadge) {
       recBadge.textContent = `${trip.provider} • ${trip.vehicle}`;
