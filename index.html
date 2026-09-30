@@ -28,7 +28,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=35">
+  <link rel="stylesheet" href="css/styles.css?v=36">
 
   <style>
     /* Strict Responsive Display Rules: Bottom Nav for Mobile & Tablet (< 1024px) */
@@ -641,6 +641,52 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
   box-shadow: 0 4px 18px rgba(0, 115, 255, 0.4) !important;
 }
 
+
+    /* ==========================================================================
+       UBER LOGO & BADGE: PURE WHITE TEXT ENFORCEMENT (ALL SCREENS & THEMES)
+       ========================================================================== */
+    .provider-box-uber,
+    .provider-box-uber *,
+    .provider-box-uber span,
+    body:not(.theme-dark) .provider-box-uber,
+    body:not(.theme-dark) .provider-box-uber *,
+    body:not(.theme-dark) .provider-box-uber span,
+    body.theme-light .provider-box-uber,
+    body.theme-light .provider-box-uber *,
+    body.theme-light .provider-box-uber span,
+    [data-theme="light"] .provider-box-uber,
+    [data-theme="light"] .provider-box-uber *,
+    [data-theme="light"] .provider-box-uber span,
+    body:not(.theme-dark) #screen-history .provider-box-uber,
+    body:not(.theme-dark) #screen-history .provider-box-uber *,
+    body:not(.theme-dark) #screen-history .provider-box-uber span,
+    body:not(.theme-dark) .history-card .provider-box-uber,
+    body:not(.theme-dark) .history-card .provider-box-uber *,
+    body:not(.theme-dark) .history-card .provider-box-uber span,
+    body:not(.theme-dark) #screen-booking .provider-box-uber,
+    body:not(.theme-dark) #screen-booking .provider-box-uber *,
+    body:not(.theme-dark) #screen-booking .provider-box-uber span,
+    body.theme-light #screen-history .provider-box-uber,
+    body.theme-light #screen-history .provider-box-uber *,
+    body.theme-light #screen-history .provider-box-uber span,
+    body.theme-light .history-card .provider-box-uber,
+    body.theme-light .history-card .provider-box-uber *,
+    body.theme-light .history-card .provider-box-uber span,
+    body.theme-light #screen-booking .provider-box-uber,
+    body.theme-light #screen-booking .provider-box-uber *,
+    body.theme-light #screen-booking .provider-box-uber span,
+    body:not(.theme-dark) .bg-black,
+    body:not(.theme-dark) .bg-black *,
+    body.theme-light .bg-black,
+    body.theme-light .bg-black *,
+    #receipt-provider-badge.bg-black,
+    #receipt-provider-badge.bg-black *,
+    #modal-provider-badge.bg-black,
+    #modal-provider-badge.bg-black * {
+      color: #FFFFFF !important;
+      fill: #FFFFFF !important;
+    }
+    
   </style>
 </head>
 <body class="min-h-screen selection:bg-blue-600 selection:text-white antialiased theme-light">
@@ -1555,7 +1601,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
               <div class="flex items-center gap-3.5 min-w-0 flex-1">
                 <!-- Uber Icon: Jet black box with white Uber logo -->
                 <div class="provider-box-uber">
-                  <span class="text-white font-black text-xs tracking-tight">Uber</span>
+                  <span class="text-white font-black text-xs tracking-tight" style="color: #FFFFFF !important;">Uber</span>
                 </div>
                 <!-- Trip Meta -->
                 <div class="min-w-0 flex-1">

@@ -2769,3 +2769,50 @@ body:not(.theme-dark) #booking-confirmed-modal button:active {
     padding-bottom: 80px !important;
   }
 }
+
+
+    /* ==========================================================================
+       UBER LOGO & BADGE: PURE WHITE TEXT ENFORCEMENT (ALL SCREENS & THEMES)
+       ========================================================================== */
+    .provider-box-uber,
+    .provider-box-uber *,
+    .provider-box-uber span,
+    body:not(.theme-dark) .provider-box-uber,
+    body:not(.theme-dark) .provider-box-uber *,
+    body:not(.theme-dark) .provider-box-uber span,
+    body.theme-light .provider-box-uber,
+    body.theme-light .provider-box-uber *,
+    body.theme-light .provider-box-uber span,
+    [data-theme="light"] .provider-box-uber,
+    [data-theme="light"] .provider-box-uber *,
+    [data-theme="light"] .provider-box-uber span,
+    body:not(.theme-dark) #screen-history .provider-box-uber,
+    body:not(.theme-dark) #screen-history .provider-box-uber *,
+    body:not(.theme-dark) #screen-history .provider-box-uber span,
+    body:not(.theme-dark) .history-card .provider-box-uber,
+    body:not(.theme-dark) .history-card .provider-box-uber *,
+    body:not(.theme-dark) .history-card .provider-box-uber span,
+    body:not(.theme-dark) #screen-booking .provider-box-uber,
+    body:not(.theme-dark) #screen-booking .provider-box-uber *,
+    body:not(.theme-dark) #screen-booking .provider-box-uber span,
+    body.theme-light #screen-history .provider-box-uber,
+    body.theme-light #screen-history .provider-box-uber *,
+    body.theme-light #screen-history .provider-box-uber span,
+    body.theme-light .history-card .provider-box-uber,
+    body.theme-light .history-card .provider-box-uber *,
+    body.theme-light .history-card .provider-box-uber span,
+    body.theme-light #screen-booking .provider-box-uber,
+    body.theme-light #screen-booking .provider-box-uber *,
+    body.theme-light #screen-booking .provider-box-uber span,
+    body:not(.theme-dark) .bg-black,
+    body:not(.theme-dark) .bg-black *,
+    body.theme-light .bg-black,
+    body.theme-light .bg-black *,
+    #receipt-provider-badge.bg-black,
+    #receipt-provider-badge.bg-black *,
+    #modal-provider-badge.bg-black,
+    #modal-provider-badge.bg-black * {
+      color: #FFFFFF !important;
+      fill: #FFFFFF !important;
+    }
+    

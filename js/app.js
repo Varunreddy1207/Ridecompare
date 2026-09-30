@@ -286,6 +286,11 @@ class RideCompareApp {
   
   // Ensure History Receipt and Modals have pure white theme in light mode
   updateHistoryReceiptTheme(isDark = false) {
+    // Always guarantee Uber icon box text is pure white
+    document.querySelectorAll('.provider-box-uber, .provider-box-uber *').forEach(el => {
+      el.style.setProperty('color', '#FFFFFF', 'important');
+    });
+
     const isDarkMode = isDark || document.body.classList.contains('theme-dark') || document.documentElement.getAttribute('data-theme') === 'dark';
     const panel = document.getElementById('desktop-receipt-panel');
     const modalPanel = document.querySelector('#history-detail-modal .history-modal-panel');
@@ -723,7 +728,7 @@ class RideCompareApp {
       pAboutTagline = 'Reliable • Door-to-Door • Global Standard';
       pRating = '4.7 (5M+ reviews)';
       pBoxClass = 'provider-box-uber';
-      pIconSvg = `<span class="text-white font-black text-xs tracking-tight">Uber</span>`;
+      pIconSvg = `<span class="text-white font-black text-xs tracking-tight" style="color: #FFFFFF !important;">Uber</span>`;
     } else if (provLower.includes('blusmart')) {
       pName = 'BluSmart';
       pVehicle = 'EV Sedan';
