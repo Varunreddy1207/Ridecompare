@@ -420,6 +420,10 @@ class RideCompareApp {
     if (window.soundFX) {
       window.soundFX.playGetStarted();
     }
+    if (this.isCurrentlyOffline) {
+      this.handleConnectivityChange(false);
+      return;
+    }
     const btn = document.getElementById('btn-get-started');
     if (btn) {
       btn.style.transform = 'scale(0.97)';
@@ -503,6 +507,10 @@ class RideCompareApp {
   onSearchRides() {
     if (window.soundFX) {
       window.soundFX.playGetStarted();
+    }
+    if (this.isCurrentlyOffline) {
+      this.handleConnectivityChange(false);
+      return;
     }
 
     const dropText = document.getElementById('home-drop-text');
@@ -1048,6 +1056,11 @@ class RideCompareApp {
 
   // Re-Book Current Trip (Pre-fills Home inputs and opens Live Compare rates)
   rebookCurrentTrip() {
+    if (this.isCurrentlyOffline) {
+      this.closeHistoryModal();
+      this.handleConnectivityChange(false);
+      return;
+    }
     const trip = this.historyTrips.find(t => t.id === this.selectedHistoryTripId) || this.historyTrips[0];
     this.closeHistoryModal();
 
@@ -1110,35 +1123,67 @@ class RideCompareApp {
   // OFFLINE CONNECTIVITY SYSTEM (Matches media_1790748145684.png)
   // =========================================================================
   initConnectivity() {
-    this.isOnline = typeof navigator !== 'undefined' ? navigator.onLine : true;
-    this.isCurrentlyOffline = !this.isOnline;
+    this.isOnline = true;
+    this.isCurrentlyOffline = false;
 
     // 1. Immediate Network Event Listeners
     window.addEventListener('offline', () => {
       this.handleConnectivityChange(false);
     });
     window.addEventListener('online', () => {
-      this.handleConnectivityChange(true);
+      this.checkRealInternet(true);
     });
 
-    // 2. Check initial browser state immediately
-    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
-      this.handleConnectivityChange(false);
-    }
+    // 2. Active Real Ping Check Immediately
+    this.checkRealInternet(false);
 
-    // 3. Heartbeat for active connection validation (checks every 2s)
+    // 3. Heartbeat for active connection validation (checks every 2.5s)
+    // Critical for Windows systems with VMware/WSL/Tailscale virtual adapters
     this.startConnectivityHeartbeat();
   }
 
-  startConnectivityHeartbeat() {
-    setInterval(() => {
-      if (this.isForcedOffline) return;
-      if (typeof navigator !== 'undefined' && navigator.onLine === false) {
-        if (!this.isCurrentlyOffline) {
-          this.handleConnectivityChange(false);
-        }
+  // Active Real-World Ping Test
+  async checkRealInternet(isRecoveryCheck = false) {
+    if (this.isForcedOffline) return false;
+
+    // If browser itself reports offline
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      if (!this.isCurrentlyOffline) {
+        this.handleConnectivityChange(false);
       }
-    }, 2000);
+      return false;
+    }
+
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 1800);
+      await fetch('https://www.gstatic.com/generate_204?' + Date.now(), {
+        method: 'HEAD',
+        mode: 'no-cors',
+        cache: 'no-store',
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+
+      // Ping succeeded -> Real internet is working!
+      if (this.isCurrentlyOffline || isRecoveryCheck) {
+        this.handleConnectivityChange(true);
+      }
+      return true;
+    } catch (err) {
+      // Ping failed -> No public internet! (e.g. Wi-Fi disconnected or router down)
+      if (!this.isCurrentlyOffline) {
+        this.handleConnectivityChange(false);
+      }
+      return false;
+    }
+  }
+
+  startConnectivityHeartbeat() {
+    if (this.heartbeatInterval) clearInterval(this.heartbeatInterval);
+    this.heartbeatInterval = setInterval(() => {
+      this.checkRealInternet(false);
+    }, 2500);
   }
 
   handleConnectivityChange(isOnline) {
@@ -1162,7 +1207,7 @@ class RideCompareApp {
   }
 
   // Check Connectivity (Triggered by 'Try Again' button)
-  checkConnectivity(isUserClick = false) {
+  async checkConnectivity(isUserClick = false) {
     const retryBtn = document.getElementById('btn-offline-retry');
     const retryIcon = document.getElementById('offline-retry-icon');
     
@@ -1173,24 +1218,21 @@ class RideCompareApp {
     if (retryIcon) retryIcon.classList.add('animate-spin');
     if (retryBtn) retryBtn.disabled = true;
 
+    const isConnected = await this.checkRealInternet(true);
+
     setTimeout(() => {
       if (retryIcon) retryIcon.classList.remove('animate-spin');
       if (retryBtn) retryBtn.disabled = false;
 
-      // Allow simulated offline override for development/testing if forced
-      if (this.isForcedOffline) {
-        if (isUserClick) this.showToast('⚠️ Still offline. Please check your network connection.');
-        return;
-      }
-
-      const isOnline = typeof navigator !== 'undefined' ? navigator.onLine : true;
-      if (isOnline) {
+      if (isConnected && !this.isForcedOffline) {
         this.handleConnectivityChange(true);
       } else {
         this.handleConnectivityChange(false);
-        if (isUserClick) this.showToast('⚠️ No internet connection detected.');
+        if (isUserClick) {
+          this.showToast('⚠️ Still offline. Please check your internet connection.');
+        }
       }
-    }, 600);
+    }, 400);
   }
 
   // Developer / Testing helper to simulate offline mode
