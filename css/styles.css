@@ -2011,54 +2011,179 @@ body:not(.theme-dark) .history-card.selected-trip {
   box-shadow: 0 0 20px rgba(0, 115, 255, 0.15) !important;
 }
 
-/* 11. Booking Confirmation Screen */
-body:not(.theme-dark) #screen-booking {
-  background: #F8FAFC !important;
+/* 11. Booking Confirmation Screen & Interactive Map Layout */
+@media (min-width: 1024px) {
+  #screen-booking {
+    display: flex !important;
+    flex-direction: row !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    max-height: 100vh !important;
+    overflow: hidden !important;
+  }
+  #screen-booking > div:first-child,
+  #booking-map-container {
+    flex: 1 1 0% !important;
+    height: 100% !important;
+    min-height: 100% !important;
+    max-height: 100vh !important;
+    align-self: stretch !important;
+    position: relative !important;
+  }
+  #screen-booking > div:first-child svg,
+  #booking-map-container svg {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+  }
+  #screen-booking > div:last-child {
+    height: 100vh !important;
+    max-height: 100vh !important;
+    overflow-y: auto !important;
+  }
+  #screen-booking > div:last-child > div {
+    min-height: 100% !important;
+    border-radius: 0px !important;
+  }
+}
+
+/* Light Mode Map Styling */
+body:not(.theme-dark) #screen-booking,
+body.theme-light #screen-booking,
+[data-theme="light"] #screen-booking {
+  background-color: #E8EEF5 !important;
+}
+
+body:not(.theme-dark) #screen-booking > div:first-child,
+body.theme-light #screen-booking > div:first-child,
+body:not(.theme-dark) #booking-map-container,
+body.theme-light #booking-map-container {
+  background-color: #E8EEF5 !important;
+}
+
+body:not(.theme-dark) #screen-booking svg rect,
+body.theme-light #screen-booking svg rect,
+body:not(.theme-dark) #booking-map-bg-rect,
+body.theme-light #booking-map-bg-rect {
+  fill: #E8EEF5 !important;
+}
+
+/* Road Network in Light Mode: Crisp White Arterials & Soft Slate Highways */
+body:not(.theme-dark) #screen-booking svg g[stroke="#0F1F38"],
+body.theme-light #screen-booking svg g[stroke="#0F1F38"] {
+  stroke: #FFFFFF !important;
+  stroke-width: 3.5px !important;
+}
+
+body:not(.theme-dark) #screen-booking svg g[stroke="#18365E"],
+body.theme-light #screen-booking svg g[stroke="#18365E"] {
+  stroke: #CBD5E1 !important;
+  stroke-width: 5.5px !important;
+}
+
+/* Floating Back Button on Map */
+body:not(.theme-dark) #screen-booking button[onclick*="closeBookingScreen"],
+body.theme-light #screen-booking button[onclick*="closeBookingScreen"] {
+  background-color: #FFFFFF !important;
+  border: 1px solid #CBD5E1 !important;
+  color: #0F172A !important;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.12) !important;
+}
+
+body:not(.theme-dark) #screen-booking button[onclick*="closeBookingScreen"] svg,
+body.theme-light #screen-booking button[onclick*="closeBookingScreen"] svg {
+  color: #0F172A !important;
+  stroke: #0F172A !important;
+}
+
+/* Floating Fastest Route ETA Badge */
+body:not(.theme-dark) #screen-booking .absolute.top-5.right-5,
+body.theme-light #screen-booking .absolute.top-5.right-5 {
+  background-color: #FFFFFF !important;
+  border: 1px solid #CBD5E1 !important;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.1) !important;
+}
+
+body:not(.theme-dark) #screen-booking #booking-map-eta,
+body.theme-light #screen-booking #booking-map-eta {
+  color: #0F172A !important;
+  font-weight: 700 !important;
+}
+
+/* Right Details Panel in Light Mode */
+body:not(.theme-dark) #screen-booking > div:last-child > div,
+body.theme-light #screen-booking > div:last-child > div {
+  background-color: #FFFFFF !important;
+  border-left: 1px solid #E2E8F0 !important;
+  border-top-color: #E2E8F0 !important;
+  box-shadow: -10px 0 35px rgba(15, 23, 42, 0.06) !important;
 }
 
 body:not(.theme-dark) #screen-booking .bg-\[\#070E1E\],
 body:not(.theme-dark) #screen-booking .bg-\[\#0A1124\],
-body:not(.theme-dark) #screen-booking .bg-slate-900,
-body:not(.theme-dark) #screen-booking .bg-slate-950 {
+body.theme-light #screen-booking .bg-\[\#070E1E\],
+body.theme-light #screen-booking .bg-\[\#0A1124\] {
   background-color: #FFFFFF !important;
   border-color: #E2E8F0 !important;
 }
 
 body:not(.theme-dark) #screen-booking .border-slate-800\/80,
 body:not(.theme-dark) #screen-booking .border-slate-800\/90,
-body:not(.theme-dark) #screen-booking .border-slate-800 {
+body:not(.theme-dark) #screen-booking .border-slate-800,
+body.theme-light #screen-booking .border-slate-800\/80,
+body.theme-light #screen-booking .border-slate-800\/90,
+body.theme-light #screen-booking .border-slate-800 {
   border-color: #E2E8F0 !important;
 }
 
-body:not(.theme-dark) #screen-booking button[onclick*="closeBookingScreen"] {
-  background-color: #FFFFFF !important;
-  border: 1px solid #CBD5E1 !important;
+/* Detail Icon Circles in Light Mode (Pickup, Drop, Distance, ETA) */
+body:not(.theme-dark) #screen-booking .w-8.h-8.rounded-full.bg-slate-900,
+body.theme-light #screen-booking .w-8.h-8.rounded-full.bg-slate-900,
+body:not(.theme-dark) #screen-booking .bg-slate-900,
+body.theme-light #screen-booking .bg-slate-900 {
+  background-color: #F1F5F9 !important;
+  border-color: #E2E8F0 !important;
+}
+
+body:not(.theme-dark) #screen-booking .w-8.h-8.rounded-full.bg-slate-900 svg,
+body.theme-light #screen-booking .w-8.h-8.rounded-full.bg-slate-900 svg {
+  color: #475569 !important;
+  stroke: #475569 !important;
+}
+
+/* Mobile Drag Handle */
+body:not(.theme-dark) #screen-booking .bg-slate-700\/60,
+body.theme-light #screen-booking .bg-slate-700\/60 {
+  background-color: #CBD5E1 !important;
+}
+
+/* Text Colors in Light Mode */
+body:not(.theme-dark) #screen-booking .text-white:not(button):not(button *),
+body.theme-light #screen-booking .text-white:not(button):not(button *) {
   color: #0F172A !important;
 }
 
-body:not(.theme-dark) #screen-booking button[onclick*="closeBookingScreen"] svg {
-  color: #0F172A !important;
-  stroke: #0F172A !important;
-}
-
-body:not(.theme-dark) #screen-booking .text-white:not(button):not(button *) {
-  color: #0F172A !important;
-}
-
-body:not(.theme-dark) #screen-booking .text-slate-400 {
+body:not(.theme-dark) #screen-booking .text-slate-400,
+body.theme-light #screen-booking .text-slate-400 {
   color: #64748B !important;
 }
 
-body:not(.theme-dark) #screen-booking .text-slate-300 {
+body:not(.theme-dark) #screen-booking .text-slate-300,
+body.theme-light #screen-booking .text-slate-300 {
   color: #334155 !important;
 }
 
+/* CTA Button in Light Mode: Vivid Blue Background with Bold Pure White Text */
 body:not(.theme-dark) #screen-booking button.bg-blue-600,
 body:not(.theme-dark) #screen-booking button.bg-blue-600 *,
 body:not(.theme-dark) #screen-booking button.bg-emerald-600,
 body:not(.theme-dark) #screen-booking button.bg-emerald-600 *,
 body:not(.theme-dark) #screen-booking #btn-confirm-book-now,
-body:not(.theme-dark) #screen-booking #btn-confirm-book-now * {
+body:not(.theme-dark) #screen-booking #btn-confirm-book-now *,
+body.theme-light #screen-booking #btn-confirm-book-now,
+body.theme-light #screen-booking #btn-confirm-book-now * {
   color: #FFFFFF !important;
 }
 
