@@ -28,7 +28,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=32">
+  <link rel="stylesheet" href="css/styles.css?v=34">
 
   <style>
     /* Strict Responsive Display Rules: Bottom Nav for Mobile & Tablet (< 1024px) */
@@ -199,9 +199,9 @@
       box-shadow: 0 4px 16px rgba(0, 115, 255, 0.4) !important;
     }
 
-    /* Screen Booking: Desktop Edge-to-Edge Full Height Layout */
+    /* Screen Booking: Desktop Edge-to-Edge Full Height Layout (Only when active) */
     @media (min-width: 1024px) {
-      #screen-booking {
+      #screen-booking.active {
         display: flex !important;
         flex-direction: row !important;
         height: 100vh !important;
@@ -344,6 +344,123 @@
     body.theme-light #screen-booking #btn-confirm-book-now * {
       color: #FFFFFF !important;
     }
+
+    /* ==========================================================================
+       ZERO EXTRA SPACE & VIEWPORT LOCK ENFORCEMENT (ALL SCREENS & VIEWPORTS)
+       ========================================================================== */
+    .screen-page:not(.active) {
+      display: none !important;
+      visibility: hidden !important;
+      height: 0 !important;
+      max-height: 0 !important;
+      overflow: hidden !important;
+      pointer-events: none !important;
+      position: absolute !important;
+      opacity: 0 !important;
+    }
+    #history-detail-modal:not(.show),
+    #booking-confirmed-modal:not(.show) {
+      display: none !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+    #history-detail-modal.show,
+    #booking-confirmed-modal.show {
+      display: flex !important;
+      visibility: visible !important;
+      pointer-events: auto !important;
+    }
+    @media (min-width: 1024px) {
+      html, body {
+        height: 100vh !important;
+        max-height: 100vh !important;
+        overflow: hidden !important;
+      }
+      .screen-page {
+        height: 100vh !important;
+        max-height: 100vh !important;
+        min-height: 100vh !important;
+        overflow: hidden !important;
+      }
+      .stage-wrapper {
+        height: 100vh !important;
+        min-height: 100vh !important;
+        max-height: 100vh !important;
+        overflow: hidden !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 20px !important;
+      }
+      .get-started-card {
+        max-width: 500px !important;
+        min-height: auto !important;
+        max-height: calc(100vh - 40px) !important;
+        height: auto !important;
+        padding: 28px 32px 24px 32px !important;
+        overflow-y: auto !important;
+      }
+      .car-hero-wrapper {
+        max-height: 200px !important;
+        margin: 10px 0 !important;
+      }
+      #screen-home > div:last-child,
+      #screen-history > div:last-child,
+      #screen-profile > div:last-child,
+      #screen-booking > div:last-child {
+        height: 100vh !important;
+        max-height: 100vh !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        padding-bottom: 24px !important;
+      }
+    }
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .stage-wrapper {
+        height: 100vh !important;
+        min-height: 100vh !important;
+        max-height: 100vh !important;
+        overflow: hidden !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 16px !important;
+      }
+      .get-started-card {
+        max-width: 480px !important;
+        min-height: auto !important;
+        max-height: calc(100vh - 32px) !important;
+        height: auto !important;
+        padding: 24px 24px 20px 24px !important;
+        overflow-y: auto !important;
+      }
+      .car-hero-wrapper {
+        max-height: 180px !important;
+        margin: 8px 0 !important;
+      }
+    }
+    @media (max-width: 1023px) {
+      #screen-home > div:last-child,
+      #screen-history > div:last-child,
+      #screen-profile > div:last-child {
+        padding-bottom: 80px !important;
+      }
+      #screen-profile main {
+        min-height: auto !important;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+      #screen-profile .profile-logout-btn {
+        margin-top: 16px !important;
+      }
+      #home-search-container {
+        min-height: auto !important;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+    }
   </style>
 </head>
 <body class="min-h-screen selection:bg-blue-600 selection:text-white antialiased theme-light">
@@ -477,7 +594,7 @@
     </aside>
 
     <!-- MAIN HOME CONTENT WRAPPER -->
-    <div class="w-full flex-1 flex flex-col lg:pl-[260px] pb-16 sm:pb-20 md:pb-24 lg:pb-12">
+    <div class="w-full flex-1 flex flex-col lg:pl-[260px] pb-20 lg:pb-6">
 
       <!-- DESKTOP TOP BAR (>= 1024px) -->
       <header class="desktop-topbar hidden lg:flex">
@@ -1104,7 +1221,7 @@
     </aside>
 
     <!-- MAIN HISTORY CONTENT WRAPPER -->
-    <div class="w-full flex-1 flex flex-col lg:pl-[260px] pb-16 sm:pb-20 md:pb-24 lg:pb-12">
+    <div class="w-full flex-1 flex flex-col lg:pl-[260px] pb-20 lg:pb-6">
 
       <!-- DESKTOP TOP BAR (>= 1024px) -->
       <header class="desktop-topbar hidden lg:flex">
@@ -1568,7 +1685,7 @@
     </aside>
 
     <!-- MAIN PROFILE WRAPPER -->
-    <div class="w-full flex-1 flex flex-col lg:pl-[260px] pb-16 sm:pb-20 md:pb-24 lg:pb-12">
+    <div class="w-full flex-1 flex flex-col lg:pl-[260px] pb-20 lg:pb-6">
 
       <!-- DESKTOP TOP BAR (>= 1024px) -->
       <header class="desktop-topbar hidden lg:flex items-center justify-between">

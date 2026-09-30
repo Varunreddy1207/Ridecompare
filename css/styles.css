@@ -152,45 +152,65 @@ html, body {
 
 @media (min-width: 768px) and (max-width: 1023px) {
   .stage-wrapper {
-    padding: 32px 16px;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    max-height: 100vh !important;
+    overflow: hidden !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 16px !important;
   }
   .get-started-card {
-    max-width: 520px;
-    min-height: 840px;
-    border-radius: 36px;
+    max-width: 480px;
+    min-height: auto !important;
+    max-height: calc(100vh - 32px) !important;
+    height: auto !important;
+    border-radius: 32px;
     border: 1px solid var(--card-border);
     box-shadow: 
       0 0 0 1px rgba(15, 23, 42, 0.8),
       0 30px 80px rgba(0, 0, 0, 0.95),
       0 0 45px rgba(0, 115, 255, 0.25);
-    padding: 36px 32px 28px 32px;
+    padding: 28px 24px 24px 24px;
+    overflow-y: auto;
   }
   .car-hero-wrapper {
-    max-height: 270px;
-    margin: 16px 0;
+    max-height: 200px;
+    margin: 10px 0;
   }
 }
 
 @media (min-width: 1024px) {
   .stage-wrapper {
-    padding: 40px 20px;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    max-height: 100vh !important;
+    overflow: hidden !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 20px !important;
   }
   .get-started-card {
-    max-width: 560px;
-    min-height: 880px;
-    border-radius: 40px;
+    max-width: 500px;
+    min-height: auto !important;
+    max-height: calc(100vh - 40px) !important;
+    height: auto !important;
+    border-radius: 36px;
     border: 1px solid rgba(56, 189, 248, 0.28);
     box-shadow: 
       0 0 0 1px rgba(15, 23, 42, 0.9),
       0 35px 90px rgba(0, 0, 0, 0.98),
       0 0 60px rgba(0, 115, 255, 0.3);
-    padding: 44px 36px 32px 36px;
+    padding: 32px 32px 28px 32px;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    overflow-y: auto;
   }
   .car-hero-wrapper {
-    max-height: 300px;
-    margin: 20px 0;
+    max-height: 220px;
+    margin: 12px 0;
   }
 }
 
@@ -2011,9 +2031,9 @@ body:not(.theme-dark) .history-card.selected-trip {
   box-shadow: 0 0 20px rgba(0, 115, 255, 0.15) !important;
 }
 
-/* 11. Booking Confirmation Screen & Interactive Map Layout */
+/* 11. Booking Confirmation Screen & Interactive Map Layout (Only when active) */
 @media (min-width: 1024px) {
-  #screen-booking {
+  #screen-booking.active {
     display: flex !important;
     flex-direction: row !important;
     height: 100vh !important;
@@ -2505,3 +2525,67 @@ body:not(.theme-dark) #booking-confirmed-modal button:active {
 
 
 
+
+/* ==========================================================================
+   17. ZERO EXTRA SPACE & VIEWPORT LOCK ENFORCEMENT (ALL SCREENS & VIEWPORTS)
+   ========================================================================== */
+
+/* 1. Inactive Screens: Completely Removed from Layout Flow */
+.screen-page:not(.active) {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  opacity: 0 !important;
+}
+
+/* 2. Modals: Remove from Layout when not active */
+#history-detail-modal:not(.show),
+#booking-confirmed-modal:not(.show) {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+#history-detail-modal.show,
+#booking-confirmed-modal.show {
+  display: flex !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+/* 3. Desktop (>= 1024px): Viewport-Locked SaaS Shell (Zero Body Scroll & Void) */
+@media (min-width: 1024px) {
+  html, body {
+    height: 100vh !important;
+    max-height: 100vh !important;
+    overflow: hidden !important;
+  }
+  .screen-page {
+    height: 100vh !important;
+    max-height: 100vh !important;
+    min-height: 100vh !important;
+    overflow: hidden !important;
+  }
+  #screen-home > div:last-child,
+  #screen-history > div:last-child,
+  #screen-profile > div:last-child,
+  #screen-booking > div:last-child {
+    height: 100vh !important;
+    max-height: 100vh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding-bottom: 24px !important;
+  }
+}
+
+/* 4. Mobile & Tablet (< 1024px): Compact Bottom Padding & Clean Layout */
+@media (max-width: 1023px) {
+  #screen-home > div:last-child,
+  #screen-history > div:last-child,
+  #screen-profile > div:last-child {
+    padding-bottom: 80px !important;
+  }
+}
