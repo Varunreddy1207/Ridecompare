@@ -20,6 +20,10 @@
           document.documentElement.classList.add('theme-light');
           document.documentElement.setAttribute('data-theme', 'light');
         }
+        // Instant Offline Check
+        if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+          document.documentElement.classList.add('is-offline');
+        }
       } catch(e) {}
     })();
   </script>
@@ -2560,5 +2564,14 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
   <!-- Scripts -->
   <script src="js/audio.js?v=26"></script>
   <script src="js/app.js?v=27"></script>
+
+  <!-- Service Worker for Offline PWA Support -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+  </script>
 </body>
 </html>

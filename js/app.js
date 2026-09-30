@@ -120,6 +120,8 @@ class RideCompareApp {
 
   init() {
     this.initTheme();
+    this.initConnectivity();
+
     document.addEventListener('DOMContentLoaded', () => {
       this.initTheme();
       // Check initial hash routing (#home, #history, or splash)
@@ -149,13 +151,6 @@ class RideCompareApp {
           this.closeHistoryModal();
         }
       });
-
-      // Offline & Network Connectivity Listeners (Matches media_1790748145684.png)
-      window.addEventListener('offline', () => this.handleConnectivityChange(false));
-      window.addEventListener('online', () => this.handleConnectivityChange(true));
-      if (typeof navigator !== 'undefined' && !navigator.onLine) {
-        this.handleConnectivityChange(false);
-      }
     });
   }
 
@@ -1114,18 +1109,53 @@ class RideCompareApp {
   // =========================================================================
   // OFFLINE CONNECTIVITY SYSTEM (Matches media_1790748145684.png)
   // =========================================================================
+  initConnectivity() {
+    this.isOnline = typeof navigator !== 'undefined' ? navigator.onLine : true;
+    this.isCurrentlyOffline = !this.isOnline;
+
+    // 1. Immediate Network Event Listeners
+    window.addEventListener('offline', () => {
+      this.handleConnectivityChange(false);
+    });
+    window.addEventListener('online', () => {
+      this.handleConnectivityChange(true);
+    });
+
+    // 2. Check initial browser state immediately
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      this.handleConnectivityChange(false);
+    }
+
+    // 3. Heartbeat for active connection validation (checks every 2s)
+    this.startConnectivityHeartbeat();
+  }
+
+  startConnectivityHeartbeat() {
+    setInterval(() => {
+      if (this.isForcedOffline) return;
+      if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+        if (!this.isCurrentlyOffline) {
+          this.handleConnectivityChange(false);
+        }
+      }
+    }, 2000);
+  }
+
   handleConnectivityChange(isOnline) {
     this.isOnline = isOnline;
+    this.isCurrentlyOffline = !isOnline;
     const offlineScreen = document.getElementById('screen-offline');
     if (!isOnline) {
+      document.documentElement.classList.add('is-offline');
+      document.body.classList.add('is-offline');
       if (offlineScreen) {
         offlineScreen.classList.add('active');
-        document.body.classList.add('is-offline');
       }
     } else {
+      document.documentElement.classList.remove('is-offline');
+      document.body.classList.remove('is-offline');
       if (offlineScreen && offlineScreen.classList.contains('active')) {
         offlineScreen.classList.remove('active');
-        document.body.classList.remove('is-offline');
         this.showToast('🟢 Connection restored! Back online.');
       }
     }
@@ -1153,7 +1183,8 @@ class RideCompareApp {
         return;
       }
 
-      if (navigator.onLine) {
+      const isOnline = typeof navigator !== 'undefined' ? navigator.onLine : true;
+      if (isOnline) {
         this.handleConnectivityChange(true);
       } else {
         this.handleConnectivityChange(false);

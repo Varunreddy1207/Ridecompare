@@ -2875,10 +2875,17 @@ body:not(.theme-dark) #booking-confirmed-modal button:active {
   transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
+html.is-offline #screen-offline,
+body.is-offline #screen-offline,
 #screen-offline.active {
   opacity: 1 !important;
   visibility: visible !important;
   pointer-events: auto !important;
+  display: flex !important;
+}
+
+html.is-offline body {
+  overflow: hidden !important;
 }
 
 /* Offline Wi-Fi Circle Badge */
