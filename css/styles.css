@@ -1310,7 +1310,12 @@ html, body {
   box-shadow: 0 0 14px rgba(0, 115, 255, 0.45);
 }
 
-/* Slide-up Receipt Modal */
+/* Slide-up Receipt Modal & Booking Confirmed Modal */
+#history-detail-modal,
+#booking-confirmed-modal {
+  z-index: 2000 !important;
+}
+
 #history-detail-modal.show {
   opacity: 1;
   pointer-events: auto;
