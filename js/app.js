@@ -958,6 +958,16 @@ class RideCompareApp {
     const recFinal = document.getElementById('receipt-final-fare');
     if (recFinal) recFinal.textContent = `₹${trip.fare}.00`;
 
+    // Sync Mobile / Tablet Modal Fare Breakdown
+    const modBase = document.getElementById('modal-base-fare');
+    if (modBase) modBase.textContent = trip.baseFare;
+    const modDistFare = document.getElementById('modal-dist-fare');
+    if (modDistFare) modDistFare.textContent = trip.distFare;
+    const modTax = document.getElementById('modal-tax-fare');
+    if (modTax) modTax.textContent = trip.taxFare;
+    const modFinal = document.getElementById('modal-final-fare');
+    if (modFinal) modFinal.textContent = `₹${trip.fare}.00`;
+
     // 2. Open Mobile / Tablet Slide-up Modal if on smaller screens
     if (openMobileModal && window.innerWidth < 1024) {
       const modal = document.getElementById('history-detail-modal');

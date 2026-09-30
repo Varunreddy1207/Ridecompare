@@ -28,7 +28,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=37">
+  <link rel="stylesheet" href="css/styles.css?v=38">
 
   <style>
     /* Strict Responsive Display Rules: Bottom Nav for Mobile & Tablet (< 1024px) */
@@ -1860,10 +1860,30 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
         <span id="modal-payment" class="text-emerald-400 font-semibold text-[11px]">UPI Paid</span>
       </div>
 
-      <!-- Action Button -->
-      <button onclick="app.rebookCurrentTrip()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold text-sm shadow-[0_4px_16px_rgba(0,115,255,0.4)] transition-all active:scale-95 flex items-center justify-center gap-2">
+      <!-- Fare Breakdown (Exact Match to Desktop & media_1790746524189.png) -->
+      <div class="space-y-2 text-xs text-slate-400 pt-3 pb-3 mb-4 border-t border-slate-800/80">
+        <div class="flex justify-between">
+          <span>Base Fare</span>
+          <span id="modal-base-fare" class="text-slate-200">₹45.00</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Distance & Time Fare</span>
+          <span id="modal-dist-fare" class="text-slate-200">₹41.00</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Taxes & Access Fee</span>
+          <span id="modal-tax-fare" class="text-slate-200">₹10.00</span>
+        </div>
+        <div class="flex justify-between pt-2 border-t border-slate-800 font-bold text-sm text-white">
+          <span>Final Amount</span>
+          <span id="modal-final-fare" class="text-[#0073FF] font-black">₹96.00</span>
+        </div>
+      </div>
+
+      <!-- Primary CTA: Re-Book Route -->
+      <button id="btn-modal-rebook-trip" onclick="app.rebookCurrentTrip()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold text-sm shadow-[0_4px_18px_rgba(0,115,255,0.4)] transition-all active:scale-98 flex items-center justify-center gap-2">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-        Re-Book This Ride Now
+        ⚡ Re-Book This Ride
       </button>
 
     </div>

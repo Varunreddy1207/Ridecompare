@@ -2083,13 +2083,17 @@ body:not(.theme-dark) #desktop-receipt-panel .border-t,
 body:not(.theme-dark) #desktop-receipt-panel .border-slate-800,
 body:not(.theme-dark) #desktop-receipt-panel .border-slate-800\/80,
 body:not(.theme-dark) #history-detail-modal .border-b,
+body:not(.theme-dark) #history-detail-modal .border-t,
 body:not(.theme-dark) #history-detail-modal .border-slate-800,
+body:not(.theme-dark) #history-detail-modal .border-slate-800\/80,
 body.theme-light #desktop-receipt-panel .border-b,
 body.theme-light #desktop-receipt-panel .border-t,
 body.theme-light #desktop-receipt-panel .border-slate-800,
 body.theme-light #desktop-receipt-panel .border-slate-800\/80,
 body.theme-light #history-detail-modal .border-b,
-body.theme-light #history-detail-modal .border-slate-800 {
+body.theme-light #history-detail-modal .border-t,
+body.theme-light #history-detail-modal .border-slate-800,
+body.theme-light #history-detail-modal .border-slate-800\/80 {
   border-color: #E2E8F0 !important;
 }
 
@@ -2155,7 +2159,10 @@ body.theme-light #history-detail-modal .text-slate-500 {
 }
 
 body:not(.theme-dark) #desktop-receipt-panel #receipt-final-fare,
-body.theme-light #desktop-receipt-panel #receipt-final-fare {
+body.theme-light #desktop-receipt-panel #receipt-final-fare,
+body:not(.theme-dark) #history-detail-modal #modal-final-fare,
+body.theme-light #history-detail-modal #modal-final-fare,
+[data-theme="light"] #history-detail-modal #modal-final-fare {
   color: #0073FF !important;
 }
 
@@ -2196,6 +2203,10 @@ body:not(.theme-dark) #btn-rebook-trip,
 body:not(.theme-dark) #btn-rebook-trip *,
 body.theme-light #btn-rebook-trip,
 body.theme-light #btn-rebook-trip *,
+body:not(.theme-dark) #btn-modal-rebook-trip,
+body:not(.theme-dark) #btn-modal-rebook-trip *,
+body.theme-light #btn-modal-rebook-trip,
+body.theme-light #btn-modal-rebook-trip *,
 body:not(.theme-dark) #history-detail-modal button.bg-gradient-to-r,
 body:not(.theme-dark) #history-detail-modal button.bg-gradient-to-r *,
 body.theme-light #history-detail-modal button.bg-gradient-to-r,
@@ -2205,6 +2216,8 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r * {
 
 body:not(.theme-dark) #btn-rebook-trip,
 body.theme-light #btn-rebook-trip,
+body:not(.theme-dark) #btn-modal-rebook-trip,
+body.theme-light #btn-modal-rebook-trip,
 body:not(.theme-dark) #history-detail-modal button.bg-gradient-to-r,
 body.theme-light #history-detail-modal button.bg-gradient-to-r {
   background: linear-gradient(135deg, #0073FF 0%, #0056CC 100%) !important;
