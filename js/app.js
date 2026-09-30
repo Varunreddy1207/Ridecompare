@@ -149,6 +149,13 @@ class RideCompareApp {
           this.closeHistoryModal();
         }
       });
+
+      // Offline & Network Connectivity Listeners (Matches media_1790748145684.png)
+      window.addEventListener('offline', () => this.handleConnectivityChange(false));
+      window.addEventListener('online', () => this.handleConnectivityChange(true));
+      if (typeof navigator !== 'undefined' && !navigator.onLine) {
+        this.handleConnectivityChange(false);
+      }
     });
   }
 
@@ -1102,6 +1109,63 @@ class RideCompareApp {
     this.toastTimeout = setTimeout(() => {
       toast.classList.remove('visible');
     }, 2500);
+  }
+
+  // =========================================================================
+  // OFFLINE CONNECTIVITY SYSTEM (Matches media_1790748145684.png)
+  // =========================================================================
+  handleConnectivityChange(isOnline) {
+    this.isOnline = isOnline;
+    const offlineScreen = document.getElementById('screen-offline');
+    if (!isOnline) {
+      if (offlineScreen) {
+        offlineScreen.classList.add('active');
+        document.body.classList.add('is-offline');
+      }
+    } else {
+      if (offlineScreen && offlineScreen.classList.contains('active')) {
+        offlineScreen.classList.remove('active');
+        document.body.classList.remove('is-offline');
+        this.showToast('🟢 Connection restored! Back online.');
+      }
+    }
+  }
+
+  // Check Connectivity (Triggered by 'Try Again' button)
+  checkConnectivity(isUserClick = false) {
+    const retryBtn = document.getElementById('btn-offline-retry');
+    const retryIcon = document.getElementById('offline-retry-icon');
+    
+    if (window.soundFX) {
+      window.soundFX.playTap();
+    }
+
+    if (retryIcon) retryIcon.classList.add('animate-spin');
+    if (retryBtn) retryBtn.disabled = true;
+
+    setTimeout(() => {
+      if (retryIcon) retryIcon.classList.remove('animate-spin');
+      if (retryBtn) retryBtn.disabled = false;
+
+      // Allow simulated offline override for development/testing if forced
+      if (this.isForcedOffline) {
+        if (isUserClick) this.showToast('⚠️ Still offline. Please check your network connection.');
+        return;
+      }
+
+      if (navigator.onLine) {
+        this.handleConnectivityChange(true);
+      } else {
+        this.handleConnectivityChange(false);
+        if (isUserClick) this.showToast('⚠️ No internet connection detected.');
+      }
+    }, 600);
+  }
+
+  // Developer / Testing helper to simulate offline mode
+  setOffline(forced = true) {
+    this.isForcedOffline = forced;
+    this.handleConnectivityChange(!forced);
   }
 }
 

@@ -28,7 +28,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=38">
+  <link rel="stylesheet" href="css/styles.css?v=39">
 
   <style>
     /* Strict Responsive Display Rules: Bottom Nav for Mobile & Tablet (< 1024px) */
@@ -2452,11 +2452,113 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
     </div>
   </nav>
 
+  <!-- ==================================================================== -->
+  <!-- NO INTERNET CONNECTION SCREEN (Exact Match to media_1790748145684.png) -->
+  <!-- Responsive across Mobile, Tablet, and Desktop (Light & Dark Mode)     -->
+  <!-- ==================================================================== -->
+  <div id="screen-offline" class="screen-offline fixed inset-0 z-[3000] flex flex-col justify-between items-center p-5 sm:p-8 opacity-0 pointer-events-none transition-opacity duration-300 select-none overflow-y-auto">
+    
+    <!-- Top Bar: Logo & Offline Status Indicator -->
+    <header class="w-full max-w-4xl flex items-center justify-between pt-2 sm:pt-4">
+      <div class="flex items-center gap-2.5">
+        <img src="assets/images/logo_cropped_clean.png" alt="VOZX Logo" class="w-8 h-8 sm:w-9 sm:h-9 object-contain filter drop-shadow-[0_0_8px_#38BDF8]">
+        <div class="text-base sm:text-lg font-black tracking-tight flex items-center">
+          <span class="offline-logo-brand text-white">VOZX</span>
+          <span class="text-[#0073FF] ml-1.5">RideCompare</span>
+        </div>
+      </div>
+      <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-red-500/20 text-red-400 border border-red-500/30 flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+        Offline Mode
+      </span>
+    </header>
+
+    <!-- Center Hero Content -->
+    <main class="w-full max-w-md flex flex-col items-center text-center my-auto py-6 sm:py-8">
+      
+      <!-- Glowing Circle with Disconnected Wi-Fi Icon & Horizon Glow -->
+      <div class="relative flex flex-col items-center mb-6 sm:mb-8">
+        <div class="offline-circle-badge w-36 h-36 sm:w-44 sm:h-44 rounded-full flex items-center justify-center relative">
+          <!-- Disconnected Wi-Fi SVG (Exact Match to media_1790748145684.png) -->
+          <svg class="w-20 h-20 sm:w-24 sm:h-24 relative z-10" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path class="offline-wifi-arc" d="M16 28C29 16 51 16 64 28" stroke="#476B9E" stroke-width="5" stroke-linecap="round"/>
+            <path class="offline-wifi-arc" d="M24 38C33 28 47 28 56 38" stroke="#476B9E" stroke-width="5" stroke-linecap="round"/>
+            <path class="offline-wifi-arc" d="M32 48C37 43 43 43 48 48" stroke="#476B9E" stroke-width="5" stroke-linecap="round"/>
+            <circle class="offline-wifi-dot" cx="40" cy="58" r="4.5" fill="#38BDF8"/>
+            <line class="offline-wifi-slash" x1="58" y1="16" x2="22" y2="64" stroke="#0073FF" stroke-width="5.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <!-- Horizon Light Beam Arc -->
+        <div class="offline-horizon-beam"></div>
+      </div>
+
+      <!-- Typography -->
+      <h2 class="text-3xl sm:text-4xl font-black tracking-tight mb-2.5">
+        <span class="block offline-title-text text-white">No Internet</span>
+        <span class="block text-[#0073FF] mt-0.5">Connection</span>
+      </h2>
+
+      <p class="offline-desc-text text-slate-400 text-xs sm:text-sm max-w-xs sm:max-w-sm leading-relaxed mb-7 sm:mb-8">
+        It looks like you're offline. Please check your internet connection and try again.
+      </p>
+
+      <!-- Primary CTA: Try Again -->
+      <button id="btn-offline-retry" onclick="app.checkConnectivity(true)" class="offline-retry-btn w-full max-w-xs py-3.5 px-8 rounded-full bg-[#0073FF] hover:bg-[#0060E6] text-white font-bold text-sm sm:text-base shadow-[0_4px_24px_rgba(0,115,255,0.45)] transition-all active:scale-95 flex items-center justify-center gap-2.5">
+        <svg id="offline-retry-icon" class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+        </svg>
+        <span>Try Again</span>
+      </button>
+
+    </main>
+
+    <!-- Bottom Checklist Pill (Exact Match to media_1790748145684.png) -->
+    <footer class="w-full max-w-xl pb-2 sm:pb-4">
+      <div class="offline-tips-container rounded-2xl sm:rounded-3xl p-3 sm:p-4 grid grid-cols-3 gap-2 sm:gap-3 items-center text-center">
+        
+        <!-- Tip 1: Mobile Data / Wi-Fi -->
+        <div class="flex items-center justify-center gap-1.5 sm:gap-2 px-1">
+          <svg class="w-4 h-4 sm:w-5 sm:h-5 text-[#0073FF] flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+            <rect x="3" y="16" width="3" height="5" rx="1"/>
+            <rect x="8" y="12" width="3" height="9" rx="1"/>
+            <rect x="13" y="8" width="3" height="13" rx="1"/>
+            <rect x="18" y="4" width="3" height="17" rx="1"/>
+          </svg>
+          <span class="offline-tip-text text-[10px] sm:text-xs text-slate-300 font-medium leading-tight text-left">
+            Check your mobile data or Wi-Fi
+          </span>
+        </div>
+
+        <!-- Tip 2: Airplane Mode -->
+        <div class="offline-tip-divider flex items-center justify-center gap-1.5 sm:gap-2 px-1 border-l border-r border-blue-500/20">
+          <svg class="w-4 h-4 sm:w-5 sm:h-5 text-[#0073FF] flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+          </svg>
+          <span class="offline-tip-text text-[10px] sm:text-xs text-slate-300 font-medium leading-tight text-left">
+            Turn off airplane mode
+          </span>
+        </div>
+
+        <!-- Tip 3: Refresh in seconds -->
+        <div class="flex items-center justify-center gap-1.5 sm:gap-2 px-1">
+          <svg class="w-4 h-4 sm:w-5 sm:h-5 text-[#0073FF] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+          </svg>
+          <span class="offline-tip-text text-[10px] sm:text-xs text-slate-300 font-medium leading-tight text-left">
+            Try again in a few seconds
+          </span>
+        </div>
+
+      </div>
+    </footer>
+
+  </div>
+
   <!-- Interactive Feedback Toast -->
   <div id="app-toast">Welcome to VOZX RideCompare! 🚀</div>
 
   <!-- Scripts -->
   <script src="js/audio.js?v=26"></script>
-  <script src="js/app.js?v=26"></script>
+  <script src="js/app.js?v=27"></script>
 </body>
 </html>

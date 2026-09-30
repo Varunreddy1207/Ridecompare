@@ -2860,4 +2860,130 @@ body:not(.theme-dark) #booking-confirmed-modal button:active {
       color: #FFFFFF !important;
       fill: #FFFFFF !important;
     }
+
+/* ==========================================================================
+   OFFLINE UI SCREEN (Exact Match to media_1790748145684.png)
+   Responsive Across Mobile, Tablet, & Desktop in Light and Dark Mode
+   ========================================================================== */
+#screen-offline {
+  background: #060C1B;
+  background: radial-gradient(circle at 50% 30%, #0B1736 0%, #040814 100%);
+  z-index: 3000 !important;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+#screen-offline.active {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+/* Offline Wi-Fi Circle Badge */
+.offline-circle-badge {
+  background: radial-gradient(circle, #0B1630 0%, #060D1E 100%);
+  border: 2px solid rgba(0, 115, 255, 0.45);
+  box-shadow: 0 0 35px rgba(0, 115, 255, 0.35), inset 0 0 25px rgba(0, 115, 255, 0.2);
+}
+
+/* Horizon light beam under the circle */
+.offline-horizon-beam {
+  width: 220px;
+  height: 20px;
+  background: radial-gradient(ellipse at center, rgba(0, 115, 255, 0.7) 0%, rgba(0, 115, 255, 0.2) 45%, transparent 75%);
+  filter: blur(6px);
+  margin-top: -10px;
+  pointer-events: none;
+  border-radius: 50%;
+}
+
+/* Bottom tips container in Dark Mode */
+.offline-tips-container {
+  background: rgba(10, 19, 41, 0.75);
+  border: 1px solid rgba(0, 115, 255, 0.25);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* Retry button */
+.offline-retry-btn {
+  background: linear-gradient(135deg, #0073FF 0%, #0056CC 100%) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 24px rgba(0, 115, 255, 0.45) !important;
+}
+.offline-retry-btn:hover {
+  background: linear-gradient(135deg, #0080FF 0%, #0060E6 100%) !important;
+}
+
+/* ==========================================================================
+   OFFLINE UI SCREEN: LIGHT MODE ADAPTATION
+   ========================================================================== */
+body:not(.theme-dark) #screen-offline,
+body.theme-light #screen-offline,
+[data-theme="light"] #screen-offline {
+  background: #F8FAFC !important;
+  background-color: #F8FAFC !important;
+}
+
+body:not(.theme-dark) #screen-offline .offline-logo-brand,
+body.theme-light #screen-offline .offline-logo-brand,
+[data-theme="light"] #screen-offline .offline-logo-brand {
+  color: #0F172A !important;
+}
+
+body:not(.theme-dark) #screen-offline .offline-circle-badge,
+body.theme-light #screen-offline .offline-circle-badge,
+[data-theme="light"] #screen-offline .offline-circle-badge {
+  background: #FFFFFF !important;
+  border: 2px solid #BFDBFE !important;
+  box-shadow: 0 12px 36px rgba(0, 115, 255, 0.16), 0 0 0 6px rgba(0, 115, 255, 0.05) !important;
+}
+
+body:not(.theme-dark) #screen-offline .offline-wifi-arc,
+body.theme-light #screen-offline .offline-wifi-arc,
+[data-theme="light"] #screen-offline .offline-wifi-arc {
+  stroke: #94A3B8 !important;
+}
+
+body:not(.theme-dark) #screen-offline .offline-horizon-beam,
+body.theme-light #screen-offline .offline-horizon-beam,
+[data-theme="light"] #screen-offline .offline-horizon-beam {
+  background: radial-gradient(ellipse at center, rgba(0, 115, 255, 0.3) 0%, transparent 70%) !important;
+  filter: blur(8px) !important;
+}
+
+body:not(.theme-dark) #screen-offline .offline-title-text,
+body.theme-light #screen-offline .offline-title-text,
+[data-theme="light"] #screen-offline .offline-title-text {
+  color: #0F172A !important;
+}
+
+body:not(.theme-dark) #screen-offline .offline-desc-text,
+body.theme-light #screen-offline .offline-desc-text,
+[data-theme="light"] #screen-offline .offline-desc-text {
+  color: #475569 !important;
+}
+
+body:not(.theme-dark) #screen-offline .offline-tips-container,
+body.theme-light #screen-offline .offline-tips-container,
+[data-theme="light"] #screen-offline .offline-tips-container {
+  background: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06) !important;
+}
+
+body:not(.theme-dark) #screen-offline .offline-tip-text,
+body.theme-light #screen-offline .offline-tip-text,
+[data-theme="light"] #screen-offline .offline-tip-text {
+  color: #334155 !important;
+}
+
+body:not(.theme-dark) #screen-offline .offline-tip-divider,
+body.theme-light #screen-offline .offline-tip-divider,
+[data-theme="light"] #screen-offline .offline-tip-divider {
+  border-color: #E2E8F0 !important;
+}
     
