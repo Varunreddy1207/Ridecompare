@@ -286,8 +286,8 @@ class RideCompareApp {
   
   // Ensure History Receipt and Modals have pure white theme in light mode
   updateHistoryReceiptTheme(isDark = false) {
-    // Always guarantee Uber icon box text is pure white
-    document.querySelectorAll('.provider-box-uber, .provider-box-uber *').forEach(el => {
+    // Always guarantee Uber icon box and Uber badge text is pure white
+    document.querySelectorAll('.provider-box-uber, .provider-box-uber *, #receipt-provider-badge.bg-black, #modal-provider-badge.bg-black').forEach(el => {
       el.style.setProperty('color', '#FFFFFF', 'important');
     });
 
@@ -923,6 +923,11 @@ class RideCompareApp {
     if (recBadge) {
       recBadge.textContent = `${trip.provider} • ${trip.vehicle}`;
       recBadge.className = `px-2.5 py-1 rounded-full text-xs font-bold ${trip.badgeClass}`;
+      if (trip.providerCategory === 'uber' || trip.badgeClass.includes('bg-black')) {
+        recBadge.style.setProperty('color', '#FFFFFF', 'important');
+      } else {
+        recBadge.style.removeProperty('color');
+      }
     }
     const recDatetime = document.getElementById('receipt-datetime');
     if (recDatetime) recDatetime.textContent = trip.dateTime;
@@ -960,6 +965,11 @@ class RideCompareApp {
       if (modBadge) {
         modBadge.textContent = `${trip.provider} • ${trip.vehicle}`;
         modBadge.className = `px-2.5 py-1 rounded-full text-xs font-bold ${trip.badgeClass}`;
+        if (trip.providerCategory === 'uber' || trip.badgeClass.includes('bg-black')) {
+          modBadge.style.setProperty('color', '#FFFFFF', 'important');
+        } else {
+          modBadge.style.removeProperty('color');
+        }
       }
       const modDatetime = document.getElementById('modal-datetime');
       if (modDatetime) modDatetime.textContent = trip.dateTime;

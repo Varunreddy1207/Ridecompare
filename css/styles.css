@@ -2118,11 +2118,11 @@ body.theme-light #history-detail-modal .border-dashed {
   border-color: #CBD5E1 !important;
 }
 
-/* 6. Typography */
-body:not(.theme-dark) #desktop-receipt-panel .text-white:not(button):not(button *),
-body:not(.theme-dark) #history-detail-modal .text-white:not(button):not(button *),
-body.theme-light #desktop-receipt-panel .text-white:not(button):not(button *),
-body.theme-light #history-detail-modal .text-white:not(button):not(button *) {
+/* 6. Typography (Excludes badges with black backgrounds like Uber) */
+body:not(.theme-dark) #desktop-receipt-panel .text-white:not(button):not(button *):not(#receipt-provider-badge):not(#modal-provider-badge):not(.bg-black):not(.bg-black *),
+body:not(.theme-dark) #history-detail-modal .text-white:not(button):not(button *):not(#receipt-provider-badge):not(#modal-provider-badge):not(.bg-black):not(.bg-black *),
+body.theme-light #desktop-receipt-panel .text-white:not(button):not(button *):not(#receipt-provider-badge):not(#modal-provider-badge):not(.bg-black):not(.bg-black *),
+body.theme-light #history-detail-modal .text-white:not(button):not(button *):not(#receipt-provider-badge):not(#modal-provider-badge):not(.bg-black):not(.bg-black *) {
   color: #0F172A !important;
 }
 
@@ -2812,6 +2812,33 @@ body:not(.theme-dark) #booking-confirmed-modal button:active {
     #receipt-provider-badge.bg-black *,
     #modal-provider-badge.bg-black,
     #modal-provider-badge.bg-black * {
+      color: #FFFFFF !important;
+      fill: #FFFFFF !important;
+    }
+    
+
+    /* ==========================================================================
+       UBER BADGE & UBER PILL: PURE WHITE TEXT ENFORCEMENT (#receipt-provider-badge & #modal-provider-badge)
+       ========================================================================== */
+    #receipt-provider-badge.bg-black,
+    #receipt-provider-badge.bg-black *,
+    #modal-provider-badge.bg-black,
+    #modal-provider-badge.bg-black *,
+    #desktop-receipt-panel #receipt-provider-badge.bg-black,
+    #history-detail-modal #modal-provider-badge.bg-black,
+    body:not(.theme-dark) #desktop-receipt-panel #receipt-provider-badge.bg-black,
+    body:not(.theme-dark) #history-detail-modal #modal-provider-badge.bg-black,
+    body.theme-light #desktop-receipt-panel #receipt-provider-badge.bg-black,
+    body.theme-light #history-detail-modal #modal-provider-badge.bg-black,
+    [data-theme="light"] #desktop-receipt-panel #receipt-provider-badge.bg-black,
+    [data-theme="light"] #history-detail-modal #modal-provider-badge.bg-black,
+    body:not(.theme-dark) #receipt-provider-badge.bg-black,
+    body:not(.theme-dark) #modal-provider-badge.bg-black,
+    body.theme-light #receipt-provider-badge.bg-black,
+    body.theme-light #modal-provider-badge.bg-black,
+    .bg-black.text-white,
+    .bg-black .text-white,
+    [class*="bg-black"] {
       color: #FFFFFF !important;
       fill: #FFFFFF !important;
     }
