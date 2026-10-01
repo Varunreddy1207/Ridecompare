@@ -8,10 +8,28 @@
   <link rel="icon" type="image/png" href="assets/images/logo.png">
   <meta name="theme-color" content="#FFFFFF" id="meta-theme-color">
 
-  <!-- Instant Theme Bootstrap: Defaults to Light Mode (white background) unless explicitly saved as dark -->
+  <!-- Instant Theme Bootstrap & Aggressive Cache Buster -->
   <script>
     (function() {
       try {
+        const CURRENT_VERSION = 'v52';
+        const lastVersion = localStorage.getItem('ridecompare_app_version');
+        if (lastVersion !== CURRENT_VERSION) {
+          localStorage.setItem('ridecompare_app_version', CURRENT_VERSION);
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(regs => {
+              for (let reg of regs) {
+                reg.unregister();
+              }
+            });
+          }
+          if ('caches' in window) {
+            caches.keys().then(keys => {
+              return Promise.all(keys.map(k => caches.delete(k)));
+            });
+          }
+        }
+
         const savedTheme = localStorage.getItem('ridecompare_theme');
         if (savedTheme === 'dark') {
           document.documentElement.classList.add('theme-dark');
@@ -32,7 +50,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=50">
+  <link rel="stylesheet" href="css/styles.css?v=52">
 
   <style>
     /* Strict Responsive Display Rules: Bottom Nav for Mobile & Tablet (< 1024px) */
@@ -375,6 +393,32 @@
       display: flex !important;
       visibility: visible !important;
       pointer-events: auto !important;
+      opacity: 1 !important;
+    }
+    #edit-profile-modal.show .edit-profile-panel {
+      transform: translateY(0) scale(1) !important;
+    }
+    /* Edit Profile in Light Mode Inline Fallback */
+    body:not(.theme-dark) #edit-profile-modal .edit-profile-panel,
+    body.theme-light #edit-profile-modal .edit-profile-panel,
+    [data-theme="light"] #edit-profile-modal .edit-profile-panel {
+      background: #FFFFFF !important;
+      background-color: #FFFFFF !important;
+      border: 1px solid #E2E8F0 !important;
+      color: #0F172A !important;
+    }
+    body:not(.theme-dark) #edit-profile-modal .edit-profile-header-title,
+    body.theme-light #edit-profile-modal .edit-profile-header-title,
+    [data-theme="light"] #edit-profile-modal .edit-profile-header-title {
+      color: #0F172A !important;
+    }
+    body:not(.theme-dark) #edit-profile-modal .edit-profile-input,
+    body.theme-light #edit-profile-modal .edit-profile-input,
+    [data-theme="light"] #edit-profile-modal .edit-profile-input {
+      background: #F8FAFC !important;
+      background-color: #F8FAFC !important;
+      border-color: #CBD5E1 !important;
+      color: #0F172A !important;
     }
     @media (min-width: 1024px) {
       html, body {
@@ -2708,13 +2752,14 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
 
   <!-- Scripts -->
   <script src="js/audio.js?v=26"></script>
-  <script src="js/app.js?v=50"></script>
+  <script src="js/app.js?v=52"></script>
+  <script src="js/profile.js?v=52"></script>
 
   <!-- Service Worker for Offline PWA Support -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=50').then((reg) => {
+        navigator.serviceWorker.register('./sw.js?v=52').then((reg) => {
           reg.update();
         }).catch(() => {});
       });
