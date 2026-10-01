@@ -12,7 +12,7 @@
   <script>
     (function() {
       try {
-        const CURRENT_VERSION = 'v52';
+        const CURRENT_VERSION = 'v53';
         const lastVersion = localStorage.getItem('ridecompare_app_version');
         if (lastVersion !== CURRENT_VERSION) {
           localStorage.setItem('ridecompare_app_version', CURRENT_VERSION);
@@ -50,7 +50,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=52">
+  <link rel="stylesheet" href="css/styles.css?v=53">
 
   <style>
     /* Strict Responsive Display Rules: Bottom Nav for Mobile & Tablet (< 1024px) */
@@ -781,12 +781,12 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
         <!-- Top Section: 3D Logo + Titles + Description -->
         <div class="w-full flex flex-col items-center">
           <!-- 3D Metallic R Logo Emblem with Electric Blue/Cyan Glow -->
-          <div class="logo-emblem-container">
+          <div class="logo-emblem-container cursor-pointer" onclick="app.reloadPage()" title="Reload RideCompare">
             <img src="assets/images/logo_cropped_clean.png" alt="VOZX Logo" class="logo-emblem-img">
           </div>
 
           <!-- Title: Ride in White, Compare in Electric Blue -->
-          <h1 class="brand-title">
+          <h1 class="brand-title cursor-pointer" onclick="app.reloadPage()" title="Reload RideCompare">
             Ride<span class="text-blue">Compare</span>
           </h1>
 
@@ -833,7 +833,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
     <aside id="desktop-sidebar" class="desktop-sidebar hidden lg:flex">
       <div>
         <!-- Brand Header with 3D Logo Emblem -->
-        <div onclick="app.navigateTo('screen-splash')" class="flex items-center gap-3 px-2 py-2 cursor-pointer hover:opacity-90 transition-opacity">
+        <div onclick="app.reloadPage()" class="desktop-brand-header flex items-center gap-3 px-2 py-2 cursor-pointer hover:opacity-90 transition-opacity" title="Reload RideCompare">
           <img src="assets/images/logo_cropped_clean.png" alt="VOZX Logo" class="w-9 h-9 object-contain filter drop-shadow-[0_0_8px_#38BDF8]">
           <div>
             <h1 class="text-base font-extrabold tracking-tight text-white flex items-center">
@@ -946,7 +946,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
 
       <!-- MOBILE & TABLET TOP HEADER (Exact Match to media_1790644185007.png) -->
       <header class="home-mobile-header flex lg:hidden">
-        <div onclick="app.navigateTo('screen-splash')" class="brand-emblem-small">
+        <div onclick="app.reloadPage()" class="brand-emblem-small cursor-pointer" title="Reload RideCompare">
           <img src="assets/images/logo_cropped_clean.png" alt="VOZX Logo">
           <span>Ride<span class="text-blue">Compare</span></span>
         </div>
@@ -1460,7 +1460,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
     <aside class="desktop-sidebar hidden lg:flex">
       <div>
         <!-- Brand Header with 3D Logo Emblem -->
-        <div onclick="app.switchTab('home')" class="flex items-center gap-3 px-2 py-2 cursor-pointer hover:opacity-90 transition-opacity">
+        <div onclick="app.reloadPage()" class="desktop-brand-header flex items-center gap-3 px-2 py-2 cursor-pointer hover:opacity-90 transition-opacity" title="Reload RideCompare">
           <img src="assets/images/logo_cropped_clean.png" alt="VOZX Logo" class="w-9 h-9 object-contain filter drop-shadow-[0_0_8px_#38BDF8]">
           <div>
             <h1 class="text-base font-extrabold tracking-tight text-white flex items-center">
@@ -1949,7 +1949,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
     <aside class="desktop-sidebar hidden lg:flex">
       <div>
         <!-- Brand Header with 3D Logo Emblem -->
-        <div onclick="app.switchTab('home')" class="flex items-center gap-3 px-2 py-2 cursor-pointer hover:opacity-90 transition-opacity">
+        <div onclick="app.reloadPage()" class="desktop-brand-header flex items-center gap-3 px-2 py-2 cursor-pointer hover:opacity-90 transition-opacity" title="Reload RideCompare">
           <img src="assets/images/logo_cropped_clean.png" alt="VOZX Logo" class="w-9 h-9 object-contain filter drop-shadow-[0_0_8px_#38BDF8]">
           <div>
             <h1 class="text-base font-extrabold tracking-tight text-white flex items-center">
@@ -2653,7 +2653,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
     
     <!-- Top Bar: Logo & Offline Status Indicator -->
     <header class="w-full max-w-4xl flex items-center justify-between pt-2 sm:pt-4">
-      <div class="flex items-center gap-2.5">
+      <div onclick="app.reloadPage()" class="flex items-center gap-2.5 cursor-pointer" title="Reload RideCompare">
         <img src="assets/images/logo_cropped_clean.png" alt="VOZX Logo" class="w-8 h-8 sm:w-9 sm:h-9 object-contain filter drop-shadow-[0_0_8px_#38BDF8]">
         <div class="text-base sm:text-lg font-black tracking-tight flex items-center">
           <span class="offline-logo-brand text-white">VOZX</span>
@@ -2752,14 +2752,14 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
 
   <!-- Scripts -->
   <script src="js/audio.js?v=26"></script>
-  <script src="js/app.js?v=52"></script>
-  <script src="js/profile.js?v=52"></script>
+  <script src="js/app.js?v=53"></script>
+  <script src="js/profile.js?v=53"></script>
 
   <!-- Service Worker for Offline PWA Support -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=52').then((reg) => {
+        navigator.serviceWorker.register('./sw.js?v=53').then((reg) => {
           reg.update();
         }).catch(() => {});
       });

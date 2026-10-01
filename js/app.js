@@ -164,6 +164,16 @@ class RideCompareApp {
           this.closeEditProfileModal();
         }
       });
+
+      // Global click handler: Clicking RideCompare symbol or text reloads the page
+      document.addEventListener('click', (e) => {
+        const brandTarget = e.target.closest('.brand-emblem-small, .brand-title, .logo-emblem-container, .desktop-brand-header, [data-reload-brand]');
+        if (brandTarget) {
+          e.preventDefault();
+          e.stopPropagation();
+          this.reloadPage();
+        }
+      });
     });
   }
 
@@ -353,6 +363,24 @@ class RideCompareApp {
     }
   }
 
+  // Reload Page Action when user clicks RideCompare symbol or text
+  reloadPage() {
+    if (window.soundFX && window.soundFX.playTap) {
+      window.soundFX.playTap();
+    }
+    // Ensure page reload stays on the current view instead of splash
+    if (!window.location.hash || window.location.hash === '#' || window.location.hash === '#splash') {
+      if (this.currentTab === 'history') {
+        window.location.hash = '#history';
+      } else if (this.currentTab === 'profile') {
+        window.location.hash = '#profile';
+      } else {
+        window.location.hash = '#home';
+      }
+    }
+    window.location.reload();
+  }
+
   handleHashRoute() {
     if (window.location.hash === '#booking') {
       this.navigateTo('screen-booking', false);
@@ -365,7 +393,7 @@ class RideCompareApp {
       this.currentTab = 'profile';
       this.navigateTo('screen-profile', false);
       this.updateActiveNavs('profile');
-    } else if (window.location.hash === '#home') {
+    } else if (window.location.hash === '#home' || localStorage.getItem('ridecompare_has_started') === 'true') {
       this.currentTab = 'home';
       this.navigateTo('screen-home', false);
       this.updateActiveNavs('home');
@@ -447,6 +475,7 @@ class RideCompareApp {
     }
     
     // Smooth transition to Home Screen
+    localStorage.setItem('ridecompare_has_started', 'true');
     setTimeout(() => {
       this.navigateTo('screen-home', true);
       window.location.hash = '#home';
@@ -917,6 +946,7 @@ class RideCompareApp {
     if (window.soundFX) {
       window.soundFX.playTap();
     }
+    localStorage.removeItem('ridecompare_has_started');
     const name = this.userProfile ? this.userProfile.name : 'Varun Reddy';
     this.showToast(`Logged out of ${name} successfully 👋`);
     setTimeout(() => {
@@ -1488,3 +1518,10 @@ class RideCompareApp {
 }
 
 window.app = new RideCompareApp();
+window.reloadApp = () => {
+  if (window.app && window.app.reloadPage) {
+    window.app.reloadPage();
+  } else {
+    window.location.reload();
+  }
+};
