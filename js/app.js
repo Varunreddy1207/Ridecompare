@@ -121,9 +121,11 @@ class RideCompareApp {
   init() {
     this.initTheme();
     this.initConnectivity();
+    this.initUserProfile();
 
     document.addEventListener('DOMContentLoaded', () => {
       this.initTheme();
+      this.initUserProfile();
       // Check initial hash routing (#home, #history, or splash)
       this.handleHashRoute();
 
@@ -135,6 +137,16 @@ class RideCompareApp {
       // Responsive Navigation Enforcement
       this.enforceResponsiveNav();
       window.addEventListener('resize', () => this.enforceResponsiveNav());
+
+      // Close Edit Profile Modal on backdrop click
+      const editModal = document.getElementById('edit-profile-modal');
+      if (editModal) {
+        editModal.addEventListener('click', (e) => {
+          if (e.target === editModal) {
+            this.closeEditProfileModal();
+          }
+        });
+      }
 
       // Desktop keyboard shortcut: Press '/' to focus search
       document.addEventListener('keydown', (e) => {
@@ -149,6 +161,7 @@ class RideCompareApp {
         } else if (e.key === 'Escape') {
           this.hideResultsPanel();
           this.closeHistoryModal();
+          this.closeEditProfileModal();
         }
       });
     });
@@ -215,6 +228,7 @@ class RideCompareApp {
     this.updateTopbarActionButtons(theme === 'dark');
     this.updateConfirmedModalTheme(theme === 'dark');
     this.updateHistoryReceiptTheme(theme === 'dark');
+    this.updateEditProfileModalTheme(theme === 'dark');
   }
 
   // Ensure "Back to Home" and Notification Bell buttons have blue background in light mode
@@ -903,11 +917,242 @@ class RideCompareApp {
     if (window.soundFX) {
       window.soundFX.playTap();
     }
-    this.showToast('Logged out of Varun Reddy successfully 👋');
+    const name = this.userProfile ? this.userProfile.name : 'Varun Reddy';
+    this.showToast(`Logged out of ${name} successfully 👋`);
     setTimeout(() => {
       this.navigateTo('screen-splash', false);
       window.location.hash = '#';
     }, 350);
+  }
+
+  // =========================================================================
+  // USER PROFILE & EDIT PROFILE SYSTEM
+  // =========================================================================
+  initUserProfile() {
+    const defaultProfile = {
+      name: 'Varun Reddy',
+      email: 'varunreddy@gmail.com',
+      phone: '+91 98765 43210',
+      city: 'Ichalkaranji, Kolhapur',
+      ridePref: 'all',
+      avatarAccent: 'blue'
+    };
+    try {
+      const saved = localStorage.getItem('ridecompare_user_profile');
+      this.userProfile = saved ? Object.assign({}, defaultProfile, JSON.parse(saved)) : defaultProfile;
+    } catch (e) {
+      this.userProfile = defaultProfile;
+    }
+    this.renderUserProfile();
+  }
+
+  renderUserProfile() {
+    if (!this.userProfile) return;
+    const p = this.userProfile;
+
+    // 1. Update text elements across screens
+    const nameEl = document.getElementById('profile-display-name');
+    const sideNameEl = document.getElementById('sidebar-profile-name');
+    const emailEl = document.getElementById('profile-display-email');
+    const phoneEl = document.getElementById('profile-display-phone');
+
+    if (nameEl) nameEl.textContent = p.name;
+    if (sideNameEl) sideNameEl.textContent = p.name;
+    if (emailEl) emailEl.textContent = p.email;
+    if (phoneEl) phoneEl.textContent = p.phone || '+91 98765 43210';
+
+    // 2. Avatar Accents
+    const accents = {
+      blue: { bg: '#93C5FD', text: '#1E3A8A' },
+      purple: { bg: '#C4B5FD', text: '#4C1D95' },
+      emerald: { bg: '#A7F3D0', text: '#064E3B' },
+      amber: { bg: '#FDE68A', text: '#78350F' }
+    };
+    const accent = accents[p.avatarAccent] || accents.blue;
+
+    const avatars = document.querySelectorAll('#profile-avatar-display, #sidebar-avatar-badge, #edit-modal-avatar-preview');
+    avatars.forEach(av => {
+      av.style.setProperty('background-color', accent.bg, 'important');
+      const svg = av.querySelector('svg');
+      if (svg) svg.style.setProperty('color', accent.text, 'important');
+    });
+  }
+
+  openEditProfileModal() {
+    if (window.soundFX && window.soundFX.playTap) window.soundFX.playTap();
+    const modal = document.getElementById('edit-profile-modal');
+    if (!modal) return;
+
+    const p = this.userProfile || {
+      name: 'Varun Reddy',
+      email: 'varunreddy@gmail.com',
+      phone: '+91 98765 43210',
+      city: 'Ichalkaranji, Kolhapur',
+      ridePref: 'all',
+      avatarAccent: 'blue'
+    };
+
+    const nameInp = document.getElementById('edit-profile-name');
+    const emailInp = document.getElementById('edit-profile-email');
+    const phoneInp = document.getElementById('edit-profile-phone');
+    const cityInp = document.getElementById('edit-profile-city');
+    const prefInp = document.getElementById('edit-profile-pref');
+
+    if (nameInp) nameInp.value = p.name;
+    if (emailInp) emailInp.value = p.email;
+    if (phoneInp) phoneInp.value = p.phone || '';
+    if (cityInp) cityInp.value = p.city || '';
+    if (prefInp) prefInp.value = p.ridePref || 'all';
+
+    this.tempAvatarAccent = p.avatarAccent || 'blue';
+    this.updateModalAvatarAccentButtons(this.tempAvatarAccent);
+
+    modal.classList.add('show');
+    this.updateEditProfileModalTheme();
+  }
+
+  closeEditProfileModal() {
+    if (window.soundFX && window.soundFX.playTap) window.soundFX.playTap();
+    const modal = document.getElementById('edit-profile-modal');
+    if (modal) {
+      modal.classList.remove('show');
+    }
+  }
+
+  selectAvatarTheme(colorKey) {
+    if (window.soundFX && window.soundFX.playTap) window.soundFX.playTap();
+    this.tempAvatarAccent = colorKey;
+    this.updateModalAvatarAccentButtons(colorKey);
+
+    const accents = {
+      blue: { bg: '#93C5FD', text: '#1E3A8A' },
+      purple: { bg: '#C4B5FD', text: '#4C1D95' },
+      emerald: { bg: '#A7F3D0', text: '#064E3B' },
+      amber: { bg: '#FDE68A', text: '#78350F' }
+    };
+    const accent = accents[colorKey] || accents.blue;
+    const modalAv = document.getElementById('edit-modal-avatar-preview');
+    if (modalAv) {
+      modalAv.style.setProperty('background-color', accent.bg, 'important');
+      const svg = modalAv.querySelector('svg');
+      if (svg) svg.style.setProperty('color', accent.text, 'important');
+    }
+  }
+
+  updateModalAvatarAccentButtons(selectedKey) {
+    const btns = document.querySelectorAll('.avatar-accent-btn');
+    btns.forEach(btn => {
+      const key = btn.getAttribute('data-accent');
+      if (key === selectedKey) {
+        btn.classList.add('ring-2', 'ring-blue-500', 'border-white', 'scale-110');
+      } else {
+        btn.classList.remove('ring-2', 'ring-blue-500', 'border-white', 'scale-110');
+      }
+    });
+  }
+
+  saveProfile(e) {
+    if (e && e.preventDefault) e.preventDefault();
+
+    const nameInp = document.getElementById('edit-profile-name');
+    const emailInp = document.getElementById('edit-profile-email');
+    const phoneInp = document.getElementById('edit-profile-phone');
+    const cityInp = document.getElementById('edit-profile-city');
+    const prefInp = document.getElementById('edit-profile-pref');
+
+    const newName = nameInp ? nameInp.value.trim() : '';
+    const newEmail = emailInp ? emailInp.value.trim() : '';
+    const newPhone = phoneInp ? phoneInp.value.trim() : '';
+    const newCity = cityInp ? cityInp.value.trim() : '';
+    const newPref = prefInp ? prefInp.value : 'all';
+
+    if (!newName) {
+      this.showToast('⚠️ Please enter your full name');
+      if (nameInp) nameInp.focus();
+      return;
+    }
+    if (!newEmail || !newEmail.includes('@')) {
+      this.showToast('⚠️ Please enter a valid email address');
+      if (emailInp) emailInp.focus();
+      return;
+    }
+
+    this.userProfile = {
+      name: newName,
+      email: newEmail,
+      phone: newPhone,
+      city: newCity,
+      ridePref: newPref,
+      avatarAccent: this.tempAvatarAccent || (this.userProfile && this.userProfile.avatarAccent) || 'blue'
+    };
+
+    localStorage.setItem('ridecompare_user_profile', JSON.stringify(this.userProfile));
+    this.renderUserProfile();
+    this.closeEditProfileModal();
+
+    if (window.soundFX && window.soundFX.playGetStarted) {
+      window.soundFX.playGetStarted();
+    }
+    this.showToast('Profile updated successfully! ✨');
+  }
+
+  updateEditProfileModalTheme(isDark = false) {
+    const isDarkMode = isDark || document.body.classList.contains('theme-dark') || document.documentElement.getAttribute('data-theme') === 'dark';
+    const modalPanel = document.querySelector('#edit-profile-modal .edit-profile-panel');
+    if (!modalPanel) return;
+
+    const inputs = modalPanel.querySelectorAll('.edit-profile-input');
+    const labels = modalPanel.querySelectorAll('.edit-profile-label');
+    const title = modalPanel.querySelector('.edit-profile-header-title');
+    const sub = modalPanel.querySelector('.edit-profile-header-sub');
+    const closeBtn = modalPanel.querySelector('.edit-profile-close-btn');
+    const cancelBtn = modalPanel.querySelector('.btn-cancel-profile');
+
+    if (isDarkMode) {
+      modalPanel.style.removeProperty('background');
+      modalPanel.style.removeProperty('background-color');
+      modalPanel.style.removeProperty('border-color');
+      modalPanel.style.removeProperty('color');
+      if (title) title.style.removeProperty('color');
+      if (sub) sub.style.removeProperty('color');
+      if (closeBtn) {
+        closeBtn.style.removeProperty('background-color');
+        closeBtn.style.removeProperty('color');
+      }
+      if (cancelBtn) {
+        cancelBtn.style.removeProperty('background-color');
+        cancelBtn.style.removeProperty('color');
+        cancelBtn.style.removeProperty('border-color');
+      }
+      labels.forEach(l => l.style.removeProperty('color'));
+      inputs.forEach(inp => {
+        inp.style.removeProperty('background-color');
+        inp.style.removeProperty('border-color');
+        inp.style.removeProperty('color');
+      });
+    } else {
+      modalPanel.style.setProperty('background', '#FFFFFF', 'important');
+      modalPanel.style.setProperty('background-color', '#FFFFFF', 'important');
+      modalPanel.style.setProperty('border-color', '#E2E8F0', 'important');
+      modalPanel.style.setProperty('color', '#0F172A', 'important');
+      if (title) title.style.setProperty('color', '#0F172A', 'important');
+      if (sub) sub.style.setProperty('color', '#64748B', 'important');
+      if (closeBtn) {
+        closeBtn.style.setProperty('background-color', '#F1F5F9', 'important');
+        closeBtn.style.setProperty('color', '#475569', 'important');
+      }
+      if (cancelBtn) {
+        cancelBtn.style.setProperty('background-color', '#F1F5F9', 'important');
+        cancelBtn.style.setProperty('color', '#475569', 'important');
+        cancelBtn.style.setProperty('border-color', '#CBD5E1', 'important');
+      }
+      labels.forEach(l => l.style.setProperty('color', '#334155', 'important'));
+      inputs.forEach(inp => {
+        inp.style.setProperty('background-color', '#F8FAFC', 'important');
+        inp.style.setProperty('border-color', '#CBD5E1', 'important');
+        inp.style.setProperty('color', '#0F172A', 'important');
+      });
+    }
   }
 
   // Select History Trip (syncs Desktop Receipt Panel and Mobile/Tablet Modal)

@@ -2993,4 +2993,123 @@ body.theme-light #screen-offline .offline-tip-divider,
 [data-theme="light"] #screen-offline .offline-tip-divider {
   border-color: #E2E8F0 !important;
 }
-    
+
+/* ==========================================================================
+   EDIT PROFILE MODAL & PROFILE EDIT OPTIONS
+   ========================================================================== */
+#edit-profile-modal {
+  z-index: 2000 !important;
+}
+
+#edit-profile-modal.show {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  visibility: visible !important;
+}
+
+#edit-profile-modal.show .edit-profile-panel {
+  transform: translateY(0) scale(1) !important;
+}
+
+/* Edit Profile button on user card */
+.btn-edit-profile {
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Edit Profile in Light Mode */
+body:not(.theme-dark) #edit-profile-modal,
+body.theme-light #edit-profile-modal,
+[data-theme="light"] #edit-profile-modal {
+  background-color: rgba(15, 23, 42, 0.45) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+}
+
+body:not(.theme-dark) #edit-profile-modal .edit-profile-panel,
+body.theme-light #edit-profile-modal .edit-profile-panel,
+[data-theme="light"] #edit-profile-modal .edit-profile-panel {
+  background: #FFFFFF !important;
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.04) !important;
+  color: #0F172A !important;
+}
+
+body:not(.theme-dark) #edit-profile-modal .edit-profile-header-title,
+body.theme-light #edit-profile-modal .edit-profile-header-title,
+[data-theme="light"] #edit-profile-modal .edit-profile-header-title {
+  color: #0F172A !important;
+}
+
+body:not(.theme-dark) #edit-profile-modal .edit-profile-header-sub,
+body.theme-light #edit-profile-modal .edit-profile-header-sub,
+[data-theme="light"] #edit-profile-modal .edit-profile-header-sub {
+  color: #64748B !important;
+}
+
+body:not(.theme-dark) #edit-profile-modal .edit-profile-label,
+body.theme-light #edit-profile-modal .edit-profile-label,
+[data-theme="light"] #edit-profile-modal .edit-profile-label {
+  color: #334155 !important;
+}
+
+body:not(.theme-dark) #edit-profile-modal .edit-profile-input,
+body.theme-light #edit-profile-modal .edit-profile-input,
+[data-theme="light"] #edit-profile-modal .edit-profile-input {
+  background: #F8FAFC !important;
+  background-color: #F8FAFC !important;
+  border-color: #CBD5E1 !important;
+  color: #0F172A !important;
+}
+
+body:not(.theme-dark) #edit-profile-modal .edit-profile-input::placeholder,
+body.theme-light #edit-profile-modal .edit-profile-input::placeholder,
+[data-theme="light"] #edit-profile-modal .edit-profile-input::placeholder {
+  color: #94A3B8 !important;
+}
+
+body:not(.theme-dark) #edit-profile-modal .edit-profile-close-btn,
+body.theme-light #edit-profile-modal .edit-profile-close-btn,
+[data-theme="light"] #edit-profile-modal .edit-profile-close-btn {
+  background-color: #F1F5F9 !important;
+  color: #475569 !important;
+  border: 1px solid #E2E8F0 !important;
+}
+
+body:not(.theme-dark) #edit-profile-modal .edit-profile-close-btn:hover,
+body.theme-light #edit-profile-modal .edit-profile-close-btn:hover,
+[data-theme="light"] #edit-profile-modal .edit-profile-close-btn:hover {
+  background-color: #E2E8F0 !important;
+  color: #0F172A !important;
+}
+
+body:not(.theme-dark) #edit-profile-modal .btn-cancel-profile,
+body.theme-light #edit-profile-modal .btn-cancel-profile,
+[data-theme="light"] #edit-profile-modal .btn-cancel-profile {
+  background-color: #F1F5F9 !important;
+  color: #475569 !important;
+  border: 1px solid #CBD5E1 !important;
+}
+
+body:not(.theme-dark) #edit-profile-modal .btn-cancel-profile:hover,
+body.theme-light #edit-profile-modal .btn-cancel-profile:hover,
+[data-theme="light"] #edit-profile-modal .btn-cancel-profile:hover {
+  background-color: #E2E8F0 !important;
+  color: #0F172A !important;
+}
+
+body:not(.theme-dark) .btn-edit-profile,
+body.theme-light .btn-edit-profile,
+[data-theme="light"] .btn-edit-profile {
+  background-color: #EFF6FF !important;
+  border-color: #BFDBFE !important;
+  color: #1D4ED8 !important;
+}
+
+body:not(.theme-dark) .btn-edit-profile:hover,
+body.theme-light .btn-edit-profile:hover,
+[data-theme="light"] .btn-edit-profile:hover {
+  background-color: #DBEAFE !important;
+  color: #1E40AF !important;
+}
