@@ -30,7 +30,7 @@ class RideCompareApp {
         plate: 'MH 09 CZ 4821',
         payment: 'Paid via UPI (GPay)',
         baseFare: '₹45.00',
-        distFare: '₹41.00',
+        distFare: '₹41.00', 
         taxFare: '₹10.00'
       },
       {
@@ -126,6 +126,8 @@ class RideCompareApp {
     document.addEventListener('DOMContentLoaded', () => {
       this.initTheme();
       this.initUserProfile();
+      // Initialize Premium Welcome Splash Sequence
+      this.initWelcomeSplash();
       // Check initial hash routing (#home, #history, or splash)
       this.handleHashRoute();
 
@@ -148,6 +150,36 @@ class RideCompareApp {
         });
       }
 
+      // Close Auth Modal on backdrop click
+      const authModal = document.getElementById('auth-modal');
+      if (authModal) {
+        authModal.addEventListener('click', (e) => {
+          if (e.target === authModal) {
+            this.closeAuthModal();
+          }
+        });
+      }
+
+      // Close Logout Confirm Modal on backdrop click
+      const logoutModal = document.getElementById('logout-confirm-modal');
+      if (logoutModal) {
+        logoutModal.addEventListener('click', (e) => {
+          if (e.target === logoutModal) {
+            this.closeLogoutConfirmModal();
+          }
+        });
+      }
+
+      // Close Delete Account Confirm Modal on backdrop click
+      const deleteModal = document.getElementById('delete-account-modal');
+      if (deleteModal) {
+        deleteModal.addEventListener('click', (e) => {
+          if (e.target === deleteModal) {
+            this.closeDeleteAccountModal();
+          }
+        });
+      }
+
       // Desktop keyboard shortcut: Press '/' to focus search
       document.addEventListener('keydown', (e) => {
         if (e.key === '/' && this.currentScreen === 'screen-home') {
@@ -162,13 +194,21 @@ class RideCompareApp {
           this.hideResultsPanel();
           this.closeHistoryModal();
           this.closeEditProfileModal();
+          this.closeAuthModal();
+          this.closeLogoutConfirmModal();
+          this.closeDeleteAccountModal();
         }
       });
 
       // Global click handler: Clicking RideCompare symbol or text reloads the page
       document.addEventListener('click', (e) => {
-        const brandTarget = e.target.closest('.brand-emblem-small, .brand-title, .logo-emblem-container, .desktop-brand-header, [data-reload-brand]');
+        const brandTarget = e.target.closest(
+          '.brand-emblem-small, .brand-title, .logo-emblem-container, .desktop-brand-header, [data-reload-brand], img[src*="logo_cropped_clean"], img[alt*="VOZX Logo"], img[alt*="logo"]'
+        );
         if (brandTarget) {
+          if (e.target.closest('button:not([data-reload-brand]), a:not([data-reload-brand]), input, select, textarea')) {
+            return;
+          }
           e.preventDefault();
           e.stopPropagation();
           this.reloadPage();
@@ -239,6 +279,9 @@ class RideCompareApp {
     this.updateConfirmedModalTheme(theme === 'dark');
     this.updateHistoryReceiptTheme(theme === 'dark');
     this.updateEditProfileModalTheme(theme === 'dark');
+    this.updateAuthModalTheme(theme === 'dark');
+    this.updateLogoutModalTheme(theme === 'dark');
+    this.updateDeleteAccountModalTheme(theme === 'dark');
   }
 
   // Ensure "Back to Home" and Notification Bell buttons have blue background in light mode
@@ -365,39 +408,169 @@ class RideCompareApp {
 
   // Reload Page Action when user clicks RideCompare symbol or text
   reloadPage() {
+    if (this._isReloading) return;
+    this._isReloading = true;
     if (window.soundFX && window.soundFX.playTap) {
-      window.soundFX.playTap();
+      try { window.soundFX.playTap(); } catch (_) {}
     }
-    // Ensure page reload stays on the current view instead of splash
-    if (!window.location.hash || window.location.hash === '#' || window.location.hash === '#splash') {
-      if (this.currentTab === 'history') {
-        window.location.hash = '#history';
-      } else if (this.currentTab === 'profile') {
-        window.location.hash = '#profile';
-      } else {
-        window.location.hash = '#home';
-      }
+    // Maintain current screen / tab route across reload
+    if (this.currentScreen === 'screen-splash') {
+      try {
+        if (window.location.hash) {
+          history.replaceState(null, '', window.location.pathname + window.location.search);
+        }
+      } catch (_) {}
+    } else if (this.currentScreen === 'screen-history' || this.currentTab === 'history') {
+      window.location.hash = '#history';
+    } else if (this.currentScreen === 'screen-profile' || this.currentTab === 'profile') {
+      window.location.hash = '#profile';
+    } else if (this.currentScreen === 'screen-booking') {
+      window.location.hash = '#booking';
+    } else {
+      window.location.hash = '#home';
     }
     window.location.reload();
   }
 
+  // =========================================================================
+  // PREMIUM WELCOME / SPLASH ANIMATION CONTROLLER (Apple Minimal Pure White)
+  // "One Ride. Every Price." • 3.0s Cinematic Sequence
+  // =========================================================================
+  initWelcomeSplash() {
+    const splash = document.getElementById('welcome-splash-screen');
+    if (!splash) return;
+
+    // Check if user has already viewed the welcome animation in this browser session
+    const hasViewed = sessionStorage.getItem('vozx_welcome_viewed') === 'true';
+
+    // If already viewed or entering directly with specific deep hash route (#history, #profile, #booking)
+    if (hasViewed || (window.location.hash && window.location.hash !== '#' && window.location.hash !== '#home')) {
+      splash.classList.add('hidden');
+      this.isWelcomeSplashActive = false;
+      return;
+    }
+
+    // Active welcome sequence
+    this.isWelcomeSplashActive = true;
+
+    // Enforce pure white canvas without background navigation bars
+    this.enforceResponsiveNav();
+
+    // Sequence transition begins at 2.7s (2700ms) and finishes by 3.1s (3100ms)
+    this.welcomeTransitionTimer = setTimeout(() => {
+      this.finishWelcomeSplash();
+    }, 2700);
+  }
+
+  finishWelcomeSplash() {
+    if (!this.isWelcomeSplashActive && !document.getElementById('welcome-splash-screen')) return;
+    this.isWelcomeSplashActive = false;
+
+    if (this.welcomeTransitionTimer) {
+      clearTimeout(this.welcomeTransitionTimer);
+      this.welcomeTransitionTimer = null;
+    }
+
+    const splash = document.getElementById('welcome-splash-screen');
+    if (!splash) return;
+
+    // Mark as viewed for the session so it won't replay on page navigation
+    sessionStorage.setItem('vozx_welcome_viewed', 'true');
+
+    // Smooth white-to-white exit transition (scale down 0.96 + fade out opacity 0 over 400ms)
+    splash.classList.add('fade-out');
+
+    // Check authentication / started state
+    const hasStarted = localStorage.getItem('ridecompare_has_started') === 'true';
+    const isAuth = !!(window.RideCompareAuth && window.RideCompareAuth.isAuthenticated);
+
+    // Direct developer route check
+    if (window.location.hash === '#system-status' || window.location.hash === '#status' || window.location.pathname.endsWith('/system-status')) {
+      this.currentTab = 'status';
+      this.navigateTo('screen-status', false);
+      this.updateActiveNavs('status');
+      this.initSystemStatus();
+    } else if (hasStarted || isAuth) {
+      // If authenticated or returning user who has started: proceed to Home
+      this.currentTab = 'home';
+      this.navigateTo('screen-home', false);
+      this.updateActiveNavs('home');
+      if (!window.location.hash || window.location.hash === '#' || window.location.hash === '#splash') {
+        try { history.replaceState(null, '', '#home'); } catch (_) {}
+      }
+    } else {
+      // Unauthenticated / Logged out / First time: reveal Get Started page
+      this.currentTab = 'home';
+      this.navigateTo('screen-splash', false);
+      if (!window.location.hash || window.location.hash === '#') {
+        try { history.replaceState(null, '', '#splash'); } catch (_) {}
+      }
+    }
+    this.enforceResponsiveNav();
+
+    // After 400ms fade transition finishes, hide overlay completely
+    setTimeout(() => {
+      splash.classList.add('hidden');
+      splash.classList.remove('fade-out');
+    }, 420);
+  }
+
+  skipWelcomeSplash() {
+    // Allows user to skip anytime by tapping/clicking anywhere on the screen
+    if (!this.isWelcomeSplashActive) return;
+    if (window.soundFX && window.soundFX.playTap) {
+      try { window.soundFX.playTap(); } catch (_) {}
+    }
+    this.finishWelcomeSplash();
+  }
+
   handleHashRoute() {
-    if (window.location.hash === '#booking') {
+    // If welcome splash is currently running, let it complete its smooth transition
+    if (this.isWelcomeSplashActive) {
+      return;
+    }
+    const hash = window.location.hash;
+    const hasStarted = localStorage.getItem('ridecompare_has_started') === 'true';
+    const isAuth = !!(window.RideCompareAuth && window.RideCompareAuth.isAuthenticated);
+
+    // Explicit System Status developer route
+    if (hash === '#system-status' || hash === '#status' || window.location.pathname.endsWith('/system-status')) {
+      this.currentTab = 'status';
+      this.navigateTo('screen-status', false);
+      this.updateActiveNavs('status');
+      this.initSystemStatus();
+      return;
+    }
+
+    // Explicit Get Started / Splash routes
+    if (hash === '#splash' || hash === '#get-started') {
+      this.currentTab = 'home';
+      this.navigateTo('screen-splash', false);
+      return;
+    }
+
+    if (hash === '#booking') {
       this.navigateTo('screen-booking', false);
-    } else if (window.location.hash === '#history') {
+    } else if (hash === '#history') {
       this.currentTab = 'history';
       this.navigateTo('screen-history', false);
       this.updateActiveNavs('history');
       this.selectHistoryTrip(this.selectedHistoryTripId || 1, false);
-    } else if (window.location.hash === '#profile') {
+    } else if (hash === '#profile') {
       this.currentTab = 'profile';
       this.navigateTo('screen-profile', false);
       this.updateActiveNavs('profile');
-    } else if (window.location.hash === '#home' || localStorage.getItem('ridecompare_has_started') === 'true') {
+    } else if (hash === '#home') {
+      this.currentTab = 'home';
+      this.navigateTo('screen-home', false);
+      this.updateActiveNavs('home');
+    } else if (hasStarted || isAuth) {
       this.currentTab = 'home';
       this.navigateTo('screen-home', false);
       this.updateActiveNavs('home');
     } else {
+      // Unauthenticated / Logged Out: Route to Get Started page
+      this.currentTab = 'home';
       this.navigateTo('screen-splash', false);
     }
   }
@@ -411,12 +584,12 @@ class RideCompareApp {
     const deskTopbars = document.querySelectorAll('.desktop-topbar');
     const width = window.innerWidth;
 
-    // When on Get Started (Splash) Screen OR Booking Confirmation Screen
-    if (this.currentScreen === 'screen-splash' || this.currentScreen === 'screen-booking') {
+    // When Welcome Splash is Active OR on Get Started Screen OR Booking Screen OR System Status Screen
+    if (this.isWelcomeSplashActive || this.currentScreen === 'screen-splash' || this.currentScreen === 'screen-booking' || this.currentScreen === 'screen-status') {
       if (bottomNav) bottomNav.style.setProperty('display', 'none', 'important');
       legacyMobNavs.forEach(el => el.style.setProperty('display', 'none', 'important'));
       legacyTabDocks.forEach(el => el.style.setProperty('display', 'none', 'important'));
-      if (this.currentScreen === 'screen-splash') {
+      if (this.isWelcomeSplashActive || this.currentScreen === 'screen-splash') {
         deskSidebars.forEach(el => el.style.setProperty('display', 'none', 'important'));
         deskTopbars.forEach(tb => tb.style.setProperty('display', 'none', 'important'));
       }
@@ -474,12 +647,20 @@ class RideCompareApp {
       }, 150);
     }
     
-    // Smooth transition to Home Screen
-    localStorage.setItem('ridecompare_has_started', 'true');
+    // If user is already authenticated with a valid session, proceed directly to Home
+    if (window.RideCompareAuth && window.RideCompareAuth.isAuthenticated) {
+      localStorage.setItem('ridecompare_has_started', 'true');
+      setTimeout(() => {
+        this.navigateTo('screen-home', true);
+        window.location.hash = '#home';
+        this.showToast('Welcome back to VOZX RideCompare! 🚀');
+      }, 180);
+      return;
+    }
+
+    // New / Unauthenticated User: Open the Login portal
     setTimeout(() => {
-      this.navigateTo('screen-home', true);
-      window.location.hash = '#home';
-      this.showToast('Welcome to VOZX RideCompare! 🚀');
+      this.openAuthModal('login');
     }, 180);
   }
 
@@ -488,7 +669,641 @@ class RideCompareApp {
     if (window.soundFX) {
       window.soundFX.playTap();
     }
-    this.showToast('Login portal opening...');
+    this.openAuthModal('login');
+  }
+
+  // =========================================================================
+  // AUTHENTICATION MODAL & CONTROLLERS (Connected to Supabase PostgreSQL & JWT)
+  // =========================================================================
+  openAuthModal(tab = 'login') {
+    if (window.soundFX && window.soundFX.playTap) window.soundFX.playTap();
+    const modal = document.getElementById('auth-modal');
+    if (!modal) return;
+
+    const welcomeSplash = document.getElementById('welcome-splash-screen');
+    if (welcomeSplash) {
+      welcomeSplash.classList.add('hidden');
+      welcomeSplash.classList.remove('fade-out');
+    }
+    this.isWelcomeSplashActive = false;
+
+    document.body.classList.add('auth-modal-open');
+    this.switchAuthTab(tab);
+    this.clearAuthErrors();
+    modal.classList.add('show');
+    this.updateAuthModalTheme();
+  }
+
+  closeAuthModal() {
+    if (this.authRedirectTimer) {
+      clearTimeout(this.authRedirectTimer);
+      this.authRedirectTimer = null;
+    }
+    if (window.soundFX && window.soundFX.playTap) window.soundFX.playTap();
+    document.body.classList.remove('auth-modal-open');
+    const modal = document.getElementById('auth-modal');
+    if (modal) {
+      modal.classList.remove('show');
+    }
+    const successBox = document.getElementById('auth-signup-success-box');
+    if (successBox) successBox.classList.add('hidden');
+    const tabContainer = document.getElementById('auth-tab-container');
+    if (tabContainer) tabContainer.classList.remove('hidden');
+    this.clearAuthErrors();
+    this.clearAuthSuccess();
+    this.resetPasswordVisibility();
+
+    // If user is not authenticated and hasn't started the app, ensure Get Started screen is cleanly active
+    const isAuth = !!((window.RideCompareAuth && window.RideCompareAuth.isAuthenticated) || (this.userProfile && this.userProfile.name && this.userProfile.name !== 'Guest User'));
+    const hasStarted = localStorage.getItem('ridecompare_has_started') === 'true';
+    if (!isAuth && !hasStarted) {
+      this.navigateTo('screen-splash', false);
+    }
+  }
+
+  switchAuthTab(tab = 'login') {
+    if (this.authRedirectTimer) {
+      clearTimeout(this.authRedirectTimer);
+      this.authRedirectTimer = null;
+    }
+    if (window.soundFX && window.soundFX.playTap) window.soundFX.playTap();
+    this.clearAuthErrors();
+    this.clearAuthSuccess();
+    this.resetPasswordVisibility();
+
+    const isDarkMode = document.body.classList.contains('theme-dark') || document.documentElement.getAttribute('data-theme') === 'dark';
+    const successBox = document.getElementById('auth-signup-success-box');
+    if (successBox) successBox.classList.add('hidden');
+    const tabContainer = document.getElementById('auth-tab-container');
+    if (tabContainer) tabContainer.classList.remove('hidden');
+
+    const loginTab = document.getElementById('tab-auth-login');
+    const signupTab = document.getElementById('tab-auth-signup');
+    const loginForm = document.getElementById('form-auth-login');
+    const signupForm = document.getElementById('form-auth-signup');
+    const title = document.getElementById('auth-modal-title');
+    const sub = document.getElementById('auth-modal-sub');
+
+    if (tab === 'signup') {
+      this.lastAuthAction = 'signup';
+      const boxTitle = document.getElementById('auth-success-box-title');
+      if (boxTitle) boxTitle.textContent = 'Your account created successfully!';
+      if (loginTab) {
+        loginTab.className = isDarkMode 
+          ? 'flex-1 py-2 text-xs font-semibold rounded-lg transition-all text-slate-400 hover:text-white cursor-pointer'
+          : 'flex-1 py-2 text-xs font-semibold rounded-lg transition-all text-slate-500 hover:text-slate-900 cursor-pointer';
+      }
+      if (signupTab) {
+        signupTab.className = 'flex-1 py-2 text-xs font-bold rounded-lg transition-all text-white bg-blue-600 shadow-md cursor-pointer';
+      }
+      if (loginForm) loginForm.classList.add('hidden');
+      if (signupForm) signupForm.classList.remove('hidden');
+      if (title) title.textContent = 'Create Account';
+      if (sub) sub.textContent = 'Join VOZX RideCompare to unlock best rates';
+      const nameInput = document.getElementById('auth-signup-name');
+      if (nameInput) setTimeout(() => nameInput.focus(), 50);
+    } else {
+      this.lastAuthAction = 'login';
+      const boxTitle = document.getElementById('auth-success-box-title');
+      if (boxTitle) boxTitle.textContent = 'You login successful!';
+      if (loginTab) {
+        loginTab.className = 'flex-1 py-2 text-xs font-bold rounded-lg transition-all text-white bg-blue-600 shadow-md cursor-pointer';
+      }
+      if (signupTab) {
+        signupTab.className = isDarkMode
+          ? 'flex-1 py-2 text-xs font-semibold rounded-lg transition-all text-slate-400 hover:text-white cursor-pointer'
+          : 'flex-1 py-2 text-xs font-semibold rounded-lg transition-all text-slate-500 hover:text-slate-900 cursor-pointer';
+      }
+      if (loginForm) loginForm.classList.remove('hidden');
+      if (signupForm) signupForm.classList.add('hidden');
+      if (title) title.textContent = 'Welcome Back';
+      if (sub) sub.textContent = 'Sign in to compare rates & save money';
+      const emailInput = document.getElementById('auth-login-email');
+      if (emailInput) setTimeout(() => emailInput.focus(), 50);
+    }
+  }
+
+  clearAuthErrors() {
+    const banner = document.getElementById('auth-error-banner');
+    const errorText = document.getElementById('auth-error-text');
+    if (banner) banner.classList.add('hidden');
+    if (errorText) errorText.textContent = '';
+  }
+
+  clearAuthSuccess() {
+    const banner = document.getElementById('auth-success-banner');
+    const successText = document.getElementById('auth-success-text');
+    if (banner) banner.classList.add('hidden');
+    if (successText) successText.textContent = 'Your account created successfully!';
+  }
+
+  setAuthSuccess(message = 'Your account created successfully!') {
+    this.clearAuthErrors();
+    const banner = document.getElementById('auth-success-banner');
+    const successText = document.getElementById('auth-success-text');
+    if (banner && successText) {
+      successText.textContent = message;
+      banner.classList.remove('hidden');
+    }
+  }
+
+  setAuthError(message) {
+    this.clearAuthSuccess();
+    const banner = document.getElementById('auth-error-banner');
+    const errorText = document.getElementById('auth-error-text');
+    if (banner && errorText) {
+      errorText.textContent = message || 'An error occurred. Please try again.';
+      banner.classList.remove('hidden');
+    }
+  }
+
+  setAuthLoading(isLoading, formType = 'login') {
+    const submitBtn = document.getElementById(`btn-auth-${formType}-submit`);
+    const submitText = document.getElementById(`btn-auth-${formType}-text`);
+    const spinner = document.getElementById(`btn-auth-${formType}-spinner`);
+
+    if (submitBtn) submitBtn.disabled = isLoading;
+    if (spinner) {
+      if (isLoading) spinner.classList.remove('hidden');
+      else spinner.classList.add('hidden');
+    }
+    if (submitText) {
+      if (isLoading) {
+        submitText.textContent = formType === 'login' ? 'Signing In...' : 'Creating Account...';
+      } else {
+        submitText.textContent = formType === 'login' ? 'Log In' : 'Create Account';
+      }
+    }
+  }
+
+  togglePasswordVisibility(inputId, btnElement) {
+    if (window.soundFX && window.soundFX.playTap) window.soundFX.playTap();
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    const btn = btnElement || (input.parentElement ? input.parentElement.querySelector('.btn-toggle-password') : null);
+    const eyeShow = btn ? btn.querySelector('.eye-icon-show') : null;
+    const eyeHide = btn ? btn.querySelector('.eye-icon-hide') : null;
+
+    if (input.type === 'password') {
+      input.type = 'text';
+      if (eyeShow) eyeShow.classList.add('hidden');
+      if (eyeHide) eyeHide.classList.remove('hidden');
+      if (btn) {
+        btn.setAttribute('title', 'Hide password');
+        btn.setAttribute('aria-label', 'Hide password');
+      }
+    } else {
+      input.type = 'password';
+      if (eyeShow) eyeShow.classList.remove('hidden');
+      if (eyeHide) eyeHide.classList.add('hidden');
+      if (btn) {
+        btn.setAttribute('title', 'View password');
+        btn.setAttribute('aria-label', 'View password');
+      }
+    }
+  }
+
+  resetPasswordVisibility() {
+    const passwordInputIds = ['auth-login-password', 'auth-signup-password', 'auth-signup-confirm'];
+    passwordInputIds.forEach((id) => {
+      const input = document.getElementById(id);
+      if (input) {
+        input.type = 'password';
+        const parent = input.parentElement;
+        if (parent) {
+          const btn = parent.querySelector('.btn-toggle-password');
+          if (btn) {
+            const eyeShow = btn.querySelector('.eye-icon-show');
+            const eyeHide = btn.querySelector('.eye-icon-hide');
+            if (eyeShow) eyeShow.classList.remove('hidden');
+            if (eyeHide) eyeHide.classList.add('hidden');
+            btn.setAttribute('title', 'View password');
+            btn.setAttribute('aria-label', 'View password');
+          }
+        }
+      }
+    });
+  }
+
+  async handleLoginSubmit(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    this.clearAuthErrors();
+
+    const emailInp = document.getElementById('auth-login-email');
+    const passInp = document.getElementById('auth-login-password');
+    const email = emailInp ? emailInp.value.trim() : '';
+    const password = passInp ? passInp.value : '';
+
+    if (!email) {
+      this.setAuthError('Please enter your email address.');
+      if (emailInp) emailInp.focus();
+      return;
+    }
+    if (!password) {
+      this.setAuthError('Please enter your password.');
+      if (passInp) passInp.focus();
+      return;
+    }
+
+    this.setAuthLoading(true, 'login');
+
+    try {
+      if (!window.RideCompareAuth) {
+        throw new Error('Authentication client not initialized.');
+      }
+      const res = await window.RideCompareAuth.login(email, password);
+      const user = res.user;
+
+      // Update current profile in application
+      this.userProfile = Object.assign({}, this.userProfile, {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone || (this.userProfile && this.userProfile.phone) || '+91 98765 43210'
+      });
+      localStorage.setItem('ridecompare_user_profile', JSON.stringify(this.userProfile));
+      this.renderUserProfile();
+
+      if (window.soundFX && window.soundFX.playGetStarted) {
+        window.soundFX.playGetStarted();
+      }
+
+      // Display green theme "You login successful!" box and banner across all devices
+      this.showLoginSuccessBox(user);
+    } catch (err) {
+      const msg = err.message || (err.data && err.data.error && err.data.error.message) || 'Invalid email or password.';
+      this.setAuthError(msg);
+    } finally {
+      this.setAuthLoading(false, 'login');
+    }
+  }
+
+  async handleSignupSubmit(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    this.clearAuthErrors();
+
+    const nameInp = document.getElementById('auth-signup-name');
+    const emailInp = document.getElementById('auth-signup-email');
+    const passInp = document.getElementById('auth-signup-password');
+    const confInp = document.getElementById('auth-signup-confirm');
+
+    const name = nameInp ? nameInp.value.trim() : '';
+    const email = emailInp ? emailInp.value.trim() : '';
+    const password = passInp ? passInp.value : '';
+    const confirm = confInp ? confInp.value : '';
+
+    if (!name) {
+      this.setAuthError('Please enter your full name.');
+      if (nameInp) nameInp.focus();
+      return;
+    }
+    if (!email || !email.includes('@')) {
+      this.setAuthError('Please enter a valid email address.');
+      if (emailInp) emailInp.focus();
+      return;
+    }
+    if (!password || password.length < 6) {
+      this.setAuthError('Password must be at least 6 characters long.');
+      if (passInp) passInp.focus();
+      return;
+    }
+    if (password !== confirm) {
+      this.setAuthError('Passwords do not match. Please try again.');
+      if (confInp) confInp.focus();
+      return;
+    }
+
+    this.setAuthLoading(true, 'signup');
+
+    try {
+      if (!window.RideCompareAuth) {
+        throw new Error('Authentication client not initialized.');
+      }
+      const res = await window.RideCompareAuth.register(name, email, password);
+      const user = res.user;
+
+      // Update current profile in application
+      this.userProfile = Object.assign({}, this.userProfile, {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone || (this.userProfile && this.userProfile.phone) || '+91 98765 43210'
+      });
+      localStorage.setItem('ridecompare_user_profile', JSON.stringify(this.userProfile));
+      this.renderUserProfile();
+
+      if (window.soundFX && window.soundFX.playGetStarted) {
+        window.soundFX.playGetStarted();
+      }
+
+      // Display green theme account created success box
+      this.showAccountCreatedSuccessBox(user);
+    } catch (err) {
+      const msg = err.message || (err.data && err.data.error && err.data.error.message) || 'Registration failed. Please try again.';
+      this.setAuthError(msg);
+    } finally {
+      this.setAuthLoading(false, 'signup');
+    }
+  }
+
+  // Display green theme "You login successful!" box on valid login across all devices
+  showLoginSuccessBox(user) {
+    if (this.authRedirectTimer) {
+      clearTimeout(this.authRedirectTimer);
+      this.authRedirectTimer = null;
+    }
+
+    this.lastAuthAction = 'login';
+
+    const successBox = document.getElementById('auth-signup-success-box');
+    const signupForm = document.getElementById('form-auth-signup');
+    const loginForm = document.getElementById('form-auth-login');
+    const tabContainer = document.getElementById('auth-tab-container');
+    const errorBanner = document.getElementById('auth-error-banner');
+    const boxTitle = document.getElementById('auth-success-box-title') || (successBox ? successBox.querySelector('.auth-success-box-title') : null);
+    const boxSub = document.getElementById('auth-success-box-user-msg');
+    const userNameSpan = document.getElementById('auth-success-box-user-name');
+    const modalTitle = document.getElementById('auth-modal-title');
+    const modalSub = document.getElementById('auth-modal-sub');
+
+    // 1. Display inline green success banner with exact requested text in green theme
+    this.setAuthSuccess('You login successful!');
+
+    const displayName = (user && user.name) ? user.name : 'User';
+
+    // 2. Set title and subtitle in green theme box
+    if (boxTitle) {
+      boxTitle.textContent = 'You login successful!';
+    }
+    if (userNameSpan) {
+      userNameSpan.textContent = displayName;
+    }
+    if (boxSub) {
+      boxSub.innerHTML = `Welcome back to VOZX RideCompare, <strong class="text-white" id="auth-success-box-user-name">${displayName}</strong>!`;
+    }
+
+    // 3. Hide forms & tabs, leaving the green success presentation front and center
+    if (signupForm) signupForm.classList.add('hidden');
+    if (loginForm) loginForm.classList.add('hidden');
+    if (tabContainer) tabContainer.classList.add('hidden');
+    if (errorBanner) errorBanner.classList.add('hidden');
+    if (modalTitle) modalTitle.textContent = 'Login Successful';
+    if (modalSub) modalSub.textContent = 'Authentication completed successfully';
+
+    // 4. Show green theme success box
+    if (successBox) {
+      successBox.classList.remove('hidden');
+    }
+
+    this.updateAuthModalTheme();
+
+    // 5. Automatically transition to dashboard after 1.8 seconds if user does not click "Continue"
+    this.authRedirectTimer = setTimeout(() => {
+      this.onAccountCreatedContinue();
+    }, 1800);
+  }
+
+  // Display green theme "Your account created successfully!" box on account creation
+  showAccountCreatedSuccessBox(user) {
+    if (this.authRedirectTimer) {
+      clearTimeout(this.authRedirectTimer);
+      this.authRedirectTimer = null;
+    }
+
+    this.lastAuthAction = 'signup';
+
+    const successBox = document.getElementById('auth-signup-success-box');
+    const signupForm = document.getElementById('form-auth-signup');
+    const loginForm = document.getElementById('form-auth-login');
+    const tabContainer = document.getElementById('auth-tab-container');
+    const errorBanner = document.getElementById('auth-error-banner');
+    const boxTitle = document.getElementById('auth-success-box-title') || (successBox ? successBox.querySelector('.auth-success-box-title') : null);
+    const boxSub = document.getElementById('auth-success-box-user-msg');
+    const userNameSpan = document.getElementById('auth-success-box-user-name');
+    const modalTitle = document.getElementById('auth-modal-title');
+    const modalSub = document.getElementById('auth-modal-sub');
+
+    // Display inline green success banner
+    this.setAuthSuccess('Your account created successfully!');
+
+    if (boxTitle) {
+      boxTitle.textContent = 'Your account created successfully!';
+    }
+    const displayName = (user && user.name) ? user.name : 'User';
+    if (userNameSpan) {
+      userNameSpan.textContent = displayName;
+    }
+    if (boxSub) {
+      boxSub.innerHTML = `Welcome to VOZX RideCompare, <strong class="text-white" id="auth-success-box-user-name">${displayName}</strong>!`;
+    }
+    if (signupForm) signupForm.classList.add('hidden');
+    if (loginForm) loginForm.classList.add('hidden');
+    if (tabContainer) tabContainer.classList.add('hidden');
+    if (errorBanner) errorBanner.classList.add('hidden');
+    if (modalTitle) modalTitle.textContent = 'Account Created';
+    if (modalSub) modalSub.textContent = 'Registration completed successfully';
+
+    if (successBox) {
+      successBox.classList.remove('hidden');
+    }
+
+    this.updateAuthModalTheme();
+
+    // Automatically transition to dashboard after 2.2 seconds if user does not click "Continue"
+    this.authRedirectTimer = setTimeout(() => {
+      this.onAccountCreatedContinue();
+    }, 2200);
+  }
+
+  // Action when user clicks "Continue to Dashboard" or auto-redirect timer expires
+  onAccountCreatedContinue() {
+    if (this.authRedirectTimer) {
+      clearTimeout(this.authRedirectTimer);
+      this.authRedirectTimer = null;
+    }
+    this.closeAuthModal();
+    localStorage.setItem('ridecompare_has_started', 'true');
+    this.navigateTo('screen-home', false);
+    window.location.hash = '#home';
+    this.enforceResponsiveNav();
+    const userName = (this.userProfile && this.userProfile.name) ? this.userProfile.name : 'User';
+    if (this.lastAuthAction === 'login') {
+      this.showToast(`✓ Welcome back, ${userName}! 🚀`, 'success');
+    } else {
+      this.showToast(`✓ Your account created successfully! Welcome, ${userName}! 🎉`, 'success');
+    }
+  }
+
+  updateAuthModalTheme(isDark = false) {
+    const isDarkMode = isDark || document.body.classList.contains('theme-dark') || document.documentElement.getAttribute('data-theme') === 'dark';
+    const modalPanel = document.querySelector('#auth-modal .auth-panel');
+    if (!modalPanel) return;
+
+    const title = document.getElementById('auth-modal-title');
+    const sub = document.getElementById('auth-modal-sub');
+    const inputs = modalPanel.querySelectorAll('.auth-input');
+    const labels = modalPanel.querySelectorAll('.auth-label');
+    const tabContainer = document.getElementById('auth-tab-container') || modalPanel.querySelector('.auth-tab-switcher');
+    const errorBanner = document.getElementById('auth-error-banner');
+    const errorText = document.getElementById('auth-error-text');
+    const successBanner = document.getElementById('auth-success-banner');
+    const successText = document.getElementById('auth-success-text');
+    const successBox = document.getElementById('auth-signup-success-box');
+    const closeBtn = document.querySelector('#auth-modal .auth-close-btn');
+    const backBtn = document.querySelector('#auth-modal .auth-back-btn');
+    const themeBtn = document.querySelector('#auth-modal .theme-toggle-btn');
+    const brandName = document.querySelector('#auth-modal .auth-brand-name');
+    const trustBadges = document.querySelector('#auth-modal .auth-trust-badges');
+
+    if (isDarkMode) {
+      modalPanel.style.removeProperty('background');
+      modalPanel.style.removeProperty('background-color');
+      modalPanel.style.removeProperty('border-color');
+      modalPanel.style.removeProperty('color');
+      modalPanel.style.removeProperty('box-shadow');
+      if (title) title.style.removeProperty('color');
+      if (sub) sub.style.removeProperty('color');
+      if (brandName) brandName.style.removeProperty('color');
+      if (trustBadges) trustBadges.style.removeProperty('color');
+      if (closeBtn) {
+        closeBtn.style.removeProperty('background-color');
+        closeBtn.style.removeProperty('color');
+        closeBtn.style.removeProperty('border-color');
+      }
+      if (backBtn) {
+        backBtn.style.removeProperty('background-color');
+        backBtn.style.removeProperty('color');
+        backBtn.style.removeProperty('border-color');
+      }
+      if (themeBtn) {
+        themeBtn.style.removeProperty('background-color');
+        themeBtn.style.removeProperty('border-color');
+      }
+      labels.forEach(l => l.style.removeProperty('color'));
+      inputs.forEach(inp => {
+        inp.style.removeProperty('background-color');
+        inp.style.removeProperty('border-color');
+        inp.style.removeProperty('color');
+      });
+      if (tabContainer) {
+        tabContainer.style.removeProperty('background');
+        tabContainer.style.removeProperty('background-color');
+        tabContainer.style.removeProperty('border-color');
+        tabContainer.style.removeProperty('box-shadow');
+      }
+      if (errorBanner) {
+        errorBanner.style.removeProperty('background');
+        errorBanner.style.removeProperty('background-color');
+        errorBanner.style.removeProperty('border-color');
+        errorBanner.style.removeProperty('color');
+        errorBanner.style.removeProperty('box-shadow');
+      }
+      if (errorText) {
+        errorText.style.removeProperty('color');
+      }
+      if (successBanner) {
+        successBanner.style.removeProperty('background');
+        successBanner.style.removeProperty('background-color');
+        successBanner.style.removeProperty('border-color');
+        successBanner.style.removeProperty('color');
+        successBanner.style.removeProperty('box-shadow');
+      }
+      if (successText) {
+        successText.style.removeProperty('color');
+      }
+      if (successBox) {
+        successBox.style.removeProperty('background');
+        successBox.style.removeProperty('background-color');
+        successBox.style.removeProperty('border-color');
+        successBox.style.removeProperty('box-shadow');
+        const boxTitle = document.getElementById('auth-success-box-title') || successBox.querySelector('.auth-success-box-title');
+        const boxSub = document.getElementById('auth-success-box-user-msg');
+        const boxRedirect = successBox.querySelector('.auth-success-box-redirect-msg');
+        const boxUserSpan = document.getElementById('auth-success-box-user-name');
+        if (boxTitle) boxTitle.style.removeProperty('color');
+        if (boxSub) boxSub.style.removeProperty('color');
+        if (boxRedirect) boxRedirect.style.removeProperty('color');
+        if (boxUserSpan) boxUserSpan.style.removeProperty('color');
+      }
+    } else {
+      modalPanel.style.setProperty('background', '#FFFFFF', 'important');
+      modalPanel.style.setProperty('background-color', '#FFFFFF', 'important');
+      modalPanel.style.setProperty('border-color', '#E2E8F0', 'important');
+      modalPanel.style.setProperty('color', '#0F172A', 'important');
+      modalPanel.style.setProperty('box-shadow', '0 25px 50px -12px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04)', 'important');
+      if (title) title.style.setProperty('color', '#0F172A', 'important');
+      if (sub) sub.style.setProperty('color', '#64748B', 'important');
+      if (brandName) brandName.style.setProperty('color', '#0F172A', 'important');
+      if (trustBadges) trustBadges.style.setProperty('color', '#64748B', 'important');
+      if (closeBtn) {
+        closeBtn.style.setProperty('background-color', '#FFFFFF', 'important');
+        closeBtn.style.setProperty('color', '#475569', 'important');
+        closeBtn.style.setProperty('border-color', '#E2E8F0', 'important');
+      }
+      if (backBtn) {
+        backBtn.style.setProperty('background-color', '#FFFFFF', 'important');
+        backBtn.style.setProperty('color', '#334155', 'important');
+        backBtn.style.setProperty('border-color', '#E2E8F0', 'important');
+      }
+      if (themeBtn) {
+        themeBtn.style.setProperty('background-color', '#FFFFFF', 'important');
+        themeBtn.style.setProperty('border-color', '#E2E8F0', 'important');
+      }
+      labels.forEach(l => l.style.setProperty('color', '#334155', 'important'));
+      inputs.forEach(inp => {
+        inp.style.setProperty('background-color', '#F8FAFC', 'important');
+        inp.style.setProperty('border-color', '#CBD5E1', 'important');
+        inp.style.setProperty('color', '#0F172A', 'important');
+      });
+
+      // 1. Tab Switcher Container: PURE WHITE / SLATE 100 BACKGROUND
+      if (tabContainer) {
+        tabContainer.style.setProperty('background', '#F1F5F9', 'important');
+        tabContainer.style.setProperty('background-color', '#F1F5F9', 'important');
+        tabContainer.style.setProperty('border-color', '#E2E8F0', 'important');
+        tabContainer.style.setProperty('box-shadow', 'inset 0 1px 2px rgba(0, 0, 0, 0.04)', 'important');
+      }
+
+      // 2. Error / Alert Banner:
+      if (errorBanner) {
+        errorBanner.style.setProperty('background', '#FEF2F2', 'important');
+        errorBanner.style.setProperty('background-color', '#FEF2F2', 'important');
+        errorBanner.style.setProperty('border-color', '#FECACA', 'important');
+        errorBanner.style.setProperty('color', '#DC2626', 'important');
+        errorBanner.style.setProperty('box-shadow', '0 1px 4px rgba(239, 68, 68, 0.08)', 'important');
+      }
+      if (errorText) {
+        errorText.style.setProperty('color', '#DC2626', 'important');
+      }
+
+      // 3. Success / Alert Banner: Green Theme in Light Mode
+      if (successBanner) {
+        successBanner.style.setProperty('background', '#F0FDF4', 'important');
+        successBanner.style.setProperty('background-color', '#F0FDF4', 'important');
+        successBanner.style.setProperty('border-color', '#86EFAC', 'important');
+        successBanner.style.setProperty('color', '#15803D', 'important');
+        successBanner.style.setProperty('box-shadow', '0 1px 4px rgba(34, 197, 94, 0.1)', 'important');
+      }
+      if (successText) {
+        successText.style.setProperty('color', '#15803D', 'important');
+      }
+
+      // 4. Account Created & Login Success Box: Green Theme in Light Mode
+      if (successBox) {
+        successBox.style.setProperty('background', '#F0FDF4', 'important');
+        successBox.style.setProperty('background-color', '#F0FDF4', 'important');
+        successBox.style.setProperty('border-color', '#22C55E', 'important');
+        successBox.style.setProperty('box-shadow', '0 15px 35px rgba(34, 197, 94, 0.18)', 'important');
+        const boxTitle = document.getElementById('auth-success-box-title') || successBox.querySelector('.auth-success-box-title');
+        const boxSub = document.getElementById('auth-success-box-user-msg');
+        const boxRedirect = successBox.querySelector('.auth-success-box-redirect-msg');
+        const boxUserSpan = document.getElementById('auth-success-box-user-name');
+        if (boxTitle) boxTitle.style.setProperty('color', '#15803D', 'important');
+        if (boxSub) boxSub.style.setProperty('color', '#166534', 'important');
+        if (boxRedirect) boxRedirect.style.setProperty('color', '#15803D', 'important');
+        if (boxUserSpan) boxUserSpan.style.setProperty('color', '#0F172A', 'important');
+      }
+    }
   }
 
   // Master Screen Navigator
@@ -588,8 +1403,6 @@ class RideCompareApp {
         panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 100);
     }
-
-    this.showToast('Live ride fares found! Lowest: ₹45 with Rapido ⚡');
   }
 
   // Hide Results Panel and return to clean search form
@@ -928,6 +1741,10 @@ class RideCompareApp {
     } else if (tab === 'profile') {
       this.navigateTo('screen-profile', false);
       window.location.hash = '#profile';
+    } else if (tab === 'status' || tab === 'system-status') {
+      this.navigateTo('screen-status', false);
+      window.location.hash = '#system-status';
+      this.initSystemStatus();
     } else {
       this.showToast(`${tab.charAt(0).toUpperCase() + tab.slice(1)} view selected`);
     }
@@ -941,18 +1758,215 @@ class RideCompareApp {
     this.switchTab('profile');
   }
 
-  // Log Out Action
+  // Log Out Action - Triggers Confirmation Dialog
   logout() {
-    if (window.soundFX) {
+    if (window.soundFX && window.soundFX.playTap) {
       window.soundFX.playTap();
     }
+    this.openLogoutConfirmModal();
+  }
+
+  openLogoutConfirmModal() {
+    const modal = document.getElementById('logout-confirm-modal');
+    if (modal) {
+      modal.classList.add('show');
+      this.updateLogoutModalTheme();
+    } else if (confirm('Are you sure you want to log out?')) {
+      this.confirmLogout();
+    }
+  }
+
+  closeLogoutConfirmModal() {
+    if (window.soundFX && window.soundFX.playTap) {
+      window.soundFX.playTap();
+    }
+    const modal = document.getElementById('logout-confirm-modal');
+    if (modal) {
+      modal.classList.remove('show');
+    }
+  }
+
+  async confirmLogout() {
+    this.closeLogoutConfirmModal();
+    const name = this.userProfile ? this.userProfile.name : 'User';
+    if (window.RideCompareAuth) {
+      await window.RideCompareAuth.logout().catch(() => {});
+    }
+    localStorage.removeItem('ridecompare_auth_token');
     localStorage.removeItem('ridecompare_has_started');
-    const name = this.userProfile ? this.userProfile.name : 'Varun Reddy';
+    localStorage.removeItem('ridecompare_user_profile');
+    sessionStorage.removeItem('vozx_welcome_viewed');
+
+    this.userProfile = {
+      name: 'Varun Reddy',
+      email: 'varunreddy@gmail.com',
+      phone: '+91 98765 43210',
+      city: 'Ichalkaranji, Kolhapur',
+      ridePref: 'all',
+      avatarAccent: 'blue'
+    };
+    this.renderUserProfile();
     this.showToast(`Logged out of ${name} successfully 👋`);
-    setTimeout(() => {
+
+    this.currentTab = 'home';
+    this.navigateTo('screen-splash', false);
+    try {
+      history.pushState(null, '', '#splash');
+    } catch (_) {
+      window.location.hash = '#splash';
+    }
+    this.enforceResponsiveNav();
+  }
+
+  updateLogoutModalTheme(isDark = false) {
+    const isDarkMode = isDark || document.body.classList.contains('theme-dark') || document.documentElement.getAttribute('data-theme') === 'dark';
+    const modalPanel = document.querySelector('#logout-confirm-modal .logout-modal-panel');
+    if (!modalPanel) return;
+
+    const title = modalPanel.querySelector('.logout-modal-title');
+    const sub = modalPanel.querySelector('.logout-modal-sub');
+    const btnNo = modalPanel.querySelector('.btn-logout-no');
+
+    if (isDarkMode) {
+      modalPanel.style.removeProperty('background');
+      modalPanel.style.removeProperty('background-color');
+      modalPanel.style.removeProperty('border-color');
+      modalPanel.style.removeProperty('color');
+      if (title) title.style.removeProperty('color');
+      if (sub) sub.style.removeProperty('color');
+      if (btnNo) {
+        btnNo.style.removeProperty('background-color');
+        btnNo.style.removeProperty('color');
+        btnNo.style.removeProperty('border-color');
+      }
+    } else {
+      modalPanel.style.backgroundColor = '#FFFFFF';
+      modalPanel.style.borderColor = '#E2E8F0';
+      modalPanel.style.color = '#0F172A';
+      if (title) title.style.color = '#0F172A';
+      if (sub) sub.style.color = '#64748B';
+      if (btnNo) {
+        btnNo.style.backgroundColor = '#F1F5F9';
+        btnNo.style.borderColor = '#CBD5E1';
+        btnNo.style.color = '#334155';
+      }
+    }
+  }
+
+  openDeleteAccountModal() {
+    if (window.soundFX && window.soundFX.playTap) {
+      window.soundFX.playTap();
+    }
+    const modal = document.getElementById('delete-account-modal');
+    if (modal) {
+      modal.classList.add('show');
+      this.updateDeleteAccountModalTheme();
+    } else if (confirm('Are you sure you want to permanently delete your account from the database?')) {
+      this.confirmDeleteAccount();
+    }
+  }
+
+  closeDeleteAccountModal() {
+    if (window.soundFX && window.soundFX.playTap) {
+      window.soundFX.playTap();
+    }
+    const modal = document.getElementById('delete-account-modal');
+    if (modal) {
+      modal.classList.remove('show');
+    }
+  }
+
+  async confirmDeleteAccount() {
+    const confirmBtn = document.getElementById('btn-delete-account-confirm');
+    const originalText = confirmBtn ? confirmBtn.innerHTML : 'Confirm';
+    if (confirmBtn) {
+      confirmBtn.disabled = true;
+      confirmBtn.innerHTML = `
+        <svg class="w-4 h-4 animate-spin mr-1.5" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span>Deleting...</span>
+      `;
+    }
+
+    try {
+      if (window.RideCompareAuth && typeof window.RideCompareAuth.deleteAccount === 'function') {
+        await window.RideCompareAuth.deleteAccount();
+      } else if (window.RideCompareApi && typeof window.RideCompareApi.deleteAccount === 'function') {
+        await window.RideCompareApi.deleteAccount();
+      }
+    } catch (err) {
+      console.warn('Backend delete account error:', err);
+    } finally {
+      if (confirmBtn) {
+        confirmBtn.disabled = false;
+        confirmBtn.innerHTML = originalText;
+      }
+      this.closeDeleteAccountModal();
+
+      // Clear all local session and authentication storage
+      localStorage.removeItem('ridecompare_jwt_token');
+      localStorage.removeItem('ridecompare_auth_token');
+      localStorage.removeItem('ridecompare_has_started');
+      localStorage.removeItem('ridecompare_user_profile');
+      sessionStorage.removeItem('vozx_welcome_viewed');
+
+      this.userProfile = {
+        name: 'Varun Reddy',
+        email: 'varunreddy@gmail.com',
+        phone: '+91 98765 43210',
+        city: 'Ichalkaranji, Kolhapur',
+        ridePref: 'all',
+        avatarAccent: 'blue'
+      };
+      this.renderUserProfile();
+      this.showToast('Your account has been permanently deleted from database');
+
+      this.currentTab = 'home';
       this.navigateTo('screen-splash', false);
-      window.location.hash = '#';
-    }, 350);
+      try {
+        history.pushState(null, '', '#splash');
+      } catch (_) {
+        window.location.hash = '#splash';
+      }
+      this.enforceResponsiveNav();
+    }
+  }
+
+  updateDeleteAccountModalTheme(isDark = false) {
+    const isDarkMode = isDark || document.body.classList.contains('theme-dark') || document.documentElement.getAttribute('data-theme') === 'dark';
+    const modalPanel = document.querySelector('#delete-account-modal .delete-account-modal-panel');
+    if (!modalPanel) return;
+
+    const title = modalPanel.querySelector('.delete-account-modal-title');
+    const sub = modalPanel.querySelector('.delete-account-modal-sub');
+    const btnBack = modalPanel.querySelector('.btn-delete-account-back');
+
+    if (isDarkMode) {
+      modalPanel.style.removeProperty('background');
+      modalPanel.style.removeProperty('background-color');
+      modalPanel.style.removeProperty('border-color');
+      modalPanel.style.removeProperty('color');
+      if (title) title.style.removeProperty('color');
+      if (sub) sub.style.removeProperty('color');
+      if (btnBack) {
+        btnBack.style.removeProperty('background-color');
+        btnBack.style.removeProperty('color');
+        btnBack.style.removeProperty('border-color');
+      }
+    } else {
+      modalPanel.style.backgroundColor = '#FFFFFF';
+      modalPanel.style.borderColor = '#FED7D7';
+      modalPanel.style.color = '#0F172A';
+      if (title) title.style.color = '#0F172A';
+      if (sub) sub.style.color = '#64748B';
+      if (btnBack) {
+        btnBack.style.backgroundColor = '#F1F5F9';
+        btnBack.style.borderColor = '#CBD5E1';
+        btnBack.style.color = '#334155';
+      }
+    }
   }
 
   // =========================================================================
@@ -974,37 +1988,75 @@ class RideCompareApp {
       this.userProfile = defaultProfile;
     }
     this.renderUserProfile();
+
+    // Verify authenticated session with backend Supabase via GET /api/auth/me
+    if (window.RideCompareAuth && window.RideCompareAuth.token) {
+      window.RideCompareAuth.checkSession().then(user => {
+        if (user) {
+          this.userProfile = Object.assign({}, this.userProfile, {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            phone: user.phone || this.userProfile.phone
+          });
+          this.renderUserProfile();
+        }
+      }).catch(() => {});
+    }
   }
 
   renderUserProfile() {
     if (!this.userProfile) return;
     const p = this.userProfile;
 
-    // 1. Update text elements across screens
-    const nameEl = document.getElementById('profile-display-name');
-    const sideNameEl = document.getElementById('sidebar-profile-name');
-    const emailEl = document.getElementById('profile-display-email');
-    const phoneEl = document.getElementById('profile-display-phone');
+    // 1. Update text elements across screens (ALL sidebars, headers, and profile screen)
+    const name = p.name || 'User';
+    document.querySelectorAll('.sidebar-user-name, #sidebar-profile-name, #desk-home-profile-name, #desk-history-profile-name').forEach(el => {
+      el.textContent = name;
+    });
 
-    if (nameEl) nameEl.textContent = p.name;
-    if (sideNameEl) sideNameEl.textContent = p.name;
-    if (emailEl) emailEl.textContent = p.email;
+    const nameEl = document.getElementById('profile-display-name');
+    if (nameEl) nameEl.textContent = name;
+
+    const emailEl = document.getElementById('profile-display-email');
+    if (emailEl) emailEl.textContent = p.email || '';
+
+    const phoneEl = document.getElementById('profile-display-phone');
     if (phoneEl) phoneEl.textContent = p.phone || '+91 98765 43210';
+
+    // Update avatar button tooltips
+    const deskProfileBtn = document.getElementById('btn-topbar-profile') || document.querySelector('button[title*="View Profile"]');
+    if (deskProfileBtn) deskProfileBtn.setAttribute('title', `View Profile (${name})`);
+
+    const mobProfileBtn = document.getElementById('btn-mob-topbar-profile') || document.querySelector('button[aria-label*="Profile"]');
+    if (mobProfileBtn) {
+      mobProfileBtn.setAttribute('aria-label', `Profile (${name})`);
+      mobProfileBtn.setAttribute('title', `Profile (${name})`);
+    }
 
     // 2. Avatar Accents
     const accents = {
-      blue: { bg: '#93C5FD', text: '#1E3A8A' },
-      purple: { bg: '#C4B5FD', text: '#4C1D95' },
-      emerald: { bg: '#A7F3D0', text: '#064E3B' },
-      amber: { bg: '#FDE68A', text: '#78350F' }
+      blue: { bg: '#93C5FD', text: '#1E3A8A', border: '#60A5FA' },
+      purple: { bg: '#C4B5FD', text: '#4C1D95', border: '#A78BFA' },
+      emerald: { bg: '#A7F3D0', text: '#064E3B', border: '#34D399' },
+      amber: { bg: '#FDE68A', text: '#78350F', border: '#FBBF24' }
     };
     const accent = accents[p.avatarAccent] || accents.blue;
 
-    const avatars = document.querySelectorAll('#profile-avatar-display, #sidebar-avatar-badge, #edit-modal-avatar-preview');
+    const avatars = document.querySelectorAll(
+      '#profile-avatar-display, #sidebar-avatar-badge, #edit-modal-avatar-preview, #btn-topbar-profile, #btn-mob-topbar-profile, #desk-home-avatar-badge, #desk-history-avatar-badge, .user-avatar-badge, .sidebar-avatar-badge'
+    );
     avatars.forEach(av => {
+      av.style.setProperty('background', accent.bg, 'important');
       av.style.setProperty('background-color', accent.bg, 'important');
+      if (av.tagName === 'BUTTON') {
+        av.style.setProperty('border-color', accent.border, 'important');
+      }
       const svg = av.querySelector('svg');
-      if (svg) svg.style.setProperty('color', accent.text, 'important');
+      if (svg) {
+        svg.style.setProperty('color', accent.text, 'important');
+        svg.style.setProperty('fill', 'currentColor', 'important');
+      }
     });
   }
 
@@ -1036,6 +2088,7 @@ class RideCompareApp {
 
     this.tempAvatarAccent = p.avatarAccent || 'blue';
     this.updateModalAvatarAccentButtons(this.tempAvatarAccent);
+    this.selectAvatarTheme(this.tempAvatarAccent);
 
     modal.classList.add('show');
     this.updateEditProfileModalTheme();
@@ -1055,17 +2108,21 @@ class RideCompareApp {
     this.updateModalAvatarAccentButtons(colorKey);
 
     const accents = {
-      blue: { bg: '#93C5FD', text: '#1E3A8A' },
-      purple: { bg: '#C4B5FD', text: '#4C1D95' },
-      emerald: { bg: '#A7F3D0', text: '#064E3B' },
-      amber: { bg: '#FDE68A', text: '#78350F' }
+      blue: { bg: '#93C5FD', text: '#1E3A8A', border: '#60A5FA' },
+      purple: { bg: '#C4B5FD', text: '#4C1D95', border: '#A78BFA' },
+      emerald: { bg: '#A7F3D0', text: '#064E3B', border: '#34D399' },
+      amber: { bg: '#FDE68A', text: '#78350F', border: '#FBBF24' }
     };
     const accent = accents[colorKey] || accents.blue;
     const modalAv = document.getElementById('edit-modal-avatar-preview');
     if (modalAv) {
+      modalAv.style.setProperty('background', accent.bg, 'important');
       modalAv.style.setProperty('background-color', accent.bg, 'important');
       const svg = modalAv.querySelector('svg');
-      if (svg) svg.style.setProperty('color', accent.text, 'important');
+      if (svg) {
+        svg.style.setProperty('color', accent.text, 'important');
+        svg.style.setProperty('fill', 'currentColor', 'important');
+      }
     }
   }
 
@@ -1081,7 +2138,7 @@ class RideCompareApp {
     });
   }
 
-  saveProfile(e) {
+  async saveProfile(e) {
     if (e && e.preventDefault) e.preventDefault();
 
     const nameInp = document.getElementById('edit-profile-name');
@@ -1107,7 +2164,17 @@ class RideCompareApp {
       return;
     }
 
+    // Persist to Supabase PostgreSQL if authenticated
+    if (window.RideCompareAuth && window.RideCompareAuth.isAuthenticated) {
+      try {
+        await window.RideCompareAuth.updateProfile({ name: newName, phone: newPhone });
+      } catch (err) {
+        console.warn('Could not sync profile update to backend:', err);
+      }
+    }
+
     this.userProfile = {
+      ...(this.userProfile || {}),
       name: newName,
       email: newEmail,
       phone: newPhone,
@@ -1380,18 +2447,18 @@ class RideCompareApp {
     this.showToast('Ride History CSV exported successfully! 📄');
   }
 
-  // Toast feedback system
-  showToast(message) {
+  // Toast feedback popup system - Permanently disabled across all devices per user request
+  showToast(message, type = 'info') {
+    // Disabled: all popup text messages removed across all devices
     const toast = document.getElementById('app-toast');
-    if (!toast) return;
-
-    toast.textContent = message;
-    toast.classList.add('visible');
-
-    if (this.toastTimeout) clearTimeout(this.toastTimeout);
-    this.toastTimeout = setTimeout(() => {
-      toast.classList.remove('visible');
-    }, 2500);
+    if (toast) {
+      toast.classList.remove('visible', 'toast-success');
+      toast.style.display = 'none';
+      toast.style.visibility = 'hidden';
+      toast.style.opacity = '0';
+      toast.style.pointerEvents = 'none';
+    }
+    return;
   }
 
   // =========================================================================
@@ -1515,6 +2582,302 @@ class RideCompareApp {
     this.isForcedOffline = forced;
     this.handleConnectivityChange(!forced);
   }
+
+  // =========================================================================
+  // SYSTEM STATUS & CONNECTION MONITOR (DEVELOPER PANEL)
+  // =========================================================================
+  initSystemStatus() {
+    this.detectSystemUrls();
+    this.checkSystemStatus(false);
+  }
+
+  detectSystemUrls() {
+    try {
+      // 1. Detect Frontend URL & Environment
+      const feOrigin = window.location.origin || `${window.location.protocol}//${window.location.host}`;
+      const feHost = window.location.hostname || 'localhost';
+      const fePort = window.location.port || (window.location.protocol === 'https:' ? '443' : '80');
+      const isLocal = feHost === 'localhost' || feHost === '127.0.0.1' || feHost.startsWith('192.168.') || feHost.startsWith('10.') || feHost.startsWith('172.');
+      const envMode = isLocal ? 'Development' : 'Production';
+
+      // 2. Detect Backend API URL (prioritizing VITE_API_URL, then api client base, then fallback)
+      const beApiUrl = (typeof window !== 'undefined' && window.VITE_API_URL) || 
+                       (window.RideCompareApi && window.RideCompareApi.getBaseUrl && window.RideCompareApi.getBaseUrl()) || 
+                       `${feOrigin}/api`;
+
+      let bePort = '5000';
+      try {
+        const parsedUrl = new URL(beApiUrl);
+        bePort = parsedUrl.port || (parsedUrl.protocol === 'https:' ? '443' : '80');
+      } catch (_) {}
+
+      // 3. Update DOM Elements
+      const websiteUrlEls = [
+        document.getElementById('status-website-url'),
+        document.getElementById('status-fe-fullurl')
+      ];
+      websiteUrlEls.forEach(el => {
+        if (el) el.textContent = feOrigin;
+      });
+
+      const feEnvEl = document.getElementById('status-fe-env');
+      if (feEnvEl) feEnvEl.textContent = envMode;
+
+      const fePortEl = document.getElementById('status-fe-port');
+      if (fePortEl) fePortEl.textContent = fePort;
+
+      const websiteEnvTag = document.getElementById('status-website-env-tag');
+      if (websiteEnvTag) {
+        websiteEnvTag.textContent = isLocal ? 'Local Dev' : 'Production';
+        websiteEnvTag.className = isLocal 
+          ? 'flex-shrink-0 text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-700 border border-blue-200'
+          : 'flex-shrink-0 text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-700 border border-emerald-200';
+      }
+
+      const beUrlEl = document.getElementById('status-be-url');
+      if (beUrlEl) beUrlEl.textContent = beApiUrl;
+
+      const bePortEl = document.getElementById('status-be-port');
+      if (bePortEl) bePortEl.textContent = bePort;
+
+    } catch (err) {
+      console.warn('[SystemStatus] Error detecting URLs:', err);
+    }
+  }
+
+  async checkSystemStatus(isManual = false) {
+    const refreshIcons = document.querySelectorAll('.refresh-icon-desktop, .refresh-icon-mobile, .refresh-icon-action');
+    refreshIcons.forEach(icon => icon.classList.add('spin-refresh'));
+
+    // Set Checking States
+    this.updateStatusBadge('status-be-badge', 'status-be-dot', 'status-be-state', 'Checking...', 'checking');
+    this.updateStatusBadge('status-db-badge', 'status-db-dot', 'status-db-state', 'Checking...', 'checking');
+    const overallLabel = document.getElementById('status-overall-label');
+    const overallDot = document.getElementById('status-overall-dot');
+    const overallPill = document.getElementById('status-overall-pill');
+    if (overallLabel) overallLabel.textContent = 'Checking Services...';
+    if (overallDot) overallDot.className = 'w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse';
+    if (overallPill) overallPill.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-bold shadow-xs';
+
+    try {
+      const healthData = await (window.RideCompareApi ? window.RideCompareApi.checkHealth() : null);
+      
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+      const timeEls = [
+        document.getElementById('status-timestamp-desktop'),
+        document.getElementById('status-timestamp-mobile')
+      ];
+      timeEls.forEach(el => {
+        if (el) el.textContent = timeStr;
+      });
+
+      const isApiOnline = !!(healthData && (healthData.success || healthData.status === 'online'));
+      const dbStatus = healthData?.database || healthData?.data?.database;
+      const isDbConnected = dbStatus === 'connected';
+
+      // 1. Update Frontend
+      this.updateStatusBadge('status-fe-badge', null, 'status-fe-state', 'Online', 'online');
+
+      // 2. Update Backend
+      if (isApiOnline) {
+        this.updateStatusBadge('status-be-badge', 'status-be-dot', 'status-be-state', 'Online', 'online');
+        if (healthData.data?.port) {
+          const portEl = document.getElementById('status-be-port');
+          if (portEl) portEl.textContent = healthData.data.port;
+        }
+      } else {
+        this.updateStatusBadge('status-be-badge', 'status-be-dot', 'status-be-state', 'Offline', 'offline');
+      }
+
+      // 3. Update Database
+      if (isDbConnected) {
+        this.updateStatusBadge('status-db-badge', 'status-db-dot', 'status-db-state', 'Connected', 'online');
+        const dbEnvEl = document.getElementById('status-db-env');
+        if (dbEnvEl && healthData?.data?.environment) {
+          dbEnvEl.textContent = healthData.data.environment === 'production' ? 'Production' : 'Development';
+        }
+        const dbPingEl = document.getElementById('status-db-ping');
+        if (dbPingEl) {
+          dbPingEl.textContent = 'Active & Verified';
+          dbPingEl.className = 'text-emerald-600 font-semibold';
+        }
+      } else if (isApiOnline) {
+        this.updateStatusBadge('status-db-badge', 'status-db-dot', 'status-db-state', 'Disconnected', 'offline');
+        const dbPingEl = document.getElementById('status-db-ping');
+        if (dbPingEl) {
+          dbPingEl.textContent = 'Disconnected';
+          dbPingEl.className = 'text-rose-600 font-semibold';
+        }
+      } else {
+        this.updateStatusBadge('status-db-badge', 'status-db-dot', 'status-db-state', 'Unknown / Unreachable', 'offline');
+        const dbPingEl = document.getElementById('status-db-ping');
+        if (dbPingEl) {
+          dbPingEl.textContent = 'Backend Offline';
+          dbPingEl.className = 'text-slate-400 font-semibold';
+        }
+      }
+
+      // 4. Update Overall Pill
+      if (isApiOnline && isDbConnected) {
+        if (overallLabel) overallLabel.textContent = 'All Systems Operational';
+        if (overallDot) overallDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500';
+        if (overallPill) overallPill.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold shadow-xs';
+      } else if (isApiOnline) {
+        if (overallLabel) overallLabel.textContent = 'Database Disconnected';
+        if (overallDot) overallDot.className = 'w-2.5 h-2.5 rounded-full bg-amber-500';
+        if (overallPill) overallPill.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-bold shadow-xs';
+      } else {
+        if (overallLabel) overallLabel.textContent = 'Backend API Offline';
+        if (overallDot) overallDot.className = 'w-2.5 h-2.5 rounded-full bg-rose-500';
+        if (overallPill) overallPill.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold shadow-xs';
+      }
+
+    } catch (e) {
+      this.updateStatusBadge('status-be-badge', 'status-be-dot', 'status-be-state', 'Offline', 'offline');
+      this.updateStatusBadge('status-db-badge', 'status-db-dot', 'status-db-state', 'Unknown / Unreachable', 'offline');
+      if (overallLabel) overallLabel.textContent = 'Connection Error';
+      if (overallDot) overallDot.className = 'w-2.5 h-2.5 rounded-full bg-rose-500';
+      if (overallPill) overallPill.className = 'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold shadow-xs';
+    } finally {
+      setTimeout(() => {
+        refreshIcons.forEach(icon => icon.classList.remove('spin-refresh'));
+      }, 400);
+    }
+  }
+
+  updateStatusBadge(badgeId, dotId, labelId, text, state) {
+    const badge = document.getElementById(badgeId);
+    const dot = dotId ? document.getElementById(dotId) : null;
+    const label = document.getElementById(labelId);
+
+    if (label) label.textContent = text;
+
+    if (badge) {
+      if (state === 'online') {
+        badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold';
+        if (dot) dot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500';
+      } else if (state === 'offline') {
+        badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold';
+        if (dot) dot.className = 'w-2.5 h-2.5 rounded-full bg-rose-500';
+      } else {
+        badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-xs font-bold';
+        if (dot) dot.className = 'w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse';
+      }
+    }
+  }
+
+  refreshSystemStatus() {
+    if (window.soundFX && window.soundFX.playTap) {
+      window.soundFX.playTap();
+    }
+    this.detectSystemUrls();
+    this.checkSystemStatus(true);
+  }
+
+  copyWebsiteUrl(btnElement) {
+    const url = window.location.origin || `${window.location.protocol}//${window.location.host}`;
+    this.copyText(url, btnElement);
+  }
+
+  copyApiUrl(btnElement) {
+    const urlEl = document.getElementById('status-be-url');
+    const url = urlEl ? urlEl.textContent : 'http://localhost:5000/api';
+    this.copyText(url, btnElement);
+  }
+
+  openWebsite() {
+    if (window.soundFX && window.soundFX.playTap) {
+      window.soundFX.playTap();
+    }
+    const origin = window.location.origin || `${window.location.protocol}//${window.location.host}`;
+    window.open(origin, '_blank');
+  }
+
+  copyText(text, btnElement) {
+    if (!text) return;
+    if (window.soundFX && window.soundFX.playTap) {
+      window.soundFX.playTap();
+    }
+
+    const copyFeedback = () => {
+      if (!btnElement) return;
+      const copyTextEl = btnElement.querySelector('.copy-text, .copy-label');
+      const originalText = copyTextEl ? copyTextEl.textContent : btnElement.textContent;
+      
+      btnElement.classList.add('btn-copied-state');
+      if (copyTextEl) {
+        copyTextEl.textContent = 'Copied!';
+      } else {
+        btnElement.textContent = 'Copied!';
+      }
+
+      setTimeout(() => {
+        btnElement.classList.remove('btn-copied-state');
+        if (copyTextEl) {
+          copyTextEl.textContent = originalText;
+        } else {
+          btnElement.textContent = originalText;
+        }
+      }, 2000);
+    };
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(copyFeedback).catch(() => {
+        this.fallbackCopyText(text, copyFeedback);
+      });
+    } else {
+      this.fallbackCopyText(text, copyFeedback);
+    }
+  }
+
+  fallbackCopyText(text, callback) {
+    try {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      if (callback) callback();
+    } catch (_) {}
+  }
+
+  copyDiagnostics(btnElement) {
+    const feOrigin = window.location.origin || `${window.location.protocol}//${window.location.host}`;
+    const fePort = window.location.port || (window.location.protocol === 'https:' ? '443' : '80');
+    const beApiUrl = (typeof window !== 'undefined' && window.VITE_API_URL) || 
+                     (window.RideCompareApi && window.RideCompareApi.getBaseUrl && window.RideCompareApi.getBaseUrl()) || 
+                     `${feOrigin}/api`;
+
+    const diag = {
+      app: 'VOZX RideCompare',
+      environment: window.location.hostname === 'localhost' ? 'development' : 'production',
+      timestamp: new Date().toISOString(),
+      frontend: {
+        status: 'online',
+        origin: feOrigin,
+        port: fePort,
+        framework: 'HTML5 / Vanilla JS SPA (Vite Compatible)'
+      },
+      backendApi: {
+        status: window.RideCompareApi?.isBackendOnline ? 'online' : 'checked',
+        url: beApiUrl,
+        framework: 'Node.js / Express',
+        healthEndpoint: '/api/health'
+      },
+      database: {
+        engine: 'Supabase PostgreSQL',
+        orm: 'Prisma',
+        exposure: 'Zero Direct Frontend Exposure (Express Gateway Only)'
+      }
+    };
+
+    this.copyText(JSON.stringify(diag, null, 2), btnElement);
+  }
 }
 
 window.app = new RideCompareApp();
@@ -1525,3 +2888,4 @@ window.reloadApp = () => {
     window.location.reload();
   }
 };
+window.reloadPage = window.reloadApp;

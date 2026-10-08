@@ -1,0 +1,109 @@
+// VOZX RideCompare Prisma Schema
+// Database: Supabase PostgreSQL
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id             String          @id @default(uuid())
+  email          String          @unique
+  password       String
+  name           String
+  phone          String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  savedLocations SavedLocation[]
+  rideSearches   RideSearch[]
+  rideHistories  RideHistory[]
+  notifications  Notification[]
+
+  @@index([email])
+}
+
+model SavedLocation {
+  id        String   @id @default(uuid())
+  userId    String
+  name      String
+  address   String
+  latitude  Float
+  longitude Float
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model RideSearch {
+  id          String      @id @default(uuid())
+  userId      String?
+  pickup      String
+  destination String
+  distanceKm  Float
+  createdAt   DateTime    @default(now())
+
+  user        User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  quotes      RideQuote[]
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model RideQuote {
+  id          String     @id @default(uuid())
+  searchId    String
+  provider    String
+  vehicleType String
+  price       Float
+  currency    String     @default("INR")
+  etaMinutes  Int
+  rating      Float
+  status      String     @default("AVAILABLE")
+  createdAt   DateTime   @default(now())
+
+  rideSearch  RideSearch @relation(fields: [searchId], references: [id], onDelete: Cascade)
+
+  @@index([searchId])
+  @@index([provider])
+}
+
+model RideHistory {
+  id          String   @id @default(uuid())
+  userId      String
+  provider    String
+  vehicleType String
+  pickup      String
+  destination String
+  price       Float
+  currency    String   @default("INR")
+  status      String   @default("COMPLETED")
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([isRead])
+}

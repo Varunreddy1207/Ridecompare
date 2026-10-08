@@ -122,11 +122,12 @@ html, body {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  gap: 36px;
   background-color: var(--bg-deep);
   overflow: hidden;
-  padding: 24px 20px 20px 20px;
+  padding: 36px 24px;
   text-align: center;
 }
 
@@ -142,11 +143,11 @@ html, body {
     border: none !important;
     border-radius: 0 !important;
     box-shadow: none !important;
-    padding: max(24px, env(safe-area-inset-top, 24px)) 20px max(24px, env(safe-area-inset-bottom, 24px)) 20px;
-  }
-  .car-hero-wrapper {
-    max-height: 240px;
-    margin: 8px 0;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    gap: 36px !important;
+    padding: max(32px, env(safe-area-inset-top, 32px)) 24px max(32px, env(safe-area-inset-bottom, 32px)) 24px !important;
   }
 }
 
@@ -162,9 +163,8 @@ html, body {
     padding: 16px !important;
   }
   .get-started-card {
-    max-width: 480px;
+    max-width: 420px;
     min-height: auto !important;
-    max-height: calc(100vh - 32px) !important;
     height: auto !important;
     border-radius: 32px;
     border: 1px solid var(--card-border);
@@ -172,12 +172,12 @@ html, body {
       0 0 0 1px rgba(15, 23, 42, 0.8),
       0 30px 80px rgba(0, 0, 0, 0.95),
       0 0 45px rgba(0, 115, 255, 0.25);
-    padding: 28px 24px 24px 24px;
+    padding: 36px 28px 28px 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 32px;
     overflow-y: auto;
-  }
-  .car-hero-wrapper {
-    max-height: 200px;
-    margin: 10px 0;
   }
 }
 
@@ -193,9 +193,8 @@ html, body {
     padding: 20px !important;
   }
   .get-started-card {
-    max-width: 500px;
+    max-width: 440px;
     min-height: auto !important;
-    max-height: calc(100vh - 40px) !important;
     height: auto !important;
     border-radius: 36px;
     border: 1px solid rgba(56, 189, 248, 0.28);
@@ -203,14 +202,14 @@ html, body {
       0 0 0 1px rgba(15, 23, 42, 0.9),
       0 35px 90px rgba(0, 0, 0, 0.98),
       0 0 60px rgba(0, 115, 255, 0.3);
-    padding: 32px 32px 28px 32px;
+    padding: 40px 32px 32px 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 36px;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     overflow-y: auto;
-  }
-  .car-hero-wrapper {
-    max-height: 220px;
-    margin: 12px 0;
   }
 }
 
@@ -273,24 +272,9 @@ html, body {
   margin: 0 auto;
 }
 
-.car-hero-wrapper {
-  position: relative;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  border-radius: 18px;
-}
-
+.car-hero-wrapper,
 .car-hero-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  border-radius: 18px;
-  filter: contrast(1.05) brightness(1.02);
-  transition: transform 0.4s ease;
+  display: none !important;
 }
 
 .actions-wrapper {
@@ -703,6 +687,39 @@ html, body {
   }
 }
 
+/* Guarantee bottom navigation and desktop chrome are completely hidden on Get Started screen */
+#screen-splash.active ~ #app-bottom-nav,
+#screen-splash.active ~ .app-bottom-nav,
+#screen-splash.active ~ #mobile-bottom-nav,
+#screen-splash.active ~ .mobile-bottom-nav,
+#screen-splash.active ~ #tablet-nav-dock,
+#screen-splash.active ~ .tablet-nav-dock,
+body:has(#screen-splash.active) #app-bottom-nav,
+body:has(#screen-splash.active) .app-bottom-nav,
+body:has(#screen-splash.active) #mobile-bottom-nav,
+body:has(#screen-splash.active) .mobile-bottom-nav,
+body:has(#screen-splash.active) #tablet-nav-dock,
+body:has(#screen-splash.active) .tablet-nav-dock,
+body:has(#screen-splash.active) #desktop-sidebar,
+body:has(#screen-splash.active) .desktop-sidebar,
+body:has(#screen-splash.active) .desktop-topbar,
+#screen-status.active ~ #app-bottom-nav,
+#screen-status.active ~ .app-bottom-nav,
+#screen-status.active ~ #mobile-bottom-nav,
+#screen-status.active ~ .mobile-bottom-nav,
+#screen-status.active ~ #tablet-nav-dock,
+#screen-status.active ~ .tablet-nav-dock,
+body:has(#screen-status.active) #app-bottom-nav,
+body:has(#screen-status.active) .app-bottom-nav,
+body:has(#screen-status.active) #mobile-bottom-nav,
+body:has(#screen-status.active) .mobile-bottom-nav,
+body:has(#screen-status.active) #tablet-nav-dock,
+body:has(#screen-status.active) .tablet-nav-dock {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
 .mob-nav-btn {
   display: flex;
   flex-direction: column;
@@ -941,31 +958,20 @@ html, body {
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 24px rgba(234, 179, 8, 0.3);
 }
 
-/* Feedback Toast Notification */
-#app-toast {
-  position: fixed;
-  top: 24px;
-  left: 50%;
-  transform: translateX(-50%) translateY(-20px);
-  z-index: 100;
-  background: rgba(7, 13, 30, 0.95);
-  border: 1px solid rgba(56, 189, 248, 0.45);
-  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.9), 0 0 25px rgba(0, 115, 255, 0.3);
-  color: #38BDF8;
-  font-size: 13px;
-  font-weight: 700;
-  padding: 10px 24px;
-  border-radius: 9999px;
-  text-align: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  backdrop-filter: blur(12px);
-}
-
-#app-toast.visible {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
+/* Feedback Toast Notification - Permanently disabled across all devices */
+#app-toast,
+#app-toast.visible,
+#app-toast.toast-success {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
 }
 
 /* Animation for radar spinner */
@@ -1434,16 +1440,47 @@ html, body {
   transform: scale(0.98);
 }
 
+.profile-delete-account-btn {
+  width: 100%;
+  padding: 13px;
+  border-radius: 18px;
+  border: 1.5px solid rgba(239, 68, 68, 0.45);
+  background: rgba(239, 68, 68, 0.05);
+  color: #EF4444;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.05);
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.profile-delete-account-btn:hover {
+  border-color: #EF4444;
+  background: rgba(239, 68, 68, 0.15);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.25);
+  color: #F87171;
+  transform: translateY(-1px);
+}
+
+.profile-delete-account-btn:active {
+  transform: scale(0.98);
+}
+
 /* ==========================================================================
    MOBILE SCREEN OPTIMIZATION (< 768px): Remove extra bottom dead space
    ========================================================================== */
 @media (max-width: 767px) {
   #screen-profile main {
-    min-height: calc(100vh - 58px - 64px);
-    min-height: calc(100dvh - 58px - 64px);
+    min-height: auto;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
+    padding-bottom: 24px;
   }
   .profile-menu-item {
     padding: 13px 4px;
@@ -1970,6 +2007,23 @@ body:not(.theme-dark) .profile-logout-btn {
 }
 
 body:not(.theme-dark) .profile-logout-btn:hover {
+  background: #FEE2E2 !important;
+  border-color: #EF4444 !important;
+  color: #B91C1C !important;
+}
+
+body:not(.theme-dark) .profile-delete-account-btn,
+body.theme-light .profile-delete-account-btn,
+[data-theme="light"] .profile-delete-account-btn {
+  background: #FFF5F5 !important;
+  border: 1.5px solid #FED7D7 !important;
+  color: #DC2626 !important;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.08) !important;
+}
+
+body:not(.theme-dark) .profile-delete-account-btn:hover,
+body.theme-light .profile-delete-account-btn:hover,
+[data-theme="light"] .profile-delete-account-btn:hover {
   background: #FEE2E2 !important;
   border-color: #EF4444 !important;
   color: #B91C1C !important;
@@ -3112,4 +3166,394 @@ body.theme-light .btn-edit-profile:hover,
 [data-theme="light"] .btn-edit-profile:hover {
   background-color: #DBEAFE !important;
   color: #1E40AF !important;
+}
+
+/* ==========================================================================
+   PREMIUM WELCOME / SPLASH ANIMATION (Apple-Style Minimal Pure White)
+   "One Ride. Every Price." • 60fps GPU-Accelerated Sequence
+   ========================================================================== */
+.welcome-splash-screen {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999;
+  background-color: #FFFFFF;
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: pointer;
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 400ms cubic-bezier(0.16, 1, 0.3, 1), transform 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.welcome-splash-screen.fade-out {
+  opacity: 0 !important;
+  transform: scale(0.96) !important;
+  pointer-events: none !important;
+}
+
+.welcome-splash-screen.hidden {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+.welcome-splash-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  max-width: 440px;
+  padding: 24px;
+}
+
+/* 1. Logo Reveal (0.2s - 0.9s: 700ms, scale 0.75 -> 1, opacity 0 -> 1) */
+.welcome-logo-wrapper {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.75);
+  animation: welcomeLogoReveal 700ms cubic-bezier(0.16, 1, 0.3, 1) 200ms forwards;
+}
+
+@media (min-width: 640px) {
+  .welcome-logo-wrapper {
+    width: 108px;
+    height: 108px;
+    margin-bottom: 24px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .welcome-logo-wrapper {
+    width: 114px;
+    height: 114px;
+    margin-bottom: 26px;
+  }
+}
+
+.welcome-logo-halo {
+  position: absolute;
+  inset: -14px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(0, 115, 255, 0.12) 0%, rgba(255, 255, 255, 0) 70%);
+  pointer-events: none;
+}
+
+.welcome-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 14px 28px rgba(0, 115, 255, 0.16)) drop-shadow(0 4px 10px rgba(15, 23, 42, 0.08));
+}
+
+@keyframes welcomeLogoReveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.75);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 2. Brand Name (VOZX @ 0.9s, RideCompare @ 1.2s: translateY 15px -> 0, opacity 0 -> 1) */
+.welcome-brand-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.welcome-brand-vozx {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #0073FF !important;
+  margin-bottom: 4px;
+  opacity: 0;
+  transform: translateY(15px);
+  animation: welcomeFadeUp 500ms cubic-bezier(0.16, 1, 0.3, 1) 900ms forwards;
+}
+
+.welcome-brand-name {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+  color: #0F172A !important;
+  margin: 0;
+  opacity: 0;
+  transform: translateY(15px);
+  animation: welcomeFadeUp 500ms cubic-bezier(0.16, 1, 0.3, 1) 1200ms forwards;
+}
+
+@media (min-width: 640px) {
+  .welcome-brand-name {
+    font-size: 36px;
+  }
+}
+
+.welcome-brand-accent {
+  color: #0073FF !important;
+  margin-left: 1px;
+}
+
+@keyframes welcomeFadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 3. Tagline: "One Ride. Every Price." (1.6s: translateY 10px -> 0, opacity 0 -> 1) */
+.welcome-tagline {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748B !important;
+  letter-spacing: 0.02em;
+  margin: 0 0 28px 0;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: welcomeTaglineUp 400ms cubic-bezier(0.16, 1, 0.3, 1) 1600ms forwards;
+}
+
+@keyframes welcomeTaglineUp {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 4. Minimal Ride Route Animation (1.9s: Pickup ●─────● Destination) */
+.welcome-route-wrapper {
+  position: relative;
+  width: 280px;
+  max-width: 85vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  animation: welcomeRouteFadeIn 300ms ease-out 1850ms forwards;
+}
+
+@keyframes welcomeRouteFadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.welcome-route-svg {
+  width: 100%;
+  height: 44px;
+  overflow: visible;
+}
+
+/* Animated Active Route Line drawing left to right: Distance from x=24 to x=256 is 232px */
+.welcome-route-line {
+  stroke-dasharray: 232;
+  stroke-dashoffset: 232;
+  animation: welcomeDrawRoute 700ms cubic-bezier(0.25, 1, 0.5, 1) 1900ms forwards;
+}
+
+@keyframes welcomeDrawRoute {
+  0% {
+    stroke-dashoffset: 232;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Beacon Indicator moving smoothly from Pickup to Destination */
+.welcome-route-beacon {
+  transform: translateX(24px);
+  animation: welcomeMoveBeacon 700ms cubic-bezier(0.25, 1, 0.5, 1) 1900ms forwards;
+}
+
+@keyframes welcomeMoveBeacon {
+  0% {
+    transform: translateX(24px);
+  }
+  100% {
+    transform: translateX(256px);
+  }
+}
+
+.welcome-beacon-halo {
+  animation: welcomePulseBeacon 1.2s ease-in-out infinite;
+}
+
+@keyframes welcomePulseBeacon {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.25;
+  }
+  50% {
+    transform: scale(1.4);
+    opacity: 0.08;
+  }
+}
+
+.welcome-dest-ring {
+  animation: welcomePulseDest 1.5s ease-in-out infinite 2300ms;
+}
+
+@keyframes welcomePulseDest {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.2;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 0.45;
+  }
+}
+
+.welcome-route-labels {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 16px;
+  margin-top: -6px;
+}
+
+.welcome-label-pickup,
+.welcome-label-dest {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #94A3B8 !important;
+}
+
+.welcome-label-dest {
+  color: #0073FF !important;
+}
+
+/* Subtle Tap Anywhere to Skip */
+.welcome-tap-hint {
+  margin-top: 32px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #94A3B8 !important;
+  opacity: 0;
+  letter-spacing: 0.03em;
+  animation: welcomeFadeInHint 400ms ease-out 2200ms forwards;
+}
+
+@keyframes welcomeFadeInHint {
+  0% { opacity: 0; }
+  100% { opacity: 0.6; }
+}
+
+/* Accessibility: prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .welcome-logo-wrapper,
+  .welcome-brand-vozx,
+  .welcome-brand-name,
+  .welcome-tagline,
+  .welcome-route-wrapper,
+  .welcome-tap-hint {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+  .welcome-route-line {
+    stroke-dashoffset: 0 !important;
+    animation: none !important;
+  }
+  .welcome-route-beacon {
+    transform: translateX(256px) !important;
+    animation: none !important;
+  }
+  .welcome-splash-screen.fade-out {
+    transition-duration: 150ms !important;
+  }
+}
+
+/* ==========================================================================
+   DEVELOPMENT SERVER & CONNECTION STATUS PANEL (WHITE THEME)
+   ========================================================================== */
+#screen-status {
+  background-color: #F8FAFC !important;
+  color: #0F172A !important;
+}
+
+#screen-status .desktop-topbar {
+  background-color: #FFFFFF !important;
+  border-bottom: 1px solid #E2E8F0 !important;
+}
+
+#screen-status .bg-white {
+  background-color: #FFFFFF !important;
+}
+
+#screen-status .border-slate-200,
+#screen-status .border-slate-200\/90,
+#screen-status .border-slate-200\/80 {
+  border-color: #E2E8F0 !important;
+}
+
+#screen-status .text-slate-900 {
+  color: #0F172A !important;
+}
+
+#screen-status .text-slate-800 {
+  color: #1E293B !important;
+}
+
+#screen-status .text-slate-700 {
+  color: #334155 !important;
+}
+
+#screen-status .text-slate-500 {
+  color: #64748B !important;
+}
+
+#screen-status .text-slate-400 {
+  color: #94A3B8 !important;
+}
+
+@keyframes refresh-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.spin-refresh {
+  animation: refresh-spin 0.75s linear infinite !important;
+}
+
+.btn-copied-state {
+  background-color: #ECFDF5 !important;
+  border-color: #10B981 !important;
+  color: #059669 !important;
 }
