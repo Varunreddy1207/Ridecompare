@@ -1,80 +1,123 @@
 # VOZX RideCompare 🚗⚡
-> **One Ride. All Prices.** — The next-generation real-time multi-provider ride price aggregator and comparison platform.
+
+> **One Ride. Every Price.**  
+> The next-generation real-time multi-provider ride price aggregator and comparison platform across Uber, Ola, and Rapido.
 
 [![Status](https://img.shields.io/badge/status-active-brightgreen.svg)]()
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)]()
 [![Platform](https://img.shields.io/badge/platform-Mobile%20%7C%20Tablet%20%7C%20Desktop-orange.svg)]()
 
-### 🔗 Live 24/7 Access: [https://varunreddy1207.github.io/Ridecompare/](https://varunreddy1207.github.io/Ridecompare/)
+---
+
+## 🏛️ System Architecture
+
+```
+USER
+  ↓
+VOZX FRONTEND (Vercel)
+  ↓ HTTPS
+VOZX BACKEND API (Render)
+  ↓
+PRISMA ORM
+  ↓
+SUPABASE POSTGRESQL
+```
+
+- **Frontend:** Responsive Single Page Application (HTML5, Tailwind CSS, Vanilla JS, Vite build tooling)
+- **Backend API:** Node.js, Express, TypeScript, JWT Authentication, Rate Limiting
+- **Database & ORM:** Supabase PostgreSQL with Prisma ORM
+- **Providers:** Multi-provider fare adapter engine (Uber, Ola, Rapido)
 
 ---
 
-## 🌟 Overview
-**VOZX RideCompare** solves rideshare fragmentation by letting users search for a destination once and compare live estimated fares, ETAs, and vehicle tiers across all major providers (**Uber**, **Rapido**, and **Ola**) in one clean, unified interface.
+## 🌐 Application URLs
 
-### ✨ Key Features
-- **⚡ Real-time Fare Comparison**: Simultaneously compares prices, wait times, and vehicle classes across Uber, Rapido, and Ola.
-- **🗺️ Interactive Cyberpunk Live Map**: Dark-themed vector route canvas with animated route path, GPS radar pulse, destination pin, and real-time moving vehicle markers.
-- **🎬 Futuristic Animated Reveal**: Comparison results and route map remain cleanly hidden until the user clicks **"Search Rides"**, revealing with a smooth spring slide-in animation.
-- **📱 True Responsive Design**:
-  - **Mobile (< 768px)**: Native app experience with bottom navigation and quick comparison cards.
-  - **Tablet (768px – 1023px)**: Floating glassmorphism navigation dock.
-  - **Desktop (>= 1024px)**: Full widescreen dashboard with sidebar navigation, live GPS status bar, and 2-column comparison layout.
-- **🔊 Synthesized Web Audio FX**: Rich UI sound effects for tap feedback, search actions, and ride booking confirmation.
-- **📍 Smart Recent Searches**: Instant destination chips with preset routes (Sanjay Ghodawat University, Pune Junction, etc.).
+### Development (Local)
+- **Frontend:** [http://localhost:5173](http://localhost:5173)
+- **Backend API:** [http://localhost:5000](http://localhost:5000)
+- **Health Endpoint:** [http://localhost:5000/api/health](http://localhost:5000/api/health)
+- **System Status Panel:** [http://localhost:5173/#system-status](http://localhost:5173/#system-status)
 
----
-
-## 🛠️ Tech Stack
-- **HTML5 & Vanilla JavaScript**: Fast, modular ES6 architecture (`RideCompareApp` controller, `WebAudio` synthesizer).
-- **Tailwind CSS & Custom Cyberpunk Theme**: Dark midnight blue glassmorphism aesthetic (`#020617`, `#070D1E`, neon cyan, electric blue, lime green).
-- **Vector SVG Engine**: Dynamic route line drawing and marker mapping.
-- **Python HTTP Server**: Lightweight local test server with zero-cache headers.
+### Production (Deployments)
+- **Frontend (Vercel):** `https://YOUR-FRONTEND-DOMAIN.vercel.app`
+- **Backend (Render):** `https://YOUR-BACKEND-DOMAIN.onrender.com`
+- **Health Endpoint:** `https://YOUR-BACKEND-DOMAIN.onrender.com/api/health`
+- *(Placeholders to be configured upon hosting setup. See [DEPLOYMENT.md](DEPLOYMENT.md) for full instructions).*
 
 ---
 
-## 🚀 Quick Start
+## 💻 Local Development Setup
 
-### 1. Clone the repository
+### 1. Prerequisites
+- Node.js (v18 or higher)
+- npm (v9 or higher)
+
+### 2. Backend Setup
 ```bash
-git clone https://github.com/Varunreddy1207/Ridecompare.git
-cd Ridecompare
+# Navigate to backend directory
+cd backend
+
+# Install backend dependencies
+npm install
+
+# Generate Prisma client
+npm run prisma:generate
+
+# Start backend in development mode (port 5000)
+npm run dev
 ```
 
-### 2. Run locally
-You can use Python's built-in server or any static file server:
-
+### 3. Frontend Setup
 ```bash
-# Using Python
-python server.py
-# or
-python -m http.server 3000
+# In the project root directory
+npm install
+
+# Start frontend development server with Vite (port 5173)
+npm run dev
 ```
 
-### 3. Open in Browser
-Navigate to:
-```
-http://localhost:3000
+### 4. Build for Production
+```bash
+# Build Frontend (generates /dist)
+npm run build
+
+# Build Backend (runs prisma generate && tsc)
+cd backend
+npm run build
+
+# Run Production Backend
+npm start
 ```
 
 ---
 
-## 📁 Project Structure
+## 🔐 Environment Variables
+
+### Backend (`backend/.env`)
+```env
+PORT=5000
+NODE_ENV=development
+DATABASE_URL=postgresql://postgres.xxx:password@aws-0-REGION.pooler.supabase.com:6543/postgres?pgbouncer=true
+DIRECT_URL=postgresql://postgres.xxx:password@aws-0-REGION.pooler.supabase.com:5432/postgres
+JWT_SECRET=your-random-jwt-secret-min-32-chars
+JWT_EXPIRES_IN=7d
+FRONTEND_URL=http://localhost:5173,http://localhost:5000
 ```
-Ridecompare/
-├── index.html            # Main single-page application entrypoint
-├── css/
-│   └── styles.css        # Custom styles, animations, and responsive rules
-├── js/
-│   ├── app.js            # Master application controller and routing
-│   └── audio.js          # Web Audio API sound effects synthesizer
-├── assets/
-│   └── images/           # Brand logos, emblems, and visual assets
-├── server.py             # Development server with cache-busting headers
-└── README.md             # Project documentation
+
+### Frontend (`.env`)
+```env
+VITE_API_URL=http://localhost:5000
 ```
+
+> ⚠️ **Important Security Note:** Private secrets (`DATABASE_URL`, `DIRECT_URL`, `JWT_SECRET`) are strictly kept on the backend and never exposed in client bundles or git commits.
+
+---
+
+## 📖 Deployment Guide
+
+For full production deployment instructions to **Vercel** (Frontend), **Render** (Backend), and **Supabase** (Database), refer to [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ---
 
 ## 📄 License
-This project is licensed under the MIT License.
+MIT License - VOZX Ecosystem.

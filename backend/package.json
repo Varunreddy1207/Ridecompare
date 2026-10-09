@@ -10,6 +10,7 @@
     "dev": "tsx watch src/server.ts",
     "build": "prisma generate && tsc",
     "vercel-build": "prisma generate",
+    "postinstall": "prisma generate",
     "start": "node dist/server.js",
     "test": "jest --runInBand --detectOpenHandles --forceExit",
     "prisma:generate": "prisma generate",

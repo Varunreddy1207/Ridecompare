@@ -28,11 +28,27 @@
     })();
   </script>
 
+  <!-- Centralized Client API Configuration Hook: Supports VITE_API_URL and runtime overrides -->
+  <script>
+    (function() {
+      try {
+        var viteApi = '%VITE_API_URL%';
+        if (viteApi && !viteApi.startsWith('%')) {
+          window.VITE_API_URL = viteApi;
+        }
+      } catch (_) {}
+    })();
+  </script>
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
+  <!-- Leaflet Interactive Maps -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=48">
+  <link rel="stylesheet" href="css/styles.css?v=49">
 
   <style>
     /* Strict Responsive Display Rules: Bottom Nav for Mobile & Tablet (< 1024px) */
@@ -201,6 +217,132 @@
       background: linear-gradient(135deg, #0073FF 0%, #0060E6 100%) !important;
       color: #FFFFFF !important;
       box-shadow: 0 4px 16px rgba(0, 115, 255, 0.4) !important;
+    }
+
+    /* DROP LOCATION MAP MODAL: Pure White Theme in Light Mode (All Devices) */
+    body:not(.theme-dark) #drop-location-map-modal,
+    body.theme-light #drop-location-map-modal,
+    [data-theme="light"] #drop-location-map-modal {
+      background-color: rgba(15, 23, 42, 0.45) !important;
+      backdrop-filter: blur(8px) !important;
+      -webkit-backdrop-filter: blur(8px) !important;
+    }
+
+    body:not(.theme-dark) #drop-location-map-modal .drop-map-modal-panel,
+    body.theme-light #drop-location-map-modal .drop-map-modal-panel,
+    [data-theme="light"] #drop-location-map-modal .drop-map-modal-panel {
+      background-color: #FFFFFF !important;
+      background: #FFFFFF !important;
+      border: 1px solid #E2E8F0 !important;
+      box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.04) !important;
+      color: #0F172A !important;
+    }
+
+    body:not(.theme-dark) #drop-location-map-modal .drop-map-title {
+      color: #0F172A !important;
+    }
+
+    body:not(.theme-dark) #drop-location-map-modal .drop-map-sub {
+      color: #64748B !important;
+    }
+
+    body:not(.theme-dark) #drop-location-map-modal .drop-map-input {
+      background-color: #F8FAFC !important;
+      border-color: #CBD5E1 !important;
+      color: #0F172A !important;
+    }
+
+    body:not(.theme-dark) #drop-location-map-modal .drop-map-input::placeholder {
+      color: #94A3B8 !important;
+    }
+
+    body:not(.theme-dark) #drop-location-map-modal .drop-preset-pill:not(.active) {
+      background-color: #F1F5F9 !important;
+      color: #334155 !important;
+      border-color: #E2E8F0 !important;
+    }
+
+    body:not(.theme-dark) #drop-location-map-modal .drop-map-selected-card {
+      background-color: #F8FAFC !important;
+      border-color: #E2E8F0 !important;
+    }
+
+    body:not(.theme-dark) #drop-location-map-modal #drop-modal-selected-title {
+      color: #0F172A !important;
+    }
+
+    body:not(.theme-dark) #drop-location-map-modal #drop-modal-selected-sub {
+      color: #64748B !important;
+    }
+
+    body:not(.theme-dark) #drop-location-map-modal #btn-confirm-drop-location {
+      background: linear-gradient(135deg, #0073FF 0%, #0060E6 100%) !important;
+      color: #FFFFFF !important;
+      box-shadow: 0 4px 16px rgba(0, 115, 255, 0.35) !important;
+    }
+
+    @keyframes cardAttentionShake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-5px); }
+      40%, 80% { transform: translateX(5px); }
+    }
+    .card-attention-pickup {
+      animation: cardAttentionShake 0.4s ease-in-out;
+      border-color: #0073FF !important;
+      box-shadow: 0 0 0 2px rgba(0, 115, 255, 0.45) !important;
+    }
+    .card-attention-drop {
+      animation: cardAttentionShake 0.4s ease-in-out;
+      border-color: #EF4444 !important;
+      box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.45) !important;
+    }
+
+    /* White / Light Theme: High-Contrast Dark Text for Pickup & Drop Location Cards */
+    body:not(.theme-dark) .search-input-card,
+    body.theme-light .search-input-card,
+    [data-theme="light"] .search-input-card {
+      background-color: #FFFFFF !important;
+      border: 1.5px solid #CBD5E1 !important;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05) !important;
+    }
+
+    body:not(.theme-dark) .input-label,
+    body.theme-light .input-label,
+    [data-theme="light"] .input-label {
+      color: #334155 !important;
+      font-weight: 600 !important;
+    }
+
+    body:not(.theme-dark) .input-value,
+    body.theme-light .input-value,
+    [data-theme="light"] .input-value,
+    body:not(.theme-dark) #home-pickup-text,
+    body:not(.theme-dark) #home-drop-text,
+    body.theme-light #home-pickup-text,
+    body.theme-light #home-drop-text,
+    [data-theme="light"] #home-pickup-text,
+    [data-theme="light"] #home-drop-text {
+      color: #0F172A !important;
+      font-weight: 700 !important;
+    }
+
+    body:not(.theme-dark) .input-value.placeholder,
+    body.theme-light .input-value.placeholder,
+    [data-theme="light"] .input-value.placeholder,
+    body:not(.theme-dark) #home-pickup-text.placeholder,
+    body:not(.theme-dark) #home-drop-text.placeholder,
+    body.theme-light #home-pickup-text.placeholder,
+    body.theme-light #home-drop-text.placeholder,
+    [data-theme="light"] #home-pickup-text.placeholder,
+    [data-theme="light"] #home-drop-text.placeholder {
+      color: #0F172A !important;
+      font-weight: 700 !important;
+    }
+
+    body:not(.theme-dark) .chevron-icon,
+    body.theme-light .chevron-icon,
+    [data-theme="light"] .chevron-icon {
+      color: #334155 !important;
     }
 
     /* ==========================================================================
@@ -728,7 +870,8 @@
     #edit-profile-modal:not(.show),
     #auth-modal:not(.show),
     #logout-confirm-modal:not(.show),
-    #delete-account-modal:not(.show) {
+    #delete-account-modal:not(.show),
+    #drop-location-map-modal:not(.show) {
       display: none !important;
       visibility: hidden !important;
       pointer-events: none !important;
@@ -738,7 +881,8 @@
     #edit-profile-modal.show,
     #auth-modal.show,
     #logout-confirm-modal.show,
-    #delete-account-modal.show {
+    #delete-account-modal.show,
+    #drop-location-map-modal.show {
       display: flex !important;
       visibility: visible !important;
       pointer-events: auto !important;
@@ -1394,29 +1538,35 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
             <div class="search-card-container">
 
               <!-- Card 1: Pickup Location -->
-              <div onclick="app.openLocationPicker('pickup')" class="search-input-card">
-                <div class="input-left-group">
+              <div id="home-pickup-card" onclick="app.openLocationPicker('pickup')" class="search-input-card group cursor-pointer transition-all duration-300">
+                <div class="input-left-group flex-1 min-w-0">
                   <div class="pin-icon-box">
-                    <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                     </svg>
                   </div>
-                  <div class="input-text-stack">
+                  <div class="input-text-stack min-w-0">
                     <span class="input-label">Pickup Location</span>
-                    <span id="home-pickup-text" class="input-value">Current Location</span>
+                    <span id="home-pickup-text" class="input-value placeholder truncate">Select pickup location</span>
                   </div>
                 </div>
-                <svg class="chevron-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                </svg>
+                <div class="flex items-center gap-1.5 flex-shrink-0">
+                  <button type="button" onclick="event.stopPropagation(); app.fetchCurrentLocation();" class="px-2 py-1 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 text-[11px] font-bold flex items-center gap-1 border border-blue-500/20 transition-all active:scale-95 cursor-pointer" title="Auto-detect GPS Location">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    <span>GPS</span>
+                  </button>
+                  <svg class="chevron-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                  </svg>
+                </div>
               </div>
 
               <!-- Card 2: Drop Location -->
-              <div onclick="app.openLocationPicker('drop')" class="search-input-card">
+              <div id="home-drop-card" onclick="app.openLocationPicker('drop')" class="search-input-card cursor-pointer transition-all duration-300">
                 <div class="input-left-group">
                   <div class="pin-icon-box drop-pin">
-                    <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                     </svg>
@@ -3365,6 +3515,101 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
   </div>
 
   <!-- ==================================================================== -->
+  <!-- LOCATION INTERACTIVE MAP PICKER MODAL (Pickup & Drop Modes)         -->
+  <!-- ==================================================================== -->
+  <div id="drop-location-map-modal" class="fixed inset-0 z-[2200] flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300">
+    <div class="drop-map-modal-panel w-full max-w-2xl bg-[#0A1124] border border-slate-700/80 rounded-3xl p-4 sm:p-6 shadow-2xl transform scale-95 transition-transform duration-300 flex flex-col gap-3.5 max-h-[92vh] overflow-hidden">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-2 border-b border-slate-800/80">
+        <div class="flex items-center gap-2.5">
+          <div id="location-modal-icon-box" class="w-9 h-9 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-500">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+          </div>
+          <div>
+            <h3 id="location-modal-title" class="text-base sm:text-lg font-black text-white drop-map-title">Select Location</h3>
+            <p id="location-modal-subtitle" class="text-xs text-slate-400 drop-map-sub">Choose on map, search address, or pick a location</p>
+          </div>
+        </div>
+        <button type="button" onclick="app.closeLocationMapModal()" class="w-8 h-8 rounded-full bg-slate-800/80 hover:bg-slate-700 border border-slate-700/80 flex items-center justify-center text-slate-300 hover:text-white transition-all cursor-pointer" aria-label="Close Map">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Search Input + Popular Quick Destination Pills -->
+      <div class="space-y-2">
+        <div class="relative">
+          <input id="drop-map-search-input" type="text" placeholder="Search address, college, landmark..." oninput="app.onDropMapSearch(this.value)" class="w-full px-3.5 py-2.5 pl-9 rounded-xl bg-slate-900 border border-slate-700/80 text-white text-xs sm:text-sm focus:outline-none focus:border-blue-500 transition-all drop-map-input">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          </div>
+        </div>
+
+        <!-- Quick Destination Pills -->
+        <div id="location-modal-presets" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
+          <button type="button" onclick="app.selectLocationPreset('Sanjay Ghodawat University', 'Kolhapur-Sangli Highway, Atigre', 16.7450, 74.3720)" class="drop-preset-pill px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap bg-blue-600/20 text-blue-300 border border-blue-500/40 hover:bg-blue-600 hover:text-white transition-all">
+            🎓 Sanjay Ghodawat University
+          </button>
+          <button type="button" onclick="app.selectLocationPreset('Shri Ambabai Mahalaxmi Temple', 'Bhavani Mandap, Kolhapur', 16.6946, 74.2238)" class="drop-preset-pill px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 hover:text-white transition-all">
+            🏛️ Mahalaxmi Temple
+          </button>
+          <button type="button" onclick="app.selectLocationPreset('Kolhapur Railway Station', 'Station Road, Shahupuri', 16.7028, 74.2405)" class="drop-preset-pill px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 hover:text-white transition-all">
+            🚉 Railway Station
+          </button>
+          <button type="button" onclick="app.selectLocationPreset('Rankala Lake', 'Promenade, Kolhapur', 16.6894, 74.2144)" class="drop-preset-pill px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 hover:text-white transition-all">
+            🌊 Rankala Lake
+          </button>
+          <button type="button" onclick="app.selectLocationPreset('DY Patil College', 'Kasaba Bawada, Kolhapur', 16.7212, 74.2541)" class="drop-preset-pill px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 hover:text-white transition-all">
+            🏢 DY Patil College
+          </button>
+          <button type="button" onclick="app.selectLocationPreset('Pune Junction', 'Agarkar Nagar, Pune', 18.5284, 73.8739)" class="drop-preset-pill px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 hover:text-white transition-all">
+            🚉 Pune Junction
+          </button>
+        </div>
+      </div>
+
+      <!-- Interactive Leaflet Map Container -->
+      <div class="relative w-full rounded-2xl overflow-hidden border border-slate-700/80 bg-slate-950 flex-1 min-h-[260px] sm:min-h-[320px]">
+        <div id="drop-picker-leaflet-map" class="w-full h-full min-h-[260px] sm:min-h-[320px] z-10"></div>
+        
+        <!-- Live Center Hint Banner -->
+        <div class="absolute top-2.5 left-1/2 -translate-x-1/2 z-[400] pointer-events-none bg-slate-900/90 text-white text-[11px] font-semibold px-3 py-1 rounded-full border border-slate-700 shadow-md backdrop-blur-sm whitespace-nowrap flex items-center gap-1.5">
+          <span id="location-modal-hint-dot" class="w-2 h-2 rounded-full bg-blue-500 animate-ping"></span>
+          <span id="location-modal-hint-text">Tap anywhere on map to pin location</span>
+        </div>
+
+        <!-- Recenter GPS Button -->
+        <button type="button" onclick="app.centerDropMapOnUser()" class="absolute bottom-3 right-3 z-[400] p-2.5 rounded-xl bg-white text-slate-900 shadow-lg border border-slate-200 hover:bg-slate-50 transition-all active:scale-95 cursor-pointer" title="Locate Me">
+          <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        </button>
+      </div>
+
+      <!-- Selected Location Details & Confirmation Button -->
+      <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 drop-map-selected-card">
+        <div class="flex items-center gap-3 min-w-0">
+          <div id="location-modal-preview-icon" class="w-10 h-10 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-500 flex-shrink-0">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
+          </div>
+          <div class="min-w-0 flex-1">
+            <span id="location-modal-target-badge" class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Target Location</span>
+            <h4 id="drop-modal-selected-title" class="text-sm font-bold text-white truncate">Sanjay Ghodawat University</h4>
+            <p id="drop-modal-selected-sub" class="text-[11px] text-slate-400 truncate">Kolhapur-Sangli Highway, Atigre, Kolhapur</p>
+          </div>
+        </div>
+
+        <button type="button" id="btn-confirm-drop-location" onclick="app.confirmLocationSelection()" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-600 text-white font-bold text-sm shadow-[0_4px_16px_rgba(0,115,255,0.4)] transition-all active:scale-95 cursor-pointer whitespace-nowrap flex items-center justify-center gap-2">
+          <span id="location-modal-confirm-btn-text">Select Location</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================================================================== -->
   <!-- EDIT PROFILE MODAL (Interactive Personal Details & Ride Preferences) -->
   <!-- ==================================================================== -->
   <div id="edit-profile-modal" class="fixed inset-0 z-[2000] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300">
@@ -3846,8 +4091,8 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
 
   <!-- Scripts -->
   <script src="js/api.js?v=4"></script>
-  <script src="js/audio.js?v=26"></script>
-  <script src="js/app.js?v=66"></script>
+  <script src="js/audio.js?v=27"></script>
+  <script src="js/app.js?v=71"></script>
 
   <!-- Service Worker for Offline PWA Support -->
   <script>

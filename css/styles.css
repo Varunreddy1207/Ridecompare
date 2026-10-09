@@ -1728,32 +1728,71 @@ body:not(.theme-dark) .search-input-card:hover {
   box-shadow: 0 6px 20px rgba(0, 115, 255, 0.1) !important;
 }
 
-body:not(.theme-dark) .pin-icon-box {
-  background-color: #F1F5F9 !important;
-  border: 1px solid #E2E8F0 !important;
-  color: #0284C7 !important;
+body:not(.theme-dark) .pin-icon-box,
+body.theme-light .pin-icon-box,
+[data-theme="light"] .pin-icon-box {
+  background-color: #EFF6FF !important;
+  border: 1px solid #BFDBFE !important;
+  color: #0073FF !important;
 }
 
-body:not(.theme-dark) .pin-icon-box.drop-pin {
+body:not(.theme-dark) .pin-icon-box svg,
+body.theme-light .pin-icon-box svg,
+[data-theme="light"] .pin-icon-box svg {
+  color: #0073FF !important;
+}
+
+body:not(.theme-dark) .pin-icon-box.drop-pin,
+body.theme-light .pin-icon-box.drop-pin,
+[data-theme="light"] .pin-icon-box.drop-pin {
   background-color: #FEF2F2 !important;
   border: 1px solid #FECACA !important;
   color: #EF4444 !important;
 }
 
-body:not(.theme-dark) .input-label {
-  color: #64748B !important;
+body:not(.theme-dark) .pin-icon-box.drop-pin svg,
+body.theme-light .pin-icon-box.drop-pin svg,
+[data-theme="light"] .pin-icon-box.drop-pin svg {
+  color: #EF4444 !important;
 }
 
-body:not(.theme-dark) .input-value {
+body:not(.theme-dark) .input-label,
+body.theme-light .input-label,
+[data-theme="light"] .input-label {
+  color: #334155 !important;
+  font-weight: 600 !important;
+}
+
+body:not(.theme-dark) .input-value,
+body.theme-light .input-value,
+[data-theme="light"] .input-value,
+body:not(.theme-dark) #home-pickup-text,
+body:not(.theme-dark) #home-drop-text,
+body.theme-light #home-pickup-text,
+body.theme-light #home-drop-text,
+[data-theme="light"] #home-pickup-text,
+[data-theme="light"] #home-drop-text {
   color: #0F172A !important;
+  font-weight: 700 !important;
 }
 
-body:not(.theme-dark) .input-value.placeholder {
-  color: #94A3B8 !important;
+body:not(.theme-dark) .input-value.placeholder,
+body.theme-light .input-value.placeholder,
+[data-theme="light"] .input-value.placeholder,
+body:not(.theme-dark) #home-pickup-text.placeholder,
+body:not(.theme-dark) #home-drop-text.placeholder,
+body.theme-light #home-pickup-text.placeholder,
+body.theme-light #home-drop-text.placeholder,
+[data-theme="light"] #home-pickup-text.placeholder,
+[data-theme="light"] #home-drop-text.placeholder {
+  color: #0F172A !important;
+  font-weight: 700 !important;
 }
 
-body:not(.theme-dark) .chevron-icon {
-  color: #94A3B8 !important;
+body:not(.theme-dark) .chevron-icon,
+body.theme-light .chevron-icon,
+[data-theme="light"] .chevron-icon {
+  color: #334155 !important;
 }
 
 body:not(.theme-dark) .recent-searches-header h3 {

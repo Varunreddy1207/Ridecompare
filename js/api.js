@@ -4,32 +4,53 @@
  */
 
 (function (window) {
+  function normalizeApiUrl(url) {
+    if (!url || typeof url !== 'string') return '';
+    let clean = url.trim().replace(/\/$/, '');
+    if (clean.startsWith('%')) return '';
+    if (!clean.endsWith('/api')) {
+      clean = `${clean}/api`;
+    }
+    return clean;
+  }
+
   function resolveApiBase() {
     // 1. Vite environment variable support
-    if (typeof window !== 'undefined' && window.VITE_API_URL) return window.VITE_API_URL;
+    if (typeof window !== 'undefined' && window.VITE_API_URL) {
+      const norm = normalizeApiUrl(window.VITE_API_URL);
+      if (norm) return norm;
+    }
     try {
-      if (typeof importMeta !== 'undefined' && importMeta.env && importMeta.env.VITE_API_URL) {
-        return importMeta.env.VITE_API_URL;
+      const getMeta = new Function('try { return import.meta; } catch(e) { return null; }');
+      const meta = getMeta();
+      if (meta && meta.env && meta.env.VITE_API_URL) {
+        const norm = normalizeApiUrl(meta.env.VITE_API_URL);
+        if (norm) return norm;
       }
     } catch (_) {}
 
     // 2. Custom global override
-    if (typeof window !== 'undefined' && window.RIDE_COMPARE_API_BASE) return window.RIDE_COMPARE_API_BASE;
+    if (typeof window !== 'undefined' && window.RIDE_COMPARE_API_BASE) {
+      const norm = normalizeApiUrl(window.RIDE_COMPARE_API_BASE);
+      if (norm) return norm;
+    }
 
     // 3. Saved localStorage custom URL
     try {
       const custom = localStorage.getItem('ridecompare_api_url');
-      if (custom) return custom;
+      if (custom) {
+        const norm = normalizeApiUrl(custom);
+        if (norm) return norm;
+      }
     } catch (_) {}
 
+    // 4. Same-origin backend deployment or local network
     try {
       if (typeof window !== 'undefined' && window.location) {
-        // If served from Express backend directly (port 5000 or public tunnel on standard port 80/443):
-        if (window.location.port === '5000' || (!window.location.port && window.location.protocol.startsWith('http'))) {
+        if (window.location.port === '5000') {
           return `${window.location.origin}/api`;
         }
-        // If opened from Live Server or custom dev port from a mobile/network IP:
-        if (window.location.hostname && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+        if (window.location.hostname && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1' && window.location.port !== '5173') {
           return `${window.location.protocol}//${window.location.hostname}:5000/api`;
         }
       }
@@ -37,6 +58,7 @@
       console.warn('[RideCompareApi] Error determining API base:', e);
     }
 
+    // Default local development fallback
     return 'http://localhost:5000/api';
   }
 
