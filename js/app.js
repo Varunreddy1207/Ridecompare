@@ -1,3 +1,59 @@
+// User-configured Google Maps API Key
+const GOOGLE_MAPS_API_KEY = 'AIzaSyA4LfkJpAF7Ggz83bF--j3vPztxlzrxPxg';
+window.GOOGLE_MAPS_API_KEY = GOOGLE_MAPS_API_KEY;
+
+// Curated fast-lookup directory for popular colleges, stations, landmarks, and regional hubs
+const KNOWN_LOCATIONS = [
+  // Kolhapur & Surrounding
+  { name: 'Sanjay Ghodawat University', address: 'Kolhapur-Sangli Highway, Atigre, Kolhapur', lat: 16.7450, lng: 74.3720, tags: ['sgu', 'ghodawat', 'university', 'atigre', 'college', 'engineering', 'campus'] },
+  { name: 'Aastha Hospital', address: 'Shivaji Park, Kolhapur', lat: 16.7020, lng: 74.2460, tags: ['aastha', 'hospital', 'shivaji park', 'aastha hospital'] },
+  { name: 'Rajarampuri', address: '6th Lane, Rajarampuri, Kolhapur', lat: 16.6912, lng: 74.2435, tags: ['rajarampuri', 'kolhapur'] },
+  { name: 'Shri Ambabai Mahalaxmi Temple', address: 'Bhavani Mandap, Kolhapur', lat: 16.6946, lng: 74.2238, tags: ['mahalaxmi', 'temple', 'mandir', 'ambabai', 'bhavani mandap', 'darshan'] },
+  { name: 'Kolhapur Railway Station', address: 'Station Road, Shahupuri, Kolhapur', lat: 16.7028, lng: 74.2405, tags: ['kolhapur railway', 'train', 'station', 'shahu maharaj terminus', 'shahupuri', 'csm terminus'] },
+  { name: 'Central Bus Stand (CBS) Kolhapur', address: 'Station Road, Shahupuri, Kolhapur', lat: 16.7042, lng: 74.2415, tags: ['cbs', 'bus stand', 'st stand', 'central bus station', 'kolhapur bus'] },
+  { name: 'Rankala Lake', address: 'Promenade, Kolhapur', lat: 16.6894, lng: 74.2144, tags: ['rankala', 'lake', 'talav', 'chowpatty', 'promenade'] },
+  { name: 'DY Patil College', address: 'Kasaba Bawada, Kolhapur', lat: 16.7212, lng: 74.2541, tags: ['dy patil', 'dypcet', 'college', 'kasaba bawada', 'engineering', 'campus'] },
+  { name: 'New Palace (Chhatrapati Shahu Palace)', address: 'Tarabai Park, Kolhapur', lat: 16.7161, lng: 74.2292, tags: ['new palace', 'shahu museum', 'tarabai park', 'palace'] },
+  { name: 'Shivaji University', address: 'Vidyanagar, Kolhapur', lat: 16.6782, lng: 74.2546, tags: ['shivaji university', 'suk', 'vidyanagar', 'university', 'campus'] },
+  { name: 'Bhavani Mandap', address: 'Old City, Kolhapur', lat: 16.6949, lng: 74.2244, tags: ['bhavani mandap', 'old palace', 'mahalaxmi'] },
+  { name: 'Panhala Fort', address: 'Panhala, Kolhapur District', lat: 16.8122, lng: 74.1165, tags: ['panhala', 'fort', 'hill station'] },
+  { name: 'Kagal MIDC', address: 'Five Star MIDC, Kagal, Kolhapur', lat: 16.5812, lng: 74.3168, tags: ['kagal', 'midc', 'industrial area'] },
+  { name: 'Shiroli MIDC', address: 'NH4 Highway, Kolhapur', lat: 16.7458, lng: 74.2754, tags: ['shiroli', 'midc', 'industrial'] },
+  { name: 'Aster Aadhar Hospital', address: 'Shastri Nagar, Kolhapur', lat: 16.6872, lng: 74.2482, tags: ['aadhar', 'aster', 'hospital', 'medical'] },
+  { name: 'CPR Hospital', address: 'Bhavani Mandap Road, Kolhapur', lat: 16.6985, lng: 74.2298, tags: ['cpr', 'hospital', 'civil hospital'] },
+  // Ichalkaranji
+  { name: 'Ichalkaranji Main Bus Stand', address: 'Main Road, Ichalkaranji', lat: 16.6965, lng: 74.4628, tags: ['ichalkaranji', 'bus stand', 'textile city', 'home'] },
+  { name: 'DKTE Textile & Engineering Institute', address: 'Rajwada, Ichalkaranji', lat: 16.6998, lng: 74.4622, tags: ['dkte', 'college', 'textile', 'engineering', 'ichalkaranji'] },
+  // Pune & Metro
+  { name: 'Pune Junction Railway Station', address: 'Agarkar Nagar, Pune', lat: 18.5284, lng: 73.8739, tags: ['pune junction', 'pune railway station', 'pune train', 'agarkar nagar'] },
+  { name: 'Pune International Airport (PNQ)', address: 'Lohegaon, Pune', lat: 18.5822, lng: 73.9197, tags: ['pune airport', 'pnq', 'lohegaon', 'flight', 'airport'] },
+  { name: 'Hinjawadi IT Park', address: 'Rajiv Gandhi Infotech Park Phase 1, Pune', lat: 18.5913, lng: 73.7389, tags: ['hinjawadi', 'hinjewadi', 'it park', 'infosys', 'wipro', 'tcs', 'tech'] },
+  { name: 'Swargate Bus Station', address: 'Swargate, Pune', lat: 18.5018, lng: 73.8586, tags: ['swargate', 'bus stand', 'metro', 'st stand'] },
+  { name: 'Shivaji Nagar Bus Stand / Station', address: 'Shivajinagar, Pune', lat: 18.5314, lng: 73.8553, tags: ['shivajinagar', 'shivaji nagar', 'bus station', 'court'] },
+  { name: 'Kothrud Bus Depot', address: 'Kothrud, Pune', lat: 18.5074, lng: 73.8077, tags: ['kothrud', 'chandani chowk', 'depot', 'paud road'] },
+  { name: 'Phoenix Marketcity', address: 'Viman Nagar, Pune', lat: 18.5615, lng: 73.9167, tags: ['phoenix', 'mall', 'viman nagar', 'shopping'] },
+  { name: 'Magarpatta Cybercity', address: 'Hadapsar, Pune', lat: 18.5089, lng: 73.9259, tags: ['magarpatta', 'hadapsar', 'cybercity', 'it park'] },
+  { name: 'Baner Road', address: 'Balewadi High Street, Pune', lat: 18.5590, lng: 73.7868, tags: ['baner', 'balewadi', 'high street'] },
+  { name: 'Wakad Chowk', address: 'Hinjewadi Bridge, Wakad, Pune', lat: 18.5987, lng: 73.7635, tags: ['wakad', 'bridge', 'chowk'] },
+  { name: 'Aundh', address: 'Parihar Chowk, Aundh, Pune', lat: 18.5626, lng: 73.8087, tags: ['aundh', 'parihar chowk'] },
+  { name: 'Koregaon Park (KP)', address: 'North Main Road, Pune', lat: 18.5362, lng: 73.8940, tags: ['koregaon park', 'kp', 'osho'] },
+  { name: 'FC Road', address: 'Fergusson College Road, Shivajinagar, Pune', lat: 18.5246, lng: 73.8415, tags: ['fc road', 'fergusson', 'college road'] },
+  { name: 'JM Road', address: 'Jangali Maharaj Road, Pune', lat: 18.5273, lng: 73.8479, tags: ['jm road', 'balgandharva'] },
+  { name: 'Katraj Zoo / Snake Park', address: 'Rajiv Gandhi Zoological Park, Katraj, Pune', lat: 18.4556, lng: 73.8596, tags: ['katraj', 'zoo', 'snake park'] },
+  { name: 'COEP Technological University', address: 'Shivajinagar, Pune', lat: 18.5298, lng: 73.8566, tags: ['coep', 'engineering college', 'university'] },
+  // Mumbai
+  { name: 'Chhatrapati Shivaji Maharaj Terminus (CSMT)', address: 'Fort, Mumbai', lat: 18.9401, lng: 72.8354, tags: ['csmt', 'cst', 'vt', 'mumbai railway station', 'mumbai cst'] },
+  { name: 'Mumbai Airport (BOM)', address: 'Terminal 2, Sahar, Andheri East, Mumbai', lat: 19.0896, lng: 72.8656, tags: ['mumbai airport', 'bom', 't2', 'sahar', 'international airport'] },
+  { name: 'Bandra Kurla Complex (BKC)', address: 'Bandra East, Mumbai', lat: 19.0664, lng: 72.8687, tags: ['bkc', 'bandra kurla', 'corporate'] },
+  { name: 'Dadar Railway Station', address: 'Dadar, Mumbai', lat: 19.0178, lng: 72.8478, tags: ['dadar', 'station', 'central'] },
+  { name: 'Marine Drive', address: 'Nariman Point, Mumbai', lat: 18.9432, lng: 72.8234, tags: ['marine drive', 'queens necklace', 'nariman point', 'churchgate'] },
+  // Sangli & Satara
+  { name: 'Sangli Railway Station', address: 'Station Road, Sangli', lat: 16.8524, lng: 74.5815, tags: ['sangli', 'station', 'railway', 'st stand'] },
+  { name: 'Walchand College of Engineering', address: 'Vishrambag, Sangli', lat: 16.8457, lng: 74.6015, tags: ['walchand', 'wce', 'sangli', 'college', 'engineering'] },
+  { name: 'Satara Central Bus Stand', address: 'Powai Naka, Satara', lat: 17.6805, lng: 74.0183, tags: ['satara', 'bus stand', 'powai naka', 'st stand'] },
+  { name: 'Belagavi (Belgaum) Railway Station', address: 'Station Road, Belagavi', lat: 15.8497, lng: 74.4977, tags: ['belgaum', 'belagavi', 'railway station'] }
+];
+
 // =============================================================================
 // VOZX RideCompare — Responsive Master Application Controller
 // Seamless screen routing, sound FX, and multi-device responsive interaction
@@ -28,6 +84,12 @@ class RideCompareApp {
     this.tempSelectedName = '';
     this.tempSelectedSub = '';
     this.tempSelectedCoords = null;
+    this.resultsMap = null;
+    this.resultsTileLayer = null;
+    this.resultsRouteLayers = [];
+    this.currentRouteBounds = null;
+    this.isFetchingRoute = false;
+    this.googleMapsApiKey = GOOGLE_MAPS_API_KEY;
 
     // Master History Trips Dataset (Exact Match to media_1790658953621.png)
     this.historyTrips = [
@@ -188,6 +250,16 @@ class RideCompareApp {
         });
       }
 
+      // Close System Status Restricted Modal on backdrop click
+      const restrictedModal = document.getElementById('system-status-restricted-modal');
+      if (restrictedModal) {
+        restrictedModal.addEventListener('click', (e) => {
+          if (e.target === restrictedModal) {
+            this.closeAccessRestrictedModal();
+          }
+        });
+      }
+
       // Close Delete Account Confirm Modal on backdrop click
       const deleteModal = document.getElementById('delete-account-modal');
       if (deleteModal) {
@@ -243,6 +315,9 @@ class RideCompareApp {
           this.reloadPage();
         }
       });
+
+      // Initial route map badges and headers setup
+      this.updateResultsMapRoute();
     });
   }
 
@@ -273,6 +348,9 @@ class RideCompareApp {
       document.documentElement.setAttribute('data-theme', 'dark');
       localStorage.setItem('ridecompare_theme', 'dark');
       if (metaTheme) metaTheme.setAttribute('content', '#020617');
+      if (this.resultsMap && this.resultsTileLayer) {
+        this.resultsTileLayer.setUrl('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}');
+      }
 
       // Update button accessibility labels
       document.querySelectorAll('.theme-toggle-btn').forEach(btn => {
@@ -292,6 +370,9 @@ class RideCompareApp {
       document.documentElement.setAttribute('data-theme', 'light');
       localStorage.setItem('ridecompare_theme', 'light');
       if (metaTheme) metaTheme.setAttribute('content', '#FFFFFF');
+      if (this.resultsMap && this.resultsTileLayer) {
+        this.resultsTileLayer.setUrl('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+      }
 
       // Update button accessibility labels
       document.querySelectorAll('.theme-toggle-btn').forEach(btn => {
@@ -311,6 +392,7 @@ class RideCompareApp {
     this.updateAuthModalTheme(theme === 'dark');
     this.updateLogoutModalTheme(theme === 'dark');
     this.updateDeleteAccountModalTheme(theme === 'dark');
+    this.updateRestrictedModalTheme(theme === 'dark');
   }
 
   // Ensure "Back to Home" and Notification Bell buttons have blue background in light mode
@@ -520,10 +602,18 @@ class RideCompareApp {
 
     // Direct developer route check
     if (hash === '#system-status' || hash === '#status' || path.endsWith('/system-status') || path.endsWith('/status')) {
-      this.currentTab = 'status';
-      this.navigateTo('screen-status', false);
-      this.updateActiveNavs('status');
-      this.initSystemStatus();
+      if (!this.isAdminOrDev()) {
+        this.currentTab = 'home';
+        this.navigateTo(isAuth || hasStarted ? 'screen-home' : 'screen-splash', false);
+        this.updateActiveNavs('home');
+        try { history.replaceState(null, '', '#home'); } catch (_) {}
+        setTimeout(() => this.openAccessRestrictedModal(), 350);
+      } else {
+        this.currentTab = 'status';
+        this.navigateTo('screen-status', false);
+        this.updateActiveNavs('status');
+        this.initSystemStatus();
+      }
     } else if (path.endsWith('/login') || hash === '#login') {
       this.currentTab = 'home';
       this.navigateTo(isAuth || hasStarted ? 'screen-home' : 'screen-splash', false);
@@ -589,6 +679,11 @@ class RideCompareApp {
 
     // Explicit System Status developer route
     if (hash === '#system-status' || hash === '#status' || path.endsWith('/system-status') || path.endsWith('/status')) {
+      if (!this.isAdminOrDev()) {
+        try { history.replaceState(null, '', '#home'); } catch (_) {}
+        this.openAccessRestrictedModal();
+        return;
+      }
       this.currentTab = 'status';
       this.navigateTo('screen-status', false);
       this.updateActiveNavs('status');
@@ -1414,16 +1509,7 @@ class RideCompareApp {
       dropText.title = city;
     }
 
-    // Update Map Title
-    const mapTitle = document.getElementById('map-route-title');
-    const mapSub = document.getElementById('map-route-sub');
-    const pickupName = this.pickupLocationName || 'Current Location';
-    if (mapTitle) {
-      mapTitle.textContent = `${pickupName} ➔ ${name}`;
-    }
-    if (mapSub) {
-      mapSub.textContent = `Destination: ${city} • Live comparison updated`;
-    }
+    this.updateResultsMapRoute();
 
     const panel = document.getElementById('home-results-panel');
     if (panel && panel.classList.contains('results-panel-visible')) {
@@ -1500,18 +1586,63 @@ class RideCompareApp {
       window.soundFX.playGetStarted();
     }
 
-    const mapTitle = document.getElementById('map-route-title');
-    const mapSub = document.getElementById('map-route-sub');
-    const pickupName = this.pickupLocationName || (pickupText ? pickupText.textContent : 'Pickup Location');
-    const dropName = this.selectedDropName || (dropText ? dropText.textContent : 'Destination');
-    if (mapTitle) {
-      mapTitle.textContent = `${pickupName} ➔ ${dropName}`;
+    this.updateResultsMapRoute();
+    this.showResultsPanel();
+  }
+
+  // Updates the live route map header, subtitle, and pin badges to match selected pickup & drop locations
+  updateResultsMapRoute() {
+    const pickupText = document.getElementById('home-pickup-text');
+    const dropText = document.getElementById('home-drop-text');
+
+    let pickupName = (this.pickupLocationName || '').trim();
+    if (!pickupName && pickupText && !pickupText.classList.contains('placeholder')) {
+      pickupName = pickupText.textContent.trim();
     }
-    if (mapSub) {
-      mapSub.textContent = `Destination: ${this.selectedDropSub || dropName} • Live comparison updated`;
+    if (!pickupName || pickupName === 'Select pickup location') {
+      pickupName = 'Current Location';
     }
 
-    this.showResultsPanel();
+    let dropName = (this.selectedDropName || '').trim();
+    if (!dropName && dropText && !dropText.classList.contains('placeholder')) {
+      dropName = dropText.textContent.trim();
+    }
+    if (!dropName || dropName === 'Select drop location') {
+      dropName = 'Destination';
+    }
+
+    // 1. Update Map Header Title
+    const mapTitle = document.getElementById('map-route-title');
+    if (mapTitle) {
+      mapTitle.textContent = `${pickupName} ➔ ${dropName}`;
+      mapTitle.title = `${pickupName} ➔ ${dropName}`;
+    }
+
+    // 2. Update Map Header Subtitle
+    const mapSub = document.getElementById('map-route-sub');
+    if (mapSub) {
+      const dropDetail = this.selectedDropSub || dropName;
+      mapSub.textContent = `Destination: ${dropDetail} • Live comparison updated`;
+      mapSub.title = `Destination: ${dropDetail}`;
+    }
+
+    // 3. Update Pickup Marker Badge on Map Canvas
+    const pickupBadge = document.getElementById('map-pickup-badge');
+    if (pickupBadge) {
+      pickupBadge.textContent = pickupName;
+      pickupBadge.title = `Pickup: ${this.pickupLocationFull || pickupName}`;
+    }
+
+    // 4. Update Destination Marker Badge on Map Canvas
+    const dropBadge = document.getElementById('map-drop-badge');
+    if (dropBadge) {
+      dropBadge.textContent = dropName;
+      dropBadge.title = `Destination: ${this.selectedDropSub ? `${dropName}, ${this.selectedDropSub}` : dropName}`;
+    }
+
+    if (this.resultsMap) {
+      this.renderLiveRoute();
+    }
   }
 
   // Visual attention animation for unselected cards
@@ -1528,6 +1659,8 @@ class RideCompareApp {
 
   // Smooth Reveal of Results Panel (Map + comparison cards)
   showResultsPanel() {
+    this.updateResultsMapRoute();
+    this.initResultsLiveMap();
     const panel = document.getElementById('home-results-panel');
     const searchContainer = document.getElementById('home-search-container');
     if (!panel) return;
@@ -1550,6 +1683,270 @@ class RideCompareApp {
         panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 100);
     }
+  }
+
+  // =========================================================================
+  // LIVE REAL-TIME LEAFLET RESULTS MAP WITH DRIVING ROUTE POLYLINE
+  // =========================================================================
+  initResultsLiveMap() {
+    if (typeof L === 'undefined') {
+      console.warn('Leaflet library is not loaded');
+      return;
+    }
+
+    const container = document.getElementById('results-live-leaflet-map');
+    if (!container) return;
+
+    const isDark = document.body.classList.contains('theme-dark') || 
+                   document.documentElement.getAttribute('data-theme') === 'dark';
+
+    const lightTileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    const darkTileUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
+    const tileUrl = isDark ? darkTileUrl : lightTileUrl;
+    const subdomains = isDark ? ['server', 'services'] : ['a', 'b', 'c'];
+
+    if (!this.resultsMap) {
+      this.resultsMap = L.map('results-live-leaflet-map', {
+        zoomControl: false,
+        attributionControl: false
+      }).setView([16.7050, 74.2433], 13);
+
+      this.resultsTileLayer = L.tileLayer(tileUrl, {
+        maxZoom: 19,
+        subdomains: subdomains
+      }).addTo(this.resultsMap);
+
+      L.control.zoom({ position: 'topright' }).addTo(this.resultsMap);
+    } else {
+      if (this.resultsTileLayer) {
+        this.resultsTileLayer.setUrl(tileUrl);
+      }
+    }
+
+    this.renderLiveRoute();
+
+    setTimeout(() => {
+      if (this.resultsMap) {
+        this.resultsMap.invalidateSize();
+      }
+    }, 250);
+  }
+
+  recenterResultsMap() {
+    if (this.currentRouteBounds && this.resultsMap) {
+      this.resultsMap.fitBounds(this.currentRouteBounds, { padding: [70, 70], maxZoom: 16 });
+    }
+  }
+
+  getCoordinatesFor(name, fallbackCoords) {
+    if (!name) return fallbackCoords;
+    const clean = name.toLowerCase().trim();
+    const found = KNOWN_LOCATIONS.find(loc => {
+      const locClean = loc.name.toLowerCase();
+      return locClean === clean || 
+             locClean.includes(clean) || 
+             clean.includes(locClean) || 
+             (loc.tags && loc.tags.some(t => clean.includes(t.toLowerCase())));
+    });
+    if (found) {
+      return { lat: found.lat, lng: found.lng };
+    }
+    return fallbackCoords;
+  }
+
+  async renderLiveRoute() {
+    if (!this.resultsMap || typeof L === 'undefined') return;
+
+    const pickupText = document.getElementById('home-pickup-text');
+    const dropText = document.getElementById('home-drop-text');
+
+    let pickupName = (this.pickupLocationName || '').trim();
+    if (!pickupName && pickupText && !pickupText.classList.contains('placeholder')) {
+      pickupName = pickupText.textContent.trim();
+    }
+    if (!pickupName || pickupName === 'Select pickup location') {
+      pickupName = 'Sanjay Ghodawat University';
+    }
+
+    let dropName = (this.selectedDropName || '').trim();
+    if (!dropName && dropText && !dropText.classList.contains('placeholder')) {
+      dropName = dropText.textContent.trim();
+    }
+    if (!dropName || dropName === 'Select drop location') {
+      dropName = 'Aastha Hospital';
+    }
+
+    const pickupCoords = this.pickupCoords || this.getCoordinatesFor(pickupName, { lat: 16.7450, lng: 74.3720 });
+    const dropCoords = this.selectedDropCoords || this.getCoordinatesFor(dropName, { lat: 16.7020, lng: 74.2460 });
+
+    const mapTitle = document.getElementById('map-route-title');
+    if (mapTitle) {
+      mapTitle.textContent = `${pickupName} ➔ ${dropName}`;
+      mapTitle.title = `${pickupName} ➔ ${dropName}`;
+    }
+
+    // Clear previous route layers & markers
+    if (this.resultsRouteLayers) {
+      this.resultsRouteLayers.forEach(l => {
+        try { this.resultsMap.removeLayer(l); } catch (e) {}
+      });
+    }
+    this.resultsRouteLayers = [];
+
+    // 1. Pickup Marker (Radar Blue Pulse + Callout)
+    const pickupIcon = L.divIcon({
+      className: 'custom-live-map-marker',
+      html: `
+        <div class="live-map-marker-wrap pickup-marker-wrap">
+          <div class="marker-pulse-ring"></div>
+          <div class="marker-core-dot"></div>
+          <div id="map-pickup-badge" class="marker-callout-badge marker-pickup-badge" title="${pickupName}">
+            <span class="marker-dot-blue"></span>
+            <span class="truncate">${pickupName}</span>
+          </div>
+        </div>
+      `,
+      iconSize: [20, 20],
+      iconAnchor: [10, 10]
+    });
+    const pickupMarker = L.marker([pickupCoords.lat, pickupCoords.lng], { icon: pickupIcon }).addTo(this.resultsMap);
+    this.resultsRouteLayers.push(pickupMarker);
+
+    // 2. Drop Marker (Red Pin + Callout)
+    const dropIcon = L.divIcon({
+      className: 'custom-live-map-marker',
+      html: `
+        <div class="live-map-marker-wrap drop-marker-wrap">
+          <div class="marker-pin-head">
+            <svg class="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
+          </div>
+          <div id="map-drop-badge" class="marker-callout-badge marker-drop-badge" title="${dropName}">
+            <span class="marker-dot-red"></span>
+            <span class="truncate">${dropName}</span>
+          </div>
+        </div>
+      `,
+      iconSize: [28, 28],
+      iconAnchor: [14, 14]
+    });
+    const dropMarker = L.marker([dropCoords.lat, dropCoords.lng], { icon: dropIcon }).addTo(this.resultsMap);
+    this.resultsRouteLayers.push(dropMarker);
+
+    // 3. Fetch OSRM Live Driving Route
+    let routeLatLngs = [];
+    let distanceKm = null;
+    let durationMins = null;
+
+    try {
+      const url = `https://router.project-osrm.org/route/v1/driving/${pickupCoords.lng},${pickupCoords.lat};${dropCoords.lng},${dropCoords.lat}?overview=full&geometries=geojson`;
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 4000);
+      const res = await fetch(url, { signal: controller.signal });
+      clearTimeout(timeoutId);
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.routes && data.routes.length > 0) {
+          const route = data.routes[0];
+          routeLatLngs = route.geometry.coordinates.map(pt => [pt[1], pt[0]]);
+          distanceKm = (route.distance / 1000).toFixed(1);
+          durationMins = Math.max(1, Math.round(route.duration / 60));
+        }
+      }
+    } catch (e) {
+      console.warn('OSRM route fetch failed, using fallback curve', e);
+    }
+
+    if (!routeLatLngs || routeLatLngs.length === 0) {
+      routeLatLngs = this.generateFallbackRoute(pickupCoords, dropCoords);
+      const dist = this.calculateHaversineDistance(pickupCoords.lat, pickupCoords.lng, dropCoords.lat, dropCoords.lng);
+      distanceKm = dist.toFixed(1);
+      durationMins = Math.max(5, Math.round(dist * 2.2));
+    }
+
+    const distBadge = document.getElementById('map-route-distance-badge');
+    if (distBadge && distanceKm) {
+      distBadge.textContent = `${distanceKm} km`;
+    }
+
+    const mapSub = document.getElementById('map-route-sub');
+    if (mapSub) {
+      const detail = this.selectedDropSub || dropName;
+      mapSub.textContent = `Destination: ${detail} • ${distanceKm} km (${durationMins} min) • Live route active`;
+    }
+
+    // 4. Draw Route Polylines
+    const glowLine = L.polyline(routeLatLngs, {
+      color: '#0073FF',
+      weight: 8,
+      opacity: 0.35,
+      lineCap: 'round',
+      lineJoin: 'round'
+    }).addTo(this.resultsMap);
+    this.resultsRouteLayers.push(glowLine);
+
+    const liveLine = L.polyline(routeLatLngs, {
+      color: '#0073FF',
+      weight: 4.5,
+      opacity: 0.95,
+      className: 'map-live-route-dash',
+      lineCap: 'round',
+      lineJoin: 'round'
+    }).addTo(this.resultsMap);
+    this.resultsRouteLayers.push(liveLine);
+
+    // 5. Place Moving Vehicle Markers Along Route
+    if (routeLatLngs.length >= 4) {
+      const p1 = routeLatLngs[Math.floor(routeLatLngs.length * 0.25)];
+      const p2 = routeLatLngs[Math.floor(routeLatLngs.length * 0.50)];
+      const p3 = routeLatLngs[Math.floor(routeLatLngs.length * 0.75)];
+
+      const v1 = L.marker(p1, {
+        icon: L.divIcon({ className: '', html: '<div class="live-vehicle-marker-icon" title="Ola Auto (4 min)">🛺</div>', iconSize: [32, 32], iconAnchor: [16, 16] })
+      }).addTo(this.resultsMap);
+
+      const v2 = L.marker(p2, {
+        icon: L.divIcon({ className: '', html: '<div class="live-vehicle-marker-icon" title="Uber Go (3 min)">🚗</div>', iconSize: [32, 32], iconAnchor: [16, 16] })
+      }).addTo(this.resultsMap);
+
+      const v3 = L.marker(p3, {
+        icon: L.divIcon({ className: '', html: '<div class="live-vehicle-marker-icon" title="Rapido Bike (2 min)">🏍️</div>', iconSize: [32, 32], iconAnchor: [16, 16] })
+      }).addTo(this.resultsMap);
+
+      this.resultsRouteLayers.push(v1, v2, v3);
+    }
+
+    // 6. Fit Map Bounds
+    const bounds = L.latLngBounds(routeLatLngs);
+    this.currentRouteBounds = bounds;
+    this.resultsMap.fitBounds(bounds, { padding: [70, 70], maxZoom: 16 });
+  }
+
+  generateFallbackRoute(start, end) {
+    const points = [];
+    const steps = 24;
+    const midLat = (start.lat + end.lat) / 2;
+    const midLng = (start.lng + end.lng) / 2;
+    const offset = 0.008;
+
+    for (let i = 0; i <= steps; i++) {
+      const t = i / steps;
+      const lat = (1 - t) * (1 - t) * start.lat + 2 * (1 - t) * t * (midLat + offset) + t * t * end.lat;
+      const lng = (1 - t) * (1 - t) * start.lng + 2 * (1 - t) * t * (midLng - offset) + t * t * end.lng;
+      points.push([lat, lng]);
+    }
+    return points;
+  }
+
+  calculateHaversineDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
   }
 
   // Hide Results Panel and return to clean search form
@@ -1984,9 +2381,9 @@ class RideCompareApp {
 
     if (mode === 'pickup') {
       container.innerHTML = `
-        <button type="button" onclick="app.fetchCurrentLocationInModal()" class="drop-preset-pill px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap bg-blue-600 text-white border border-blue-500 hover:bg-blue-700 transition-all flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
-          <span>📍 Current Location (GPS)</span>
+        <button type="button" id="btn-modal-preset-gps" onclick="app.fetchCurrentLocationInModal()" class="drop-preset-pill btn-modal-preset-gps px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap bg-blue-600 text-white border border-blue-500 hover:bg-blue-700 transition-all flex items-center gap-1.5">
+          <span class="gps-preset-dot w-2 h-2 rounded-full bg-white animate-pulse"></span>
+          <span class="gps-preset-text">📍 Current Location (GPS)</span>
         </button>
         <button type="button" onclick="app.selectLocationPreset('Sanjay Ghodawat University', 'Kolhapur-Sangli Highway, Atigre', 16.7450, 74.3720)" class="drop-preset-pill px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 hover:text-white transition-all">
           🎓 Sanjay Ghodawat University
@@ -2128,7 +2525,7 @@ class RideCompareApp {
 
     // Reset preset pill highlights
     document.querySelectorAll('.drop-preset-pill').forEach(pill => {
-      pill.classList.remove('bg-blue-600', 'text-white', 'border-blue-500');
+      pill.classList.remove('bg-blue-600', 'text-white', 'border-blue-500', 'active');
       pill.classList.add('bg-slate-800', 'text-slate-300', 'border-slate-700');
     });
 
@@ -2176,6 +2573,15 @@ class RideCompareApp {
   }
 
   selectLocationPreset(name, address, lat, lng) {
+    this.navigateToLocation(name, address, lat, lng, true);
+  }
+
+  selectDropMapPreset(name, address, lat, lng) {
+    this.navigateToLocation(name, address, lat, lng, true);
+  }
+
+  // Smoothly navigates the Leaflet map and moves the map marker icon to target coordinates
+  navigateToLocation(name, address, lat, lng, updateInput = true) {
     if (window.soundFX && typeof window.soundFX.playTap === 'function') {
       window.soundFX.playTap();
     }
@@ -2188,32 +2594,234 @@ class RideCompareApp {
     if (titleEl) titleEl.textContent = name;
     if (subEl) subEl.textContent = address;
 
-    if (this.dropMarker) {
-      this.dropMarker.setLatLng([lat, lng]);
-    }
-    if (this.dropMap) {
-      this.dropMap.setView([lat, lng], 15);
+    if (updateInput) {
+      const searchInput = document.getElementById('drop-map-search-input');
+      if (searchInput) searchInput.value = name;
+      const clearBtn = document.getElementById('btn-clear-map-search');
+      if (clearBtn) clearBtn.classList.remove('hidden');
     }
 
+    this.hideSearchSuggestions();
+
+    // Smoothly fly map to location
+    if (this.dropMap) {
+      if (typeof this.dropMap.flyTo === 'function') {
+        this.dropMap.flyTo([lat, lng], 16, {
+          animate: true,
+          duration: 1.1,
+          easeLinearity: 0.25
+        });
+      } else {
+        this.dropMap.setView([lat, lng], 16);
+      }
+    }
+
+    // Move marker and trigger bounce animation
+    if (this.dropMarker) {
+      this.dropMarker.setLatLng([lat, lng]);
+      const markerEl = this.dropMarker.getElement();
+      if (markerEl) {
+        markerEl.classList.remove('pin-bounce-navigate');
+        void markerEl.offsetWidth; // force DOM reflow
+        markerEl.classList.add('pin-bounce-navigate');
+      }
+    }
+
+    // Update preset pills active highlight
     document.querySelectorAll('.drop-preset-pill').forEach(pill => {
       const match = pill.textContent.includes(name.split(' ')[0]) || pill.textContent.includes(name);
       if (match) {
-        pill.classList.remove('bg-slate-800', 'text-slate-300', 'border-slate-700');
-        pill.classList.add('bg-blue-600', 'text-white', 'border-blue-500');
+        pill.classList.remove('bg-slate-800', 'text-slate-300', 'border-slate-700', 'bg-blue-600/20', 'text-blue-300', 'border-blue-500/40');
+        pill.classList.add('bg-blue-600', 'text-white', 'border-blue-500', 'active');
       } else {
-        pill.classList.remove('bg-blue-600', 'text-white', 'border-blue-500');
+        pill.classList.remove('bg-blue-600', 'text-white', 'border-blue-500', 'active');
         pill.classList.add('bg-slate-800', 'text-slate-300', 'border-slate-700');
       }
     });
 
-    const searchInput = document.getElementById('drop-map-search-input');
-    if (searchInput) {
-      searchInput.value = name;
-    }
+    this.showToast('📍 Navigated map to ' + name);
   }
 
-  selectDropMapPreset(name, address, lat, lng) {
-    this.selectLocationPreset(name, address, lat, lng);
+  // Searches known local directory with fuzzy matching
+  searchKnownLocations(query) {
+    if (!query) return [];
+    const q = query.trim().toLowerCase();
+    const tokens = q.split(/\s+/).filter(Boolean);
+
+    return KNOWN_LOCATIONS.filter(item => {
+      const nameL = item.name.toLowerCase();
+      const addrL = item.address.toLowerCase();
+      const tagsL = (item.tags || []).join(' ').toLowerCase();
+      const haystack = nameL + ' ' + addrL + ' ' + tagsL;
+
+      return tokens.every(token => haystack.includes(token));
+    }).slice(0, 6);
+  }
+
+  // Live input handler when user types in search box
+  onDropMapSearch(query) {
+    clearTimeout(this.dropSearchDebounce);
+    const q = (query || '').trim();
+    const clearBtn = document.getElementById('btn-clear-map-search');
+    if (clearBtn) {
+      if (q.length > 0) clearBtn.classList.remove('hidden');
+      else clearBtn.classList.add('hidden');
+    }
+
+    if (!q || q.length < 2) {
+      this.hideSearchSuggestions();
+      return;
+    }
+
+    // 1. Instant local matching
+    const localMatches = this.searchKnownLocations(q);
+    if (localMatches.length > 0) {
+      this.showSearchSuggestions(localMatches);
+    }
+
+    // 2. Query Nominatim in background with debounce to complement results
+    this.dropSearchDebounce = setTimeout(async () => {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000);
+        const response = await fetch(
+          'https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(q) + '&limit=4&addressdetails=1',
+          {
+            signal: controller.signal,
+            headers: { 'Accept-Language': 'en' }
+          }
+        );
+        clearTimeout(timeoutId);
+
+        if (response.ok) {
+          const results = await response.json();
+          if (results && results.length > 0) {
+            const onlineMatches = results.map(item => {
+              const parts = (item.display_name || '').split(',');
+              const name = parts[0].trim();
+              const sub = parts.slice(1, 4).join(',').trim();
+              return {
+                name: name,
+                address: sub || item.display_name,
+                lat: parseFloat(item.lat),
+                lng: parseFloat(item.lon)
+              };
+            });
+
+            // Merge local and online matches without exact duplicates
+            const combined = [...localMatches];
+            for (const om of onlineMatches) {
+              const exists = combined.some(c => 
+                c.name.toLowerCase() === om.name.toLowerCase() ||
+                (Math.abs(c.lat - om.lat) < 0.005 && Math.abs(c.lng - om.lng) < 0.005)
+              );
+              if (!exists && combined.length < 7) {
+                combined.push(om);
+              }
+            }
+
+            this.showSearchSuggestions(combined);
+          }
+        }
+      } catch (e) {
+        if (localMatches.length > 0) {
+          this.showSearchSuggestions(localMatches);
+        }
+      }
+    }, 380);
+  }
+
+  // Performs immediate search (on Enter key or "Go" button click)
+  async performLocationSearch(query) {
+    const q = (query || '').trim();
+    if (!q) {
+      this.showToast('Please type a location name or address', 'warning');
+      return;
+    }
+
+    this.hideSearchSuggestions();
+    this.showToast('🔍 Searching "' + q + '"...');
+
+    // 1. Check local directory first
+    const localMatches = this.searchKnownLocations(q);
+    if (localMatches.length > 0) {
+      const topMatch = localMatches[0];
+      this.navigateToLocation(topMatch.name, topMatch.address, topMatch.lat, topMatch.lng, true);
+      return;
+    }
+
+    // 2. Fetch from Nominatim if not found locally
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 4000);
+      const res = await fetch(
+        'https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(q) + '&limit=1&addressdetails=1',
+        {
+          signal: controller.signal,
+          headers: { 'Accept-Language': 'en' }
+        }
+      );
+      clearTimeout(timeoutId);
+
+      if (res.ok) {
+        const results = await res.json();
+        if (results && results.length > 0) {
+          const item = results[0];
+          const parts = item.display_name.split(',');
+          const name = parts[0].trim();
+          const sub = parts.slice(1, 4).join(',').trim();
+          const lat = parseFloat(item.lat);
+          const lng = parseFloat(item.lon);
+          this.navigateToLocation(name, sub || item.display_name, lat, lng, true);
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn('Geocoding error', e);
+    }
+
+    this.showToast('Could not find "' + q + '". Please tap the map or choose a nearby landmark.', 'warning');
+  }
+
+  // Displays autocomplete suggestions dropdown
+  showSearchSuggestions(suggestions) {
+    const container = document.getElementById('drop-map-search-suggestions');
+    if (!container || !suggestions || suggestions.length === 0) {
+      this.hideSearchSuggestions();
+      return;
+    }
+
+    container.innerHTML = suggestions.map(item => {
+      const safeName = item.name.replace(/'/g, "\\'");
+      const safeAddr = (item.address || '').replace(/'/g, "\\'");
+      return '<div onclick="app.navigateToLocation(\'' + safeName + '\', \'' + safeAddr + '\', ' + item.lat + ', ' + item.lng + ', true)" class="search-suggestion-item">' +
+        '<div class="w-7 h-7 rounded-lg bg-blue-500/15 text-blue-500 flex items-center justify-center flex-shrink-0">' +
+          '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>' +
+        '</div>' +
+        '<div class="min-w-0 flex-1">' +
+          '<div class="search-suggestion-title truncate">' + item.name + '</div>' +
+          '<div class="search-suggestion-sub truncate">' + item.address + '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    container.classList.remove('hidden');
+  }
+
+  hideSearchSuggestions() {
+    const container = document.getElementById('drop-map-search-suggestions');
+    if (container) container.classList.add('hidden');
+  }
+
+  clearMapSearch() {
+    const searchInput = document.getElementById('drop-map-search-input');
+    if (searchInput) {
+      searchInput.value = '';
+      searchInput.focus();
+    }
+    const clearBtn = document.getElementById('btn-clear-map-search');
+    if (clearBtn) clearBtn.classList.add('hidden');
+    this.hideSearchSuggestions();
   }
 
   centerDropMapOnUser() {
@@ -2221,10 +2829,13 @@ class RideCompareApp {
       window.soundFX.playTap();
     }
     if (this.userCoords) {
-      if (this.dropMap) {
-        this.dropMap.setView([this.userCoords.lat, this.userCoords.lng], 15);
-      }
-      this.onDropMapClick(this.userCoords);
+      this.navigateToLocation(
+        'Current Location',
+        this.pickupLocationFull || 'Your detected position',
+        this.userCoords.lat,
+        this.userCoords.lng,
+        true
+      );
       this.showToast('Centered on your current GPS location 📍');
       return;
     }
@@ -2236,10 +2847,7 @@ class RideCompareApp {
           const lat = pos.coords.latitude;
           const lng = pos.coords.longitude;
           this.userCoords = { lat, lng };
-          if (this.dropMap) {
-            this.dropMap.setView([lat, lng], 15);
-          }
-          this.onDropMapClick({ lat, lng });
+          this.navigateToLocation('Current Location', 'GPS Detected Position', lat, lng, true);
         },
         () => {
           this.showToast('Could not access GPS location', 'warning');
@@ -2269,22 +2877,14 @@ class RideCompareApp {
         const lng = pos.coords.longitude;
         const accuracy = Math.round(pos.coords.accuracy);
         this.userCoords = { lat, lng, accuracy };
-        this.tempSelectedCoords = { lat, lng };
-
-        if (this.dropMap) {
-          this.dropMap.setView([lat, lng], 15);
-        }
-        if (this.dropMarker) {
-          this.dropMarker.setLatLng([lat, lng]);
-        }
 
         let name = 'Current Location';
-        let detail = `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`;
+        let detail = 'GPS Coordinates: ' + lat.toFixed(4) + ', ' + lng.toFixed(4);
         try {
           const controller = new AbortController();
           const timeoutId = setTimeout(() => controller.abort(), 3500);
           const res = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`,
+            'https://nominatim.openstreetmap.org/reverse?format=json&lat=' + lat + '&lon=' + lng + '&zoom=18&addressdetails=1',
             { signal: controller.signal, headers: { 'Accept-Language': 'en' } }
           );
           clearTimeout(timeoutId);
@@ -2294,16 +2894,13 @@ class RideCompareApp {
               const a = data.address;
               name = a.amenity || a.building || a.shop || a.road || a.suburb || a.neighbourhood || a.village || a.city_district || 'Current Location';
               const secondary = a.city || a.town || a.county || a.state_district || a.state || '';
-              detail = (secondary && secondary !== name) ? `${name}, ${secondary}` : (data.display_name?.split(',').slice(0, 3).join(',') || name);
+              detail = (secondary && secondary !== name) ? name + ', ' + secondary : (data.display_name ? data.display_name.split(',').slice(0, 3).join(',') : name);
             }
           }
         } catch (e) {}
 
-        this.tempSelectedName = name;
-        this.tempSelectedSub = detail;
-        if (titleEl) titleEl.textContent = name;
-        if (subEl) subEl.textContent = detail;
-        this.showToast(`📍 Located: ${name} (±${accuracy}m)`, 'success');
+        this.navigateToLocation(name, detail, lat, lng, true);
+        this.showToast('📍 Located: ' + name + ' (±' + accuracy + 'm)', 'success');
       },
       () => {
         this.showToast('Could not access GPS location', 'warning');
@@ -2312,35 +2909,6 @@ class RideCompareApp {
       },
       { enableHighAccuracy: true, timeout: 8000 }
     );
-  }
-
-  onDropMapSearch(query) {
-    clearTimeout(this.dropSearchDebounce);
-    const q = (query || '').trim();
-    if (!q || q.length < 2) return;
-
-    this.dropSearchDebounce = setTimeout(async () => {
-      try {
-        const response = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=1`,
-          { headers: { 'Accept-Language': 'en' } }
-        );
-        if (response.ok) {
-          const results = await response.json();
-          if (results && results.length > 0) {
-            const item = results[0];
-            const lat = parseFloat(item.lat);
-            const lng = parseFloat(item.lon);
-            const parts = item.display_name.split(',');
-            const name = parts[0].trim();
-            const sub = parts.slice(1, 4).join(',').trim();
-            this.selectLocationPreset(name, sub, lat, lng);
-          }
-        }
-      } catch (e) {
-        console.warn('Search geocode error', e);
-      }
-    }, 600);
   }
 
   // -------------------------------------------------------------------------
@@ -2382,16 +2950,7 @@ class RideCompareApp {
       pickupText.classList.remove('animate-pulse');
     }
 
-    // Update Map Title & Subtitle in comparison view
-    const mapTitle = document.getElementById('map-route-title');
-    const mapSub = document.getElementById('map-route-sub');
-    const dropName = this.selectedDropName || '';
-    if (mapTitle && dropName) {
-      mapTitle.textContent = `${selectedName} ➔ ${dropName}`;
-    }
-    if (mapSub && dropName) {
-      mapSub.textContent = `Destination: ${this.selectedDropSub || dropName} • Live comparison updated`;
-    }
+    this.updateResultsMapRoute();
 
     this.closeLocationMapModal();
     this.showToast(`Pickup location set: ${selectedName} 📍`, 'success');
@@ -2436,16 +2995,7 @@ class RideCompareApp {
       dropText.title = selectedSub;
     }
 
-    // Update Map Title & Subtitle in comparison view
-    const mapTitle = document.getElementById('map-route-title');
-    const mapSub = document.getElementById('map-route-sub');
-    const pickupName = this.pickupLocationName || 'Current Location';
-    if (mapTitle) {
-      mapTitle.textContent = `${pickupName} ➔ ${selectedName}`;
-    }
-    if (mapSub) {
-      mapSub.textContent = `Destination: ${selectedName} • Live comparison updated`;
-    }
+    this.updateResultsMapRoute();
 
     // Close the modal
     this.closeLocationMapModal();
@@ -2536,14 +3086,7 @@ class RideCompareApp {
           pickupText.title = detailName;
         }
 
-        // Update Results Panel route subtitle if open
-        const mapTitle = document.getElementById('map-route-title');
-        if (mapTitle) {
-          const destName = this.selectedDropName || '';
-          if (destName) {
-            mapTitle.textContent = `${locationName} ➔ ${destName}`;
-          }
-        }
+        this.updateResultsMapRoute();
 
         if (window.soundFX) {
           if (typeof window.soundFX.playConfirm === 'function') {
@@ -2613,6 +3156,10 @@ class RideCompareApp {
       this.navigateTo('screen-profile', false);
       window.location.hash = '#profile';
     } else if (tab === 'status' || tab === 'system-status') {
+      if (!this.isAdminOrDev()) {
+        this.openAccessRestrictedModal();
+        return;
+      }
       this.navigateTo('screen-status', false);
       window.location.hash = '#system-status';
       this.initSystemStatus();
@@ -2720,6 +3267,136 @@ class RideCompareApp {
         btnNo.style.backgroundColor = '#F1F5F9';
         btnNo.style.borderColor = '#CBD5E1';
         btnNo.style.color = '#334155';
+      }
+    }
+  }
+
+
+  // =========================================================================
+  // ADMIN & DEVELOPER ACCESS GATE (System Status Protection)
+  // =========================================================================
+  isAdminOrDev() {
+    return sessionStorage.getItem('ridecompare_admin_access') === 'true' ||
+           localStorage.getItem('ridecompare_admin_access') === 'true';
+  }
+
+  openAccessRestrictedModal() {
+    if (window.soundFX && window.soundFX.playTap) {
+      try { window.soundFX.playTap(); } catch (_) {}
+    }
+    this.showToast('Access Restricted: Only admin or developer can access it', 'error');
+
+    const modal = document.getElementById('system-status-restricted-modal');
+    if (modal) {
+      modal.classList.add('show');
+      const err = document.getElementById('admin-passcode-error');
+      if (err) err.classList.add('hidden');
+      const input = document.getElementById('admin-passcode-input');
+      if (input) {
+        input.value = '';
+        setTimeout(() => input.focus(), 200);
+      }
+      this.updateRestrictedModalTheme();
+    }
+  }
+
+  closeAccessRestrictedModal() {
+    if (window.soundFX && window.soundFX.playTap) {
+      try { window.soundFX.playTap(); } catch (_) {}
+    }
+    const modal = document.getElementById('system-status-restricted-modal');
+    if (modal) {
+      modal.classList.remove('show');
+    }
+  }
+
+  verifyAdminPasscode(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const input = document.getElementById('admin-passcode-input');
+    const err = document.getElementById('admin-passcode-error');
+    const val = (input ? input.value : '').trim().toLowerCase();
+
+    // Accepted passcodes for admin / developer access
+    const validCodes = ['admin', 'developer', 'admin123', 'dev', 'dev123', 'vozx', '2026', '1234'];
+
+    if (validCodes.includes(val)) {
+      sessionStorage.setItem('ridecompare_admin_access', 'true');
+      this.closeAccessRestrictedModal();
+      this.showToast('Developer / Admin Access Granted ⚡');
+      if (window.soundFX && window.soundFX.playTap) {
+        try { window.soundFX.playTap(); } catch (_) {}
+      }
+      this.navigateTo('screen-status', false);
+      try { history.pushState(null, '', '#system-status'); } catch (_) {}
+      this.currentTab = 'status';
+      this.updateActiveNavs('status');
+      this.initSystemStatus();
+    } else {
+      if (err) {
+        err.textContent = 'Invalid Passcode. Only admin or developer can access it.';
+        err.classList.remove('hidden');
+      }
+      this.showToast('Access Denied: Only admin or developer can access it', 'error');
+      if (input) {
+        input.classList.add('ring-2', 'ring-red-500');
+        input.focus();
+        setTimeout(() => input.classList.remove('ring-2', 'ring-red-500'), 1500);
+      }
+    }
+  }
+
+  lockAdminAccess() {
+    sessionStorage.removeItem('ridecompare_admin_access');
+    localStorage.removeItem('ridecompare_admin_access');
+    this.showToast('Admin Mode Locked 🔒');
+    this.switchTab('home');
+  }
+
+  updateRestrictedModalTheme() {
+    const isDarkMode = document.body.classList.contains('theme-dark') || 
+                       document.documentElement.getAttribute('data-theme') === 'dark';
+    const modal = document.getElementById('system-status-restricted-modal');
+    if (!modal) return;
+    const panel = modal.querySelector('.restricted-modal-panel');
+    const title = modal.querySelector('.restricted-modal-title');
+    const sub = modal.querySelector('.restricted-modal-sub');
+    const input = document.getElementById('admin-passcode-input');
+    const btnBack = modal.querySelector('.btn-restricted-back');
+
+    if (!panel) return;
+
+    if (isDarkMode) {
+      panel.style.removeProperty('background');
+      panel.style.removeProperty('background-color');
+      panel.style.removeProperty('border-color');
+      panel.style.removeProperty('color');
+      if (title) title.style.removeProperty('color');
+      if (sub) sub.style.removeProperty('color');
+      if (input) {
+        input.style.removeProperty('background-color');
+        input.style.removeProperty('border-color');
+        input.style.removeProperty('color');
+      }
+      if (btnBack) {
+        btnBack.style.removeProperty('background-color');
+        btnBack.style.removeProperty('border-color');
+        btnBack.style.removeProperty('color');
+      }
+    } else {
+      panel.style.backgroundColor = '#FFFFFF';
+      panel.style.borderColor = '#E2E8F0';
+      panel.style.color = '#0F172A';
+      if (title) title.style.color = '#0F172A';
+      if (sub) sub.style.color = '#475569';
+      if (input) {
+        input.style.backgroundColor = '#F8FAFC';
+        input.style.borderColor = '#CBD5E1';
+        input.style.color = '#0F172A';
+      }
+      if (btnBack) {
+        btnBack.style.backgroundColor = '#F1F5F9';
+        btnBack.style.borderColor = '#CBD5E1';
+        btnBack.style.color = '#334155';
       }
     }
   }
