@@ -334,6 +334,31 @@
     }
 
     /**
+     * Delete a single recent search for user (cross-device sync)
+     */
+    async deleteRecentSearch(id, name) {
+      let email = '';
+      try {
+        const raw = localStorage.getItem('ridecompare_user_profile');
+        if (raw) email = JSON.parse(raw)?.email || '';
+      } catch (_) {}
+
+      if (!email || email === 'guest' || email === 'guest user') return;
+
+      try {
+        await this.request('/rides/recent-searches', {
+          method: 'DELETE',
+          body: { id, name },
+          headers: { 'x-user-email': email }
+        });
+      } catch (_) {}
+
+      try {
+        await supabaseDirectDeleteRecentSearch(email, id, name);
+      } catch (_) {}
+    }
+
+    /**
      * Clear recent searches for user
      */
     async clearRecentSearches() {
@@ -748,6 +773,29 @@
       await supabaseRequest(`/RideSearch?userId=eq.${encodeURIComponent(userId)}`, 'DELETE');
     } catch (err) {
       console.warn('[SupabaseDirect] Error clearing recent searches:', err);
+    }
+  }
+
+  async function supabaseDirectDeleteRecentSearch(email, id, name) {
+    const normEmail = (email || '').toLowerCase().trim();
+    if (!normEmail || normEmail === 'guest') return;
+
+    try {
+      const users = await supabaseRequest(`/User?email=eq.${encodeURIComponent(normEmail)}&select=id`);
+      let userId = users?.[0]?.id;
+      if (!userId && normEmail === 'varunreddy@gmail.com') {
+        userId = 'demo-user-1';
+      }
+      if (!userId) return;
+
+      if (id && id.length > 10) {
+        await supabaseRequest(`/RideSearch?userId=eq.${encodeURIComponent(userId)}&id=eq.${encodeURIComponent(id)}`, 'DELETE').catch(() => {});
+      }
+      if (name) {
+        await supabaseRequest(`/RideSearch?userId=eq.${encodeURIComponent(userId)}&destination=ilike.*${encodeURIComponent(name.trim())}*`, 'DELETE').catch(() => {});
+      }
+    } catch (err) {
+      console.warn('[SupabaseDirect] Error deleting recent search item:', err);
     }
   }
 

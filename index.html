@@ -4182,6 +4182,71 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
     </div>
   </div>
 
+  <!-- ==================================================================== -->
+  <!-- RECENT SEARCH ACTION MODAL: BOOK RIDE OR DELETE                      -->
+  <!-- ==================================================================== -->
+  <div id="recent-search-action-modal" onclick="if(event.target === this) app.closeRecentSearchActionModal()" class="fixed inset-0 z-[2600] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300">
+    <div class="recent-action-panel w-full sm:max-w-md bg-[#0A1124] border border-slate-700/80 rounded-t-[28px] sm:rounded-[28px] p-6 shadow-2xl relative text-left text-white transform translate-y-6 sm:translate-y-0 sm:scale-95 transition-all duration-300">
+      
+      <!-- Mobile Pull Indicator Bar -->
+      <div class="w-12 h-1 rounded-full bg-slate-700/80 mx-auto mb-4 sm:hidden"></div>
+
+      <!-- Header: Title and Close 'X' Button -->
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800/80">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="recent-action-title text-base font-bold text-white tracking-tight">Recent Search</h3>
+            <p class="recent-action-sub text-[11px] text-slate-400">Choose an action for this destination</p>
+          </div>
+        </div>
+        <button type="button" onclick="app.closeRecentSearchActionModal()" class="btn-recent-action-close w-8 h-8 rounded-full bg-slate-800/60 hover:bg-slate-700/80 flex items-center justify-center text-slate-400 hover:text-white transition-all cursor-pointer" title="Close">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Destination Summary Card (Matching the user's uploaded image) -->
+      <div class="recent-action-card my-4 p-4 rounded-2xl bg-slate-900/80 border border-slate-800/80 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3.5 min-w-0 flex-1">
+          <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center flex-shrink-0 text-slate-400">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+          <div class="min-w-0 flex-1">
+            <h4 id="recent-action-dest-name" class="recent-dest-name text-sm sm:text-base font-bold text-white truncate">Shivaji Park</h4>
+            <p id="recent-action-dest-sub" class="recent-dest-sub text-xs text-slate-400 truncate mt-0.5">Shivaji Park, Shivaji Park, Kolhapur</p>
+          </div>
+        </div>
+        <span id="recent-action-dest-fare" class="recent-dest-fare px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex-shrink-0">₹228</span>
+      </div>
+
+      <!-- The Two Options: Book Ride & Delete -->
+      <div class="space-y-2.5 pt-1">
+        <!-- Option 1: Book the Ride -->
+        <button type="button" id="btn-recent-action-book" onclick="app.bookSelectedRecentRide()" class="btn-recent-book w-full py-3.5 px-4 rounded-2xl bg-[#0073FF] hover:bg-[#0060E6] text-white font-bold text-sm tracking-wide shadow-[0_4px_18px_rgba(0,115,255,0.4)] transition-all active:scale-[0.98] flex items-center justify-center gap-2.5 cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+          <span>Book Ride</span>
+        </button>
+
+        <!-- Option 2: Delete -->
+        <button type="button" id="btn-recent-action-delete" onclick="app.deleteSelectedRecentSearch()" class="btn-recent-delete w-full py-3 px-4 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 border border-red-500/30 font-semibold text-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer">
+          <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+          <span>Delete</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- LOGOUT CONFIRMATION MODAL -->
   <div id="logout-confirm-modal" onclick="if(event.target === this) app.closeLogoutConfirmModal()" class="fixed inset-0 z-[2600] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300">
     <div class="logout-modal-panel w-full max-w-[340px] sm:max-w-sm bg-[#0A1124] border border-slate-700/80 rounded-[28px] p-6 sm:p-7 shadow-2xl relative text-center text-white transform scale-95 transition-all duration-300">

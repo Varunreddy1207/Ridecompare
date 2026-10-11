@@ -435,6 +435,7 @@ class RideCompareApp {
     this.updateLogoutModalTheme(theme === 'dark');
     this.updateDeleteAccountModalTheme(theme === 'dark');
     this.updateRestrictedModalTheme(theme === 'dark');
+    this.updateRecentActionModalTheme(theme === 'dark');
   }
 
   // Ensure "Back to Home" and Notification Bell buttons have blue background in light mode
@@ -1797,9 +1798,9 @@ class RideCompareApp {
     // When searches exist, reveal "See all" button
     if (seeAllBtn) seeAllBtn.style.display = 'inline-block';
 
-    // Render cards matching exact visual design in media_1791704736834_e094723a.png
+    // Render cards matching exact visual design in media_1791704736834_e094723a.png and media_1791712927149_b0c51688.png
     listContainer.innerHTML = searches.map(item => {
-      const isHome = item.name.toLowerCase().includes('home');
+      const isHome = (item.name || '').toLowerCase().includes('home');
       const iconSvg = isHome ? `
         <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
@@ -1810,24 +1811,220 @@ class RideCompareApp {
         </svg>
       `;
 
-      const safeName = item.name.replace(/'/g, "\\'");
+      const safeName = (item.name || '').replace(/'/g, "\\'");
       const safeCity = (item.city || '').replace(/'/g, "\\'");
+      const safeFare = (item.fare || '₹78').replace(/'/g, "\\'");
+      const safeId = (item.id || '').replace(/'/g, "\\'");
+      const safePickup = (item.pickup || 'Current Location').replace(/'/g, "\\'");
 
       return `
-        <div onclick="app.selectRecent('${safeName}', '${safeCity}')" class="recent-search-item">
+        <div onclick="app.openRecentSearchAction('${safeName}', '${safeCity}', '${safeFare}', '${safeId}', '${safePickup}')" class="recent-search-item cursor-pointer group hover:border-blue-500/40 transition-all" title="Click to Book Ride or Delete">
           <div class="recent-item-left">
-            <div class="recent-icon-badge">
+            <div class="recent-icon-badge group-hover:scale-105 transition-transform">
               ${iconSvg}
             </div>
             <div class="recent-item-text">
-              <h4 class="recent-item-title">${item.name}</h4>
+              <h4 class="recent-item-title group-hover:text-blue-400 transition-colors">${item.name}</h4>
               <p class="recent-item-subtitle">${item.city}</p>
             </div>
           </div>
-          <span class="recent-fare-tag">${item.fare}</span>
+          <div class="flex items-center gap-2">
+            <span class="recent-fare-tag">${item.fare}</span>
+            <button type="button" onclick="event.stopPropagation(); app.openRecentSearchAction('${safeName}', '${safeCity}', '${safeFare}', '${safeId}', '${safePickup}')" class="w-6 h-6 rounded-full bg-slate-800/40 hover:bg-slate-700/60 flex items-center justify-center text-slate-400 hover:text-white transition-all cursor-pointer" title="Options">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
+            </button>
+          </div>
         </div>
       `;
     }).join('');
+  }
+
+  // Open Recent Search Action Modal: Two options (Book Ride & Delete)
+  openRecentSearchAction(name, city, fare, id, pickup) {
+    if (window.soundFX && window.soundFX.playTap) {
+      window.soundFX.playTap();
+    }
+
+    this.activeRecentSearchItem = {
+      name: name || '',
+      city: city || 'Kolhapur',
+      fare: fare || '₹78',
+      id: id || '',
+      pickup: pickup || 'Current Location'
+    };
+
+    const modal = document.getElementById('recent-search-action-modal');
+    if (!modal) return;
+
+    const nameEl = document.getElementById('recent-action-dest-name');
+    const subEl = document.getElementById('recent-action-dest-sub');
+    const fareEl = document.getElementById('recent-action-dest-fare');
+
+    if (nameEl) nameEl.textContent = name;
+    if (subEl) subEl.textContent = city ? `${name}, ${city}` : name;
+    if (fareEl) fareEl.textContent = fare || '₹78';
+
+    modal.classList.add('show');
+    this.updateRecentActionModalTheme();
+  }
+
+  closeRecentSearchActionModal() {
+    if (window.soundFX && window.soundFX.playTap) {
+      window.soundFX.playTap();
+    }
+    const modal = document.getElementById('recent-search-action-modal');
+    if (modal) {
+      modal.classList.remove('show');
+    }
+  }
+
+  // Option 1: Book the Ride -> Directly proceed to Booking Page
+  bookSelectedRecentRide() {
+    if (window.soundFX && window.soundFX.playGetStarted) {
+      window.soundFX.playGetStarted();
+    } else if (window.soundFX) {
+      window.soundFX.playTap();
+    }
+
+    const item = this.activeRecentSearchItem;
+    this.closeRecentSearchActionModal();
+
+    if (!item) return;
+
+    const name = item.name;
+    const city = item.city;
+    const pickup = item.pickup || 'Current Location';
+
+    // Parse numeric fare
+    let numFare = 78;
+    if (item.fare) {
+      const match = item.fare.toString().match(/\d+/);
+      if (match) numFare = parseInt(match[0], 10);
+    } else {
+      numFare = parseInt(this.calculateEstimatedMinFare(name, pickup).replace(/\D/g, ''), 10) || 78;
+    }
+
+    // Set state
+    const fullDest = city ? `${name}, ${city}` : name;
+    this.selectedDestination = fullDest;
+    this.selectedDropName = name;
+    this.selectedDropSub = city || 'Kolhapur';
+    this.hasDropSelected = true;
+    this.hasPickupSelected = true;
+    this.pickupLocationName = pickup;
+
+    // Synchronize Home Screen pickup and drop displays
+    const dropText = document.getElementById('home-drop-text');
+    if (dropText) {
+      dropText.textContent = name;
+      dropText.classList.remove('placeholder');
+      dropText.title = city;
+    }
+
+    const pickupText = document.getElementById('home-pickup-text');
+    if (pickupText) {
+      pickupText.textContent = pickup;
+      pickupText.classList.remove('placeholder');
+    }
+
+    const destInput = document.getElementById('search-destination-input');
+    if (destInput) destInput.value = fullDest;
+
+    const deskSearchInput = document.getElementById('desktop-search-input');
+    if (deskSearchInput) deskSearchInput.value = fullDest;
+
+    // Directly open the booking page
+    this.openBookingScreen('Rapido', numFare);
+  }
+
+  // Option 2: Delete -> Delete from Recent Searches (Local & Cloud)
+  async deleteSelectedRecentSearch() {
+    if (window.soundFX && window.soundFX.playTap) {
+      window.soundFX.playTap();
+    }
+
+    const item = this.activeRecentSearchItem;
+    this.closeRecentSearchActionModal();
+
+    if (!item) return;
+
+    const targetName = (item.name || '').toLowerCase().trim();
+    const targetId = item.id;
+
+    // 1. Remove from local recent searches
+    let searches = this.getRecentSearches();
+    searches = searches.filter(s => {
+      if (targetId && s.id && s.id === targetId) return false;
+      if (targetName && (s.name || '').toLowerCase().trim() === targetName) return false;
+      return true;
+    });
+
+    this.saveRecentSearches(searches);
+    this.renderRecentSearches();
+
+    // 2. Also remove from backend and Supabase Cloud
+    if (window.RideCompareApi && typeof window.RideCompareApi.deleteRecentSearch === 'function') {
+      try {
+        await window.RideCompareApi.deleteRecentSearch(targetId, item.name);
+      } catch (err) {
+        console.warn('Error deleting recent search from cloud:', err);
+      }
+    }
+  }
+
+  updateRecentActionModalTheme(isDark = false) {
+    const isDarkMode = isDark || document.body.classList.contains('theme-dark') || document.documentElement.getAttribute('data-theme') === 'dark';
+    const modalPanel = document.querySelector('#recent-search-action-modal .recent-action-panel');
+    const actionCard = document.querySelector('#recent-search-action-modal .recent-action-card');
+    const title = document.querySelector('#recent-search-action-modal .recent-action-title');
+    const destName = document.getElementById('recent-action-dest-name');
+    const destSub = document.getElementById('recent-action-dest-sub');
+    const deleteBtn = document.getElementById('btn-recent-action-delete');
+    const closeBtn = document.querySelector('#recent-search-action-modal .btn-recent-action-close');
+
+    if (!modalPanel) return;
+
+    if (isDarkMode) {
+      modalPanel.style.removeProperty('background');
+      modalPanel.style.removeProperty('background-color');
+      modalPanel.style.removeProperty('border-color');
+      modalPanel.style.removeProperty('color');
+      if (actionCard) {
+        actionCard.style.removeProperty('background');
+        actionCard.style.removeProperty('background-color');
+        actionCard.style.removeProperty('border-color');
+      }
+      if (title) title.style.removeProperty('color');
+      if (destName) destName.style.removeProperty('color');
+      if (destSub) destSub.style.removeProperty('color');
+      if (deleteBtn) {
+        deleteBtn.className = 'btn-recent-delete w-full py-3 px-4 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 border border-red-500/30 font-semibold text-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer';
+      }
+      if (closeBtn) {
+        closeBtn.style.removeProperty('background-color');
+        closeBtn.style.removeProperty('color');
+      }
+    } else {
+      modalPanel.style.setProperty('background', '#FFFFFF', 'important');
+      modalPanel.style.setProperty('background-color', '#FFFFFF', 'important');
+      modalPanel.style.setProperty('border-color', '#E2E8F0', 'important');
+      modalPanel.style.setProperty('color', '#0F172A', 'important');
+      if (actionCard) {
+        actionCard.style.setProperty('background', '#F8FAFC', 'important');
+        actionCard.style.setProperty('background-color', '#F8FAFC', 'important');
+        actionCard.style.setProperty('border-color', '#E2E8F0', 'important');
+      }
+      if (title) title.style.setProperty('color', '#0F172A', 'important');
+      if (destName) destName.style.setProperty('color', '#0F172A', 'important');
+      if (destSub) destSub.style.setProperty('color', '#64748B', 'important');
+      if (deleteBtn) {
+        deleteBtn.className = 'btn-recent-delete w-full py-3 px-4 rounded-2xl bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 border border-red-200 font-semibold text-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer';
+      }
+      if (closeBtn) {
+        closeBtn.style.setProperty('background-color', '#F1F5F9', 'important');
+        closeBtn.style.setProperty('color', '#64748B', 'important');
+      }
+    }
   }
 
   // Selecting a Recent Search Item

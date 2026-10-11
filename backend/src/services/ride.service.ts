@@ -363,6 +363,51 @@ export class RideService {
   }
 
   /**
+   * Delete a single recent search for a user
+   */
+  public async deleteRecentSearch(userId: string, email: string | undefined, searchIdOrName: string): Promise<void> {
+    const targetUserId = userId || email || 'guest';
+    const target = (searchIdOrName || '').trim();
+    if (!target) return;
+
+    const existing = this.memoryRecentSearches.get(targetUserId) || [];
+    const filtered = existing.filter(s => s.id !== target && s.name.toLowerCase() !== target.toLowerCase());
+    this.memoryRecentSearches.set(targetUserId, filtered);
+    if (email) {
+      const existingEmail = this.memoryRecentSearches.get(email) || [];
+      this.memoryRecentSearches.set(email, existingEmail.filter(s => s.id !== target && s.name.toLowerCase() !== target.toLowerCase()));
+    }
+
+    if (isDatabaseConnected) {
+      try {
+        let actualUserId: string | null = null;
+        if (userId && !userId.includes('@')) {
+          const u = await prisma.user.findUnique({ where: { id: userId }, select: { id: true } });
+          if (u) actualUserId = u.id;
+        }
+        if (!actualUserId && email) {
+          const u = await prisma.user.findUnique({ where: { email }, select: { id: true } });
+          if (u) actualUserId = u.id;
+        }
+
+        if (actualUserId) {
+          await prisma.rideSearch.deleteMany({
+            where: {
+              userId: actualUserId,
+              OR: [
+                { id: target },
+                { destination: { contains: target, mode: 'insensitive' } }
+              ]
+            }
+          });
+        }
+      } catch (err) {
+        console.warn('[RideService] Database error deleting search:', err);
+      }
+    }
+  }
+
+  /**
    * Clear recent searches for a user
    */
   public async clearRecentSearches(userId: string, email?: string): Promise<void> {

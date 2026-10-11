@@ -121,11 +121,16 @@ export class RideController {
     try {
       const userId = req.user?.userId;
       const email = req.user?.email || (req.headers['x-user-email'] as string);
+      const searchTarget = req.body?.id || req.body?.name || req.query?.id || req.query?.name;
 
       if (userId || email) {
-        await rideService.clearRecentSearches(userId || '', email);
+        if (searchTarget) {
+          await rideService.deleteRecentSearch(userId || '', email, searchTarget as string);
+        } else {
+          await rideService.clearRecentSearches(userId || '', email);
+        }
       }
-      sendSuccess(res, { cleared: true }, 200);
+      sendSuccess(res, { success: true }, 200);
     } catch (error) {
       next(error);
     }
