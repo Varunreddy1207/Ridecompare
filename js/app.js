@@ -318,6 +318,37 @@ class RideCompareApp {
 
       // Initial route map badges and headers setup
       this.updateResultsMapRoute();
+      this.renderRecentSearches();
+
+      // Desktop search input: Enter key to search
+      const deskSearchInput = document.getElementById('desktop-search-input');
+      if (deskSearchInput) {
+        deskSearchInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            const val = deskSearchInput.value.trim();
+            if (val) {
+              this.selectedDropName = val;
+              this.selectedDropSub = 'Kolhapur';
+              this.hasDropSelected = true;
+              const dropText = document.getElementById('home-drop-text');
+              if (dropText) {
+                dropText.textContent = val;
+                dropText.classList.remove('placeholder');
+              }
+              if (!this.hasPickupSelected) {
+                this.hasPickupSelected = true;
+                this.pickupLocationName = 'Current Location';
+                const pText = document.getElementById('home-pickup-text');
+                if (pText) {
+                  pText.textContent = 'Current Location';
+                  pText.classList.remove('placeholder');
+                }
+              }
+              this.onSearchRides();
+            }
+          }
+        });
+      }
     });
   }
 
@@ -1490,6 +1521,179 @@ class RideCompareApp {
     }
   }
 
+  // =========================================================================
+  // RECENT SEARCHES: Dynamic Persistence & Empty State Management
+  // =========================================================================
+  getRecentSearchesStorageKey() {
+    const userEmail = (this.userProfile && this.userProfile.email) ? this.userProfile.email.toLowerCase().trim() : '';
+    if (userEmail && userEmail !== 'guest' && userEmail !== 'guest user') {
+      return `ridecompare_recent_searches_${userEmail}`;
+    }
+    return 'ridecompare_recent_searches_guest';
+  }
+
+  getRecentSearches() {
+    try {
+      const key = this.getRecentSearchesStorageKey();
+      const raw = localStorage.getItem(key);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch (e) {
+      console.warn('Error reading recent searches:', e);
+    }
+    return [];
+  }
+
+  saveRecentSearches(searches) {
+    try {
+      const key = this.getRecentSearchesStorageKey();
+      localStorage.setItem(key, JSON.stringify(searches.slice(0, 8)));
+    } catch (e) {
+      console.warn('Error saving recent searches:', e);
+    }
+  }
+
+  calculateEstimatedMinFare(dropName, pickupName) {
+    if (!dropName) return '₹65';
+    const lower = dropName.toLowerCase();
+    if (lower.includes('sanjay ghodawat') || lower.includes('ghodawat') || lower.includes('atigre')) {
+      return '₹78';
+    }
+    if (lower.includes('pune junction') || lower.includes('pune')) {
+      return '₹240';
+    }
+    if (lower.includes('home')) {
+      return '₹65';
+    }
+    if (lower.includes('temple') || lower.includes('mahalaxmi')) {
+      return '₹60';
+    }
+    if (lower.includes('lake') || lower.includes('rankala')) {
+      return '₹70';
+    }
+    if (lower.includes('hospital') || lower.includes('aastha')) {
+      return '₹55';
+    }
+    if (lower.includes('station') || lower.includes('railway')) {
+      return '₹50';
+    }
+    if (lower.includes('airport')) {
+      return '₹180';
+    }
+    if (lower.includes('dy patil') || lower.includes('college')) {
+      return '₹65';
+    }
+
+    try {
+      const dropCoords = this.selectedDropCoords || this.getCoordinatesFor(dropName, null);
+      const pickCoords = this.pickupCoords || { lat: 16.7050, lng: 74.2433 };
+      if (dropCoords && pickCoords) {
+        const dist = this.calculateHaversineDistance(pickCoords.lat, pickCoords.lng, dropCoords.lat, dropCoords.lng);
+        const fare = Math.max(45, Math.round(dist * 13 + 30));
+        return `₹${fare}`;
+      }
+    } catch (_) {}
+
+    return '₹75';
+  }
+
+  addRecentSearch(name, city, fare = null, pickup = '') {
+    if (!name || name.trim() === '' || name === 'Select drop location' || name === 'Select destination') {
+      return;
+    }
+    const cleanName = name.trim();
+    const cleanCity = (city || 'Kolhapur').trim();
+    const estimatedFare = fare || this.calculateEstimatedMinFare(cleanName, pickup);
+
+    let searches = this.getRecentSearches();
+
+    // Deduplicate: filter out previous entry with same destination name
+    searches = searches.filter(item => item.name.toLowerCase() !== cleanName.toLowerCase());
+
+    // Insert at beginning of list
+    searches.unshift({
+      id: 'search_' + Date.now(),
+      name: cleanName,
+      city: cleanCity,
+      fare: estimatedFare,
+      pickup: pickup || 'Current Location',
+      timestamp: Date.now()
+    });
+
+    this.saveRecentSearches(searches);
+    this.renderRecentSearches();
+  }
+
+  clearRecentSearches() {
+    try {
+      const key = this.getRecentSearchesStorageKey();
+      localStorage.removeItem(key);
+    } catch (_) {}
+    this.renderRecentSearches();
+  }
+
+  renderRecentSearches() {
+    const listContainer = document.getElementById('home-recent-searches-list');
+    const seeAllBtn = document.getElementById('recent-searches-see-all');
+    if (!listContainer) return;
+
+    const searches = this.getRecentSearches();
+
+    // Empty state if user has not searched yet
+    if (!searches || searches.length === 0) {
+      if (seeAllBtn) seeAllBtn.style.display = 'none';
+      listContainer.innerHTML = `
+        <div class="no-recent-searches-card">
+          <div class="no-recent-icon-wrap">
+            <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+          <h4 class="no-recent-title">No recent search</h4>
+          <p class="no-recent-subtitle">Searches will appear here once you look for rides</p>
+        </div>
+      `;
+      return;
+    }
+
+    // When searches exist, reveal "See all" button
+    if (seeAllBtn) seeAllBtn.style.display = 'inline-block';
+
+    // Render cards matching exact visual design in media_1791704736834_e094723a.png
+    listContainer.innerHTML = searches.map(item => {
+      const isHome = item.name.toLowerCase().includes('home');
+      const iconSvg = isHome ? `
+        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+        </svg>
+      ` : `
+        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      `;
+
+      const safeName = item.name.replace(/'/g, "\\'");
+      const safeCity = (item.city || '').replace(/'/g, "\\'");
+
+      return `
+        <div onclick="app.selectRecent('${safeName}', '${safeCity}')" class="recent-search-item">
+          <div class="recent-item-left">
+            <div class="recent-icon-badge">
+              ${iconSvg}
+            </div>
+            <div class="recent-item-text">
+              <h4 class="recent-item-title">${item.name}</h4>
+              <p class="recent-item-subtitle">${item.city}</p>
+            </div>
+          </div>
+          <span class="recent-fare-tag">${item.fare}</span>
+        </div>
+      `;
+    }).join('');
+  }
+
   // Selecting a Recent Search Item
   selectRecent(name, city) {
     if (window.soundFX) {
@@ -1509,11 +1713,23 @@ class RideCompareApp {
       dropText.title = city;
     }
 
+    // Ensure pickup is selected so search is ready
+    if (!this.hasPickupSelected) {
+      this.hasPickupSelected = true;
+      this.pickupLocationName = 'Current Location';
+      const pickupText = document.getElementById('home-pickup-text');
+      if (pickupText) {
+        pickupText.textContent = 'Current Location';
+        pickupText.classList.remove('placeholder');
+      }
+    }
+
     this.updateResultsMapRoute();
 
     const panel = document.getElementById('home-results-panel');
     if (panel && panel.classList.contains('results-panel-visible')) {
       this.showToast(`Updated destination: ${name} 📍`);
+      this.showResultsPanel();
     } else {
       this.showToast(`Selected: ${name} 📍`);
     }
@@ -1588,6 +1804,14 @@ class RideCompareApp {
 
     this.updateResultsMapRoute();
     this.showResultsPanel();
+
+    // Register search into Recent Searches
+    const searchedDrop = (this.selectedDropName || '').trim() || (dropText ? dropText.textContent.trim() : '');
+    const searchedSub = (this.selectedDropSub || '').trim() || 'Kolhapur';
+    const searchedPickup = (this.pickupLocationName || '').trim() || (pickupText ? pickupText.textContent.trim() : 'Current Location');
+    if (searchedDrop && searchedDrop !== 'Select destination' && searchedDrop !== 'Select drop location') {
+      this.addRecentSearch(searchedDrop, searchedSub, null, searchedPickup);
+    }
   }
 
   // Updates the live route map header, subtitle, and pin badges to match selected pickup & drop locations
@@ -3689,6 +3913,8 @@ class RideCompareApp {
         svg.style.setProperty('fill', 'currentColor', 'important');
       }
     });
+
+    this.renderRecentSearches();
   }
 
   openEditProfileModal() {

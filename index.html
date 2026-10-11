@@ -786,6 +786,141 @@
     }
 
     /* ==========================================================================
+       RECENT SEARCHES: Dynamic Cards & Empty State (No Recent Searches)
+       ========================================================================== */
+    .recent-searches-list {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 10px !important;
+    }
+
+    .recent-search-item {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      padding: 12px 14px !important;
+      border-radius: 18px !important;
+      cursor: pointer !important;
+      transition: all 0.2s ease !important;
+    }
+
+    /* Empty State Card */
+    .no-recent-searches-card {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 24px 16px !important;
+      text-align: center !important;
+      border-radius: 18px !important;
+      border: 1px dashed rgba(51, 65, 85, 0.6) !important;
+      background-color: rgba(10, 17, 36, 0.45) !important;
+      margin-top: 2px !important;
+      transition: all 0.25s ease !important;
+    }
+
+    .no-recent-icon-wrap {
+      width: 44px !important;
+      height: 44px !important;
+      border-radius: 9999px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background-color: #0A1124 !important;
+      border: 1px solid #1E293B !important;
+      color: #94A3B8 !important;
+      margin-bottom: 8px !important;
+    }
+
+    .no-recent-title {
+      font-size: 14px !important;
+      font-weight: 700 !important;
+      color: #FFFFFF !important;
+      margin: 0 !important;
+      letter-spacing: -0.01em !important;
+    }
+
+    .no-recent-subtitle {
+      font-size: 12px !important;
+      font-weight: 400 !important;
+      color: #64748B !important;
+      margin-top: 4px !important;
+      margin-bottom: 0 !important;
+    }
+
+    /* Light Mode */
+    body:not(.theme-dark) .recent-search-item,
+    body.theme-light .recent-search-item,
+    [data-theme="light"] .recent-search-item {
+      background-color: #FFFFFF !important;
+      border: 1px solid #E2E8F0 !important;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+    }
+
+    body:not(.theme-dark) .recent-search-item:hover,
+    body.theme-light .recent-search-item:hover,
+    [data-theme="light"] .recent-search-item:hover {
+      background-color: #F8FAFC !important;
+      border-color: #93C5FD !important;
+    }
+
+    body:not(.theme-dark) .recent-search-item .recent-icon-badge,
+    body.theme-light .recent-search-item .recent-icon-badge,
+    [data-theme="light"] .recent-search-item .recent-icon-badge {
+      background-color: #F1F5F9 !important;
+      border: 1px solid #E2E8F0 !important;
+      color: #64748B !important;
+    }
+
+    body:not(.theme-dark) .recent-search-item .recent-item-title,
+    body.theme-light .recent-search-item .recent-item-title,
+    [data-theme="light"] .recent-search-item .recent-item-title {
+      color: #0F172A !important;
+    }
+
+    body:not(.theme-dark) .recent-search-item .recent-item-subtitle,
+    body.theme-light .recent-search-item .recent-item-subtitle,
+    [data-theme="light"] .recent-search-item .recent-item-subtitle {
+      color: #64748B !important;
+    }
+
+    body:not(.theme-dark) .recent-fare-tag,
+    body.theme-light .recent-fare-tag,
+    [data-theme="light"] .recent-fare-tag {
+      color: #16A34A !important;
+      background-color: #DCFCE7 !important;
+      border: 1px solid #BBF7D0 !important;
+    }
+
+    body:not(.theme-dark) .no-recent-searches-card,
+    body.theme-light .no-recent-searches-card,
+    [data-theme="light"] .no-recent-searches-card {
+      background-color: #FFFFFF !important;
+      border: 1px dashed #CBD5E1 !important;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+    }
+
+    body:not(.theme-dark) .no-recent-icon-wrap,
+    body.theme-light .no-recent-icon-wrap,
+    [data-theme="light"] .no-recent-icon-wrap {
+      background-color: #F8FAFC !important;
+      border: 1px solid #E2E8F0 !important;
+      color: #64748B !important;
+    }
+
+    body:not(.theme-dark) .no-recent-title,
+    body.theme-light .no-recent-title,
+    [data-theme="light"] .no-recent-title {
+      color: #0F172A !important;
+    }
+
+    body:not(.theme-dark) .no-recent-subtitle,
+    body.theme-light .no-recent-subtitle,
+    [data-theme="light"] .no-recent-subtitle {
+      color: #64748B !important;
+    }
+
+    /* ==========================================================================
        DELETE ACCOUNT CONFIRMATION MODAL: Pure White Theme in Light Mode
        ========================================================================== */
     body:not(.theme-dark) #delete-account-modal,
@@ -1763,61 +1898,15 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
               <span>Search Rides</span>
             </button>
 
-            <!-- Recent Searches Section (Exact Match to media_1790644185007.png) -->
+            <!-- Recent Searches Section (Dynamic: Empty state when no searches, populated upon user search) -->
             <div class="pt-1">
               <div class="recent-searches-header">
                 <h3>Recent Searches</h3>
-                <button onclick="app.switchTab('history')" class="see-all-link">See all</button>
+                <button id="recent-searches-see-all" onclick="app.switchTab('history')" class="see-all-link">See all</button>
               </div>
 
-              <div class="recent-searches-list">
-                <!-- Item 1: Sanjay Ghodawat University -->
-                <div onclick="app.selectRecent('Sanjay Ghodawat University', 'Ichalkaranji')" class="recent-search-item">
-                  <div class="recent-item-left">
-                    <div class="recent-icon-badge">
-                      <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                      </svg>
-                    </div>
-                    <div class="recent-item-text">
-                      <h4 class="recent-item-title">Sanjay Ghodawat University</h4>
-                      <p class="recent-item-subtitle">Ichalkaranji</p>
-                    </div>
-                  </div>
-                  <span class="recent-fare-tag">₹78</span>
-                </div>
-
-                <!-- Item 2: Pune Junction -->
-                <div onclick="app.selectRecent('Pune Junction', 'Pune')" class="recent-search-item">
-                  <div class="recent-item-left">
-                    <div class="recent-icon-badge">
-                      <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                      </svg>
-                    </div>
-                    <div class="recent-item-text">
-                      <h4 class="recent-item-title">Pune Junction</h4>
-                      <p class="recent-item-subtitle">Pune</p>
-                    </div>
-                  </div>
-                  <span class="recent-fare-tag">₹240</span>
-                </div>
-
-                <!-- Item 3: Home -->
-                <div onclick="app.selectRecent('Home', 'Ichalkaranji')" class="recent-search-item">
-                  <div class="recent-item-left">
-                    <div class="recent-icon-badge">
-                      <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                      </svg>
-                    </div>
-                    <div class="recent-item-text">
-                      <h4 class="recent-item-title">Home</h4>
-                      <p class="recent-item-subtitle">Ichalkaranji</p>
-                    </div>
-                  </div>
-                  <span class="recent-fare-tag">₹65</span>
-                </div>
+              <div id="home-recent-searches-list" class="recent-searches-list">
+                <!-- Dynamically populated by app.renderRecentSearches() -->
               </div>
             </div>
 
