@@ -3176,12 +3176,12 @@ class RideCompareApp {
     this.switchTab('profile');
   }
 
-  // Log Out Action - Triggers Confirmation Dialog
-  logout() {
+  // Log Out Action - Performs immediate clean logout and displays Login portal
+  async logout() {
     if (window.soundFX && window.soundFX.playTap) {
       window.soundFX.playTap();
     }
-    this.openLogoutConfirmModal();
+    await this.confirmLogout();
   }
 
   openLogoutConfirmModal() {
@@ -3189,7 +3189,7 @@ class RideCompareApp {
     if (modal) {
       modal.classList.add('show');
       this.updateLogoutModalTheme();
-    } else if (confirm('Are you sure you want to log out?')) {
+    } else {
       this.confirmLogout();
     }
   }
@@ -3206,34 +3206,73 @@ class RideCompareApp {
 
   async confirmLogout() {
     this.closeLogoutConfirmModal();
-    const name = this.userProfile ? this.userProfile.name : 'User';
+    const name = (this.userProfile && this.userProfile.name && this.userProfile.name !== 'Guest User') ? this.userProfile.name : 'User';
+
+    // 1. Invalidate API and auth tokens
     if (window.RideCompareAuth) {
-      await window.RideCompareAuth.logout().catch(() => {});
+      try {
+        await window.RideCompareAuth.logout();
+      } catch (_) {}
     }
+
+    // 2. Clear all local and session authentication state
     localStorage.removeItem('ridecompare_auth_token');
     localStorage.removeItem('ridecompare_has_started');
     localStorage.removeItem('ridecompare_user_profile');
+    localStorage.removeItem('ridecompare_admin_access');
+    sessionStorage.removeItem('ridecompare_admin_access');
     sessionStorage.removeItem('vozx_welcome_viewed');
 
+    // 3. Reset application memory profile to Guest state
     this.userProfile = {
-      name: 'Varun Reddy',
-      email: 'varunreddy@gmail.com',
-      phone: '+91 98765 43210',
-      city: 'Ichalkaranji, Kolhapur',
+      name: 'Guest User',
+      email: '',
+      phone: '',
+      city: 'Kolhapur',
       ridePref: 'all',
       avatarAccent: 'blue'
     };
     this.renderUserProfile();
-    this.showToast(`Logged out of ${name} successfully 👋`);
 
+    // 4. Clear input fields in login & signup forms
+    const loginEmail = document.getElementById('auth-login-email');
+    if (loginEmail) loginEmail.value = '';
+    const loginPass = document.getElementById('auth-login-password');
+    if (loginPass) loginPass.value = '';
+    const signupName = document.getElementById('auth-signup-name');
+    if (signupName) signupName.value = '';
+    const signupEmail = document.getElementById('auth-signup-email');
+    if (signupEmail) signupEmail.value = '';
+    const signupPass = document.getElementById('auth-signup-password');
+    if (signupPass) signupPass.value = '';
+    const signupConf = document.getElementById('auth-signup-confirm');
+    if (signupConf) signupConf.value = '';
+    this.clearAuthErrors();
+    this.clearAuthSuccess();
+
+    // 5. Close any open dialogs / modals
+    this.closeEditProfileModal();
+    this.closeDeleteAccountModal();
+    this.closeHistoryModal();
+    this.closeAccessRestrictedModal();
+
+    // 6. Navigate to Home base screen so dashboard is in background
     this.currentTab = 'home';
-    this.navigateTo('screen-splash', false);
-    try {
-      history.pushState(null, '', '#splash');
-    } catch (_) {
-      window.location.hash = '#splash';
-    }
+    this.navigateTo('screen-home', false);
     this.enforceResponsiveNav();
+
+    // 7. Update URL hash to #login
+    try {
+      history.pushState(null, '', '#login');
+    } catch (_) {
+      window.location.hash = '#login';
+    }
+
+    // 8. Open the Login Page / Modal immediately
+    setTimeout(() => {
+      this.openAuthModal('login');
+      this.showToast(`Logged out successfully. Please log in to continue. 👋`, 'info');
+    }, 120);
   }
 
   updateLogoutModalTheme(isDark = false) {
@@ -3521,6 +3560,15 @@ class RideCompareApp {
   // USER PROFILE & EDIT PROFILE SYSTEM
   // =========================================================================
   initUserProfile() {
+    const isAuth = !!(localStorage.getItem('ridecompare_auth_token') || localStorage.getItem('ridecompare_has_started'));
+    const guestProfile = {
+      name: 'Guest User',
+      email: '',
+      phone: '',
+      city: 'Kolhapur',
+      ridePref: 'all',
+      avatarAccent: 'blue'
+    };
     const defaultProfile = {
       name: 'Varun Reddy',
       email: 'varunreddy@gmail.com',
@@ -3531,9 +3579,15 @@ class RideCompareApp {
     };
     try {
       const saved = localStorage.getItem('ridecompare_user_profile');
-      this.userProfile = saved ? Object.assign({}, defaultProfile, JSON.parse(saved)) : defaultProfile;
+      if (saved) {
+        this.userProfile = JSON.parse(saved);
+      } else if (isAuth) {
+        this.userProfile = defaultProfile;
+      } else {
+        this.userProfile = guestProfile;
+      }
     } catch (e) {
-      this.userProfile = defaultProfile;
+      this.userProfile = isAuth ? defaultProfile : guestProfile;
     }
     this.renderUserProfile();
 
@@ -3554,11 +3608,29 @@ class RideCompareApp {
   }
 
   renderUserProfile() {
-    if (!this.userProfile) return;
-    const p = this.userProfile;
+    const isGuest = !this.userProfile || this.userProfile.name === 'Guest User' || (!localStorage.getItem('ridecompare_auth_token') && !localStorage.getItem('ridecompare_has_started'));
+    const p = this.userProfile || { name: 'Guest User' };
 
     // 1. Update text elements across screens (ALL sidebars, headers, and profile screen)
-    const name = p.name || 'User';
+    const displayName = isGuest ? 'Guest User' : (p.name || 'User');
+    document.querySelectorAll('.sidebar-user-name, #sidebar-profile-name, #desk-home-profile-name, #desk-history-profile-name').forEach(el => {
+      el.textContent = displayName;
+    });
+
+    // Update connection status badges across sidebars
+    document.querySelectorAll('.sidebar-user-status').forEach(el => {
+      if (isGuest) {
+        el.textContent = '○ Not Logged In';
+        el.classList.remove('text-green-400');
+        el.classList.add('text-slate-400');
+      } else {
+        el.textContent = '● Connected';
+        el.classList.add('text-green-400');
+        el.classList.remove('text-slate-400');
+      }
+    });
+
+    const name = displayName;
     document.querySelectorAll('.sidebar-user-name, #sidebar-profile-name, #desk-home-profile-name, #desk-history-profile-name').forEach(el => {
       el.textContent = name;
     });
