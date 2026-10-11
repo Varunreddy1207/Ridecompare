@@ -3499,6 +3499,885 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
   </section>
 
   <!-- ====================================================================== -->
+  <!-- ADMIN DASHBOARD SCREEN: EXACT RECREATION OF media_1791714426992_dd822925-->
+  <!-- ====================================================================== -->
+  <section id="screen-admin" class="screen-page w-full min-h-screen bg-[#F8FAFC] text-slate-800 flex flex-col lg:flex-row relative">
+
+    <!-- DESKTOP LEFT SIDEBAR -->
+    <aside class="admin-sidebar w-full lg:w-64 lg:min-w-[260px] bg-white border-b lg:border-b-0 lg:border-r border-slate-200/80 flex flex-col justify-between p-5 lg:min-h-screen z-20 shadow-sm">
+      <div class="space-y-6">
+        <!-- Logo & Branding -->
+        <div class="flex items-center gap-3 px-2 py-1">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-500 flex items-center justify-center text-white shadow-md shadow-blue-500/25">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          </div>
+          <div>
+            <h2 class="text-base font-black tracking-tight text-slate-900 leading-tight">Ride<span class="text-blue-600">Compare</span></h2>
+            <p class="text-[10px] text-slate-400 font-medium">Smarter Rides. Better Choices.</p>
+          </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="space-y-1">
+          <button type="button" onclick="app.switchAdminTab('dashboard')" class="admin-nav-item active w-full px-3.5 py-2.5 rounded-xl bg-[#2563EB] text-white font-bold text-xs flex items-center gap-3 shadow-sm transition-all cursor-pointer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            <span>Dashboard</span>
+          </button>
+
+          <button type="button" onclick="app.switchAdminTab('users')" class="admin-nav-item w-full px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            <span>Users</span>
+          </button>
+
+          <button type="button" onclick="app.switchAdminTab('rides')" class="admin-nav-item w-full px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+            <span>Rides</span>
+          </button>
+
+          <button type="button" onclick="app.switchAdminTab('comparisons')" class="admin-nav-item w-full px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            <span>Comparisons</span>
+          </button>
+
+          <button type="button" onclick="app.switchAdminTab('analytics')" class="admin-nav-item w-full px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+            <span>Analytics</span>
+          </button>
+
+          <button type="button" onclick="app.switchAdminTab('logs')" class="admin-nav-item w-full px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            <span>System Logs</span>
+          </button>
+
+          <button type="button" onclick="app.switchAdminTab('settings')" class="admin-nav-item w-full px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <span>Settings</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Sidebar Bottom: Log Out -->
+      <div class="pt-4 border-t border-slate-100">
+        <button type="button" onclick="app.adminLogout()" class="w-full px-3.5 py-2.5 rounded-xl text-slate-700 hover:text-red-600 hover:bg-red-50 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
+          <svg class="w-4 h-4 text-slate-500 hover:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          <span>Log Out</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN ADMIN CONTENT CANVAS -->
+    <main class="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 overflow-y-auto space-y-6">
+      
+      <!-- Top Bar: Header & Actions -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-1">
+        <div>
+          <h1 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Admin Dashboard</h1>
+          <p class="text-xs text-slate-500 mt-0.5">Monitor, manage and keep RideCompare running smoothly.</p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <!-- Switch to Developer Dashboard button -->
+          <button type="button" onclick="app.switchToDeveloperDashboard()" id="btn-switch-to-dev" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-600 font-bold text-xs shadow-sm transition-all cursor-pointer active:scale-95" title="Switch to Developer Dashboard">
+            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+            <span>Developer Dashboard</span>
+          </button>
+
+          <!-- Notification Bell -->
+          <button type="button" onclick="app.showToast('No new admin alerts', 'info')" class="relative w-9 h-9 rounded-full bg-white hover:bg-slate-100 border border-slate-200 text-slate-600 flex items-center justify-center transition-all cursor-pointer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+            <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500"></span>
+          </button>
+
+          <!-- Admin Avatar & Menu -->
+          <div class="relative">
+            <button type="button" onclick="app.toggleAdminUserMenu()" class="inline-flex items-center gap-2 p-1 pr-2.5 rounded-full bg-white hover:bg-slate-50 border border-slate-200 shadow-sm transition-all cursor-pointer">
+              <div class="w-7 h-7 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center shadow-inner">
+                A
+              </div>
+              <span class="text-xs font-bold text-slate-800">Admin</span>
+              <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+
+            <!-- Dropdown Menu -->
+            <div id="admin-user-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-2xl shadow-xl py-1.5 z-30 text-xs">
+              <button type="button" onclick="app.switchToDeveloperDashboard()" class="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 font-medium flex items-center gap-2">
+                <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                <span>Developer Dashboard</span>
+              </button>
+              <button type="button" onclick="app.switchTab('home')" class="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 font-medium flex items-center gap-2">
+                <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                <span>Exit to Rider App</span>
+              </button>
+              <div class="border-t border-slate-100 my-1"></div>
+              <button type="button" onclick="app.adminLogout()" class="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 font-semibold flex items-center gap-2">
+                <svg class="w-3.5 h-3.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7"/></svg>
+                <span>Log Out</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROW 1: 4 TOP METRIC CARDS -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        <!-- Card 1: Total Users -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          </div>
+          <div>
+            <div class="text-xs font-semibold text-slate-500">Total Users</div>
+            <div class="text-2xl font-black text-slate-900 mt-0.5 tracking-tight">2,486</div>
+          </div>
+          <div class="flex items-center gap-1 text-xs font-bold text-emerald-600">
+            <span>↑ 12%</span>
+            <span class="text-slate-400 font-normal">vs last 7 days</span>
+          </div>
+        </div>
+
+        <!-- Card 2: Total Rides -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+          </div>
+          <div>
+            <div class="text-xs font-semibold text-slate-500">Total Rides</div>
+            <div class="text-2xl font-black text-slate-900 mt-0.5 tracking-tight">8,932</div>
+          </div>
+          <div class="flex items-center gap-1 text-xs font-bold text-emerald-600">
+            <span>↑ 18%</span>
+            <span class="text-slate-400 font-normal">vs last 7 days</span>
+          </div>
+        </div>
+
+        <!-- Card 3: Comparisons Made -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          </div>
+          <div>
+            <div class="text-xs font-semibold text-slate-500">Comparisons Made</div>
+            <div class="text-2xl font-black text-slate-900 mt-0.5 tracking-tight">6,421</div>
+          </div>
+          <div class="flex items-center gap-1 text-xs font-bold text-emerald-600">
+            <span>↑ 24%</span>
+            <span class="text-slate-400 font-normal">vs last 7 days</span>
+          </div>
+        </div>
+
+        <!-- Card 4: System Uptime -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <div>
+            <div class="text-xs font-semibold text-slate-500">System Uptime</div>
+            <div class="text-2xl font-black text-slate-900 mt-0.5 tracking-tight">99.9%</div>
+          </div>
+          <div class="flex items-center gap-1 text-xs font-bold text-emerald-600">
+            <span>↑ 0.1%</span>
+            <span class="text-slate-400 font-normal">vs last 7 days</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROW 2: CHARTS (USER GROWTH & RIDE TYPE DISTRIBUTION) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        
+        <!-- Left: User Growth Chart -->
+        <div class="lg:col-span-7 bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-sm flex flex-col justify-between">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="text-sm font-bold text-slate-900">User Growth</h3>
+              <p class="text-xs text-slate-400">New users over the last 7 days</p>
+            </div>
+            <div class="relative">
+              <select class="text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 focus:outline-none cursor-pointer">
+                <option>7 Days</option>
+                <option>30 Days</option>
+                <option>90 Days</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- SVG Smooth Area Curve Chart -->
+          <div class="w-full h-56 relative pt-2">
+            <svg class="w-full h-full overflow-visible" viewBox="0 0 650 200" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="userGrowthGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#2563EB" stop-opacity="0.32" />
+                  <stop offset="100%" stop-color="#2563EB" stop-opacity="0.0" />
+                </linearGradient>
+              </defs>
+
+              <!-- Grid Horizontal Lines -->
+              <line x1="40" y1="20" x2="640" y2="20" stroke="#F1F5F9" stroke-dasharray="3 3" />
+              <line x1="40" y1="60" x2="640" y2="60" stroke="#F1F5F9" stroke-dasharray="3 3" />
+              <line x1="40" y1="100" x2="640" y2="100" stroke="#F1F5F9" stroke-dasharray="3 3" />
+              <line x1="40" y1="140" x2="640" y2="140" stroke="#F1F5F9" stroke-dasharray="3 3" />
+              <line x1="40" y1="180" x2="640" y2="180" stroke="#E2E8F0" />
+
+              <!-- Y-Axis Labels -->
+              <text x="25" y="24" font-size="10" fill="#94A3B8" text-anchor="end">800</text>
+              <text x="25" y="64" font-size="10" fill="#94A3B8" text-anchor="end">600</text>
+              <text x="25" y="104" font-size="10" fill="#94A3B8" text-anchor="end">400</text>
+              <text x="25" y="144" font-size="10" fill="#94A3B8" text-anchor="end">200</text>
+              <text x="25" y="184" font-size="10" fill="#94A3B8" text-anchor="end">0</text>
+
+              <!-- Area Fill -->
+              <path d="M 50,165 C 100,150 120,120 150,115 C 190,110 220,135 250,135 C 290,135 320,105 350,105 C 380,105 420,80 450,75 C 490,68 520,25 550,25 C 580,25 610,95 640,95 L 640,180 L 50,180 Z" fill="url(#userGrowthGrad)" />
+
+              <!-- Blue Curve Line -->
+              <path d="M 50,165 C 100,150 120,120 150,115 C 190,110 220,135 250,135 C 290,135 320,105 350,105 C 380,105 420,80 450,75 C 490,68 520,25 550,25 C 580,25 610,95 640,95" fill="none" stroke="#2563EB" stroke-width="3" stroke-linecap="round" />
+
+              <!-- Data Marker Dots -->
+              <circle cx="50" cy="165" r="4.5" fill="#2563EB" stroke="#FFFFFF" stroke-width="2" />
+              <circle cx="150" cy="115" r="4.5" fill="#2563EB" stroke="#FFFFFF" stroke-width="2" />
+              <circle cx="250" cy="135" r="4.5" fill="#2563EB" stroke="#FFFFFF" stroke-width="2" />
+              <circle cx="350" cy="105" r="4.5" fill="#2563EB" stroke="#FFFFFF" stroke-width="2" />
+              <circle cx="450" cy="75" r="4.5" fill="#2563EB" stroke="#FFFFFF" stroke-width="2" />
+              <circle cx="550" cy="25" r="5" fill="#2563EB" stroke="#FFFFFF" stroke-width="2.5" />
+              <circle cx="640" cy="95" r="4.5" fill="#2563EB" stroke="#FFFFFF" stroke-width="2" />
+            </svg>
+          </div>
+
+          <!-- X-Axis Labels -->
+          <div class="flex justify-between pl-8 pr-1 pt-2 text-[11px] font-medium text-slate-400">
+            <span>Apr 26</span>
+            <span>Apr 27</span>
+            <span>Apr 28</span>
+            <span>Apr 29</span>
+            <span>Apr 30</span>
+            <span>May 1</span>
+            <span>May 2</span>
+          </div>
+        </div>
+
+        <!-- Right: Ride Type Distribution Donut Chart -->
+        <div class="lg:col-span-5 bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-sm flex flex-col justify-between">
+          <div>
+            <h3 class="text-sm font-bold text-slate-900">Ride Type Distribution</h3>
+          </div>
+
+          <!-- Donut SVG with Center Count -->
+          <div class="relative w-44 h-44 mx-auto my-3 flex items-center justify-center">
+            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+              <!-- Background circle -->
+              <circle cx="50" cy="50" r="38" fill="transparent" stroke="#F1F5F9" stroke-width="14" />
+              <!-- Bike: 32% (stroke-dasharray: 76.4 238.8) -->
+              <circle cx="50" cy="50" r="38" fill="transparent" stroke="#2563EB" stroke-width="14" stroke-dasharray="76.4 238.8" stroke-dashoffset="0" />
+              <!-- Car: 41% (stroke-dasharray: 97.9 238.8) -->
+              <circle cx="50" cy="50" r="38" fill="transparent" stroke="#7C3AED" stroke-width="14" stroke-dasharray="97.9 238.8" stroke-dashoffset="-76.4" />
+              <!-- Scooter: 16% (stroke-dasharray: 38.2 238.8) -->
+              <circle cx="50" cy="50" r="38" fill="transparent" stroke="#06B6D4" stroke-width="14" stroke-dasharray="38.2 238.8" stroke-dashoffset="-174.3" />
+              <!-- Auto: 11% (stroke-dasharray: 26.3 238.8) -->
+              <circle cx="50" cy="50" r="38" fill="transparent" stroke="#F97316" stroke-width="14" stroke-dasharray="26.3 238.8" stroke-dashoffset="-212.5" />
+            </svg>
+
+            <!-- Center label -->
+            <div class="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
+              <span class="text-xl font-black text-slate-900 leading-none">8,932</span>
+              <span class="text-[10px] text-slate-400 font-medium mt-1">Total Rides</span>
+            </div>
+          </div>
+
+          <!-- Legend -->
+          <div class="grid grid-cols-2 gap-y-2 pt-2 border-t border-slate-100 text-xs">
+            <div class="flex items-center justify-between pr-3">
+              <span class="flex items-center gap-2 text-slate-600 font-medium">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#2563EB]"></span>
+                <span>Bike</span>
+              </span>
+              <span class="font-bold text-slate-900">32%</span>
+            </div>
+            <div class="flex items-center justify-between pl-3">
+              <span class="flex items-center gap-2 text-slate-600 font-medium">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#7C3AED]"></span>
+                <span>Car</span>
+              </span>
+              <span class="font-bold text-slate-900">41%</span>
+            </div>
+            <div class="flex items-center justify-between pr-3">
+              <span class="flex items-center gap-2 text-slate-600 font-medium">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#06B6D4]"></span>
+                <span>Scooter</span>
+              </span>
+              <span class="font-bold text-slate-900">16%</span>
+            </div>
+            <div class="flex items-center justify-between pl-3">
+              <span class="flex items-center gap-2 text-slate-600 font-medium">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#F97316]"></span>
+                <span>Auto</span>
+              </span>
+              <span class="font-bold text-slate-900">11%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROW 3: RECENT USERS TABLE + SYSTEM HEALTH & QUICK ACTIONS -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        
+        <!-- Left: Recent Users Table (lg:col-span-7) -->
+        <div class="lg:col-span-7 bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-sm font-bold text-slate-900">Recent Users</h3>
+            <button type="button" onclick="app.showToast('Showing all registered users', 'info')" class="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 cursor-pointer">
+              <span>View all</span>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead>
+                <tr class="text-slate-400 font-semibold border-b border-slate-100 pb-2">
+                  <th class="pb-3 font-semibold">Name</th>
+                  <th class="pb-3 font-semibold">Email</th>
+                  <th class="pb-3 font-semibold">Joined On</th>
+                  <th class="pb-3 font-semibold">Status</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 text-slate-700">
+                <!-- User 1 -->
+                <tr class="hover:bg-slate-50 transition-colors">
+                  <td class="py-3 font-semibold text-slate-900 flex items-center gap-2.5">
+                    <div class="w-7 h-7 rounded-full bg-blue-600 text-white font-bold text-[11px] flex items-center justify-center flex-shrink-0">
+                      AM
+                    </div>
+                    <span>Arjun Mehta</span>
+                  </td>
+                  <td class="py-3 text-slate-500 font-normal">arjun@example.com</td>
+                  <td class="py-3 text-slate-600">May 2, 2025</td>
+                  <td class="py-3">
+                    <span class="inline-flex items-center gap-1.5 font-bold text-emerald-600">
+                      <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                      <span>Active</span>
+                    </span>
+                  </td>
+                </tr>
+
+                <!-- User 2 -->
+                <tr class="hover:bg-slate-50 transition-colors">
+                  <td class="py-3 font-semibold text-slate-900 flex items-center gap-2.5">
+                    <div class="w-7 h-7 rounded-full bg-purple-600 text-white font-bold text-[11px] flex items-center justify-center flex-shrink-0">
+                      PS
+                    </div>
+                    <span>Priya Sharma</span>
+                  </td>
+                  <td class="py-3 text-slate-500 font-normal">priya@example.com</td>
+                  <td class="py-3 text-slate-600">May 2, 2025</td>
+                  <td class="py-3">
+                    <span class="inline-flex items-center gap-1.5 font-bold text-emerald-600">
+                      <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                      <span>Active</span>
+                    </span>
+                  </td>
+                </tr>
+
+                <!-- User 3 -->
+                <tr class="hover:bg-slate-50 transition-colors">
+                  <td class="py-3 font-semibold text-slate-900 flex items-center gap-2.5">
+                    <div class="w-7 h-7 rounded-full bg-indigo-600 text-white font-bold text-[11px] flex items-center justify-center flex-shrink-0">
+                      RK
+                    </div>
+                    <span>Rohan Kapoor</span>
+                  </td>
+                  <td class="py-3 text-slate-500 font-normal">rohan@example.com</td>
+                  <td class="py-3 text-slate-600">May 1, 2025</td>
+                  <td class="py-3">
+                    <span class="inline-flex items-center gap-1.5 font-bold text-emerald-600">
+                      <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                      <span>Active</span>
+                    </span>
+                  </td>
+                </tr>
+
+                <!-- User 4 -->
+                <tr class="hover:bg-slate-50 transition-colors">
+                  <td class="py-3 font-semibold text-slate-900 flex items-center gap-2.5">
+                    <div class="w-7 h-7 rounded-full bg-blue-500 text-white font-bold text-[11px] flex items-center justify-center flex-shrink-0">
+                      SN
+                    </div>
+                    <span>Sneha Nair</span>
+                  </td>
+                  <td class="py-3 text-slate-500 font-normal">sneha@example.com</td>
+                  <td class="py-3 text-slate-600">May 1, 2025</td>
+                  <td class="py-3">
+                    <span class="inline-flex items-center gap-1.5 font-bold text-emerald-600">
+                      <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                      <span>Active</span>
+                    </span>
+                  </td>
+                </tr>
+
+                <!-- User 5 -->
+                <tr class="hover:bg-slate-50 transition-colors">
+                  <td class="py-3 font-semibold text-slate-900 flex items-center gap-2.5">
+                    <div class="w-7 h-7 rounded-full bg-purple-500 text-white font-bold text-[11px] flex items-center justify-center flex-shrink-0">
+                      VS
+                    </div>
+                    <span>Vikram Singh</span>
+                  </td>
+                  <td class="py-3 text-slate-500 font-normal">vikram@example.com</td>
+                  <td class="py-3 text-slate-600">Apr 30, 2025</td>
+                  <td class="py-3">
+                    <span class="inline-flex items-center gap-1.5 font-bold text-rose-500">
+                      <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                      <span>Inactive</span>
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Right: System Health & Quick Actions (lg:col-span-5) -->
+        <div class="lg:col-span-5 space-y-5">
+          <!-- System Health Card -->
+          <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm space-y-2">
+            <h3 class="text-sm font-bold text-slate-900">System Health</h3>
+            <div class="flex items-center gap-3.5 pt-1">
+              <div class="w-11 h-11 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+              </div>
+              <div>
+                <div class="text-sm font-bold text-emerald-700">All systems operational</div>
+                <div class="text-xs text-slate-400 mt-0.5">Database, API and services are running smoothly.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions Card -->
+          <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm space-y-3">
+            <h3 class="text-sm font-bold text-slate-900">Quick Actions</h3>
+            <div class="grid grid-cols-2 gap-2.5">
+              <button type="button" onclick="app.showToast('Manage Users panel opened', 'info')" class="p-3 rounded-xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/50 flex items-center gap-2.5 text-xs font-semibold text-slate-700 transition-all cursor-pointer">
+                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                <span>Manage Users</span>
+              </button>
+
+              <button type="button" onclick="app.showToast('System Logs loaded', 'info')" class="p-3 rounded-xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/50 flex items-center gap-2.5 text-xs font-semibold text-slate-700 transition-all cursor-pointer">
+                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <span>View Logs</span>
+              </button>
+
+              <button type="button" onclick="app.showToast('System Settings opened', 'info')" class="p-3 rounded-xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/50 flex items-center gap-2.5 text-xs font-semibold text-slate-700 transition-all cursor-pointer">
+                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                <span>System Settings</span>
+              </button>
+
+              <button type="button" onclick="app.showToast('Report generated successfully 📊', 'success')" class="p-3 rounded-xl border border-slate-200 hover:border-blue-400 hover:bg-blue-50/50 flex items-center gap-2.5 text-xs font-semibold text-slate-700 transition-all cursor-pointer">
+                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <span>Generate Report</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </section>
+
+  <!-- ====================================================================== -->
+  <!-- DEVELOPER DASHBOARD SCREEN: EXACT RECREATION OF media_1791714448962_8590b107 -->
+  <!-- ====================================================================== -->
+  <section id="screen-developer" class="screen-page w-full min-h-screen bg-[#F8FAFC] text-slate-800 flex flex-col lg:flex-row relative">
+
+    <!-- DESKTOP LEFT SIDEBAR -->
+    <aside class="dev-sidebar w-full lg:w-64 lg:min-w-[260px] bg-white border-b lg:border-b-0 lg:border-r border-slate-200/80 flex flex-col justify-between p-5 lg:min-h-screen z-20 shadow-sm">
+      <div class="space-y-6">
+        <!-- Logo & Branding -->
+        <div class="flex items-center gap-3 px-2 py-1">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-500 flex items-center justify-center text-white shadow-md shadow-blue-500/25">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          </div>
+          <div>
+            <h2 class="text-base font-black tracking-tight text-slate-900 leading-tight">Ride<span class="text-blue-600">Compare</span></h2>
+            <p class="text-[10px] text-slate-400 font-medium">Smarter Rides. Better Choices.</p>
+          </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="space-y-1">
+          <button type="button" onclick="app.switchDevTab('playground')" class="dev-nav-item active w-full px-3.5 py-2.5 rounded-xl bg-blue-50 text-blue-600 font-bold text-xs flex items-center gap-3 transition-all cursor-pointer">
+            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+            <span>API Playground</span>
+          </button>
+
+          <button type="button" onclick="app.switchDevTab('docs')" class="dev-nav-item w-full px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+            <span>Documentation</span>
+          </button>
+
+          <button type="button" onclick="app.switchDevTab('keys')" class="dev-nav-item w-full px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+            <span>API Keys</span>
+          </button>
+
+          <button type="button" onclick="app.switchDevTab('logs')" class="dev-nav-item w-full px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+            <span>Logs</span>
+          </button>
+
+          <button type="button" onclick="app.switchDevTab('webhooks')" class="dev-nav-item w-full px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+            <span>Webhooks</span>
+          </button>
+
+          <button type="button" onclick="app.switchDevTab('settings')" class="dev-nav-item w-full px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <span>Settings</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Sidebar Bottom: Log Out -->
+      <div class="pt-4 border-t border-slate-100">
+        <button type="button" onclick="app.adminLogout()" class="w-full px-3.5 py-2.5 rounded-xl text-slate-700 hover:text-red-600 hover:bg-red-50 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
+          <svg class="w-4 h-4 text-slate-500 hover:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          <span>Log Out</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN DEVELOPER CONTENT CANVAS -->
+    <main class="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 overflow-y-auto space-y-6">
+
+      <!-- Top Bar: Header & Actions -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-1">
+        <div>
+          <h1 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Developer Dashboard</h1>
+          <p class="text-xs text-slate-500 mt-0.5">Build, test and integrate with RideCompare APIs.</p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <!-- Switch to Admin Dashboard button -->
+          <button type="button" onclick="app.switchToAdminDashboard()" id="btn-switch-to-admin" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-600 font-bold text-xs shadow-sm transition-all cursor-pointer active:scale-95" title="Switch to Admin Dashboard">
+            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            <span>Admin Dashboard</span>
+          </button>
+
+          <!-- Notification Bell -->
+          <button type="button" onclick="app.showToast('All API systems operational', 'info')" class="relative w-9 h-9 rounded-full bg-white hover:bg-slate-100 border border-slate-200 text-slate-600 flex items-center justify-center transition-all cursor-pointer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+            <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500"></span>
+          </button>
+
+          <!-- Developer Avatar & Menu -->
+          <div class="relative">
+            <button type="button" onclick="app.toggleDevUserMenu()" class="inline-flex items-center gap-2 p-1 pr-2.5 rounded-full bg-white hover:bg-slate-50 border border-slate-200 shadow-sm transition-all cursor-pointer">
+              <div class="w-7 h-7 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center shadow-inner">
+                D
+              </div>
+              <span class="text-xs font-bold text-slate-800">Developer</span>
+              <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+
+            <!-- Dropdown Menu -->
+            <div id="dev-user-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-2xl shadow-xl py-1.5 z-30 text-xs">
+              <button type="button" onclick="app.switchToAdminDashboard()" class="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 font-medium flex items-center gap-2">
+                <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                <span>Admin Dashboard</span>
+              </button>
+              <button type="button" onclick="app.switchTab('home')" class="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 font-medium flex items-center gap-2">
+                <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                <span>Exit to Rider App</span>
+              </button>
+              <div class="border-t border-slate-100 my-1"></div>
+              <button type="button" onclick="app.adminLogout()" class="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 font-semibold flex items-center gap-2">
+                <svg class="w-3.5 h-3.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7"/></svg>
+                <span>Log Out</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WELCOME HERO BANNER -->
+      <div class="bg-gradient-to-r from-blue-50/80 via-white to-blue-50/50 rounded-2xl border border-blue-100/90 p-5 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0 shadow-inner">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+          </div>
+          <div>
+            <h2 class="text-base font-bold text-slate-900">Welcome, Developer</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Explore the RideCompare API. Build your own integrations and make ride comparison smarter.</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 bg-white px-3.5 py-1.5 rounded-xl border border-slate-200/90 shadow-sm">
+          <span class="text-xs font-semibold text-slate-500">API Status</span>
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Online</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- ROW 1: QUICK START & ENDPOINTS -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        
+        <!-- Left: Quick Start (lg:col-span-7) -->
+        <div class="lg:col-span-7 bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-sm flex flex-col justify-between">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+            <div class="flex items-center gap-4 text-xs font-semibold">
+              <span class="font-bold text-slate-900 text-sm">Quick Start</span>
+              <div class="flex items-center gap-1">
+                <button type="button" onclick="app.switchQuickStartLang('curl')" id="btn-lang-curl" class="lang-tab active px-2.5 py-1 rounded-md text-blue-600 border-b-2 border-blue-600 font-bold transition-all cursor-pointer">cURL</button>
+                <button type="button" onclick="app.switchQuickStartLang('javascript')" id="btn-lang-javascript" class="lang-tab px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-800 transition-all cursor-pointer">JavaScript</button>
+                <button type="button" onclick="app.switchQuickStartLang('python')" id="btn-lang-python" class="lang-tab px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-800 transition-all cursor-pointer">Python</button>
+                <button type="button" onclick="app.switchQuickStartLang('nodejs')" id="btn-lang-nodejs" class="lang-tab px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-800 transition-all cursor-pointer">Node.js</button>
+              </div>
+            </div>
+
+            <button type="button" onclick="app.copyQuickStartCode()" id="btn-copy-code" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-600 hover:text-slate-900 text-xs font-semibold transition-all cursor-pointer active:scale-95">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+              <span id="btn-copy-code-text">Copy</span>
+            </button>
+          </div>
+
+          <!-- Code Snippet Box -->
+          <div class="relative bg-slate-900 text-slate-200 rounded-xl p-4 font-mono text-xs overflow-x-auto leading-relaxed shadow-inner">
+            <pre id="quickstart-code-snippet"><code>curl -X GET \
+  "https://api.ridecompare.com/api/rides/compare" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "pickupLocation": "New York, NY",
+    "dropLocation": "Boston, MA",
+    "rideType": "car"
+  }'</code></pre>
+          </div>
+        </div>
+
+        <!-- Right: Endpoints (lg:col-span-5) -->
+        <div class="lg:col-span-5 bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-sm flex flex-col justify-between">
+          <div class="mb-3">
+            <h3 class="text-sm font-bold text-slate-900">Endpoints</h3>
+          </div>
+
+          <div class="space-y-2.5">
+            <!-- Endpoint 1 -->
+            <div onclick="app.showToast('GET /api/health - Status 200 OK', 'success')" class="p-2.5 rounded-xl border border-slate-100 hover:border-blue-200 hover:bg-slate-50/80 flex items-center justify-between transition-all cursor-pointer">
+              <div class="flex items-center gap-3">
+                <span class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-bold text-[10px] tracking-wide">GET</span>
+                <span class="font-mono text-xs font-semibold text-slate-800">/api/health</span>
+              </div>
+              <div class="flex items-center gap-1.5 text-slate-400 text-xs">
+                <span class="hidden sm:inline text-[11px] text-slate-400">Check API health</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </div>
+            </div>
+
+            <!-- Endpoint 2 -->
+            <div onclick="app.showToast('POST /api/auth/register', 'info')" class="p-2.5 rounded-xl border border-slate-100 hover:border-blue-200 hover:bg-slate-50/80 flex items-center justify-between transition-all cursor-pointer">
+              <div class="flex items-center gap-3">
+                <span class="px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 font-bold text-[10px] tracking-wide">POST</span>
+                <span class="font-mono text-xs font-semibold text-slate-800">/api/auth/register</span>
+              </div>
+              <div class="flex items-center gap-1.5 text-slate-400 text-xs">
+                <span class="hidden sm:inline text-[11px] text-slate-400">Register new user</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </div>
+            </div>
+
+            <!-- Endpoint 3 -->
+            <div onclick="app.showToast('POST /api/auth/login', 'info')" class="p-2.5 rounded-xl border border-slate-100 hover:border-blue-200 hover:bg-slate-50/80 flex items-center justify-between transition-all cursor-pointer">
+              <div class="flex items-center gap-3">
+                <span class="px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 font-bold text-[10px] tracking-wide">POST</span>
+                <span class="font-mono text-xs font-semibold text-slate-800">/api/auth/login</span>
+              </div>
+              <div class="flex items-center gap-1.5 text-slate-400 text-xs">
+                <span class="hidden sm:inline text-[11px] text-slate-400">Login user</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </div>
+            </div>
+
+            <!-- Endpoint 4 -->
+            <div onclick="app.showToast('GET /api/auth/me', 'info')" class="p-2.5 rounded-xl border border-slate-100 hover:border-blue-200 hover:bg-slate-50/80 flex items-center justify-between transition-all cursor-pointer">
+              <div class="flex items-center gap-3">
+                <span class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-bold text-[10px] tracking-wide">GET</span>
+                <span class="font-mono text-xs font-semibold text-slate-800">/api/auth/me</span>
+              </div>
+              <div class="flex items-center gap-1.5 text-slate-400 text-xs">
+                <span class="hidden sm:inline text-[11px] text-slate-400">Current user details</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </div>
+            </div>
+
+            <!-- Endpoint 5 -->
+            <div onclick="app.showToast('POST /api/rides/compare', 'info')" class="p-2.5 rounded-xl border border-slate-100 hover:border-blue-200 hover:bg-slate-50/80 flex items-center justify-between transition-all cursor-pointer">
+              <div class="flex items-center gap-3">
+                <span class="px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 font-bold text-[10px] tracking-wide">POST</span>
+                <span class="font-mono text-xs font-semibold text-slate-800">/api/rides/compare</span>
+              </div>
+              <div class="flex items-center gap-1.5 text-slate-400 text-xs">
+                <span class="hidden sm:inline text-[11px] text-slate-400">Compare ride options</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROW 2: API USAGE (3 METRIC CARDS WITH SPARKLINES) -->
+      <div>
+        <h3 class="text-sm font-bold text-slate-900 mb-3">API Usage</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+          <!-- Card 1: Total Requests -->
+          <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm space-y-2 flex flex-col justify-between overflow-hidden relative">
+            <div>
+              <div class="text-xs font-semibold text-slate-500">Total Requests</div>
+              <div class="text-2xl font-black text-slate-900 mt-1 tracking-tight">12,482</div>
+              <div class="text-xs font-bold text-emerald-600 mt-1">↑ 18%</div>
+            </div>
+            <!-- Blue Sparkline Wave -->
+            <div class="w-full h-12 -mx-5 -mb-5 mt-2">
+              <svg class="w-full h-full" viewBox="0 0 200 48" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="waveBlue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#2563EB" stop-opacity="0.35"/>
+                    <stop offset="100%" stop-color="#2563EB" stop-opacity="0.0"/>
+                  </linearGradient>
+                </defs>
+                <path d="M 0,38 Q 40,32 70,25 T 140,20 T 200,8 L 200,48 L 0,48 Z" fill="url(#waveBlue)"/>
+                <path d="M 0,38 Q 40,32 70,25 T 140,20 T 200,8" fill="none" stroke="#2563EB" stroke-width="2.5"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Card 2: Successful Requests -->
+          <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm space-y-2 flex flex-col justify-between overflow-hidden relative">
+            <div>
+              <div class="text-xs font-semibold text-slate-500">Successful Requests</div>
+              <div class="text-2xl font-black text-slate-900 mt-1 tracking-tight">98.7%</div>
+              <div class="text-xs font-bold text-emerald-600 mt-1">↑ 0.5%</div>
+            </div>
+            <!-- Green Sparkline Wave -->
+            <div class="w-full h-12 -mx-5 -mb-5 mt-2">
+              <svg class="w-full h-full" viewBox="0 0 200 48" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="waveGreen" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#10B981" stop-opacity="0.35"/>
+                    <stop offset="100%" stop-color="#10B981" stop-opacity="0.0"/>
+                  </linearGradient>
+                </defs>
+                <path d="M 0,35 Q 50,30 90,22 T 160,18 T 200,10 L 200,48 L 0,48 Z" fill="url(#waveGreen)"/>
+                <path d="M 0,35 Q 50,30 90,22 T 160,18 T 200,10" fill="none" stroke="#10B981" stroke-width="2.5"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Card 3: Rate Limit Usage -->
+          <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm space-y-2 flex flex-col justify-between overflow-hidden relative">
+            <div>
+              <div class="text-xs font-semibold text-slate-500">Rate Limit Usage</div>
+              <div class="text-2xl font-black text-slate-900 mt-1 tracking-tight">12%</div>
+              <div class="text-xs font-bold text-emerald-600 mt-1">↓ 3%</div>
+            </div>
+            <!-- Purple Sparkline Wave -->
+            <div class="w-full h-12 -mx-5 -mb-5 mt-2">
+              <svg class="w-full h-full" viewBox="0 0 200 48" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="wavePurple" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.35"/>
+                    <stop offset="100%" stop-color="#8B5CF6" stop-opacity="0.0"/>
+                  </linearGradient>
+                </defs>
+                <path d="M 0,25 Q 50,35 100,28 T 170,22 T 200,18 L 200,48 L 0,48 Z" fill="url(#wavePurple)"/>
+                <path d="M 0,25 Q 50,35 100,28 T 170,22 T 200,18" fill="none" stroke="#8B5CF6" stroke-width="2.5"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROW 3: API KEYS & USEFUL RESOURCES -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        
+        <!-- Left: Your API Keys (lg:col-span-6) -->
+        <div class="lg:col-span-6 bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-sm space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+              <h3 class="text-sm font-bold text-slate-900">Your API Keys</h3>
+            </div>
+            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              <span>Active</span>
+            </span>
+          </div>
+
+          <!-- Masked Key Input -->
+          <div class="flex items-center gap-2">
+            <div class="relative flex-1">
+              <input type="text" readonly value="rc_live_••••••••••••••••73a" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-mono text-xs text-slate-800 select-all focus:outline-none">
+            </div>
+            <button type="button" onclick="app.copyApiKey()" class="px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all cursor-pointer active:scale-95" title="Copy Key">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+            </button>
+          </div>
+
+          <div class="text-[11px] text-slate-400">
+            Created: Apr 20, 2025 • Last used: May 2, 2025
+          </div>
+
+          <button type="button" onclick="app.showToast('API Key Manager opened', 'info')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md shadow-blue-500/25 transition-all cursor-pointer active:scale-98">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+            <span>Manage Keys</span>
+          </button>
+        </div>
+
+        <!-- Right: Useful Resources (lg:col-span-6) -->
+        <div class="lg:col-span-6 bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-sm space-y-3">
+          <h3 class="text-sm font-bold text-slate-900">Useful Resources</h3>
+
+          <div class="space-y-2 text-xs">
+            <!-- Link 1 -->
+            <a href="javascript:void(0)" onclick="app.showToast('Opening API Documentation...', 'info')" class="p-2.5 rounded-xl hover:bg-slate-50 flex items-center justify-between text-slate-700 hover:text-blue-600 transition-colors">
+              <span class="flex items-center gap-2.5 font-medium">
+                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <span>API Documentation</span>
+              </span>
+              <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+            </a>
+
+            <!-- Link 2 -->
+            <a href="javascript:void(0)" onclick="app.showToast('Opening Postman Collection...', 'info')" class="p-2.5 rounded-xl hover:bg-slate-50 flex items-center justify-between text-slate-700 hover:text-blue-600 transition-colors">
+              <span class="flex items-center gap-2.5 font-medium">
+                <svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v8m-4-4h8"/></svg>
+                <span>Postman Collection</span>
+              </span>
+              <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+            </a>
+
+            <!-- Link 3 -->
+            <a href="javascript:void(0)" onclick="window.open('https://github.com/Varunreddy1207/Ridecompare', '_blank')" class="p-2.5 rounded-xl hover:bg-slate-50 flex items-center justify-between text-slate-700 hover:text-blue-600 transition-colors">
+              <span class="flex items-center gap-2.5 font-medium">
+                <svg class="w-4 h-4 text-slate-800" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+                <span>GitHub Repository</span>
+              </span>
+              <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+            </a>
+
+            <!-- Link 4 -->
+            <a href="javascript:void(0)" onclick="app.showToast('Connecting to Developer Support...', 'info')" class="p-2.5 rounded-xl hover:bg-slate-50 flex items-center justify-between text-slate-700 hover:text-blue-600 transition-colors">
+              <span class="flex items-center gap-2.5 font-medium">
+                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                <span>Support</span>
+              </span>
+              <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </section>
+
+  <!-- ====================================================================== -->
   <!-- SCREEN 4: RIDE BOOKING CONFIRMATION SCREEN                             -->
   <!-- Exact Match to media_1790660374330.png & media_1790660393523.png      -->
   <!-- Adapts responsively across Mobile, Tablet, and Desktop SaaS Dashboard  -->
@@ -3991,12 +4870,19 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
   <!-- ==================================================================== -->
   <div id="auth-modal" class="fixed inset-0 z-[2000] flex flex-col items-center justify-start sm:justify-center p-4 sm:p-6 overflow-y-auto opacity-0 pointer-events-none transition-all duration-300">
     
-    <!-- Top Action Bar (Back to Start Button + Theme Toggle + Close Button) -->
+    <!-- Top Action Bar (Back to Start Button + Admin Pill + Theme Toggle + Close Button) -->
     <div class="w-full max-w-md flex items-center justify-between mb-3 sm:mb-5 pt-2 sm:pt-0 flex-shrink-0">
-      <button type="button" onclick="app.closeAuthModal()" class="auth-back-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/60 text-slate-300 hover:text-white text-xs font-semibold shadow-sm transition-all cursor-pointer active:scale-95" aria-label="Back to Get Started" title="Back to Start">
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-        <span>Back</span>
-      </button>
+      <div class="flex items-center gap-2">
+        <button type="button" onclick="app.closeAuthModal()" class="auth-back-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/60 text-slate-300 hover:text-white text-xs font-semibold shadow-sm transition-all cursor-pointer active:scale-95" aria-label="Back to Get Started" title="Back to Start">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+          <span>Back</span>
+        </button>
+
+        <button type="button" id="btn-topbar-admin" onclick="app.openAdminLoginModal()" class="auth-admin-pill inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-950/70 hover:bg-blue-900/80 border border-blue-500/50 text-blue-300 hover:text-white text-xs font-semibold shadow-sm transition-all cursor-pointer active:scale-95" title="Admin Portal">
+          <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          <span>Admin</span>
+        </button>
+      </div>
 
       <div class="flex items-center gap-2">
         <button type="button" onclick="app.toggleTheme()" class="theme-toggle-btn w-8 h-8 rounded-full flex items-center justify-center" aria-label="Toggle Dark / Light Theme" title="Toggle Theme">
@@ -4084,6 +4970,14 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
         <p class="text-center text-xs text-slate-400 pt-1">
           Don't have an account? <button type="button" onclick="app.switchAuthTab('signup')" class="text-blue-400 hover:underline font-semibold cursor-pointer">Sign Up</button>
         </p>
+
+        <!-- Admin Portal Login Button -->
+        <div class="pt-2 border-t border-slate-800/80 mt-2">
+          <button type="button" id="btn-login-as-admin" onclick="app.openAdminLoginModal()" class="w-full py-2.5 px-4 rounded-xl bg-slate-900/90 hover:bg-slate-800/90 border border-slate-700/70 hover:border-blue-500/50 text-slate-300 hover:text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer active:scale-98">
+            <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            <span>Admin Portal</span>
+          </button>
+        </div>
       </form>
 
       <!-- SIGNUP FORM -->
@@ -4179,6 +5073,66 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
         </span>
       </div>
 
+    </div>
+  </div>
+
+  <!-- ==================================================================== -->
+  <!-- ADMIN PORTAL LOGIN MODAL (Restricted Admin Authentication)           -->
+  <!-- ==================================================================== -->
+  <div id="admin-login-modal" onclick="if(event.target === this) app.closeAdminLoginModal()" class="fixed inset-0 z-[2500] flex flex-col items-center justify-center p-4 sm:p-6 overflow-y-auto opacity-0 pointer-events-none transition-all duration-300 bg-slate-950/80 backdrop-blur-md">
+    <div class="admin-login-panel w-full max-w-md bg-[#0A1124] border border-blue-500/40 rounded-3xl p-6 sm:p-8 shadow-[0_0_50px_rgba(0,115,255,0.25)] relative text-white transform scale-95 transition-all duration-300 my-auto">
+      <!-- Close button -->
+      <button type="button" onclick="app.closeAdminLoginModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white border border-slate-700 flex items-center justify-center transition-all cursor-pointer" aria-label="Close Admin Login">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+
+      <!-- Header -->
+      <div class="text-center mb-6">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-500 border border-blue-400/40 flex items-center justify-center mx-auto mb-3 shadow-[0_0_25px_rgba(0,115,255,0.4)]">
+          <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        </div>
+        <h3 class="text-xl font-black text-white tracking-tight">Admin Portal</h3>
+        <p class="text-xs text-slate-400 mt-1">Enter authorized administrator email & password to access the Admin Dashboard</p>
+      </div>
+
+      <!-- Error Banner -->
+      <div id="admin-login-error" class="hidden mb-4 p-3 rounded-xl bg-red-950/60 border border-red-500/70 text-red-300 text-xs flex items-center gap-2">
+        <svg class="w-4 h-4 text-red-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        <span id="admin-login-error-text" class="flex-1">Invalid admin email or password. Access denied.</span>
+      </div>
+
+      <!-- Admin Form -->
+      <form id="form-admin-portal-login" onsubmit="app.handleAdminLoginSubmit(event)" class="space-y-4">
+        <div>
+          <label for="admin-login-email" class="block text-xs font-semibold text-slate-300 mb-1.5">Admin Email Address</label>
+          <div class="relative">
+            <input id="admin-login-email" type="email" required placeholder="admin@domain.com" autocomplete="email" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
+            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-500">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label for="admin-login-password" class="block text-xs font-semibold text-slate-300 mb-1.5">Admin Password</label>
+          <div class="relative">
+            <input id="admin-login-password" type="password" required placeholder="Enter password" autocomplete="current-password" class="w-full px-3.5 py-2.5 pr-10 rounded-xl bg-slate-900 border border-slate-700 text-white text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
+            <button type="button" onclick="app.togglePasswordVisibility('admin-login-password', this)" class="btn-toggle-password absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 hover:text-white transition-colors cursor-pointer focus:outline-none" aria-label="Toggle password visibility">
+              <svg class="eye-icon-show w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+              <svg class="eye-icon-hide hidden w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" id="btn-admin-login-submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-500 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-sm shadow-[0_4px_18px_rgba(0,115,255,0.4)] transition-all active:scale-98 flex items-center justify-center gap-2 cursor-pointer mt-2">
+          <span>Log In to Admin Dashboard</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </button>
+
+        <button type="button" onclick="app.closeAdminLoginModal()" class="w-full py-2.5 rounded-xl bg-transparent hover:bg-slate-800/60 text-slate-400 hover:text-white text-xs font-semibold transition-all cursor-pointer">
+          Back to User Login
+        </button>
+      </form>
     </div>
   </div>
 

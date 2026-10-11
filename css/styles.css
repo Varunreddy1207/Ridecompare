@@ -4096,3 +4096,38 @@ body.theme-light #btn-clear-map-search:hover,
 #recent-search-action-modal.show .recent-action-panel {
   transform: translateY(0) scale(1) !important;
 }
+
+/* ADMIN LOGIN MODAL */
+#admin-login-modal:not(.show) {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+}
+#admin-login-modal.show {
+  display: flex !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  opacity: 1 !important;
+}
+#admin-login-modal.show .admin-login-panel {
+  transform: scale(1) !important;
+}
+
+/* ADMIN & DEVELOPER DASHBOARD TABS AND PRESENTATION */
+#screen-admin,
+#screen-developer {
+  background-color: #F8FAFC !important;
+  color: #0F172A !important;
+}
+
+.admin-nav-item.active {
+  background-color: #2563EB !important;
+  color: #FFFFFF !important;
+}
+
+.dev-nav-item.active {
+  background-color: #EFF6FF !important;
+  color: #2563EB !important;
+}
+

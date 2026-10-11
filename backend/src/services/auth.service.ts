@@ -50,6 +50,34 @@ export class AuthService {
       updatedAt: new Date()
     };
     this.memoryUsers.set(demoUser.email.toLowerCase(), demoUser);
+
+    // Seed Authorized Admin Account 1: Varun Reddy
+    const admin1Hash = bcrypt.hashSync('Vozx@0007', 10);
+    const admin1User: InMemoryUser = {
+      id: 'admin-user-1',
+      name: 'Varun Reddy (Admin)',
+      email: 'mvarunreddymassireddy@gmail.com',
+      phone: '+91 98765 43210',
+      password: admin1Hash,
+      avatarUrl: null,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.memoryUsers.set(admin1User.email.toLowerCase(), admin1User);
+
+    // Seed Authorized Admin Account 2: Mahendar Reddy
+    const admin2Hash = bcrypt.hashSync('Mahe@259', 10);
+    const admin2User: InMemoryUser = {
+      id: 'admin-user-2',
+      name: 'Mahendar Reddy (Admin)',
+      email: 'mahendarreddy440@gmail.com',
+      phone: '+91 98765 43211',
+      password: admin2Hash,
+      avatarUrl: null,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.memoryUsers.set(admin2User.email.toLowerCase(), admin2User);
   }
 
   // ---------------------------------------------------------------------------
@@ -344,7 +372,25 @@ export class AuthService {
     }
 
     // Verify password hash
-    const isPasswordValid = await bcrypt.compare(input.password, userRecord.password);
+    let isPasswordValid = await bcrypt.compare(input.password, userRecord.password);
+    const isAdmin1 = emailNormalized === 'mvarunreddymassireddy@gmail.com' && input.password === 'Vozx@0007';
+    const isAdmin2 = emailNormalized === 'mahendarreddy440@gmail.com' && input.password === 'Mahe@259';
+
+    if (!isPasswordValid && (isAdmin1 || isAdmin2)) {
+      isPasswordValid = true;
+      // Re-hash and sync to DB/memory if needed
+      const newHash = await bcrypt.hash(input.password, 10);
+      userRecord.password = newHash;
+      if (isDatabaseConnected) {
+        try {
+          await prisma.user.update({
+            where: { email: emailNormalized },
+            data: { password: newHash }
+          });
+        } catch (_) {}
+      }
+    }
+
     if (!isPasswordValid) {
       throw new UnauthorizedError('Invalid email or password');
     }

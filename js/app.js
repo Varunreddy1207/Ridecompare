@@ -643,6 +643,30 @@ class RideCompareApp {
     const path = (window.location.pathname || '').toLowerCase().replace(/\/$/, '');
     const hash = (window.location.hash || '').toLowerCase();
 
+    // Direct Admin route check
+    if (hash === '#admin' || path.endsWith('/admin')) {
+      if (!this.isAdminOrDev()) {
+        this.currentTab = 'home';
+        this.navigateTo(isAuth || hasStarted ? 'screen-home' : 'screen-splash', false);
+        setTimeout(() => this.openAdminLoginModal(), 200);
+      } else {
+        this.navigateTo('screen-admin', false);
+      }
+      return;
+    }
+
+    // Direct Developer route check
+    if (hash === '#developer' || path.endsWith('/developer')) {
+      if (!this.isAdminOrDev()) {
+        this.currentTab = 'home';
+        this.navigateTo(isAuth || hasStarted ? 'screen-home' : 'screen-splash', false);
+        setTimeout(() => this.openAdminLoginModal(), 200);
+      } else {
+        this.navigateTo('screen-developer', false);
+      }
+      return;
+    }
+
     // Direct developer route check
     if (hash === '#system-status' || hash === '#status' || path.endsWith('/system-status') || path.endsWith('/status')) {
       if (!this.isAdminOrDev()) {
@@ -720,6 +744,28 @@ class RideCompareApp {
     const hasStarted = localStorage.getItem('ridecompare_has_started') === 'true';
     const isAuth = !!(window.RideCompareAuth && window.RideCompareAuth.isAuthenticated);
 
+    // Explicit Admin route
+    if (hash === '#admin' || path.endsWith('/admin')) {
+      if (!this.isAdminOrDev()) {
+        try { history.replaceState(null, '', '#home'); } catch (_) {}
+        setTimeout(() => this.openAdminLoginModal(), 200);
+        return;
+      }
+      this.navigateTo('screen-admin', false);
+      return;
+    }
+
+    // Explicit Developer route
+    if (hash === '#developer' || path.endsWith('/developer')) {
+      if (!this.isAdminOrDev()) {
+        try { history.replaceState(null, '', '#home'); } catch (_) {}
+        setTimeout(() => this.openAdminLoginModal(), 200);
+        return;
+      }
+      this.navigateTo('screen-developer', false);
+      return;
+    }
+
     // Explicit System Status developer route
     if (hash === '#system-status' || hash === '#status' || path.endsWith('/system-status') || path.endsWith('/status')) {
       if (!this.isAdminOrDev()) {
@@ -790,12 +836,12 @@ class RideCompareApp {
     const deskTopbars = document.querySelectorAll('.desktop-topbar');
     const width = window.innerWidth;
 
-    // When Welcome Splash is Active OR on Get Started Screen OR Booking Screen OR System Status Screen
-    if (this.isWelcomeSplashActive || this.currentScreen === 'screen-splash' || this.currentScreen === 'screen-booking' || this.currentScreen === 'screen-status') {
+    // When Welcome Splash is Active OR on Get Started Screen OR Booking Screen OR System Status Screen OR Admin/Dev Screens
+    if (this.isWelcomeSplashActive || this.currentScreen === 'screen-splash' || this.currentScreen === 'screen-booking' || this.currentScreen === 'screen-status' || this.currentScreen === 'screen-admin' || this.currentScreen === 'screen-developer') {
       if (bottomNav) bottomNav.style.setProperty('display', 'none', 'important');
       legacyMobNavs.forEach(el => el.style.setProperty('display', 'none', 'important'));
       legacyTabDocks.forEach(el => el.style.setProperty('display', 'none', 'important'));
-      if (this.isWelcomeSplashActive || this.currentScreen === 'screen-splash') {
+      if (this.isWelcomeSplashActive || this.currentScreen === 'screen-splash' || this.currentScreen === 'screen-admin' || this.currentScreen === 'screen-developer') {
         deskSidebars.forEach(el => el.style.setProperty('display', 'none', 'important'));
         deskTopbars.forEach(tb => tb.style.setProperty('display', 'none', 'important'));
       }
@@ -1119,6 +1165,26 @@ class RideCompareApp {
       }
       const res = await window.RideCompareAuth.login(email, password);
       const user = res.user;
+
+      const normEmail = email.toLowerCase().trim();
+      const isAdminLogin = (normEmail === 'mvarunreddymassireddy@gmail.com' && password === 'Vozx@0007') ||
+                           (normEmail === 'mahendarreddy440@gmail.com' && password === 'Mahe@259');
+      if (isAdminLogin) {
+        sessionStorage.setItem('ridecompare_admin_access', 'true');
+        localStorage.setItem('ridecompare_admin_access', 'true');
+        this.userProfile = Object.assign({}, this.userProfile, {
+          id: user.id || 'admin-user',
+          name: normEmail === 'mvarunreddymassireddy@gmail.com' ? 'Varun Reddy (Admin)' : 'Mahendar Reddy (Admin)',
+          email: normEmail,
+          role: 'Admin'
+        });
+        localStorage.setItem('ridecompare_user_profile', JSON.stringify(this.userProfile));
+        this.closeAuthModal();
+        this.navigateTo('screen-admin', false);
+        try { history.pushState(null, '', '#admin'); } catch (_) { window.location.hash = '#admin'; }
+        this.showToast('Welcome Admin! Access Granted ⚡', 'success');
+        return;
+      }
 
       // Update current profile in application
       this.userProfile = Object.assign({}, this.userProfile, {
@@ -3959,6 +4025,298 @@ class RideCompareApp {
     this.showToast('Admin Mode Locked 🔒');
     this.switchTab('home');
   }
+
+  // =========================================================================
+  // ADMIN PORTAL & DEVELOPER DASHBOARD CONTROLLER METHODS
+  // =========================================================================
+
+  openAdminLoginModal() {
+    if (window.soundFX && window.soundFX.playTap) {
+      try { window.soundFX.playTap(); } catch (_) {}
+    }
+    const modal = document.getElementById('admin-login-modal');
+    if (modal) {
+      modal.classList.add('show');
+      const err = document.getElementById('admin-login-error');
+      if (err) err.classList.add('hidden');
+      const emailInput = document.getElementById('admin-login-email');
+      if (emailInput) {
+        setTimeout(() => emailInput.focus(), 150);
+      }
+    }
+  }
+
+  closeAdminLoginModal() {
+    if (window.soundFX && window.soundFX.playTap) {
+      try { window.soundFX.playTap(); } catch (_) {}
+    }
+    const modal = document.getElementById('admin-login-modal');
+    if (modal) {
+      modal.classList.remove('show');
+    }
+  }
+
+  handleAdminLoginSubmit(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const emailInput = document.getElementById('admin-login-email');
+    const passInput = document.getElementById('admin-login-password');
+    const errBanner = document.getElementById('admin-login-error');
+    const errText = document.getElementById('admin-login-error-text');
+
+    const email = (emailInput ? emailInput.value : '').toLowerCase().trim();
+    const pass = passInput ? passInput.value : '';
+
+    // Authorized Admin Credentials:
+    // 1. mvarunreddymassireddy@gmail.com / Vozx@0007
+    // 2. mahendarreddy440@gmail.com / Mahe@259
+    const isVarunAdmin = email === 'mvarunreddymassireddy@gmail.com' && pass === 'Vozx@0007';
+    const isMahendarAdmin = email === 'mahendarreddy440@gmail.com' && pass === 'Mahe@259';
+
+    if (isVarunAdmin || isMahendarAdmin) {
+      sessionStorage.setItem('ridecompare_admin_access', 'true');
+      localStorage.setItem('ridecompare_admin_access', 'true');
+
+      // Update current application profile with Admin status
+      const adminName = isVarunAdmin ? 'Varun Reddy (Admin)' : 'Mahendar Reddy (Admin)';
+      this.userProfile = Object.assign({}, this.userProfile, {
+        name: adminName,
+        email: email,
+        role: 'Admin'
+      });
+      localStorage.setItem('ridecompare_user_profile', JSON.stringify(this.userProfile));
+
+      this.closeAdminLoginModal();
+      this.closeAuthModal();
+
+      if (window.soundFX && window.soundFX.playTap) {
+        try { window.soundFX.playTap(); } catch (_) {}
+      }
+
+      this.showToast(`Welcome ${isVarunAdmin ? 'Varun' : 'Mahendar'}! Admin Access Granted ⚡`, 'success');
+      this.navigateTo('screen-admin', false);
+      try {
+        history.pushState(null, '', '#admin');
+      } catch (_) {
+        window.location.hash = '#admin';
+      }
+    } else {
+      if (errBanner) {
+        if (errText) errText.textContent = 'Invalid admin email or password. Access denied.';
+        errBanner.classList.remove('hidden');
+      }
+      this.showToast('Invalid admin email or password', 'error');
+      if (passInput) {
+        passInput.classList.add('ring-2', 'ring-red-500');
+        passInput.focus();
+        setTimeout(() => passInput.classList.remove('ring-2', 'ring-red-500'), 1500);
+      }
+    }
+  }
+
+  switchToDeveloperDashboard() {
+    if (window.soundFX && window.soundFX.playTap) {
+      try { window.soundFX.playTap(); } catch (_) {}
+    }
+    const adminMenu = document.getElementById('admin-user-dropdown');
+    if (adminMenu) adminMenu.classList.add('hidden');
+    const devMenu = document.getElementById('dev-user-dropdown');
+    if (devMenu) devMenu.classList.add('hidden');
+
+    this.navigateTo('screen-developer', false);
+    try {
+      history.pushState(null, '', '#developer');
+    } catch (_) {
+      window.location.hash = '#developer';
+    }
+    this.showToast('Switched to Developer Dashboard 💻');
+  }
+
+  switchToAdminDashboard() {
+    if (window.soundFX && window.soundFX.playTap) {
+      try { window.soundFX.playTap(); } catch (_) {}
+    }
+    const adminMenu = document.getElementById('admin-user-dropdown');
+    if (adminMenu) adminMenu.classList.add('hidden');
+    const devMenu = document.getElementById('dev-user-dropdown');
+    if (devMenu) devMenu.classList.add('hidden');
+
+    this.navigateTo('screen-admin', false);
+    try {
+      history.pushState(null, '', '#admin');
+    } catch (_) {
+      window.location.hash = '#admin';
+    }
+    this.showToast('Switched to Admin Dashboard 🛡️');
+  }
+
+  adminLogout() {
+    if (window.soundFX && window.soundFX.playTap) {
+      try { window.soundFX.playTap(); } catch (_) {}
+    }
+    sessionStorage.removeItem('ridecompare_admin_access');
+    localStorage.removeItem('ridecompare_admin_access');
+    const adminMenu = document.getElementById('admin-user-dropdown');
+    if (adminMenu) adminMenu.classList.add('hidden');
+    const devMenu = document.getElementById('dev-user-dropdown');
+    if (devMenu) devMenu.classList.add('hidden');
+
+    this.showToast('Logged out from Admin Dashboard 👋');
+    this.switchTab('home');
+  }
+
+  toggleAdminUserMenu() {
+    const menu = document.getElementById('admin-user-dropdown');
+    if (menu) {
+      menu.classList.toggle('hidden');
+    }
+  }
+
+  toggleDevUserMenu() {
+    const menu = document.getElementById('dev-user-dropdown');
+    if (menu) {
+      menu.classList.toggle('hidden');
+    }
+  }
+
+  switchAdminTab(tabName) {
+    if (window.soundFX && window.soundFX.playTap) {
+      try { window.soundFX.playTap(); } catch (_) {}
+    }
+    const navItems = document.querySelectorAll('.admin-nav-item');
+    navItems.forEach(item => {
+      const isMatch = item.getAttribute('onclick')?.includes(`'${tabName}'`);
+      item.classList.toggle('active', !!isMatch);
+      if (isMatch) {
+        item.classList.add('bg-[#2563EB]', 'text-white');
+        item.classList.remove('text-slate-600', 'hover:bg-slate-100');
+      } else {
+        item.classList.remove('bg-[#2563EB]', 'text-white');
+        item.classList.add('text-slate-600', 'hover:bg-slate-100');
+      }
+    });
+    if (tabName !== 'dashboard') {
+      this.showToast(`Admin: ${tabName.charAt(0).toUpperCase() + tabName.slice(1)} view loaded`, 'info');
+    }
+  }
+
+  switchDevTab(tabName) {
+    if (window.soundFX && window.soundFX.playTap) {
+      try { window.soundFX.playTap(); } catch (_) {}
+    }
+    const navItems = document.querySelectorAll('.dev-nav-item');
+    navItems.forEach(item => {
+      const isMatch = item.getAttribute('onclick')?.includes(`'${tabName}'`);
+      item.classList.toggle('active', !!isMatch);
+      if (isMatch) {
+        item.classList.add('bg-blue-50', 'text-blue-600');
+        item.classList.remove('text-slate-600', 'hover:bg-slate-100');
+      } else {
+        item.classList.remove('bg-blue-50', 'text-blue-600');
+        item.classList.add('text-slate-600', 'hover:bg-slate-100');
+      }
+    });
+    if (tabName !== 'playground') {
+      this.showToast(`Developer: ${tabName.charAt(0).toUpperCase() + tabName.slice(1)} loaded`, 'info');
+    }
+  }
+
+  switchQuickStartLang(lang) {
+    if (window.soundFX && window.soundFX.playTap) {
+      try { window.soundFX.playTap(); } catch (_) {}
+    }
+    const tabs = document.querySelectorAll('.lang-tab');
+    tabs.forEach(t => {
+      const match = t.id === `btn-lang-${lang}`;
+      t.classList.toggle('active', !!match);
+      if (match) {
+        t.className = 'lang-tab active px-2.5 py-1 rounded-md text-blue-600 border-b-2 border-blue-600 font-bold transition-all cursor-pointer';
+      } else {
+        t.className = 'lang-tab px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-800 transition-all cursor-pointer';
+      }
+    });
+
+    const snippetEl = document.getElementById('quickstart-code-snippet');
+    if (!snippetEl) return;
+
+    if (lang === 'curl') {
+      snippetEl.innerHTML = `<code>curl -X GET \\
+  "https://api.ridecompare.com/api/rides/compare" \\
+  -H "Authorization: Bearer YOUR_API_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "pickupLocation": "New York, NY",
+    "dropLocation": "Boston, MA",
+    "rideType": "car"
+  }'</code>`;
+    } else if (lang === 'javascript') {
+      snippetEl.innerHTML = `<code>const response = await fetch("https://api.ridecompare.com/api/rides/compare", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    pickupLocation: "New York, NY",
+    dropLocation: "Boston, MA",
+    rideType: "car"
+  })
+});
+const data = await response.json();
+console.log(data);</code>`;
+    } else if (lang === 'python') {
+      snippetEl.innerHTML = `<code>import requests
+
+url = "https://api.ridecompare.com/api/rides/compare"
+headers = {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+}
+payload = {
+    "pickupLocation": "New York, NY",
+    "dropLocation": "Boston, MA",
+    "rideType": "car"
+}
+
+response = requests.post(url, json=payload, headers=headers)
+print(response.json())</code>`;
+    } else if (lang === 'nodejs') {
+      snippetEl.innerHTML = `<code>import axios from 'axios';
+
+const res = await axios.post('https://api.ridecompare.com/api/rides/compare', {
+  pickupLocation: 'New York, NY',
+  dropLocation: 'Boston, MA',
+  rideType: 'car'
+}, {
+  headers: {
+    Authorization: 'Bearer YOUR_API_KEY'
+  }
+});
+console.log(res.data);</code>`;
+    }
+  }
+
+  copyQuickStartCode() {
+    const snippetEl = document.getElementById('quickstart-code-snippet');
+    const text = snippetEl ? snippetEl.innerText : '';
+    if (text && navigator.clipboard) {
+      navigator.clipboard.writeText(text).catch(() => {});
+    }
+    const btnText = document.getElementById('btn-copy-code-text');
+    if (btnText) {
+      btnText.textContent = 'Copied!';
+      setTimeout(() => { btnText.textContent = 'Copy'; }, 2000);
+    }
+    this.showToast('Code snippet copied to clipboard! 📋', 'success');
+  }
+
+  copyApiKey() {
+    const key = 'rc_api_key_live_9a87f12e8b4c09d57a2e6f31';
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(key).catch(() => {});
+    }
+    this.showToast('API Key copied to clipboard! 🔑', 'success');
+  }
+
 
   updateRestrictedModalTheme() {
     const isDarkMode = document.body.classList.contains('theme-dark') || 

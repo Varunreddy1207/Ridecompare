@@ -1025,19 +1025,48 @@
             console.warn('[RideCompareAuth] Direct Supabase login failed:', cloudErr.message);
           }
 
-          // Offline demo user fallback
+          // Offline demo and admin user fallback
           const localUsers = this.getLocalUsers();
           const localUser = localUsers[normEmail];
           const isDemo = normEmail === 'varunreddy@gmail.com' && (password === 'Password123!' || password === 'password123');
+          const isAdmin1 = normEmail === 'mvarunreddymassireddy@gmail.com' && password === 'Vozx@0007';
+          const isAdmin2 = normEmail === 'mahendarreddy440@gmail.com' && password === 'Mahe@259';
 
-          if (isDemo || (localUser && localUser.password === password)) {
-            const userObj = isDemo ? {
-              id: 'demo-user-1',
-              name: 'Varun Reddy',
-              email: 'varunreddy@gmail.com',
-              phone: '+91 98765 43210',
-              createdAt: new Date().toISOString()
-            } : localUser;
+          if (isDemo || isAdmin1 || isAdmin2 || (localUser && localUser.password === password)) {
+            let userObj;
+            if (isAdmin1) {
+              userObj = {
+                id: 'admin-user-1',
+                name: 'Varun Reddy',
+                email: 'mvarunreddymassireddy@gmail.com',
+                phone: '+91 98765 43210',
+                role: 'admin',
+                createdAt: new Date().toISOString()
+              };
+              sessionStorage.setItem('ridecompare_admin_access', 'true');
+              localStorage.setItem('ridecompare_admin_access', 'true');
+            } else if (isAdmin2) {
+              userObj = {
+                id: 'admin-user-2',
+                name: 'Mahendar Reddy',
+                email: 'mahendarreddy440@gmail.com',
+                phone: '+91 98765 43211',
+                role: 'admin',
+                createdAt: new Date().toISOString()
+              };
+              sessionStorage.setItem('ridecompare_admin_access', 'true');
+              localStorage.setItem('ridecompare_admin_access', 'true');
+            } else if (isDemo) {
+              userObj = {
+                id: 'demo-user-1',
+                name: 'Varun Reddy',
+                email: 'varunreddy@gmail.com',
+                phone: '+91 98765 43210',
+                createdAt: new Date().toISOString()
+              };
+            } else {
+              userObj = localUser;
+            }
 
             const localToken = `local_jwt_${Date.now()}_${Math.random().toString(36).substr(2)}`;
             this.api.setToken(localToken);
