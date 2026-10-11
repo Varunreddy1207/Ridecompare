@@ -3176,12 +3176,12 @@ class RideCompareApp {
     this.switchTab('profile');
   }
 
-  // Log Out Action - Performs immediate clean logout and displays Login portal
-  async logout() {
+  // Log Out Action - Opens the Confirmation Modal
+  logout() {
     if (window.soundFX && window.soundFX.playTap) {
       window.soundFX.playTap();
     }
-    await this.confirmLogout();
+    this.openLogoutConfirmModal();
   }
 
   openLogoutConfirmModal() {
@@ -3283,6 +3283,7 @@ class RideCompareApp {
     const title = modalPanel.querySelector('.logout-modal-title');
     const sub = modalPanel.querySelector('.logout-modal-sub');
     const btnNo = modalPanel.querySelector('.btn-logout-no');
+    const iconCircle = modalPanel.querySelector('.logout-icon-circle');
 
     if (isDarkMode) {
       modalPanel.style.removeProperty('background');
@@ -3296,6 +3297,11 @@ class RideCompareApp {
         btnNo.style.removeProperty('color');
         btnNo.style.removeProperty('border-color');
       }
+      if (iconCircle) {
+        iconCircle.style.removeProperty('background-color');
+        iconCircle.style.removeProperty('border-color');
+        iconCircle.style.removeProperty('color');
+      }
     } else {
       modalPanel.style.backgroundColor = '#FFFFFF';
       modalPanel.style.borderColor = '#E2E8F0';
@@ -3303,9 +3309,14 @@ class RideCompareApp {
       if (title) title.style.color = '#0F172A';
       if (sub) sub.style.color = '#64748B';
       if (btnNo) {
-        btnNo.style.backgroundColor = '#F1F5F9';
+        btnNo.style.backgroundColor = '#F8FAFC';
         btnNo.style.borderColor = '#CBD5E1';
         btnNo.style.color = '#334155';
+      }
+      if (iconCircle) {
+        iconCircle.style.backgroundColor = '#FEE2E2';
+        iconCircle.style.borderColor = '#FECACA';
+        iconCircle.style.color = '#EF4444';
       }
     }
   }

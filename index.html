@@ -728,8 +728,16 @@
       background-color: #FFFFFF !important;
       background: #FFFFFF !important;
       border: 1px solid #E2E8F0 !important;
-      box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.04) !important;
+      box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.22), 0 0 0 1px rgba(0, 0, 0, 0.04) !important;
       color: #0F172A !important;
+    }
+
+    body:not(.theme-dark) #logout-confirm-modal .logout-icon-circle,
+    body.theme-light #logout-confirm-modal .logout-icon-circle,
+    [data-theme="light"] #logout-confirm-modal .logout-icon-circle {
+      background-color: #FEE2E2 !important;
+      border: 1px solid #FECACA !important;
+      color: #EF4444 !important;
     }
 
     body:not(.theme-dark) #logout-confirm-modal .logout-modal-title,
@@ -757,6 +765,24 @@
     [data-theme="light"] #logout-confirm-modal .btn-logout-no:hover {
       background-color: #E2E8F0 !important;
       color: #0F172A !important;
+    }
+
+    body:not(.theme-dark) #logout-confirm-modal .btn-logout-yes,
+    body.theme-light #logout-confirm-modal .btn-logout-yes,
+    [data-theme="light"] #logout-confirm-modal .btn-logout-yes {
+      background-color: #DC2626 !important;
+      color: #FFFFFF !important;
+      box-shadow: 0 8px 20px -3px rgba(220, 38, 38, 0.45) !important;
+    }
+
+    body:not(.theme-dark) #logout-confirm-modal .btn-logout-yes:hover,
+    body.theme-light #logout-confirm-modal .btn-logout-yes:hover,
+    [data-theme="light"] #logout-confirm-modal .btn-logout-yes:hover {
+      background-color: #B91C1C !important;
+    }
+
+    #logout-confirm-modal.show .logout-modal-panel {
+      transform: scale(1) !important;
     }
 
     /* ==========================================================================
@@ -4068,16 +4094,16 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
   </div>
 
   <!-- LOGOUT CONFIRMATION MODAL -->
-  <div id="logout-confirm-modal" class="fixed inset-0 z-[2600] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300">
-    <div class="logout-modal-panel w-full max-w-sm bg-[#0A1124] border border-slate-700/80 rounded-3xl p-6 shadow-2xl relative text-center text-white transform scale-95 transition-all duration-300">
-      <div class="w-14 h-14 rounded-full bg-red-500/15 border border-red-500/30 flex items-center justify-center mx-auto mb-4 text-red-400">
+  <div id="logout-confirm-modal" onclick="if(event.target === this) app.closeLogoutConfirmModal()" class="fixed inset-0 z-[2600] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300">
+    <div class="logout-modal-panel w-full max-w-[340px] sm:max-w-sm bg-[#0A1124] border border-slate-700/80 rounded-[28px] p-6 sm:p-7 shadow-2xl relative text-center text-white transform scale-95 transition-all duration-300">
+      <div class="logout-icon-circle w-14 h-14 rounded-full bg-red-500/15 border border-red-500/30 flex items-center justify-center mx-auto mb-4 text-red-400">
         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
       </div>
-      <h3 class="logout-modal-title text-lg font-bold text-white tracking-tight">Log Out</h3>
-      <p class="logout-modal-sub text-xs sm:text-sm text-slate-300 mt-1.5 leading-relaxed">Are you sure you want to log out?</p>
+      <h3 class="logout-modal-title text-xl font-bold tracking-tight">Log Out</h3>
+      <p class="logout-modal-sub text-sm text-slate-300 mt-1.5 leading-relaxed">Are you sure you want to log out?</p>
       <div class="mt-6 flex items-center gap-3">
-        <button type="button" onclick="app.closeLogoutConfirmModal()" class="btn-logout-no flex-1 py-2.5 px-4 rounded-xl border border-slate-700/80 hover:bg-slate-800 text-slate-300 text-xs sm:text-sm font-semibold transition-all cursor-pointer active:scale-95">No</button>
-        <button type="button" onclick="app.confirmLogout()" class="btn-logout-yes flex-1 py-2.5 px-4 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs sm:text-sm font-bold shadow-[0_4px_16px_rgba(220,38,38,0.4)] transition-all cursor-pointer active:scale-95">Yes</button>
+        <button type="button" onclick="app.closeLogoutConfirmModal()" class="btn-logout-no flex-1 py-3 px-4 rounded-2xl border border-slate-700/80 hover:bg-slate-800 text-slate-300 text-sm font-semibold transition-all cursor-pointer active:scale-95">No</button>
+        <button type="button" onclick="app.confirmLogout()" class="btn-logout-yes flex-1 py-3 px-4 rounded-2xl bg-red-600 hover:bg-red-500 text-white text-sm font-bold shadow-[0_4px_16px_rgba(220,38,38,0.4)] transition-all cursor-pointer active:scale-95">Yes</button>
       </div>
     </div>
   </div>
