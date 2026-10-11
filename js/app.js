@@ -1127,6 +1127,30 @@ class RideCompareApp {
         phone: user.phone || (this.userProfile && this.userProfile.phone) || '+91 98765 43210'
       });
       localStorage.setItem('ridecompare_user_profile', JSON.stringify(this.userProfile));
+
+      // Migrate any guest recent searches into the logged-in user account & upload to cloud
+      try {
+        const guestSearchesRaw = localStorage.getItem('ridecompare_recent_searches_guest');
+        if (guestSearchesRaw) {
+          const guestSearches = JSON.parse(guestSearchesRaw);
+          if (Array.isArray(guestSearches) && guestSearches.length > 0) {
+            const userKey = `ridecompare_recent_searches_${user.email.toLowerCase().trim()}`;
+            const existingUserRaw = localStorage.getItem(userKey);
+            const existingUserSearches = existingUserRaw ? JSON.parse(existingUserRaw) : [];
+            const merged = [...existingUserSearches];
+            for (const gs of guestSearches) {
+              if (!merged.some(m => (m.name || '').toLowerCase() === (gs.name || '').toLowerCase())) {
+                merged.push(gs);
+                if (window.RideCompareApi && typeof window.RideCompareApi.saveRecentSearch === 'function') {
+                  window.RideCompareApi.saveRecentSearch(gs).catch(() => {});
+                }
+              }
+            }
+            localStorage.setItem(userKey, JSON.stringify(merged.slice(0, 8)));
+          }
+        }
+      } catch (_) {}
+
       this.renderUserProfile();
       this.syncRecentSearchesFromBackend();
 
@@ -1196,6 +1220,30 @@ class RideCompareApp {
         phone: user.phone || (this.userProfile && this.userProfile.phone) || '+91 98765 43210'
       });
       localStorage.setItem('ridecompare_user_profile', JSON.stringify(this.userProfile));
+
+      // Migrate any guest recent searches into the logged-in user account & upload to cloud
+      try {
+        const guestSearchesRaw = localStorage.getItem('ridecompare_recent_searches_guest');
+        if (guestSearchesRaw) {
+          const guestSearches = JSON.parse(guestSearchesRaw);
+          if (Array.isArray(guestSearches) && guestSearches.length > 0) {
+            const userKey = `ridecompare_recent_searches_${user.email.toLowerCase().trim()}`;
+            const existingUserRaw = localStorage.getItem(userKey);
+            const existingUserSearches = existingUserRaw ? JSON.parse(existingUserRaw) : [];
+            const merged = [...existingUserSearches];
+            for (const gs of guestSearches) {
+              if (!merged.some(m => (m.name || '').toLowerCase() === (gs.name || '').toLowerCase())) {
+                merged.push(gs);
+                if (window.RideCompareApi && typeof window.RideCompareApi.saveRecentSearch === 'function') {
+                  window.RideCompareApi.saveRecentSearch(gs).catch(() => {});
+                }
+              }
+            }
+            localStorage.setItem(userKey, JSON.stringify(merged.slice(0, 8)));
+          }
+        }
+      } catch (_) {}
+
       this.renderUserProfile();
       this.syncRecentSearchesFromBackend();
 
@@ -1333,6 +1381,7 @@ class RideCompareApp {
     this.navigateTo('screen-home', false);
     window.location.hash = '#home';
     this.enforceResponsiveNav();
+    this.renderUserProfile();
     this.renderRecentSearches();
     this.syncRecentSearchesFromBackend();
     const userName = (this.userProfile && this.userProfile.name) ? this.userProfile.name : 'User';
@@ -3892,29 +3941,21 @@ class RideCompareApp {
       ridePref: 'all',
       avatarAccent: 'blue'
     };
-    const defaultProfile = {
-      name: 'Varun Reddy',
-      email: 'varunreddy@gmail.com',
-      phone: '+91 98765 43210',
-      city: 'Ichalkaranji, Kolhapur',
-      ridePref: 'all',
-      avatarAccent: 'blue'
-    };
     try {
       const saved = localStorage.getItem('ridecompare_user_profile');
       if (saved) {
         this.userProfile = JSON.parse(saved);
-      } else if (isAuth) {
-        this.userProfile = defaultProfile;
+      } else if (isAuth && window.RideCompareAuth && window.RideCompareAuth.currentUser) {
+        this.userProfile = window.RideCompareAuth.currentUser;
       } else {
         this.userProfile = guestProfile;
       }
     } catch (e) {
-      this.userProfile = isAuth ? defaultProfile : guestProfile;
+      this.userProfile = guestProfile;
     }
     this.renderUserProfile();
 
-    // Verify authenticated session with backend Supabase via GET /api/auth/me
+    // Verify authenticated session with backend Supabase via GET /api/auth/me or direct cloud
     if (window.RideCompareAuth && window.RideCompareAuth.token) {
       window.RideCompareAuth.checkSession().then(user => {
         if (user) {
@@ -3924,7 +3965,9 @@ class RideCompareApp {
             email: user.email,
             phone: user.phone || this.userProfile.phone
           });
+          localStorage.setItem('ridecompare_user_profile', JSON.stringify(this.userProfile));
           this.renderUserProfile();
+          this.syncRecentSearchesFromBackend();
         }
       }).catch(() => {});
     }
@@ -3936,7 +3979,7 @@ class RideCompareApp {
 
     // 1. Update text elements across screens (ALL sidebars, headers, and profile screen)
     const displayName = isGuest ? 'Guest User' : (p.name || 'User');
-    document.querySelectorAll('.sidebar-user-name, #sidebar-profile-name, #desk-home-profile-name, #desk-history-profile-name').forEach(el => {
+    document.querySelectorAll('.sidebar-user-name, #sidebar-profile-name, #desk-home-profile-name, #desk-history-profile-name, #status-sidebar-profile-name').forEach(el => {
       el.textContent = displayName;
     });
 
@@ -3954,7 +3997,7 @@ class RideCompareApp {
     });
 
     const name = displayName;
-    document.querySelectorAll('.sidebar-user-name, #sidebar-profile-name, #desk-home-profile-name, #desk-history-profile-name').forEach(el => {
+    document.querySelectorAll('.sidebar-user-name, #sidebar-profile-name, #desk-home-profile-name, #desk-history-profile-name, #status-sidebar-profile-name').forEach(el => {
       el.textContent = name;
     });
 
@@ -3962,10 +4005,10 @@ class RideCompareApp {
     if (nameEl) nameEl.textContent = name;
 
     const emailEl = document.getElementById('profile-display-email');
-    if (emailEl) emailEl.textContent = p.email || '';
+    if (emailEl) emailEl.textContent = isGuest ? '' : (p.email || '');
 
     const phoneEl = document.getElementById('profile-display-phone');
-    if (phoneEl) phoneEl.textContent = p.phone || '+91 98765 43210';
+    if (phoneEl) phoneEl.textContent = isGuest ? '' : (p.phone || '+91 98765 43210');
 
     // Update avatar button tooltips
     const deskProfileBtn = document.getElementById('btn-topbar-profile') || document.querySelector('button[title*="View Profile"]');

@@ -471,6 +471,33 @@ export class AuthService {
       }
     }
 
+    // Direct Supabase Cloud REST fallback
+    try {
+      const supabaseUrl = process.env.SUPABASE_URL || 'https://rnkeavoliqlqbpdwbajg.supabase.co';
+      const supabaseKey = process.env.SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_-FH0AYcKT5GvxhS1vo4j1Q_j2Pp8yQA';
+      const sbRes = await fetch(`${supabaseUrl}/rest/v1/User?id=eq.${encodeURIComponent(userId)}&select=id,name,email,phone,createdAt,updatedAt`, {
+        headers: {
+          'apikey': supabaseKey,
+          'Authorization': `Bearer ${supabaseKey}`,
+          'Accept': 'application/json'
+        }
+      });
+      if (sbRes.ok) {
+        const users = await sbRes.json() as any[];
+        if (Array.isArray(users) && users.length > 0) {
+          const u = users[0];
+          return {
+            id: u.id,
+            name: u.name,
+            email: u.email,
+            phone: u.phone,
+            createdAt: u.createdAt || new Date().toISOString(),
+            updatedAt: u.updatedAt || u.createdAt || new Date().toISOString()
+          };
+        }
+      }
+    } catch (_) {}
+
     throw new NotFoundError('User not found');
   }
 

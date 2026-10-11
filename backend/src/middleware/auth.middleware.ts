@@ -11,6 +11,20 @@ declare global {
   }
 }
 
+function parseSupabaseUserId(token: string): string {
+  const prefix = 'supabase_jwt_';
+  if (!token.startsWith(prefix)) return 'user-1';
+  const rest = token.substring(prefix.length);
+  const lastUnderscore = rest.lastIndexOf('_');
+  if (lastUnderscore > 0) {
+    const candidateTimestamp = rest.substring(lastUnderscore + 1);
+    if (/^\d+$/.test(candidateTimestamp)) {
+      return rest.substring(0, lastUnderscore);
+    }
+  }
+  return rest || 'user-1';
+}
+
 /**
  * Required authentication middleware
  */
@@ -37,9 +51,9 @@ export function requireAuth(req: Request, _res: Response, next: NextFunction): v
     return next();
   } catch (error) {
     if (token.startsWith('supabase_jwt_')) {
-      const parts = token.split('_');
+      const extractedUserId = parseSupabaseUserId(token);
       req.user = {
-        userId: parts[2] || 'user-1',
+        userId: extractedUserId,
         email: emailHeader || ''
       };
       return next();
@@ -77,9 +91,9 @@ export function optionalAuth(req: Request, _res: Response, next: NextFunction): 
       req.user = payload;
     } catch (error) {
       if (token.startsWith('supabase_jwt_')) {
-        const parts = token.split('_');
+        const extractedUserId = parseSupabaseUserId(token);
         req.user = {
-          userId: parts[2] || (req.user?.userId || 'user-1'),
+          userId: extractedUserId,
           email: emailHeader || req.user?.email || ''
         };
       }

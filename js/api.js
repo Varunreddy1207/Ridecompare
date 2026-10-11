@@ -1042,13 +1042,51 @@
           return user;
         }
       } catch (err) {
-        if (err.status === 401) {
+        // Direct Supabase Cloud Fallback: Query Supabase REST if backend is offline or returned an error
+        if (this.token && this.token.startsWith('supabase_jwt_')) {
+          try {
+            const prefix = 'supabase_jwt_';
+            const rest = this.token.substring(prefix.length);
+            const lastUnderscore = rest.lastIndexOf('_');
+            let userId = rest;
+            if (lastUnderscore > 0 && /^\d+$/.test(rest.substring(lastUnderscore + 1))) {
+              userId = rest.substring(0, lastUnderscore);
+            }
+            if (userId) {
+              const rows = await supabaseRequest(`/User?id=eq.${encodeURIComponent(userId)}&select=id,name,email,phone,createdAt,updatedAt`);
+              if (rows && rows.length > 0) {
+                const sbUser = rows[0];
+                this.currentUser = sbUser;
+                localStorage.setItem('ridecompare_user_profile', JSON.stringify(sbUser));
+                this.notify();
+                return sbUser;
+              }
+            }
+          } catch (sbErr) {
+            console.warn('[RideCompareAuth] Supabase fallback checkSession error:', sbErr);
+          }
+        }
+
+        // Resilient local profile retention: don't wipe session on temporary network blips
+        const saved = localStorage.getItem('ridecompare_user_profile');
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved);
+            if (parsed && parsed.email && parsed.email !== 'guest' && parsed.email !== 'guest user') {
+              this.currentUser = parsed;
+              this.notify();
+              return parsed;
+            }
+          } catch (_) {}
+        }
+
+        if (err.status === 401 && !this.token.startsWith('supabase_jwt_') && !this.token.startsWith('local_')) {
           this.api.setToken('');
           this.currentUser = null;
           this.notify();
         }
       }
-      return null;
+      return this.currentUser;
     }
 
     async updateProfile(updates) {
