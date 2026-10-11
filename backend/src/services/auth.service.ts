@@ -3,8 +3,11 @@ import { randomUUID } from 'crypto';
 import { prisma, isDatabaseConnected } from '../config/database';
 import { RegisterInput, LoginInput } from '../schemas/auth.schema';
 import { AuthSuccessData, UserProfileResponse } from '../types/auth.types';
-import { ConflictError, UnauthorizedError, NotFoundError } from '../utils/errors';
+import { ConflictError, UnauthorizedError, NotFoundError, DeviceLimitError } from '../utils/errors';
 import { signToken } from '../utils/jwt';
+
+export const MAX_DEVICES_PER_ACCOUNT = 3;
+export const MAX_DEVICES_ERROR_MSG = 'The maximum limit is 3 devices';
 
 interface InMemoryUser {
   id: string;
@@ -17,9 +20,21 @@ interface InMemoryUser {
   updatedAt: Date;
 }
 
+interface InMemoryDeviceSession {
+  id: string;
+  userId: string;
+  deviceId: string;
+  deviceName: string;
+  ipAddress?: string | null;
+  lastActive: Date;
+  createdAt: Date;
+}
+
 export class AuthService {
   // In-memory user store fallback
   private memoryUsers: Map<string, InMemoryUser> = new Map();
+  // In-memory device session store: userId -> Map<deviceId, InMemoryDeviceSession>
+  private memoryDeviceSessions: Map<string, Map<string, InMemoryDeviceSession>> = new Map();
 
   constructor() {
     // Seed default demo user in memory fallback
@@ -37,8 +52,143 @@ export class AuthService {
     this.memoryUsers.set(demoUser.email.toLowerCase(), demoUser);
   }
 
-  public async register(input: RegisterInput): Promise<AuthSuccessData> {
+  // ---------------------------------------------------------------------------
+  // DEVICE SESSION HELPERS
+  // ---------------------------------------------------------------------------
+  public getMemoryDeviceSessions(userId: string): InMemoryDeviceSession[] {
+    const userSessions = this.memoryDeviceSessions.get(userId);
+    if (!userSessions) return [];
+    return Array.from(userSessions.values());
+  }
+
+  public recordMemoryDeviceSession(
+    userId: string,
+    deviceId: string,
+    deviceName = 'Browser Device',
+    ipAddress?: string | null
+  ): void {
+    if (!this.memoryDeviceSessions.has(userId)) {
+      this.memoryDeviceSessions.set(userId, new Map());
+    }
+    const userSessions = this.memoryDeviceSessions.get(userId)!;
+    userSessions.set(deviceId, {
+      id: randomUUID(),
+      userId,
+      deviceId,
+      deviceName,
+      ipAddress: ipAddress || null,
+      lastActive: new Date(),
+      createdAt: new Date()
+    });
+  }
+
+  public removeMemoryDeviceSession(userId?: string, deviceId?: string): boolean {
+    if (userId && deviceId) {
+      const userSessions = this.memoryDeviceSessions.get(userId);
+      if (userSessions) {
+        const deleted = userSessions.delete(deviceId);
+        return deleted;
+      }
+    } else if (deviceId) {
+      for (const sessions of this.memoryDeviceSessions.values()) {
+        if (sessions.has(deviceId)) {
+          sessions.delete(deviceId);
+          return true;
+        }
+      }
+    } else if (userId) {
+      this.memoryDeviceSessions.delete(userId);
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Enforce max 3 active devices per user.
+   * If the device already exists for this user, refresh lastActive and allow.
+   * If new device and user already has 3 active devices, block with:
+   * "The maximum limit is 3 devices"
+   */
+  private async registerOrValidateDevice(
+    userId: string,
+    deviceId: string,
+    deviceName = 'Web Browser',
+    ipAddress?: string | null
+  ): Promise<void> {
+    if (!deviceId) return;
+
+    if (isDatabaseConnected) {
+      try {
+        const existingSessions = await prisma.deviceSession.findMany({
+          where: { userId }
+        });
+
+        const currentSession = existingSessions.find((s) => s.deviceId === deviceId);
+
+        if (currentSession) {
+          // Same device logging in again -> update lastActive
+          await prisma.deviceSession.update({
+            where: { id: currentSession.id },
+            data: {
+              lastActive: new Date(),
+              deviceName: deviceName || currentSession.deviceName
+            }
+          });
+          this.recordMemoryDeviceSession(userId, deviceId, deviceName, ipAddress);
+          return;
+        }
+
+        // New device: check if max limit reached
+        if (existingSessions.length >= MAX_DEVICES_PER_ACCOUNT) {
+          throw new DeviceLimitError(MAX_DEVICES_ERROR_MSG);
+        }
+
+        // Under limit -> create new device session in DB
+        await prisma.deviceSession.create({
+          data: {
+            userId,
+            deviceId,
+            deviceName,
+            ipAddress: ipAddress || null,
+            lastActive: new Date()
+          }
+        });
+        this.recordMemoryDeviceSession(userId, deviceId, deviceName, ipAddress);
+        return;
+      } catch (err: any) {
+        if (err instanceof DeviceLimitError) {
+          throw err;
+        }
+        console.warn('Prisma deviceSession operation failed, using memory fallback:', err.message);
+      }
+    }
+
+    // Resilient memory-level enforcement
+    const memSessions = this.getMemoryDeviceSessions(userId);
+    const existingMem = memSessions.find((s) => s.deviceId === deviceId);
+
+    if (existingMem) {
+      existingMem.lastActive = new Date();
+      return;
+    }
+
+    if (memSessions.length >= MAX_DEVICES_PER_ACCOUNT) {
+      throw new DeviceLimitError(MAX_DEVICES_ERROR_MSG);
+    }
+
+    this.recordMemoryDeviceSession(userId, deviceId, deviceName, ipAddress);
+  }
+
+  // ---------------------------------------------------------------------------
+  // REGISTER
+  // ---------------------------------------------------------------------------
+  public async register(
+    input: RegisterInput,
+    clientMeta?: { deviceId?: string; deviceName?: string; ipAddress?: string }
+  ): Promise<AuthSuccessData> {
     const emailNormalized = input.email.toLowerCase().trim();
+    const effectiveDeviceId = (input.deviceId || clientMeta?.deviceId || `dev_${randomUUID()}`).trim();
+    const effectiveDeviceName = (input.deviceName || clientMeta?.deviceName || 'Web Browser').trim();
 
     // 1. Check existing in Prisma or Memory
     if (isDatabaseConnected) {
@@ -140,7 +290,15 @@ export class AuthService {
       updatedAt: new Date(createdUser.updatedAt || createdUser.createdAt)
     });
 
-    // 3. Sign JWT
+    // 3. Register the initial device session (1st of 3 allowed devices)
+    await this.registerOrValidateDevice(
+      createdUser.id,
+      effectiveDeviceId,
+      effectiveDeviceName,
+      clientMeta?.ipAddress
+    );
+
+    // 4. Sign JWT
     const token = signToken({
       userId: createdUser.id,
       email: createdUser.email
@@ -152,8 +310,16 @@ export class AuthService {
     };
   }
 
-  public async login(input: LoginInput): Promise<AuthSuccessData> {
+  // ---------------------------------------------------------------------------
+  // LOGIN
+  // ---------------------------------------------------------------------------
+  public async login(
+    input: LoginInput,
+    clientMeta?: { deviceId?: string; deviceName?: string; ipAddress?: string }
+  ): Promise<AuthSuccessData> {
     const emailNormalized = input.email.toLowerCase().trim();
+    const effectiveDeviceId = (input.deviceId || clientMeta?.deviceId || 'dev_primary').trim();
+    const effectiveDeviceName = (input.deviceName || clientMeta?.deviceName || 'Web Browser').trim();
 
     let userRecord: { id: string; name: string; email: string; phone: string | null; password?: string; createdAt: Date; updatedAt?: Date } | null = null;
 
@@ -182,6 +348,15 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new UnauthorizedError('Invalid email or password');
     }
+
+    // Enforce 3-device limit rule across any device!
+    // Throws DeviceLimitError("The maximum limit is 3 devices") if 4th device attempts login
+    await this.registerOrValidateDevice(
+      userRecord.id,
+      effectiveDeviceId,
+      effectiveDeviceName,
+      clientMeta?.ipAddress
+    );
 
     // Mirror to memory store for quick retrieval
     this.memoryUsers.set(emailNormalized, {
@@ -212,6 +387,53 @@ export class AuthService {
       token,
       user: userProfile
     };
+  }
+
+  // ---------------------------------------------------------------------------
+  // LOGOUT (Frees up device slot)
+  // ---------------------------------------------------------------------------
+  public async logout(userId?: string, deviceId?: string): Promise<void> {
+    if (isDatabaseConnected) {
+      try {
+        if (userId && deviceId) {
+          await prisma.deviceSession.deleteMany({
+            where: {
+              userId,
+              deviceId
+            }
+          });
+        } else if (deviceId) {
+          await prisma.deviceSession.deleteMany({
+            where: {
+              deviceId
+            }
+          });
+        } else if (userId) {
+          // Remove the oldest session or all sessions if not specified
+          await prisma.deviceSession.deleteMany({
+            where: { userId }
+          });
+        }
+      } catch (err: any) {
+        console.warn('Prisma deviceSession delete failed, proceeding with memory delete:', err.message);
+      }
+    }
+
+    this.removeMemoryDeviceSession(userId, deviceId);
+  }
+
+  public async getActiveDeviceCount(userId: string): Promise<number> {
+    if (isDatabaseConnected) {
+      try {
+        const count = await prisma.deviceSession.count({
+          where: { userId }
+        });
+        return count;
+      } catch (err) {
+        // fallback
+      }
+    }
+    return this.getMemoryDeviceSessions(userId).length;
   }
 
   public async getCurrentUser(userId: string): Promise<UserProfileResponse> {
@@ -263,6 +485,7 @@ export class AuthService {
     for (const [email, memUser] of this.memoryUsers.entries()) {
       if (memUser.id === userId) {
         this.memoryUsers.delete(email);
+        this.memoryDeviceSessions.delete(userId);
         return true;
       }
     }

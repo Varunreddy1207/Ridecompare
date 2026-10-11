@@ -3,7 +3,7 @@ import { authController } from '../controllers/auth.controller';
 import { validateBody } from '../middleware/validation.middleware';
 import { registerSchema, loginSchema } from '../schemas/auth.schema';
 import { authLimiter } from '../middleware/rate-limit.middleware';
-import { requireAuth } from '../middleware/auth.middleware';
+import { requireAuth, optionalAuth } from '../middleware/auth.middleware';
 
 const router = Router();
 
@@ -29,6 +29,7 @@ router.get(
 
 router.post(
   '/logout',
+  optionalAuth,
   authController.logout.bind(authController)
 );
 

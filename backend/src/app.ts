@@ -72,14 +72,12 @@ app.use(
         return callback(null, true);
       }
 
-      // 4. In development mode, allow localhost and private network IPs (LAN testing)
-      if (env.NODE_ENV !== 'production') {
-        if (
-          defaultDevOrigins.includes(normalizedOrigin) ||
-          /^http:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+)(:\d+)?$/.test(normalizedOrigin)
-        ) {
-          return callback(null, true);
-        }
+      // 4. Always allow localhost, Vite dev port 5173, backend port 5000, and local private network IPs
+      if (
+        defaultDevOrigins.includes(normalizedOrigin) ||
+        /^http:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+)(:\d+)?$/.test(normalizedOrigin)
+      ) {
+        return callback(null, true);
       }
 
       // Origin not permitted by CORS policy
@@ -94,6 +92,8 @@ app.use(
       'Origin',
       'X-Requested-With',
       'x-requested-with',
+      'X-Device-Id',
+      'x-device-id',
       'bypass-tunnel-reminder',
       'Bypass-Tunnel-Reminder'
     ],

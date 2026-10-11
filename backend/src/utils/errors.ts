@@ -41,6 +41,12 @@ export class ConflictError extends AppError {
   }
 }
 
+export class DeviceLimitError extends AppError {
+  constructor(message = 'The maximum limit is 3 devices') {
+    super(message, 403, 'DEVICE_LIMIT_REACHED');
+  }
+}
+
 export class ProviderError extends AppError {
   constructor(message: string) {
     super(message, 502, 'PROVIDER_ERROR');

@@ -74,6 +74,22 @@
     }
 
     /**
+     * Unique persistent device identifier for 3-device login limit enforcement
+     */
+    getDeviceId() {
+      try {
+        let devId = localStorage.getItem('ridecompare_device_id');
+        if (!devId) {
+          devId = 'dev_' + Math.random().toString(36).substring(2, 10) + '_' + Date.now().toString(36);
+          localStorage.setItem('ridecompare_device_id', devId);
+        }
+        return devId;
+      } catch (e) {
+        return 'dev_browser_client';
+      }
+    }
+
+    /**
      * Get stored JWT token
      */
     getToken() {
@@ -100,6 +116,7 @@
         'Accept': 'application/json',
         'bypass-tunnel-reminder': 'true',
         'Bypass-Tunnel-Reminder': 'true',
+        'X-Device-Id': this.getDeviceId(),
         ...customHeaders
       };
 
@@ -297,9 +314,10 @@
     // AUTHENTICATION & PROFILE
     // =========================================================================
     async register(userData) {
+      const payload = Object.assign({ deviceId: this.getDeviceId() }, userData);
       const data = await this.request('/auth/register', {
         method: 'POST',
-        body: userData
+        body: payload
       });
       if (data?.token) {
         this.setToken(data.token);
@@ -308,9 +326,14 @@
     }
 
     async login(email, password) {
+      const payload = {
+        email,
+        password,
+        deviceId: this.getDeviceId()
+      };
       const data = await this.request('/auth/login', {
         method: 'POST',
-        body: { email, password }
+        body: payload
       });
       if (data?.token) {
         this.setToken(data.token);
@@ -431,6 +454,20 @@
           throw err;
         }
 
+        // Device limit error: pass through immediately
+        if (err.status === 403 || err.code === 'DEVICE_LIMIT_REACHED' || (err.message && err.message.toLowerCase().includes('limit is 3 devices'))) {
+          this.loading = false;
+          this.notify();
+          throw err;
+        }
+
+        // Explicit validation error from backend
+        if (err.status && err.status >= 400 && err.status < 500) {
+          this.loading = false;
+          this.notify();
+          throw err;
+        }
+
         // Resilient fallback: If backend is offline or network fails, register locally
         const isNetworkErr = !this.api.isBackendOnline || err.message?.includes('fetch') || err.message?.includes('Network') || err.status >= 500;
         if (isNetworkErr) {
@@ -482,27 +519,44 @@
         this.notify();
         return { success: true, user, token, message: res.message || 'Logged in successfully' };
       } catch (err) {
-        // Resilient fallback: check demo user or locally registered users
-        const localUsers = this.getLocalUsers();
-        const localUser = localUsers[normEmail];
-        const isDemo = normEmail === 'varunreddy@gmail.com' && (password === 'Password123!' || password === 'password123');
-
-        if (isDemo || (localUser && localUser.password === password)) {
-          const userObj = isDemo ? {
-            id: 'demo-user-1',
-            name: 'Varun Reddy',
-            email: 'varunreddy@gmail.com',
-            phone: '+91 98765 43210',
-            createdAt: new Date().toISOString()
-          } : localUser;
-
-          const localToken = `local_jwt_${Date.now()}_${Math.random().toString(36).substr(2)}`;
-          this.api.setToken(localToken);
-          this.currentUser = userObj;
-          localStorage.setItem('ridecompare_user_profile', JSON.stringify(userObj));
+        // Crucial: If device limit is reached, pass through immediately so error is shown
+        if (err.status === 403 || err.code === 'DEVICE_LIMIT_REACHED' || (err.message && err.message.toLowerCase().includes('limit is 3 devices'))) {
           this.loading = false;
           this.notify();
-          return { success: true, user: userObj, token: localToken, message: 'Logged in successfully' };
+          throw err;
+        }
+
+        // If backend returned invalid credentials (401) or other client error, do not bypass
+        if (err.status === 401 || (err.status && err.status >= 400 && err.status < 500)) {
+          this.loading = false;
+          this.notify();
+          throw err;
+        }
+
+        // Resilient fallback only if backend server is completely offline/unreachable
+        const isNetworkErr = !this.api.isBackendOnline || err.message?.includes('fetch') || err.message?.includes('Network') || (err.status && err.status >= 500);
+        if (isNetworkErr) {
+          const localUsers = this.getLocalUsers();
+          const localUser = localUsers[normEmail];
+          const isDemo = normEmail === 'varunreddy@gmail.com' && (password === 'Password123!' || password === 'password123');
+
+          if (isDemo || (localUser && localUser.password === password)) {
+            const userObj = isDemo ? {
+              id: 'demo-user-1',
+              name: 'Varun Reddy',
+              email: 'varunreddy@gmail.com',
+              phone: '+91 98765 43210',
+              createdAt: new Date().toISOString()
+            } : localUser;
+
+            const localToken = `local_jwt_${Date.now()}_${Math.random().toString(36).substr(2)}`;
+            this.api.setToken(localToken);
+            this.currentUser = userObj;
+            localStorage.setItem('ridecompare_user_profile', JSON.stringify(userObj));
+            this.loading = false;
+            this.notify();
+            return { success: true, user: userObj, token: localToken, message: 'Logged in successfully' };
+          }
         }
 
         this.loading = false;
@@ -515,7 +569,11 @@
       this.loading = true;
       this.notify();
       try {
-        await this.api.request('/auth/logout', { method: 'POST' }).catch(() => {});
+        const deviceId = this.api.getDeviceId();
+        await this.api.request('/auth/logout', {
+          method: 'POST',
+          body: { deviceId }
+        }).catch(() => {});
       } finally {
         this.api.setToken('');
         this.currentUser = null;

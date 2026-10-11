@@ -7,12 +7,16 @@ export const registerSchema = z.object({
     (val) => (val === '' || val === null || val === undefined ? null : String(val).trim()),
     z.string().regex(/^[+0-9\s-]{8,20}$/, 'Invalid phone number format').nullable().optional()
   ),
-  password: z.string().min(6, 'Password must be at least 6 characters')
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+  deviceId: z.string().trim().optional(),
+  deviceName: z.string().trim().optional()
 });
 
 export const loginSchema = z.object({
   email: z.string().trim().toLowerCase().email('Please provide a valid email address'),
-  password: z.string().min(1, 'Password is required')
+  password: z.string().min(1, 'Password is required'),
+  deviceId: z.string().trim().optional(),
+  deviceName: z.string().trim().optional()
 });
 
 export type RegisterInput = z.infer<typeof registerSchema>;

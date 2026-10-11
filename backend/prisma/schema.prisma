@@ -25,8 +25,24 @@ model User {
   rideSearches   RideSearch[]
   rideHistories  RideHistory[]
   notifications  Notification[]
+  deviceSessions DeviceSession[]
 
   @@index([email])
+}
+
+model DeviceSession {
+  id         String   @id @default(uuid())
+  userId     String
+  deviceId   String
+  deviceName String?
+  ipAddress  String?
+  lastActive DateTime @default(now())
+  createdAt  DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, deviceId])
+  @@index([userId])
 }
 
 model SavedLocation {
