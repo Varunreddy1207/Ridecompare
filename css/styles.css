@@ -4300,3 +4300,20 @@ body.theme-dark #admin-login-modal .admin-login-back-btn:hover,
   color: #2563EB !important;
 }
 
+/* RESPONSIVE ENFORCEMENT: HIDE ADMIN PORTAL BUTTON IN LOGIN UI ON MOBILE (< 640px) */
+@media (max-width: 639px) {
+  #btn-login-as-admin,
+  #btn-topbar-admin,
+  #auth-admin-button-container,
+  .auth-admin-pill,
+  .btn-login-as-admin {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+  }
+}
+

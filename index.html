@@ -4878,7 +4878,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
           <span>Back</span>
         </button>
 
-        <button type="button" id="btn-topbar-admin" onclick="app.openAdminLoginModal()" class="auth-admin-pill inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-950/70 hover:bg-blue-900/80 border border-blue-500/50 text-blue-300 hover:text-white text-xs font-semibold shadow-sm transition-all cursor-pointer active:scale-95" title="Admin Portal">
+        <button type="button" id="btn-topbar-admin" onclick="app.openAdminLoginModal()" class="auth-admin-pill hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-950/70 hover:bg-blue-900/80 border border-blue-500/50 text-blue-300 hover:text-white text-xs font-semibold shadow-sm transition-all cursor-pointer active:scale-95" title="Admin Portal">
           <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
           <span>Admin</span>
         </button>
@@ -4971,9 +4971,9 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
           Don't have an account? <button type="button" onclick="app.switchAuthTab('signup')" class="text-blue-400 hover:underline font-semibold cursor-pointer">Sign Up</button>
         </p>
 
-        <!-- Admin Portal Login Button -->
-        <div class="pt-2 border-t border-slate-800/80 mt-2">
-          <button type="button" id="btn-login-as-admin" onclick="app.openAdminLoginModal()" class="w-full py-2.5 px-4 rounded-xl bg-slate-900/90 hover:bg-slate-800/90 border border-slate-700/70 hover:border-blue-500/50 text-slate-300 hover:text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer active:scale-98">
+        <!-- Admin Portal Login Button (Hidden in Mobile View < 640px) -->
+        <div id="auth-admin-button-container" class="hidden sm:block pt-2 border-t border-slate-800/80 mt-2">
+          <button type="button" id="btn-login-as-admin" onclick="app.openAdminLoginModal()" class="btn-login-as-admin w-full py-2.5 px-4 rounded-xl bg-slate-900/90 hover:bg-slate-800/90 border border-slate-700/70 hover:border-blue-500/50 text-slate-300 hover:text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer active:scale-98">
             <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
             <span>Admin Portal</span>
           </button>
