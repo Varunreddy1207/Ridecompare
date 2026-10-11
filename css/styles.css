@@ -4114,6 +4114,175 @@ body.theme-light #btn-clear-map-search:hover,
   transform: scale(1) !important;
 }
 
+/* ADMIN LOGIN MODAL WHITE THEME (DEFAULT & LIGHT MODE) */
+#admin-login-modal {
+  background-color: rgba(15, 23, 42, 0.45) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+}
+
+#admin-login-modal .admin-login-panel {
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.04) !important;
+  color: #0F172A !important;
+}
+
+#admin-login-modal .admin-login-title {
+  color: #0F172A !important;
+}
+
+#admin-login-modal .admin-login-subtitle {
+  color: #64748B !important;
+}
+
+#admin-login-modal .admin-login-close-btn {
+  background-color: #F1F5F9 !important;
+  border: 1px solid #E2E8F0 !important;
+  color: #64748B !important;
+}
+
+#admin-login-modal .admin-login-close-btn:hover {
+  background-color: #E2E8F0 !important;
+  color: #0F172A !important;
+}
+
+#admin-login-modal .admin-login-label {
+  color: #334155 !important;
+}
+
+#admin-login-modal .admin-login-input {
+  background-color: #F8FAFC !important;
+  border: 1.5px solid #CBD5E1 !important;
+  color: #0F172A !important;
+}
+
+#admin-login-modal .admin-login-input::placeholder {
+  color: #94A3B8 !important;
+}
+
+#admin-login-modal .admin-login-input:focus {
+  background-color: #FFFFFF !important;
+  border-color: #2563EB !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
+  outline: none !important;
+}
+
+#admin-login-modal .btn-toggle-password {
+  color: #94A3B8 !important;
+}
+
+#admin-login-modal .btn-toggle-password:hover {
+  color: #334155 !important;
+}
+
+#admin-login-modal #admin-login-error {
+  background-color: #FEF2F2 !important;
+  border: 1px solid #FECACA !important;
+  color: #DC2626 !important;
+}
+
+#admin-login-modal #admin-login-error svg {
+  color: #EF4444 !important;
+}
+
+#admin-login-modal #btn-admin-login-submit {
+  background: linear-gradient(135deg, #2563EB 0%, #4F46E5 100%) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35) !important;
+  border: none !important;
+}
+
+#admin-login-modal #btn-admin-login-submit:hover {
+  background: linear-gradient(135deg, #1D4ED8 0%, #4338CA 100%) !important;
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45) !important;
+}
+
+#admin-login-modal .admin-login-back-btn {
+  background-color: #F8FAFC !important;
+  border: 1px solid #E2E8F0 !important;
+  color: #475569 !important;
+}
+
+#admin-login-modal .admin-login-back-btn:hover {
+  background-color: #F1F5F9 !important;
+  color: #0F172A !important;
+}
+
+/* DARK MODE ADAPTATION FOR ADMIN LOGIN MODAL */
+body.theme-dark #admin-login-modal,
+[data-theme="dark"] #admin-login-modal {
+  background-color: rgba(2, 6, 23, 0.8) !important;
+}
+
+body.theme-dark #admin-login-modal .admin-login-panel,
+[data-theme="dark"] #admin-login-modal .admin-login-panel {
+  background-color: #0A1124 !important;
+  border-color: rgba(59, 130, 246, 0.35) !important;
+  box-shadow: 0 0 50px rgba(0, 115, 255, 0.25) !important;
+  color: #FFFFFF !important;
+}
+
+body.theme-dark #admin-login-modal .admin-login-title,
+[data-theme="dark"] #admin-login-modal .admin-login-title {
+  color: #FFFFFF !important;
+}
+
+body.theme-dark #admin-login-modal .admin-login-subtitle,
+[data-theme="dark"] #admin-login-modal .admin-login-subtitle {
+  color: #94A3B8 !important;
+}
+
+body.theme-dark #admin-login-modal .admin-login-close-btn,
+[data-theme="dark"] #admin-login-modal .admin-login-close-btn {
+  background-color: #1E293B !important;
+  border-color: #334155 !important;
+  color: #94A3B8 !important;
+}
+
+body.theme-dark #admin-login-modal .admin-login-close-btn:hover,
+[data-theme="dark"] #admin-login-modal .admin-login-close-btn:hover {
+  background-color: #334155 !important;
+  color: #FFFFFF !important;
+}
+
+body.theme-dark #admin-login-modal .admin-login-label,
+[data-theme="dark"] #admin-login-modal .admin-login-label {
+  color: #CBD5E1 !important;
+}
+
+body.theme-dark #admin-login-modal .admin-login-input,
+[data-theme="dark"] #admin-login-modal .admin-login-input {
+  background-color: #0F172A !important;
+  border-color: #334155 !important;
+  color: #FFFFFF !important;
+}
+
+body.theme-dark #admin-login-modal .admin-login-input::placeholder,
+[data-theme="dark"] #admin-login-modal .admin-login-input::placeholder {
+  color: #64748B !important;
+}
+
+body.theme-dark #admin-login-modal .admin-login-input:focus,
+[data-theme="dark"] #admin-login-modal .admin-login-input:focus {
+  background-color: #0A1124 !important;
+  border-color: #3B82F6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25) !important;
+}
+
+body.theme-dark #admin-login-modal .admin-login-back-btn,
+[data-theme="dark"] #admin-login-modal .admin-login-back-btn {
+  background-color: rgba(30, 41, 59, 0.6) !important;
+  border-color: #334155 !important;
+  color: #94A3B8 !important;
+}
+
+body.theme-dark #admin-login-modal .admin-login-back-btn:hover,
+[data-theme="dark"] #admin-login-modal .admin-login-back-btn:hover {
+  background-color: #1E293B !important;
+  color: #FFFFFF !important;
+}
+
 /* ADMIN & DEVELOPER DASHBOARD TABS AND PRESENTATION */
 #screen-admin,
 #screen-developer {

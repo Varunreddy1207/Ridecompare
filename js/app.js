@@ -4153,15 +4153,50 @@ class RideCompareApp {
     if (window.soundFX && window.soundFX.playTap) {
       try { window.soundFX.playTap(); } catch (_) {}
     }
+
+    // 1. Invalidate and clear admin session authorization
     sessionStorage.removeItem('ridecompare_admin_access');
     localStorage.removeItem('ridecompare_admin_access');
+
+    // 2. Hide any open admin or developer dropdown menus
     const adminMenu = document.getElementById('admin-user-dropdown');
     if (adminMenu) adminMenu.classList.add('hidden');
     const devMenu = document.getElementById('dev-user-dropdown');
     if (devMenu) devMenu.classList.add('hidden');
 
-    this.showToast('Logged out from Admin Dashboard 👋');
-    this.switchTab('home');
+    // 3. Clear admin login form inputs & errors
+    const adminEmailInp = document.getElementById('admin-login-email');
+    if (adminEmailInp) adminEmailInp.value = '';
+    const adminPassInp = document.getElementById('admin-login-password');
+    if (adminPassInp) adminPassInp.value = '';
+    const adminErr = document.getElementById('admin-login-error');
+    if (adminErr) adminErr.classList.add('hidden');
+    this.closeAdminLoginModal();
+
+    // 4. Reset admin profile flag if applicable
+    if (this.userProfile && this.userProfile.isAdmin) {
+      this.userProfile.isAdmin = false;
+      this.userProfile.name = 'Guest User';
+      this.renderUserProfile();
+    }
+
+    // 5. Navigate away from Admin/Developer screens to Home base
+    this.currentTab = 'home';
+    this.navigateTo('screen-home', false);
+    this.enforceResponsiveNav();
+
+    // 6. Update URL route to #login
+    try {
+      history.pushState(null, '', '#login');
+    } catch (_) {
+      window.location.hash = '#login';
+    }
+
+    // 7. Open the Login Modal directly
+    setTimeout(() => {
+      this.openAuthModal('login');
+      this.showToast('Logged out from Admin Dashboard. Please log in to continue. 👋', 'info');
+    }, 100);
   }
 
   toggleAdminUserMenu() {
