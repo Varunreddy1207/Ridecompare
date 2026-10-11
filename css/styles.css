@@ -703,18 +703,30 @@ body:has(#screen-splash.active) .tablet-nav-dock,
 body:has(#screen-splash.active) #desktop-sidebar,
 body:has(#screen-splash.active) .desktop-sidebar,
 body:has(#screen-splash.active) .desktop-topbar,
-#screen-status.active ~ #app-bottom-nav,
-#screen-status.active ~ .app-bottom-nav,
-#screen-status.active ~ #mobile-bottom-nav,
-#screen-status.active ~ .mobile-bottom-nav,
-#screen-status.active ~ #tablet-nav-dock,
-#screen-status.active ~ .tablet-nav-dock,
-body:has(#screen-status.active) #app-bottom-nav,
-body:has(#screen-status.active) .app-bottom-nav,
-body:has(#screen-status.active) #mobile-bottom-nav,
-body:has(#screen-status.active) .mobile-bottom-nav,
-body:has(#screen-status.active) #tablet-nav-dock,
-body:has(#screen-status.active) .tablet-nav-dock {
+#screen-admin.active ~ #app-bottom-nav,
+#screen-admin.active ~ .app-bottom-nav,
+#screen-admin.active ~ #mobile-bottom-nav,
+#screen-admin.active ~ .mobile-bottom-nav,
+#screen-admin.active ~ #tablet-nav-dock,
+#screen-admin.active ~ .tablet-nav-dock,
+#screen-developer.active ~ #app-bottom-nav,
+#screen-developer.active ~ .app-bottom-nav,
+#screen-developer.active ~ #mobile-bottom-nav,
+#screen-developer.active ~ .mobile-bottom-nav,
+#screen-developer.active ~ #tablet-nav-dock,
+#screen-developer.active ~ .tablet-nav-dock,
+body:has(#screen-admin.active) #app-bottom-nav,
+body:has(#screen-admin.active) .app-bottom-nav,
+body:has(#screen-admin.active) #mobile-bottom-nav,
+body:has(#screen-admin.active) .mobile-bottom-nav,
+body:has(#screen-admin.active) #tablet-nav-dock,
+body:has(#screen-admin.active) .tablet-nav-dock,
+body:has(#screen-developer.active) #app-bottom-nav,
+body:has(#screen-developer.active) .app-bottom-nav,
+body:has(#screen-developer.active) #mobile-bottom-nav,
+body:has(#screen-developer.active) .mobile-bottom-nav,
+body:has(#screen-developer.active) #tablet-nav-dock,
+body:has(#screen-developer.active) .tablet-nav-dock {
   display: none !important;
   visibility: hidden !important;
   pointer-events: none !important;
@@ -3895,7 +3907,8 @@ body.theme-light .btn-edit-profile:hover,
 /* ==========================================================================
    DEVELOPMENT SERVER & CONNECTION STATUS PANEL (WHITE THEME)
    ========================================================================== */
-#screen-status {
+#screen-status,
+#dev-panel-status {
   background-color: #F8FAFC !important;
   color: #0F172A !important;
 }
@@ -3905,7 +3918,8 @@ body.theme-light .btn-edit-profile:hover,
   border-bottom: 1px solid #E2E8F0 !important;
 }
 
-#screen-status .bg-white {
+#screen-status .bg-white,
+#dev-panel-status .bg-white {
   background-color: #FFFFFF !important;
 }
 
@@ -3915,23 +3929,28 @@ body.theme-light .btn-edit-profile:hover,
   border-color: #E2E8F0 !important;
 }
 
-#screen-status .text-slate-900 {
+#screen-status .text-slate-900,
+#dev-panel-status .text-slate-900 {
   color: #0F172A !important;
 }
 
-#screen-status .text-slate-800 {
+#screen-status .text-slate-800,
+#dev-panel-status .text-slate-800 {
   color: #1E293B !important;
 }
 
-#screen-status .text-slate-700 {
+#screen-status .text-slate-700,
+#dev-panel-status .text-slate-700 {
   color: #334155 !important;
 }
 
-#screen-status .text-slate-500 {
+#screen-status .text-slate-500,
+#dev-panel-status .text-slate-500 {
   color: #64748B !important;
 }
 
-#screen-status .text-slate-400 {
+#screen-status .text-slate-400,
+#dev-panel-status .text-slate-400 {
   color: #94A3B8 !important;
 }
 

@@ -676,10 +676,8 @@ class RideCompareApp {
         try { history.replaceState(null, '', '#home'); } catch (_) {}
         setTimeout(() => this.openAccessRestrictedModal(), 350);
       } else {
-        this.currentTab = 'status';
-        this.navigateTo('screen-status', false);
-        this.updateActiveNavs('status');
-        this.initSystemStatus();
+        this.navigateTo('screen-developer', false);
+        this.switchDevTab('status');
       }
     } else if (path.endsWith('/login') || hash === '#login') {
       this.currentTab = 'home';
@@ -773,10 +771,8 @@ class RideCompareApp {
         this.openAccessRestrictedModal();
         return;
       }
-      this.currentTab = 'status';
-      this.navigateTo('screen-status', false);
-      this.updateActiveNavs('status');
-      this.initSystemStatus();
+      this.navigateTo('screen-developer', false);
+      this.switchDevTab('status');
       return;
     }
 
@@ -3784,9 +3780,9 @@ class RideCompareApp {
         this.openAccessRestrictedModal();
         return;
       }
-      this.navigateTo('screen-status', false);
-      window.location.hash = '#system-status';
-      this.initSystemStatus();
+      this.navigateTo('screen-developer', false);
+      window.location.hash = '#developer';
+      this.switchDevTab('status');
     } else {
       this.showToast(`${tab.charAt(0).toUpperCase() + tab.slice(1)} view selected`);
     }
@@ -4000,11 +3996,9 @@ class RideCompareApp {
       if (window.soundFX && window.soundFX.playTap) {
         try { window.soundFX.playTap(); } catch (_) {}
       }
-      this.navigateTo('screen-status', false);
-      try { history.pushState(null, '', '#system-status'); } catch (_) {}
-      this.currentTab = 'status';
-      this.updateActiveNavs('status');
-      this.initSystemStatus();
+      this.navigateTo('screen-developer', false);
+      try { history.pushState(null, '', '#developer'); } catch (_) {}
+      this.switchDevTab('status');
     } else {
       if (err) {
         err.textContent = 'Invalid Passcode. Only admin or developer can access it.';
@@ -4240,18 +4234,41 @@ class RideCompareApp {
     }
     const navItems = document.querySelectorAll('.dev-nav-item');
     navItems.forEach(item => {
-      const isMatch = item.getAttribute('onclick')?.includes(`'${tabName}'`);
+      const isMatch = item.id === `dev-tab-${tabName}` || item.getAttribute('onclick')?.includes(`'${tabName}'`);
       item.classList.toggle('active', !!isMatch);
+      const icon = item.querySelector('svg');
       if (isMatch) {
-        item.classList.add('bg-blue-50', 'text-blue-600');
-        item.classList.remove('text-slate-600', 'hover:bg-slate-100');
+        item.classList.add('bg-blue-50', 'text-blue-600', 'font-bold');
+        item.classList.remove('text-slate-600', 'hover:bg-slate-100', 'font-semibold');
+        if (icon) {
+          icon.classList.add('text-blue-600');
+          icon.classList.remove('text-slate-400');
+        }
       } else {
-        item.classList.remove('bg-blue-50', 'text-blue-600');
-        item.classList.add('text-slate-600', 'hover:bg-slate-100');
+        item.classList.remove('bg-blue-50', 'text-blue-600', 'font-bold');
+        item.classList.add('text-slate-600', 'hover:bg-slate-100', 'font-semibold');
+        if (icon) {
+          icon.classList.remove('text-blue-600');
+          icon.classList.add('text-slate-400');
+        }
       }
     });
+
+    const playgroundPanel = document.getElementById('dev-panel-playground');
+    const statusPanel = document.getElementById('dev-panel-status');
+
+    if (tabName === 'status') {
+      if (playgroundPanel) playgroundPanel.classList.add('hidden');
+      if (statusPanel) statusPanel.classList.remove('hidden');
+      this.initSystemStatus();
+    } else {
+      if (statusPanel) statusPanel.classList.add('hidden');
+      if (playgroundPanel) playgroundPanel.classList.remove('hidden');
+    }
+
     if (tabName !== 'playground') {
-      this.showToast(`Developer: ${tabName.charAt(0).toUpperCase() + tabName.slice(1)} loaded`, 'info');
+      const tabLabel = tabName === 'status' ? 'System Status' : (tabName.charAt(0).toUpperCase() + tabName.slice(1));
+      this.showToast(`Developer: ${tabLabel} loaded`, 'info');
     }
   }
 
