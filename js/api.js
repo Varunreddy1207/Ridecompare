@@ -272,22 +272,37 @@
         const raw = localStorage.getItem('ridecompare_user_profile');
         if (raw) email = JSON.parse(raw)?.email || '';
       } catch (_) {}
-      const customHeaders = {};
-      if (email) customHeaders['x-user-email'] = email;
-      try {
-        const res = await this.request(`/rides/recent-searches?limit=${limit}`, {
-          headers: customHeaders
-        });
-        if (Array.isArray(res)) return res;
-        if (res && Array.isArray(res.data)) return res.data;
-        return [];
-      } catch (e) {
-        return [];
+
+      // 1. Try Express backend endpoint
+      if (email) {
+        try {
+          const res = await this.request(`/rides/recent-searches?limit=${limit}`, {
+            headers: { 'x-user-email': email }
+          });
+          const list = Array.isArray(res) ? res : (res && Array.isArray(res.data) ? res.data : []);
+          if (list && list.length > 0) {
+            return list;
+          }
+        } catch (_) {}
       }
+
+      // 2. Direct Supabase Cloud Fallback (Works on GitHub Pages, mobile network, any device 24/7)
+      if (email && email !== 'guest' && email !== 'guest user') {
+        try {
+          const directSearches = await supabaseDirectGetRecentSearches(email, limit);
+          if (Array.isArray(directSearches) && directSearches.length > 0) {
+            return directSearches;
+          }
+        } catch (e) {
+          console.warn('[RideCompareApi] Supabase direct recent searches error:', e);
+        }
+      }
+
+      return [];
     }
 
     /**
-     * Save a recent search to backend (cross-device sync)
+     * Save a recent search to backend & Supabase Cloud (cross-device sync)
      */
     async saveRecentSearch(searchData) {
       let email = '';
@@ -295,18 +310,27 @@
         const raw = localStorage.getItem('ridecompare_user_profile');
         if (raw) email = JSON.parse(raw)?.email || '';
       } catch (_) {}
-      const customHeaders = {};
-      if (email) customHeaders['x-user-email'] = email;
+
+      if (!email || email === 'guest' || email === 'guest user') return null;
+
+      // 1. Save to Express backend endpoint
+      let backendSaved = null;
       try {
-        const res = await this.request('/rides/recent-searches', {
+        backendSaved = await this.request('/rides/recent-searches', {
           method: 'POST',
           body: searchData,
-          headers: customHeaders
+          headers: { 'x-user-email': email }
         });
-        return res || null;
+      } catch (_) {}
+
+      // 2. Also save to Supabase Cloud directly (Guarantees persistence even if backend is offline/external)
+      try {
+        await supabaseDirectSaveRecentSearch(email, searchData);
       } catch (e) {
-        return null;
+        console.warn('[RideCompareApi] Direct Supabase save search error:', e);
       }
+
+      return backendSaved || searchData;
     }
 
     /**
@@ -318,13 +342,18 @@
         const raw = localStorage.getItem('ridecompare_user_profile');
         if (raw) email = JSON.parse(raw)?.email || '';
       } catch (_) {}
-      const customHeaders = {};
-      if (email) customHeaders['x-user-email'] = email;
+
+      if (!email || email === 'guest' || email === 'guest user') return;
+
       try {
         await this.request('/rides/recent-searches', {
           method: 'DELETE',
-          headers: customHeaders
+          headers: { 'x-user-email': email }
         });
+      } catch (_) {}
+
+      try {
+        await supabaseDirectClearRecentSearches(email);
       } catch (_) {}
     }
 
@@ -602,6 +631,123 @@
   async function supabaseDirectLogout(userId, deviceId) {
     if (deviceId) {
       await supabaseRequest(`/DeviceSession?deviceId=eq.${encodeURIComponent(deviceId)}`, 'DELETE').catch(() => {});
+    }
+  }
+
+  function generateUuid() {
+    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+      return crypto.randomUUID();
+    }
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+
+  async function supabaseDirectGetRecentSearches(email, limit = 8) {
+    const normEmail = (email || '').toLowerCase().trim();
+    if (!normEmail || normEmail === 'guest') return [];
+
+    try {
+      const users = await supabaseRequest(`/User?email=eq.${encodeURIComponent(normEmail)}&select=id`);
+      let userId = users?.[0]?.id;
+      if (!userId && normEmail === 'varunreddy@gmail.com') {
+        userId = 'demo-user-1';
+      }
+      if (!userId) return [];
+
+      const rows = await supabaseRequest(
+        `/RideSearch?userId=eq.${encodeURIComponent(userId)}&order=createdAt.desc&limit=${Math.max(limit * 3, 20)}&select=id,destination,pickup,distanceKm,createdAt`
+      );
+
+      if (!Array.isArray(rows) || rows.length === 0) return [];
+
+      const seen = new Set();
+      const results = [];
+
+      for (const row of rows) {
+        const dest = (row.destination || '').trim();
+        const commaIdx = dest.indexOf(',');
+        const name = commaIdx > 0 ? dest.substring(0, commaIdx).trim() : dest;
+        const city = commaIdx > 0 ? dest.substring(commaIdx + 1).trim() : 'Kolhapur';
+        const lower = name.toLowerCase();
+
+        if (lower && !seen.has(lower)) {
+          seen.add(lower);
+          let fare = '₹78';
+          if (lower.includes('pune')) fare = '₹240';
+          else if (lower.includes('airport')) fare = '₹180';
+          else if (lower.includes('station')) fare = '₹50';
+          else if (lower.includes('koramangala')) fare = '₹105';
+          else if (lower.includes('ghodawat')) fare = '₹78';
+
+          results.push({
+            id: row.id,
+            name,
+            city,
+            fare,
+            pickup: row.pickup || 'Current Location',
+            timestamp: new Date(row.createdAt).getTime() || Date.now()
+          });
+          if (results.length >= limit) break;
+        }
+      }
+
+      return results;
+    } catch (err) {
+      console.warn('[SupabaseDirect] Error getting recent searches:', err);
+      return [];
+    }
+  }
+
+  async function supabaseDirectSaveRecentSearch(email, data) {
+    const normEmail = (email || '').toLowerCase().trim();
+    if (!normEmail || normEmail === 'guest') return null;
+
+    try {
+      const users = await supabaseRequest(`/User?email=eq.${encodeURIComponent(normEmail)}&select=id`);
+      let userId = users?.[0]?.id;
+      if (!userId && normEmail === 'varunreddy@gmail.com') {
+        userId = 'demo-user-1';
+      }
+      if (!userId) return null;
+
+      const cleanName = (data.name || '').trim();
+      const cleanCity = (data.city || 'Kolhapur').trim();
+      const fullDest = cleanCity ? `${cleanName}, ${cleanCity}` : cleanName;
+      const cleanPickup = (data.pickup || 'Current Location').trim();
+
+      const searchRecord = {
+        id: generateUuid(),
+        userId,
+        pickup: cleanPickup,
+        destination: fullDest,
+        distanceKm: 5.0
+      };
+
+      await supabaseRequest('/RideSearch', 'POST', searchRecord);
+      return searchRecord;
+    } catch (err) {
+      console.warn('[SupabaseDirect] Error saving recent search:', err);
+      return null;
+    }
+  }
+
+  async function supabaseDirectClearRecentSearches(email) {
+    const normEmail = (email || '').toLowerCase().trim();
+    if (!normEmail || normEmail === 'guest') return;
+
+    try {
+      const users = await supabaseRequest(`/User?email=eq.${encodeURIComponent(normEmail)}&select=id`);
+      let userId = users?.[0]?.id;
+      if (!userId && normEmail === 'varunreddy@gmail.com') {
+        userId = 'demo-user-1';
+      }
+      if (!userId) return;
+
+      await supabaseRequest(`/RideSearch?userId=eq.${encodeURIComponent(userId)}`, 'DELETE');
+    } catch (err) {
+      console.warn('[SupabaseDirect] Error clearing recent searches:', err);
     }
   }
 

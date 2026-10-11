@@ -321,6 +321,16 @@ class RideCompareApp {
       this.renderRecentSearches();
       this.syncRecentSearchesFromBackend();
 
+      // Automatically re-sync from backend/cloud when switching back to tab/app across devices
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+          this.syncRecentSearchesFromBackend();
+        }
+      });
+      window.addEventListener('focus', () => {
+        this.syncRecentSearchesFromBackend();
+      });
+
       // Desktop search input: Enter key to search
       const deskSearchInput = document.getElementById('desktop-search-input');
       if (deskSearchInput) {
@@ -1323,6 +1333,8 @@ class RideCompareApp {
     this.navigateTo('screen-home', false);
     window.location.hash = '#home';
     this.enforceResponsiveNav();
+    this.renderRecentSearches();
+    this.syncRecentSearchesFromBackend();
     const userName = (this.userProfile && this.userProfile.name) ? this.userProfile.name : 'User';
     if (this.lastAuthAction === 'login') {
       this.showToast(`✓ Welcome back, ${userName}! 🚀`, 'success');
@@ -1646,7 +1658,13 @@ class RideCompareApp {
   }
 
   async syncRecentSearchesFromBackend() {
-    const email = this.userProfile?.email || '';
+    let email = (this.userProfile && this.userProfile.email) ? this.userProfile.email.toLowerCase().trim() : '';
+    if (!email || email === 'guest' || email === 'guest user') {
+      try {
+        const raw = localStorage.getItem('ridecompare_user_profile');
+        if (raw) email = (JSON.parse(raw)?.email || '').toLowerCase().trim();
+      } catch (_) {}
+    }
     if (!email || email === 'guest' || email === 'guest user') {
       this.renderRecentSearches();
       return;
@@ -1655,8 +1673,9 @@ class RideCompareApp {
     if (window.RideCompareApi && typeof window.RideCompareApi.getRecentSearches === 'function') {
       try {
         const backendSearches = await window.RideCompareApi.getRecentSearches(8);
+        const localSearches = this.getRecentSearches();
+
         if (Array.isArray(backendSearches) && backendSearches.length > 0) {
-          const localSearches = this.getRecentSearches();
           const merged = [];
           const seen = new Set();
           backendSearches.forEach(bs => {
@@ -1671,11 +1690,18 @@ class RideCompareApp {
             if (k && !seen.has(k)) {
               seen.add(k);
               merged.push(ls);
+              // Also sync up to cloud so other devices receive it too
+              window.RideCompareApi.saveRecentSearch(ls).catch(() => {});
             }
           });
           this.saveRecentSearches(merged.slice(0, 8));
           this.renderRecentSearches();
           return;
+        } else if (localSearches.length > 0) {
+          // If backend has no searches yet, push local searches to cloud
+          for (const ls of localSearches) {
+            window.RideCompareApi.saveRecentSearch(ls).catch(() => {});
+          }
         }
       } catch (err) {
         console.warn('Backend sync recent searches error:', err);
@@ -3285,6 +3311,7 @@ class RideCompareApp {
     // Close the modal
     this.closeLocationMapModal();
     this.showToast(`Drop location set: ${selectedName} 📍`, 'success');
+    this.addRecentSearch(selectedName, selectedSub, null, this.pickupLocationName || 'Current Location');
   }
 
   // -------------------------------------------------------------------------
