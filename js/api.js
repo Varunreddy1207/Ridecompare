@@ -44,14 +44,16 @@
       }
     } catch (_) {}
 
-    // 4. Same-origin backend deployment or local network
+    // 4. Same-origin backend deployment, Vite proxy, or local network
     try {
       if (typeof window !== 'undefined' && window.location) {
-        if (window.location.port === '5000') {
+        if (window.location.port === '5000' || window.location.port === '5173') {
           return `${window.location.origin}/api`;
         }
-        if (window.location.hostname && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1' && window.location.port !== '5173') {
-          return `${window.location.protocol}//${window.location.hostname}:5000/api`;
+        if (window.location.hostname && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+          if (/^(192\.168\.|10\.|172\.(1[6-9]|2\d|3[01])\.)/.test(window.location.hostname)) {
+            return `${window.location.protocol}//${window.location.hostname}:5000/api`;
+          }
         }
       }
     } catch (e) {
@@ -364,6 +366,181 @@
   }
 
   // =========================================================================
+  // CLOUD SUPABASE RESILIENT PERSISTENCE (Accessible from ANY Device 24/7)
+  // =========================================================================
+  const SUPABASE_CONFIG = {
+    url: 'https://rnkeavoliqlqbpdwbajg.supabase.co/rest/v1',
+    anonKey: 'sb_publishable_-FH0AYcKT5GvxhS1vo4j1Q_j2Pp8yQA'
+  };
+
+  async function supabaseRequest(endpoint, method = 'GET', body = null, extraHeaders = {}) {
+    const url = `${SUPABASE_CONFIG.url}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
+    const headers = {
+      'apikey': SUPABASE_CONFIG.anonKey,
+      'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`,
+      'Content-Type': 'application/json',
+      ...extraHeaders
+    };
+    const opts = { method, headers };
+    if (body) {
+      opts.body = JSON.stringify(body);
+    }
+    const res = await fetch(url, opts);
+    if (!res.ok) {
+      const errText = await res.text();
+      let parsed = null;
+      try { parsed = JSON.parse(errText); } catch (_) {}
+      const msg = parsed?.message || parsed?.error?.message || `Supabase HTTP ${res.status}`;
+      const err = new Error(msg);
+      err.status = res.status;
+      throw err;
+    }
+    const text = await res.text();
+    return text ? JSON.parse(text) : null;
+  }
+
+  async function supabaseDirectRegister(name, email, password, deviceId, deviceName) {
+    const normEmail = (email || '').toLowerCase().trim();
+    // 1. Check existing user in Supabase
+    const existing = await supabaseRequest(`/User?email=eq.${encodeURIComponent(normEmail)}&select=id`);
+    if (existing && existing.length > 0) {
+      const err = new Error('A user with this email address already exists');
+      err.status = 409;
+      err.code = 'CONFLICT';
+      throw err;
+    }
+
+    // 2. Hash password with bcryptjs
+    const bcryptLib = (typeof dcodeIO !== 'undefined' && dcodeIO.bcrypt) || (typeof window !== 'undefined' && window.dcodeIO && window.dcodeIO.bcrypt) || null;
+    let passwordHash = password;
+    if (bcryptLib && bcryptLib.hashSync) {
+      try {
+        passwordHash = bcryptLib.hashSync(password, 10);
+      } catch (_) {}
+    }
+
+    const userId = 'usr_' + Math.random().toString(36).substring(2, 10) + '_' + Date.now().toString(36);
+    const nowIso = new Date().toISOString();
+
+    // 3. Insert user into Supabase User table
+    await supabaseRequest('/User', 'POST', {
+      id: userId,
+      name: (name || '').trim(),
+      email: normEmail,
+      password: passwordHash,
+      createdAt: nowIso,
+      updatedAt: nowIso
+    }, { 'Prefer': 'return=representation' });
+
+    // 4. Record device session in Supabase (1st of 3 allowed)
+    if (deviceId) {
+      const sessId = 'ds_' + Math.random().toString(36).substring(2, 10) + '_' + Date.now().toString(36);
+      await supabaseRequest('/DeviceSession', 'POST', {
+        id: sessId,
+        userId: userId,
+        deviceId: deviceId,
+        deviceName: deviceName || 'Web Browser',
+        lastActive: nowIso,
+        createdAt: nowIso
+      }, { 'Prefer': 'return=representation' }).catch(() => {});
+    }
+
+    const token = `supabase_jwt_${userId}_${Date.now()}`;
+    return {
+      token,
+      user: {
+        id: userId,
+        name: (name || '').trim(),
+        email: normEmail,
+        createdAt: nowIso
+      }
+    };
+  }
+
+  async function supabaseDirectLogin(email, password, deviceId, deviceName) {
+    const normEmail = (email || '').toLowerCase().trim();
+    // 1. Fetch user from Supabase User table
+    const users = await supabaseRequest(`/User?email=eq.${encodeURIComponent(normEmail)}&select=id,name,email,password,phone,createdAt,updatedAt`);
+    if (!users || users.length === 0) {
+      const err = new Error('Invalid email or password');
+      err.status = 401;
+      throw err;
+    }
+    const userRecord = users[0];
+
+    // 2. Compare password with bcryptjs or plain
+    const bcryptLib = (typeof dcodeIO !== 'undefined' && dcodeIO.bcrypt) || (typeof window !== 'undefined' && window.dcodeIO && window.dcodeIO.bcrypt) || null;
+    let valid = false;
+    if (bcryptLib && userRecord.password && userRecord.password.startsWith('$2')) {
+      try {
+        valid = bcryptLib.compareSync(password, userRecord.password);
+      } catch (_) {
+        valid = false;
+      }
+    } else {
+      valid = (userRecord.password === password);
+    }
+
+    if (!valid) {
+      const err = new Error('Invalid email or password');
+      err.status = 401;
+      throw err;
+    }
+
+    // 3. Check 3-device limit in Supabase DeviceSession table
+    if (deviceId) {
+      const sessions = await supabaseRequest(`/DeviceSession?userId=eq.${encodeURIComponent(userRecord.id)}&select=id,deviceId,deviceName,lastActive`);
+      const existingSession = (sessions || []).find((s) => s.deviceId === deviceId);
+
+      if (existingSession) {
+        // Re-login from same device -> refresh lastActive
+        await supabaseRequest(`/DeviceSession?id=eq.${encodeURIComponent(existingSession.id)}`, 'PATCH', {
+          lastActive: new Date().toISOString()
+        }).catch(() => {});
+      } else {
+        // New device -> check limit
+        if (sessions && sessions.length >= 3) {
+          const err = new Error('The maximum limit is 3 devices');
+          err.status = 403;
+          err.code = 'DEVICE_LIMIT_REACHED';
+          throw err;
+        }
+
+        // Under limit -> insert session into Supabase
+        const sessId = 'ds_' + Math.random().toString(36).substring(2, 10) + '_' + Date.now().toString(36);
+        const nowIso = new Date().toISOString();
+        await supabaseRequest('/DeviceSession', 'POST', {
+          id: sessId,
+          userId: userRecord.id,
+          deviceId: deviceId,
+          deviceName: deviceName || 'Web Browser',
+          lastActive: nowIso,
+          createdAt: nowIso
+        }, { 'Prefer': 'return=representation' }).catch(() => {});
+      }
+    }
+
+    const token = `supabase_jwt_${userRecord.id}_${Date.now()}`;
+    return {
+      token,
+      user: {
+        id: userRecord.id,
+        name: userRecord.name,
+        email: userRecord.email,
+        phone: userRecord.phone,
+        createdAt: userRecord.createdAt,
+        updatedAt: userRecord.updatedAt
+      }
+    };
+  }
+
+  async function supabaseDirectLogout(userId, deviceId) {
+    if (deviceId) {
+      await supabaseRequest(`/DeviceSession?deviceId=eq.${encodeURIComponent(deviceId)}`, 'DELETE').catch(() => {});
+    }
+  }
+
+  // =========================================================================
   // CENTRALIZED AUTHENTICATION STORE / STATE
   // =========================================================================
   class AuthStore {
@@ -432,6 +609,7 @@
       this.notify();
       const normEmail = (email || '').toLowerCase().trim();
       const trimmedName = (name || '').trim();
+      const deviceId = this.api.getDeviceId();
 
       try {
         const res = await this.api.register({ name: trimmedName, email: normEmail, password });
@@ -461,16 +639,38 @@
           throw err;
         }
 
-        // Explicit validation error from backend
+        // Explicit client validation error from backend
         if (err.status && err.status >= 400 && err.status < 500) {
           this.loading = false;
           this.notify();
           throw err;
         }
 
-        // Resilient fallback: If backend is offline or network fails, register locally
-        const isNetworkErr = !this.api.isBackendOnline || err.message?.includes('fetch') || err.message?.includes('Network') || err.status >= 500;
+        // Resilient Cloud & Network Fallback: If backend is offline or network fails, register in Supabase Cloud!
+        const isNetworkErr = !this.api.isBackendOnline || err.message?.includes('fetch') || err.message?.includes('Network') || (err.status && err.status >= 500);
         if (isNetworkErr) {
+          try {
+            console.log('[RideCompareAuth] Backend unavailable, registering directly with Supabase Cloud...');
+            const cloudRes = await supabaseDirectRegister(trimmedName, normEmail, password, deviceId, 'Web Browser');
+            const cloudUser = cloudRes.user;
+            const cloudToken = cloudRes.token;
+            this.api.setToken(cloudToken);
+            this.currentUser = cloudUser;
+            localStorage.setItem('ridecompare_user_profile', JSON.stringify(cloudUser));
+            this.saveLocalUser(cloudUser, password);
+            this.loading = false;
+            this.notify();
+            return { success: true, user: cloudUser, token: cloudToken, message: 'Account created successfully' };
+          } catch (cloudErr) {
+            if (cloudErr.status === 409 || cloudErr.code === 'CONFLICT' || (cloudErr.message && cloudErr.message.toLowerCase().includes('already exists'))) {
+              this.loading = false;
+              this.notify();
+              throw cloudErr;
+            }
+            console.warn('[RideCompareAuth] Direct Supabase register fallback failed:', cloudErr.message);
+          }
+
+          // Offline fallback
           const localUsers = this.getLocalUsers();
           if (localUsers[normEmail]) {
             this.loading = false;
@@ -504,6 +704,7 @@
       this.loading = true;
       this.notify();
       const normEmail = (email || '').toLowerCase().trim();
+      const deviceId = this.api.getDeviceId();
 
       try {
         const res = await this.api.login(normEmail, password);
@@ -519,23 +720,53 @@
         this.notify();
         return { success: true, user, token, message: res.message || 'Logged in successfully' };
       } catch (err) {
-        // Crucial: If device limit is reached, pass through immediately so error is shown
+        // 1. Crucial: If device limit is reached, pass through immediately so error is shown
         if (err.status === 403 || err.code === 'DEVICE_LIMIT_REACHED' || (err.message && err.message.toLowerCase().includes('limit is 3 devices'))) {
           this.loading = false;
           this.notify();
           throw err;
         }
 
-        // If backend returned invalid credentials (401) or other client error, do not bypass
-        if (err.status === 401 || (err.status && err.status >= 400 && err.status < 500)) {
+        // 2. If backend returned explicit 401 Invalid Credentials, throw immediately
+        if (err.status === 401) {
           this.loading = false;
           this.notify();
           throw err;
         }
 
-        // Resilient fallback only if backend server is completely offline/unreachable
+        // 3. Resilient Cloud & Network Fallback: Direct Supabase Cloud Authentication!
+        // Triggered when backend is unreachable, on cellular data, GitHub Pages, or offline
         const isNetworkErr = !this.api.isBackendOnline || err.message?.includes('fetch') || err.message?.includes('Network') || (err.status && err.status >= 500);
         if (isNetworkErr) {
+          try {
+            console.log('[RideCompareAuth] Backend unavailable, attempting direct Supabase cloud authentication...');
+            const cloudRes = await supabaseDirectLogin(normEmail, password, deviceId, 'Web Browser');
+            const cloudUser = cloudRes.user;
+            const cloudToken = cloudRes.token;
+            this.api.setToken(cloudToken);
+            this.currentUser = cloudUser;
+            localStorage.setItem('ridecompare_user_profile', JSON.stringify(cloudUser));
+            this.saveLocalUser(cloudUser, password);
+            this.loading = false;
+            this.notify();
+            return { success: true, user: cloudUser, token: cloudToken, message: 'Logged in successfully' };
+          } catch (cloudErr) {
+            // If Supabase returned "The maximum limit is 3 devices", pass through!
+            if (cloudErr.status === 403 || cloudErr.code === 'DEVICE_LIMIT_REACHED' || (cloudErr.message && cloudErr.message.toLowerCase().includes('limit is 3 devices'))) {
+              this.loading = false;
+              this.notify();
+              throw cloudErr;
+            }
+            // If Supabase returned invalid credentials
+            if (cloudErr.status === 401 || (cloudErr.message && cloudErr.message.includes('Invalid email'))) {
+              this.loading = false;
+              this.notify();
+              throw cloudErr;
+            }
+            console.warn('[RideCompareAuth] Direct Supabase login failed:', cloudErr.message);
+          }
+
+          // Offline demo user fallback
           const localUsers = this.getLocalUsers();
           const localUser = localUsers[normEmail];
           const isDemo = normEmail === 'varunreddy@gmail.com' && (password === 'Password123!' || password === 'password123');
@@ -568,12 +799,16 @@
     async logout() {
       this.loading = true;
       this.notify();
+      const deviceId = this.api.getDeviceId();
+      const userId = this.currentUser?.id;
       try {
-        const deviceId = this.api.getDeviceId();
-        await this.api.request('/auth/logout', {
-          method: 'POST',
-          body: { deviceId }
-        }).catch(() => {});
+        await Promise.all([
+          this.api.request('/auth/logout', {
+            method: 'POST',
+            body: { deviceId, userId }
+          }).catch(() => {}),
+          supabaseDirectLogout(userId, deviceId).catch(() => {})
+        ]);
       } finally {
         this.api.setToken('');
         this.currentUser = null;
