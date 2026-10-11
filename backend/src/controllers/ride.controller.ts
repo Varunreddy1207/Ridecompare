@@ -64,6 +64,72 @@ export class RideController {
       next(error);
     }
   }
+
+  /**
+   * Get recent searches for authenticated user (cross-device sync)
+   * GET /api/rides/recent-searches
+   */
+  public async getRecentSearches(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const userId = req.user?.userId;
+      const email = req.user?.email || (req.headers['x-user-email'] as string);
+
+      if (!userId && !email) {
+        sendSuccess(res, [], 200);
+        return;
+      }
+
+      const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 8;
+      const searches = await rideService.getRecentSearches(userId || '', email, limit);
+      sendSuccess(res, searches, 200);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Save a recent search for authenticated user (cross-device sync)
+   * POST /api/rides/recent-searches
+   */
+  public async saveRecentSearch(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const userId = req.user?.userId;
+      const email = req.user?.email || (req.headers['x-user-email'] as string);
+
+      if (!userId && !email) {
+        throw new UnauthorizedError('User authentication required to save search history');
+      }
+
+      const { name, city, fare, pickup } = req.body;
+      if (!name) {
+        sendSuccess(res, null, 400);
+        return;
+      }
+
+      const saved = await rideService.saveRecentSearch(userId || '', email, { name, city, fare, pickup });
+      sendSuccess(res, saved, 201);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Clear recent searches for user
+   * DELETE /api/rides/recent-searches
+   */
+  public async clearRecentSearches(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const userId = req.user?.userId;
+      const email = req.user?.email || (req.headers['x-user-email'] as string);
+
+      if (userId || email) {
+        await rideService.clearRecentSearches(userId || '', email);
+      }
+      sendSuccess(res, { cleared: true }, 200);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const rideController = new RideController();

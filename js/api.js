@@ -263,6 +263,71 @@
       return this.request(`/rides/history?page=${page}&limit=${limit}`);
     }
 
+    /**
+     * Get recent searches for authenticated user (cross-device sync)
+     */
+    async getRecentSearches(limit = 8) {
+      let email = '';
+      try {
+        const raw = localStorage.getItem('ridecompare_user_profile');
+        if (raw) email = JSON.parse(raw)?.email || '';
+      } catch (_) {}
+      const customHeaders = {};
+      if (email) customHeaders['x-user-email'] = email;
+      try {
+        const res = await this.request(`/rides/recent-searches?limit=${limit}`, {
+          headers: customHeaders
+        });
+        if (Array.isArray(res)) return res;
+        if (res && Array.isArray(res.data)) return res.data;
+        return [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    /**
+     * Save a recent search to backend (cross-device sync)
+     */
+    async saveRecentSearch(searchData) {
+      let email = '';
+      try {
+        const raw = localStorage.getItem('ridecompare_user_profile');
+        if (raw) email = JSON.parse(raw)?.email || '';
+      } catch (_) {}
+      const customHeaders = {};
+      if (email) customHeaders['x-user-email'] = email;
+      try {
+        const res = await this.request('/rides/recent-searches', {
+          method: 'POST',
+          body: searchData,
+          headers: customHeaders
+        });
+        return res || null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    /**
+     * Clear recent searches for user
+     */
+    async clearRecentSearches() {
+      let email = '';
+      try {
+        const raw = localStorage.getItem('ridecompare_user_profile');
+        if (raw) email = JSON.parse(raw)?.email || '';
+      } catch (_) {}
+      const customHeaders = {};
+      if (email) customHeaders['x-user-email'] = email;
+      try {
+        await this.request('/rides/recent-searches', {
+          method: 'DELETE',
+          headers: customHeaders
+        });
+      } catch (_) {}
+    }
+
     // =========================================================================
     // LOCATIONS
     // =========================================================================

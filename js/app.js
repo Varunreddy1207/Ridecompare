@@ -319,6 +319,7 @@ class RideCompareApp {
       // Initial route map badges and headers setup
       this.updateResultsMapRoute();
       this.renderRecentSearches();
+      this.syncRecentSearchesFromBackend();
 
       // Desktop search input: Enter key to search
       const deskSearchInput = document.getElementById('desktop-search-input');
@@ -1117,6 +1118,7 @@ class RideCompareApp {
       });
       localStorage.setItem('ridecompare_user_profile', JSON.stringify(this.userProfile));
       this.renderUserProfile();
+      this.syncRecentSearchesFromBackend();
 
       if (window.soundFX && window.soundFX.playGetStarted) {
         window.soundFX.playGetStarted();
@@ -1185,6 +1187,7 @@ class RideCompareApp {
       });
       localStorage.setItem('ridecompare_user_profile', JSON.stringify(this.userProfile));
       this.renderUserProfile();
+      this.syncRecentSearchesFromBackend();
 
       if (window.soundFX && window.soundFX.playGetStarted) {
         window.soundFX.playGetStarted();
@@ -1599,7 +1602,7 @@ class RideCompareApp {
     return '₹75';
   }
 
-  addRecentSearch(name, city, fare = null, pickup = '') {
+  async addRecentSearch(name, city, fare = null, pickup = '') {
     if (!name || name.trim() === '' || name === 'Select drop location' || name === 'Select destination') {
       return;
     }
@@ -1613,16 +1616,71 @@ class RideCompareApp {
     searches = searches.filter(item => item.name.toLowerCase() !== cleanName.toLowerCase());
 
     // Insert at beginning of list
-    searches.unshift({
+    const newItem = {
       id: 'search_' + Date.now(),
       name: cleanName,
       city: cleanCity,
       fare: estimatedFare,
       pickup: pickup || 'Current Location',
       timestamp: Date.now()
-    });
+    };
+    searches.unshift(newItem);
 
     this.saveRecentSearches(searches);
+    this.renderRecentSearches();
+
+    // Cross-Device Sync: Persist to backend database for logged-in accounts
+    if (window.RideCompareApi && typeof window.RideCompareApi.saveRecentSearch === 'function') {
+      const email = this.userProfile?.email || '';
+      if (email && email !== 'guest' && email !== 'guest user') {
+        try {
+          await window.RideCompareApi.saveRecentSearch({
+            name: cleanName,
+            city: cleanCity,
+            fare: estimatedFare,
+            pickup: pickup || 'Current Location'
+          });
+        } catch (_) {}
+      }
+    }
+  }
+
+  async syncRecentSearchesFromBackend() {
+    const email = this.userProfile?.email || '';
+    if (!email || email === 'guest' || email === 'guest user') {
+      this.renderRecentSearches();
+      return;
+    }
+
+    if (window.RideCompareApi && typeof window.RideCompareApi.getRecentSearches === 'function') {
+      try {
+        const backendSearches = await window.RideCompareApi.getRecentSearches(8);
+        if (Array.isArray(backendSearches) && backendSearches.length > 0) {
+          const localSearches = this.getRecentSearches();
+          const merged = [];
+          const seen = new Set();
+          backendSearches.forEach(bs => {
+            const k = (bs.name || '').toLowerCase().trim();
+            if (k && !seen.has(k)) {
+              seen.add(k);
+              merged.push(bs);
+            }
+          });
+          localSearches.forEach(ls => {
+            const k = (ls.name || '').toLowerCase().trim();
+            if (k && !seen.has(k)) {
+              seen.add(k);
+              merged.push(ls);
+            }
+          });
+          this.saveRecentSearches(merged.slice(0, 8));
+          this.renderRecentSearches();
+          return;
+        }
+      } catch (err) {
+        console.warn('Backend sync recent searches error:', err);
+      }
+    }
     this.renderRecentSearches();
   }
 
@@ -1631,6 +1689,9 @@ class RideCompareApp {
       const key = this.getRecentSearchesStorageKey();
       localStorage.removeItem(key);
     } catch (_) {}
+    if (window.RideCompareApi && typeof window.RideCompareApi.clearRecentSearches === 'function') {
+      window.RideCompareApi.clearRecentSearches().catch(() => {});
+    }
     this.renderRecentSearches();
   }
 
@@ -3915,6 +3976,7 @@ class RideCompareApp {
     });
 
     this.renderRecentSearches();
+    this.syncRecentSearchesFromBackend();
   }
 
   openEditProfileModal() {

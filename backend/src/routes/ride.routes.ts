@@ -28,4 +28,23 @@ router.post(
   rideController.book.bind(rideController)
 );
 
+// Recent Searches (Cross-device account sync)
+router.get(
+  '/recent-searches',
+  optionalAuth,
+  rideController.getRecentSearches.bind(rideController)
+);
+
+router.post(
+  '/recent-searches',
+  optionalAuth,
+  rideController.saveRecentSearch.bind(rideController)
+);
+
+router.delete(
+  '/recent-searches',
+  optionalAuth,
+  rideController.clearRecentSearches.bind(rideController)
+);
+
 export default router;
