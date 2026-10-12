@@ -701,6 +701,7 @@ class RideCompareApp {
     } else if (hasStarted || isAuth) {
       // If authenticated or returning user who has started: proceed to Home
       this.currentTab = 'home';
+      this.hideResultsPanel(true);
       this.navigateTo('screen-home', false);
       this.updateActiveNavs('home');
       if (!window.location.hash || window.location.hash === '#' || window.location.hash === '#splash') {
@@ -810,10 +811,12 @@ class RideCompareApp {
       this.updateActiveNavs('profile');
     } else if (hash === '#home' || path.endsWith('/home')) {
       this.currentTab = 'home';
+      this.hideResultsPanel(true);
       this.navigateTo('screen-home', false);
       this.updateActiveNavs('home');
     } else if (hasStarted || isAuth) {
       this.currentTab = 'home';
+      this.hideResultsPanel(true);
       this.navigateTo('screen-home', false);
       this.updateActiveNavs('home');
     } else {
@@ -2209,10 +2212,9 @@ class RideCompareApp {
     }
   }
 
-  // Updates the live route map header, subtitle, and pin badges to match selected pickup & drop locations
+  // Updates the live location map header, subtitle, and badges to match selected pickup location
   updateResultsMapRoute() {
     const pickupText = document.getElementById('home-pickup-text');
-    const dropText = document.getElementById('home-drop-text');
 
     let pickupName = (this.pickupLocationName || '').trim();
     if (!pickupName && pickupText && !pickupText.classList.contains('placeholder')) {
@@ -2222,41 +2224,37 @@ class RideCompareApp {
       pickupName = 'Current Location';
     }
 
-    let dropName = (this.selectedDropName || '').trim();
-    if (!dropName && dropText && !dropText.classList.contains('placeholder')) {
-      dropName = dropText.textContent.trim();
-    }
-    if (!dropName || dropName === 'Select drop location') {
-      dropName = 'Destination';
-    }
-
     // 1. Update Map Header Title
     const mapTitle = document.getElementById('map-route-title');
     if (mapTitle) {
-      mapTitle.textContent = `${pickupName} ➔ ${dropName}`;
-      mapTitle.title = `${pickupName} ➔ ${dropName}`;
+      mapTitle.textContent = `📍 Live Location: ${pickupName}`;
+      mapTitle.title = `Live Location: ${pickupName}`;
     }
 
     // 2. Update Map Header Subtitle
     const mapSub = document.getElementById('map-route-sub');
     if (mapSub) {
-      const dropDetail = this.selectedDropSub || dropName;
-      mapSub.textContent = `Destination: ${dropDetail} • Live comparison updated`;
-      mapSub.title = `Destination: ${dropDetail}`;
+      mapSub.textContent = `Tracking live location • Cabs & autos available nearby`;
+      mapSub.title = `Tracking live location: ${pickupName}`;
     }
 
-    // 3. Update Pickup Marker Badge on Map Canvas
+    // 3. Update Status Badges
+    const distBadge = document.getElementById('map-route-distance-badge');
+    if (distBadge) {
+      distBadge.textContent = '● Live GPS';
+      distBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+    }
+
+    const mapStatus = document.getElementById('map-route-status');
+    if (mapStatus) {
+      mapStatus.textContent = '📍 9 Available Ride Options Nearby';
+    }
+
+    // 4. Update Pickup Marker Badge on Map Canvas
     const pickupBadge = document.getElementById('map-pickup-badge');
     if (pickupBadge) {
       pickupBadge.textContent = pickupName;
-      pickupBadge.title = `Pickup: ${this.pickupLocationFull || pickupName}`;
-    }
-
-    // 4. Update Destination Marker Badge on Map Canvas
-    const dropBadge = document.getElementById('map-drop-badge');
-    if (dropBadge) {
-      dropBadge.textContent = dropName;
-      dropBadge.title = `Destination: ${this.selectedDropSub ? `${dropName}, ${this.selectedDropSub}` : dropName}`;
+      pickupBadge.title = `Live Location: ${this.pickupLocationFull || pickupName}`;
     }
 
     if (this.resultsMap) {
@@ -2292,9 +2290,12 @@ class RideCompareApp {
 
     // On Desktop & Tablet: adjust search container to left column
     if (searchContainer) {
-      searchContainer.classList.remove('max-w-xl', 'mx-auto', 'lg:col-span-12');
+      searchContainer.classList.remove('max-w-xl', 'mx-auto', 'col-span-12', 'lg:col-span-12');
       searchContainer.classList.add('lg:col-span-4');
     }
+
+    this.currentTab = 'compare';
+    this.updateActiveNavs('compare');
 
     // On mobile (< 768px): scroll results into view smoothly
     if (window.innerWidth < 768) {
@@ -2352,8 +2353,10 @@ class RideCompareApp {
   }
 
   recenterResultsMap() {
-    if (this.currentRouteBounds && this.resultsMap) {
-      this.resultsMap.fitBounds(this.currentRouteBounds, { padding: [70, 70], maxZoom: 16 });
+    const coords = this.currentLiveLocationCoords || this.userCoords || this.pickupCoords || { lat: 16.7050, lng: 74.2433 };
+    if (this.resultsMap) {
+      this.resultsMap.setView([coords.lat, coords.lng], 15, { animate: true });
+      this.showToast('📍 Recentered to Live Location');
     }
   }
 
@@ -2377,34 +2380,44 @@ class RideCompareApp {
     if (!this.resultsMap || typeof L === 'undefined') return;
 
     const pickupText = document.getElementById('home-pickup-text');
-    const dropText = document.getElementById('home-drop-text');
 
     let pickupName = (this.pickupLocationName || '').trim();
     if (!pickupName && pickupText && !pickupText.classList.contains('placeholder')) {
       pickupName = pickupText.textContent.trim();
     }
     if (!pickupName || pickupName === 'Select pickup location') {
-      pickupName = 'Sanjay Ghodawat University';
+      pickupName = 'Current Location';
     }
 
-    let dropName = (this.selectedDropName || '').trim();
-    if (!dropName && dropText && !dropText.classList.contains('placeholder')) {
-      dropName = dropText.textContent.trim();
-    }
-    if (!dropName || dropName === 'Select drop location') {
-      dropName = 'Aastha Hospital';
-    }
+    // Determine Live Coordinates
+    const liveCoords = this.userCoords || this.pickupCoords || this.getCoordinatesFor(pickupName, { lat: 16.7050, lng: 74.2433 });
+    this.currentLiveLocationCoords = liveCoords;
 
-    const pickupCoords = this.pickupCoords || this.getCoordinatesFor(pickupName, { lat: 16.7450, lng: 74.3720 });
-    const dropCoords = this.selectedDropCoords || this.getCoordinatesFor(dropName, { lat: 16.7020, lng: 74.2460 });
-
+    // Update Floating Info Header over Map
     const mapTitle = document.getElementById('map-route-title');
     if (mapTitle) {
-      mapTitle.textContent = `${pickupName} ➔ ${dropName}`;
-      mapTitle.title = `${pickupName} ➔ ${dropName}`;
+      mapTitle.textContent = `📍 Live Location: ${pickupName}`;
+      mapTitle.title = `Live Location: ${pickupName}`;
     }
 
-    // Clear previous route layers & markers
+    const mapSub = document.getElementById('map-route-sub');
+    if (mapSub) {
+      mapSub.textContent = `Tracking live location • Cabs & autos available nearby`;
+      mapSub.title = `Tracking live location: ${pickupName}`;
+    }
+
+    const distBadge = document.getElementById('map-route-distance-badge');
+    if (distBadge) {
+      distBadge.textContent = '● Live GPS';
+      distBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+    }
+
+    const mapStatus = document.getElementById('map-route-status');
+    if (mapStatus) {
+      mapStatus.textContent = '📍 9 Available Ride Options Nearby';
+    }
+
+    // Clear previous layers & markers
     if (this.resultsRouteLayers) {
       this.resultsRouteLayers.forEach(l => {
         try { this.resultsMap.removeLayer(l); } catch (e) {}
@@ -2412,133 +2425,83 @@ class RideCompareApp {
     }
     this.resultsRouteLayers = [];
 
-    // 1. Pickup Marker (Radar Blue Pulse + Callout)
-    const pickupIcon = L.divIcon({
+    // 1. Radar Pulse / Accuracy Circle around Live Location
+    const accuracyCircle = L.circle([liveCoords.lat, liveCoords.lng], {
+      radius: 240,
+      color: '#0073FF',
+      fillColor: '#0073FF',
+      fillOpacity: 0.12,
+      weight: 1.5,
+      dashArray: '4, 4'
+    }).addTo(this.resultsMap);
+    this.resultsRouteLayers.push(accuracyCircle);
+
+    // 2. High-Visibility Pulsing Live Location Pin (Blue Radar Halo + Dot + Badge)
+    const liveIcon = L.divIcon({
       className: 'custom-live-map-marker',
       html: `
         <div class="live-map-marker-wrap pickup-marker-wrap">
           <div class="marker-pulse-ring"></div>
           <div class="marker-core-dot"></div>
-          <div id="map-pickup-badge" class="marker-callout-badge marker-pickup-badge" title="${pickupName}">
+          <div id="map-pickup-badge" class="marker-callout-badge marker-pickup-badge" title="Live Location">
             <span class="marker-dot-blue"></span>
-            <span class="truncate">${pickupName}</span>
+            <span class="truncate">📍 ${pickupName}</span>
           </div>
         </div>
       `,
-      iconSize: [20, 20],
-      iconAnchor: [10, 10]
+      iconSize: [24, 24],
+      iconAnchor: [12, 12]
     });
-    const pickupMarker = L.marker([pickupCoords.lat, pickupCoords.lng], { icon: pickupIcon }).addTo(this.resultsMap);
-    this.resultsRouteLayers.push(pickupMarker);
+    const liveMarker = L.marker([liveCoords.lat, liveCoords.lng], {
+      icon: liveIcon,
+      zIndexOffset: 1000
+    }).addTo(this.resultsMap);
+    this.resultsRouteLayers.push(liveMarker);
 
-    // 2. Drop Marker (Red Pin + Callout)
-    const dropIcon = L.divIcon({
-      className: 'custom-live-map-marker',
-      html: `
-        <div class="live-map-marker-wrap drop-marker-wrap">
-          <div class="marker-pin-head">
-            <svg class="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
-          </div>
-          <div id="map-drop-badge" class="marker-callout-badge marker-drop-badge" title="${dropName}">
-            <span class="marker-dot-red"></span>
-            <span class="truncate">${dropName}</span>
-          </div>
-        </div>
-      `,
-      iconSize: [28, 28],
-      iconAnchor: [14, 14]
+    // 3. Place Nearby Available Vehicles Around Live Location
+    const nearbyVehicles = [
+      { dLat: 0.0022, dLng: 0.0020, icon: '🚗', name: 'Uber Go', eta: '3 min' },
+      { dLat: -0.0020, dLng: 0.0024, icon: '🛺', name: 'Ola Auto', eta: '2 min' },
+      { dLat: 0.0018, dLng: -0.0026, icon: '🏍️', name: 'Rapido Bike', eta: '1 min' },
+      { dLat: -0.0025, dLng: -0.0018, icon: '🚗', name: 'Ola Mini', eta: '4 min' }
+    ];
+
+    nearbyVehicles.forEach(v => {
+      const vMarker = L.marker([liveCoords.lat + v.dLat, liveCoords.lng + v.dLng], {
+        icon: L.divIcon({
+          className: 'nearby-driver-pin',
+          html: `
+            <div class="flex items-center gap-1.5 px-2 py-1 rounded-full bg-slate-900/90 text-white text-[11px] font-bold shadow-lg border border-slate-700/80 backdrop-blur-sm pointer-events-auto transform hover:scale-105 transition-transform" title="${v.name} (${v.eta} away)">
+              <span>${v.icon}</span>
+              <span class="text-[9px] text-emerald-400 font-bold">${v.eta}</span>
+            </div>
+          `,
+          iconSize: [64, 26],
+          iconAnchor: [32, 13]
+        })
+      }).addTo(this.resultsMap);
+      this.resultsRouteLayers.push(vMarker);
     });
-    const dropMarker = L.marker([dropCoords.lat, dropCoords.lng], { icon: dropIcon }).addTo(this.resultsMap);
-    this.resultsRouteLayers.push(dropMarker);
 
-    // 3. Fetch OSRM Live Driving Route
-    let routeLatLngs = [];
-    let distanceKm = null;
-    let durationMins = null;
+    // 4. Center Map Directly On Live Location (Zoom 15 for close live map view)
+    this.resultsMap.setView([liveCoords.lat, liveCoords.lng], 15);
 
-    try {
-      const url = `https://router.project-osrm.org/route/v1/driving/${pickupCoords.lng},${pickupCoords.lat};${dropCoords.lng},${dropCoords.lat}?overview=full&geometries=geojson`;
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 4000);
-      const res = await fetch(url, { signal: controller.signal });
-      clearTimeout(timeoutId);
-
-      if (res.ok) {
-        const data = await res.json();
-        if (data.routes && data.routes.length > 0) {
-          const route = data.routes[0];
-          routeLatLngs = route.geometry.coordinates.map(pt => [pt[1], pt[0]]);
-          distanceKm = (route.distance / 1000).toFixed(1);
-          durationMins = Math.max(1, Math.round(route.duration / 60));
-        }
-      }
-    } catch (e) {
-      console.warn('OSRM route fetch failed, using fallback curve', e);
+    // Optional: If real browser geolocation hasn't been fetched yet, quietly update in background
+    if (navigator.geolocation && !this.userCoords && !this._hasFetchedLiveGps) {
+      this._hasFetchedLiveGps = true;
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const lat = pos.coords.latitude;
+          const lng = pos.coords.longitude;
+          this.userCoords = { lat, lng, accuracy: Math.round(pos.coords.accuracy) };
+          if (this.resultsMap) {
+            this.renderLiveRoute();
+          }
+        },
+        () => {},
+        { enableHighAccuracy: true, timeout: 6000 }
+      );
     }
-
-    if (!routeLatLngs || routeLatLngs.length === 0) {
-      routeLatLngs = this.generateFallbackRoute(pickupCoords, dropCoords);
-      const dist = this.calculateHaversineDistance(pickupCoords.lat, pickupCoords.lng, dropCoords.lat, dropCoords.lng);
-      distanceKm = dist.toFixed(1);
-      durationMins = Math.max(5, Math.round(dist * 2.2));
-    }
-
-    const distBadge = document.getElementById('map-route-distance-badge');
-    if (distBadge && distanceKm) {
-      distBadge.textContent = `${distanceKm} km`;
-    }
-
-    const mapSub = document.getElementById('map-route-sub');
-    if (mapSub) {
-      const detail = this.selectedDropSub || dropName;
-      mapSub.textContent = `Destination: ${detail} • ${distanceKm} km (${durationMins} min) • Live route active`;
-    }
-
-    // 4. Draw Route Polylines
-    const glowLine = L.polyline(routeLatLngs, {
-      color: '#0073FF',
-      weight: 8,
-      opacity: 0.35,
-      lineCap: 'round',
-      lineJoin: 'round'
-    }).addTo(this.resultsMap);
-    this.resultsRouteLayers.push(glowLine);
-
-    const liveLine = L.polyline(routeLatLngs, {
-      color: '#0073FF',
-      weight: 4.5,
-      opacity: 0.95,
-      className: 'map-live-route-dash',
-      lineCap: 'round',
-      lineJoin: 'round'
-    }).addTo(this.resultsMap);
-    this.resultsRouteLayers.push(liveLine);
-
-    // 5. Place Moving Vehicle Markers Along Route
-    if (routeLatLngs.length >= 4) {
-      const p1 = routeLatLngs[Math.floor(routeLatLngs.length * 0.25)];
-      const p2 = routeLatLngs[Math.floor(routeLatLngs.length * 0.50)];
-      const p3 = routeLatLngs[Math.floor(routeLatLngs.length * 0.75)];
-
-      const v1 = L.marker(p1, {
-        icon: L.divIcon({ className: '', html: '<div class="live-vehicle-marker-icon" title="Ola Auto (4 min)">🛺</div>', iconSize: [32, 32], iconAnchor: [16, 16] })
-      }).addTo(this.resultsMap);
-
-      const v2 = L.marker(p2, {
-        icon: L.divIcon({ className: '', html: '<div class="live-vehicle-marker-icon" title="Uber Go (3 min)">🚗</div>', iconSize: [32, 32], iconAnchor: [16, 16] })
-      }).addTo(this.resultsMap);
-
-      const v3 = L.marker(p3, {
-        icon: L.divIcon({ className: '', html: '<div class="live-vehicle-marker-icon" title="Rapido Bike (2 min)">🏍️</div>', iconSize: [32, 32], iconAnchor: [16, 16] })
-      }).addTo(this.resultsMap);
-
-      this.resultsRouteLayers.push(v1, v2, v3);
-    }
-
-    // 6. Fit Map Bounds
-    const bounds = L.latLngBounds(routeLatLngs);
-    this.currentRouteBounds = bounds;
-    this.resultsMap.fitBounds(bounds, { padding: [70, 70], maxZoom: 16 });
   }
 
   generateFallbackRoute(start, end) {
@@ -2569,8 +2532,8 @@ class RideCompareApp {
   }
 
   // Hide Results Panel and return to clean search form
-  hideResultsPanel() {
-    if (window.soundFX) {
+  hideResultsPanel(silent = false) {
+    if (!silent && window.soundFX && window.soundFX.playTap) {
       window.soundFX.playTap();
     }
 
@@ -2584,18 +2547,26 @@ class RideCompareApp {
       if (toggleText) toggleText.textContent = 'More ▾';
     }
 
-    if (!panel) return;
-
-    panel.classList.remove('results-panel-visible');
-    panel.classList.add('results-panel-hidden');
+    if (panel) {
+      panel.classList.remove('results-panel-visible');
+      panel.classList.add('results-panel-hidden');
+    }
 
     if (searchContainer) {
       searchContainer.classList.remove('lg:col-span-4', 'lg:col-span-5');
-      searchContainer.classList.add('max-w-xl', 'mx-auto');
+      searchContainer.classList.add('col-span-12', 'max-w-xl', 'mx-auto');
     }
 
+    this.currentTab = 'home';
+    this.updateActiveNavs('home');
+    try {
+      history.replaceState(null, '', '#home');
+    } catch (_) {}
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    this.showToast('Search options updated 📍');
+    if (!silent) {
+      this.showToast('Search options updated 📍');
+    }
   }
 
   // Toggle More Ride Options Section
@@ -3762,8 +3733,16 @@ class RideCompareApp {
     this.updateActiveNavs(tab);
 
     if (tab === 'home') {
+      this.hideResultsPanel(true);
       this.navigateTo('screen-home', false);
-      window.location.hash = '#home';
+      try {
+        history.pushState(null, '', '#home');
+      } catch (_) {
+        window.location.hash = '#home';
+      }
+      this.currentTab = 'home';
+      this.updateActiveNavs('home');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (tab === 'history') {
       this.navigateTo('screen-history', false);
       window.location.hash = '#history';
@@ -3772,6 +3751,7 @@ class RideCompareApp {
       this.navigateTo('screen-home', false);
       window.location.hash = '#home';
       this.showResultsPanel();
+      this.updateActiveNavs('compare');
     } else if (tab === 'profile') {
       this.navigateTo('screen-profile', false);
       window.location.hash = '#profile';
@@ -3878,6 +3858,7 @@ class RideCompareApp {
 
     // 6. Navigate to Home base screen so dashboard is in background
     this.currentTab = 'home';
+    this.hideResultsPanel(true);
     this.navigateTo('screen-home', false);
     this.enforceResponsiveNav();
 
@@ -4176,6 +4157,7 @@ class RideCompareApp {
 
     // 5. Navigate away from Admin/Developer screens to Home base
     this.currentTab = 'home';
+    this.hideResultsPanel(true);
     this.navigateTo('screen-home', false);
     this.enforceResponsiveNav();
 
