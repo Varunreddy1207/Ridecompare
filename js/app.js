@@ -199,11 +199,34 @@ class RideCompareApp {
   }
 
   init() {
+    // Simulator preview recursion guard: child iframes inside simulator must not render nested simulator
+    if (window.self !== window.top || window.location.search.includes('dev_preview=1')) {
+      try {
+        localStorage.setItem('ridecompare_has_started', 'true');
+        sessionStorage.setItem('vozx_welcome_viewed', 'true');
+        const nestedIframe = document.getElementById('dev-preview-iframe');
+        if (nestedIframe) nestedIframe.remove();
+        const devPanel = document.getElementById('dev-panel-devices');
+        if (devPanel) devPanel.remove();
+      } catch (_) {}
+    }
+
     this.initTheme();
     this.initConnectivity();
     this.initUserProfile();
 
     document.addEventListener('DOMContentLoaded', () => {
+      if (window.self !== window.top || window.location.search.includes('dev_preview=1')) {
+        try {
+          localStorage.setItem('ridecompare_has_started', 'true');
+          sessionStorage.setItem('vozx_welcome_viewed', 'true');
+          const nestedIframe = document.getElementById('dev-preview-iframe');
+          if (nestedIframe) nestedIframe.remove();
+          const devPanel = document.getElementById('dev-panel-devices');
+          if (devPanel) devPanel.remove();
+        } catch (_) {}
+      }
+
       this.initTheme();
       this.initUserProfile();
       // Initialize Premium Welcome Splash Sequence
@@ -598,12 +621,18 @@ class RideCompareApp {
     const hasViewed = sessionStorage.getItem('vozx_welcome_viewed') === 'true';
     const path = (window.location.pathname || '').toLowerCase().replace(/\/$/, '');
     const isDeepPath = path.endsWith('/login') || path.endsWith('/signup') || path.endsWith('/system-status') || path.endsWith('/status') || path.endsWith('/profile') || path.endsWith('/rides') || path.endsWith('/history') || path.endsWith('/booking');
-    const isDevPreview = window.location.search.includes('dev_preview=1');
+    const isDevPreview = window.location.search.includes('dev_preview=1') || window.self !== window.top;
 
     // If already viewed, in simulator preview, or entering directly with specific deep route
     if (hasViewed || isDeepPath || isDevPreview || (window.location.hash && window.location.hash !== '#' && window.location.hash !== '#home')) {
       splash.classList.add('hidden');
       this.isWelcomeSplashActive = false;
+      if (isDevPreview) {
+        try {
+          localStorage.setItem('ridecompare_has_started', 'true');
+          sessionStorage.setItem('vozx_welcome_viewed', 'true');
+        } catch (_) {}
+      }
       return;
     }
 
@@ -778,6 +807,18 @@ class RideCompareApp {
       return;
     }
 
+    // Explicit Device & UI Preview developer route
+    if (hash === '#devices' || hash === '#device-preview' || hash === '#simulator' || path.endsWith('/devices') || path.endsWith('/simulator')) {
+      if (!this.isAdminOrDev()) {
+        try { history.replaceState(null, '', '#home'); } catch (_) {}
+        setTimeout(() => this.openAdminLoginModal(), 200);
+        return;
+      }
+      this.navigateTo('screen-developer', false);
+      this.switchDevTab('devices');
+      return;
+    }
+
     // Explicit direct login / signup routes
     if (path.endsWith('/login') || hash === '#login') {
       this.currentTab = 'home';
@@ -815,7 +856,7 @@ class RideCompareApp {
       this.hideResultsPanel(true);
       this.navigateTo('screen-home', false);
       this.updateActiveNavs('home');
-    } else if (hasStarted || isAuth) {
+    } else if (hasStarted || isAuth || window.location.search.includes('dev_preview=1') || window.self !== window.top) {
       this.currentTab = 'home';
       this.hideResultsPanel(true);
       this.navigateTo('screen-home', false);
@@ -4125,6 +4166,25 @@ class RideCompareApp {
     this.showToast('Switched to Admin Dashboard 🛡️');
   }
 
+  switchToDevDevicePreview() {
+    if (window.soundFX && window.soundFX.playTap) {
+      try { window.soundFX.playTap(); } catch (_) {}
+    }
+    const adminMenu = document.getElementById('admin-user-dropdown');
+    if (adminMenu) adminMenu.classList.add('hidden');
+    const devMenu = document.getElementById('dev-user-dropdown');
+    if (devMenu) devMenu.classList.add('hidden');
+
+    this.navigateTo('screen-developer', false);
+    this.switchDevTab('devices');
+    try {
+      history.pushState(null, '', '#developer');
+    } catch (_) {
+      window.location.hash = '#developer';
+    }
+    this.showToast('Switched to Device & UI Preview 📱');
+  }
+
   adminLogout() {
     if (window.soundFX && window.soundFX.playTap) {
       try { window.soundFX.playTap(); } catch (_) {}
@@ -4249,7 +4309,14 @@ class RideCompareApp {
       if (statusPanel) statusPanel.classList.remove('hidden');
       this.initSystemStatus();
     } else if (tabName === 'devices') {
-      if (devicesPanel) devicesPanel.classList.remove('hidden');
+      if (devicesPanel) {
+        devicesPanel.classList.remove('hidden');
+        if (window.innerWidth < 1024) {
+          setTimeout(() => {
+            devicesPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 100);
+        }
+      }
       this.initDeviceInspector();
     } else {
       if (playgroundPanel) playgroundPanel.classList.remove('hidden');
@@ -4265,6 +4332,8 @@ class RideCompareApp {
   // RESPONSIVE DEVICE & UI PERFECTION SIMULATOR (LAPTOP, TABLET, MOBILE)
   // =========================================================================
   initDeviceInspector() {
+    if (window.self !== window.top) return;
+
     if (!this.currentDeviceMode) {
       this.currentDeviceMode = 'laptop';
       this.deviceIsPortrait = true;
@@ -4273,7 +4342,7 @@ class RideCompareApp {
 
     const iframe = document.getElementById('dev-preview-iframe');
     if (iframe) {
-      iframe.onload = () => {
+      const updateIframeApp = () => {
         setTimeout(() => {
           try {
             if (iframe.contentWindow && iframe.contentWindow.app) {
@@ -4283,8 +4352,17 @@ class RideCompareApp {
           } catch (_) {}
         }, 200);
       };
-      if (!iframe.src || iframe.src.endsWith('/#') || iframe.src === 'about:blank') {
-        iframe.src = './?dev_preview=1#home';
+
+      iframe.onload = updateIframeApp;
+
+      if (!iframe.src || iframe.src === 'about:blank' || iframe.src.endsWith('/#') || iframe.src === window.location.href) {
+        iframe.src = 'index.html?dev_preview=1#home';
+      } else {
+        try {
+          if (iframe.contentDocument && iframe.contentDocument.readyState === 'complete') {
+            updateIframeApp();
+          }
+        } catch (_) {}
       }
     }
 
@@ -4297,6 +4375,14 @@ class RideCompareApp {
           this.applyScaleToDevice();
         }
       });
+      const viewportWrapper = document.getElementById('dev-device-viewport-wrapper');
+      if (viewportWrapper && window.ResizeObserver) {
+        new ResizeObserver(() => {
+          if (this.currentDeviceMode && this.deviceScaleMode === 'fit') {
+            this.applyScaleToDevice();
+          }
+        }).observe(viewportWrapper);
+      }
     }
 
     // Run initial UI audit after iframe has a moment to render
@@ -4518,7 +4604,7 @@ class RideCompareApp {
     } catch (_) {}
 
     // Fallback URL hash navigation
-    iframe.src = `./?dev_preview=1#${screenName === 'compare' ? 'home' : screenName}`;
+    iframe.src = `index.html?dev_preview=1#${screenName === 'compare' ? 'home' : screenName}`;
   }
 
   toggleDeviceTheme() {
@@ -4541,8 +4627,12 @@ class RideCompareApp {
     }
     const iframe = document.getElementById('dev-preview-iframe');
     if (iframe) {
-      iframe.src = iframe.src || './?dev_preview=1#home';
-      iframe.contentWindow?.location.reload();
+      iframe.src = iframe.src || 'index.html?dev_preview=1#home';
+      try {
+        iframe.contentWindow?.location.reload();
+      } catch (_) {
+        iframe.src = 'index.html?dev_preview=1#home';
+      }
       this.showToast('Device simulator reloaded 🔄', 'info');
       setTimeout(() => {
         this.runUIPerfectionAudit(true);
@@ -5921,7 +6011,9 @@ console.log(res.data);</code>`;
   }
 }
 
+window.RideCompareApp = RideCompareApp;
 window.app = new RideCompareApp();
+var app = window.app;
 window.reloadApp = () => {
   if (window.app && window.app.reloadPage) {
     window.app.reloadPage();
