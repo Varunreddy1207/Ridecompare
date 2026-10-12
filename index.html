@@ -1259,6 +1259,19 @@
         flex-direction: column;
         justify-content: flex-start;
       }
+      /* Mobile view (< 1024px): When search results are active, hide search container and mobile header so ONLY comparison view is shown */
+      #screen-home.results-active #home-search-container,
+      #screen-home.results-active .home-mobile-header {
+        display: none !important;
+      }
+      #screen-home.results-active main {
+        padding-top: 10px !important;
+      }
+      #screen-home.results-active #home-results-panel {
+        display: flex !important;
+        width: 100% !important;
+        grid-column: span 12 / span 12 !important;
+      }
     }
 
 /* ==========================================================================
@@ -5605,7 +5618,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
   <script src="js/bcrypt.min.js"></script>
   <script src="js/api.js?v=5"></script>
   <script src="js/audio.js?v=27"></script>
-  <script src="js/app.js?v=86"></script>
+  <script src="js/app.js?v=87"></script>
 
   <!-- Service Worker for Offline PWA Support -->
   <script>

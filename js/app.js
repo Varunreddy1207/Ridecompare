@@ -851,6 +851,11 @@ class RideCompareApp {
       this.currentTab = 'profile';
       this.navigateTo('screen-profile', false);
       this.updateActiveNavs('profile');
+    } else if (hash === '#compare' || path.endsWith('/compare')) {
+      this.currentTab = 'compare';
+      this.navigateTo('screen-home', false);
+      this.showResultsPanel();
+      this.updateActiveNavs('compare');
     } else if (hash === '#home' || path.endsWith('/home')) {
       this.currentTab = 'home';
       this.hideResultsPanel(true);
@@ -2320,9 +2325,14 @@ class RideCompareApp {
   showResultsPanel() {
     this.updateResultsMapRoute();
     this.initResultsLiveMap();
+    const homeScreen = document.getElementById('screen-home');
     const panel = document.getElementById('home-results-panel');
     const searchContainer = document.getElementById('home-search-container');
     if (!panel) return;
+
+    if (homeScreen) {
+      homeScreen.classList.add('results-active');
+    }
 
     // Reset animation state to ensure it plays freshly
     panel.classList.remove('results-panel-hidden');
@@ -2330,7 +2340,7 @@ class RideCompareApp {
     void panel.offsetWidth; // Trigger DOM reflow
     panel.classList.add('results-panel-visible');
 
-    // On Desktop & Tablet: adjust search container to left column
+    // On Desktop & Tablet landscape (>= 1024px): adjust search container to left column
     if (searchContainer) {
       searchContainer.classList.remove('max-w-xl', 'mx-auto', 'col-span-12', 'lg:col-span-12');
       searchContainer.classList.add('lg:col-span-4');
@@ -2339,12 +2349,15 @@ class RideCompareApp {
     this.currentTab = 'compare';
     this.updateActiveNavs('compare');
 
-    // On mobile (< 768px): scroll results into view smoothly
-    if (window.innerWidth < 768) {
-      setTimeout(() => {
-        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
-    }
+    // Scroll to top so the comparison view begins directly at the top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Invalidate map size so Leaflet tiles and markers adjust cleanly
+    setTimeout(() => {
+      if (this.resultsMap) {
+        this.resultsMap.invalidateSize();
+      }
+    }, 200);
   }
 
   // =========================================================================
@@ -2579,10 +2592,16 @@ class RideCompareApp {
       window.soundFX.playTap();
     }
 
+    const homeScreen = document.getElementById('screen-home');
     const panel = document.getElementById('home-results-panel');
     const searchContainer = document.getElementById('home-search-container');
     const moreSection = document.getElementById('more-rides-section');
     const toggleText = document.getElementById('more-toggle-text');
+
+    if (homeScreen) {
+      homeScreen.classList.remove('results-active');
+    }
+
     if (moreSection) {
       moreSection.classList.add('hidden');
       moreSection.classList.remove('flex');

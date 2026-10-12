@@ -1218,6 +1218,22 @@ body:not(.theme-dark) .live-vehicle-marker-icon {
   animation: revealResultsPanel 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* In mobile view (< 1024px), when search comparison results are active, hide search form and mobile header so ONLY the comparison results view is displayed */
+@media (max-width: 1023px) {
+  #screen-home.results-active #home-search-container,
+  #screen-home.results-active .home-mobile-header {
+    display: none !important;
+  }
+  #screen-home.results-active main {
+    padding-top: 10px !important;
+  }
+  #screen-home.results-active #home-results-panel {
+    display: flex !important;
+    width: 100% !important;
+    grid-column: span 12 / span 12 !important;
+  }
+}
+
 @keyframes revealResultsPanel {
   0% {
     opacity: 0;
