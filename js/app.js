@@ -3606,6 +3606,20 @@ class RideCompareApp {
     this.closeLocationMapModal();
     this.showToast(`Pickup location set: ${selectedName} 📍`, 'success');
 
+    // Check if Drop Location is already selected
+    const dropText = document.getElementById('home-drop-text');
+    const isDropPlaceholder = !dropText || dropText.classList.contains('placeholder') || dropText.textContent.trim() === 'Select destination';
+    const isDropSelected = this.hasDropSelected && !isDropPlaceholder && (this.selectedDropName || '').trim().length > 0;
+
+    if (isDropSelected) {
+      this.autoChainToDrop = false;
+      // Both pickup and drop locations are selected -> open route map directly across all devices!
+      setTimeout(() => {
+        this.onSearchRides();
+      }, 250);
+      return;
+    }
+
     // If Search was initiated without either location, auto-chain to drop location
     if (this.autoChainToDrop && (!this.hasDropSelected || !this.selectedDropName)) {
       this.autoChainToDrop = false;
@@ -3652,6 +3666,26 @@ class RideCompareApp {
     this.closeLocationMapModal();
     this.showToast(`Drop location set: ${selectedName} 📍`, 'success');
     this.addRecentSearch(selectedName, selectedSub, null, this.pickupLocationName || 'Current Location');
+
+    // Check Pickup Location: If not explicitly selected, default to Current Location
+    const pickupText = document.getElementById('home-pickup-text');
+    const isPickupPlaceholder = !pickupText || pickupText.classList.contains('placeholder') || pickupText.textContent.trim() === 'Select pickup location';
+    const isPickupSelected = this.hasPickupSelected && !isPickupPlaceholder && (this.pickupLocationName || '').trim().length > 0;
+
+    if (!isPickupSelected) {
+      this.hasPickupSelected = true;
+      this.pickupLocationName = 'Current Location';
+      this.pickupLocationFull = 'Your Current GPS Location';
+      if (pickupText) {
+        pickupText.textContent = 'Current Location';
+        pickupText.classList.remove('placeholder');
+      }
+    }
+
+    // Both pickup and drop locations are selected -> open route map directly across all devices!
+    setTimeout(() => {
+      this.onSearchRides();
+    }, 250);
   }
 
   // -------------------------------------------------------------------------
@@ -3748,6 +3782,17 @@ class RideCompareApp {
           }
         }
         this.showToast(`📍 Pickup set to: ${locationName} (±${accuracy}m)`, 'success');
+
+        // Check if Drop Location is already selected -> If so, open route map directly!
+        const dropText = document.getElementById('home-drop-text');
+        const isDropPlaceholder = !dropText || dropText.classList.contains('placeholder') || dropText.textContent.trim() === 'Select destination';
+        const isDropSelected = this.hasDropSelected && !isDropPlaceholder && (this.selectedDropName || '').trim().length > 0;
+
+        if (isDropSelected) {
+          setTimeout(() => {
+            this.onSearchRides();
+          }, 250);
+        }
       },
       (err) => {
         this.isLocatingUser = false;
