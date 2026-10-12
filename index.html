@@ -51,7 +51,7 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4LfkJpAF7Ggz83bF--j3vPztxlzrxPxg&libraries=places,geometry" async defer></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=65">
+  <link rel="stylesheet" href="css/styles.css?v=66">
 
   <style>
     /* Strict Responsive Display Rules: Bottom Nav for Mobile & Tablet (< 1024px) */
@@ -1631,6 +1631,35 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
           <span class="welcome-label-pickup">Pickup</span>
           <span class="welcome-label-dest">Destination</span>
         </div>
+      </div>
+
+      <!-- 5. Network Loading State (Appears if website takes time or network is weak / waiting for strong connection) -->
+      <div id="welcome-network-loading" class="welcome-network-loading hidden" aria-live="polite">
+        <!-- Live Connection Status Pill -->
+        <div class="welcome-network-pill">
+          <div class="network-radar-wrapper">
+            <span class="network-radar-ring ring-1"></span>
+            <span class="network-radar-ring ring-2"></span>
+            <span id="welcome-network-dot" class="network-radar-dot bg-amber-500"></span>
+          </div>
+          <span id="welcome-loading-text" class="welcome-loading-text">Connecting to network...</span>
+        </div>
+
+        <!-- Modern Laser Progress Track -->
+        <div class="welcome-network-track">
+          <div id="welcome-network-progress" class="welcome-network-bar"></div>
+        </div>
+
+        <!-- Connection Details Subtext -->
+        <p id="welcome-network-subtext" class="welcome-network-subtext">
+          Waiting for strong network connection...
+        </p>
+
+        <!-- Optional Direct Retry Button (revealed if slow/offline) -->
+        <button id="welcome-network-retry-btn" type="button" onclick="app.checkNetworkStrength(true)" class="welcome-network-retry-btn hidden">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          <span>Check Again</span>
+        </button>
       </div>
 
       <!-- Subtle Tap Hint -->
@@ -5618,7 +5647,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
   <script src="js/bcrypt.min.js"></script>
   <script src="js/api.js?v=5"></script>
   <script src="js/audio.js?v=28"></script>
-  <script src="js/app.js?v=89"></script>
+  <script src="js/app.js?v=90"></script>
 
   <!-- Service Worker for Offline PWA Support -->
   <script>

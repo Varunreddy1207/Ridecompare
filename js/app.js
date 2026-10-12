@@ -211,6 +211,10 @@ class RideCompareApp {
       } catch (_) {}
     }
 
+    if (window.location.search.includes('simulate_slow=1')) {
+      this.isForcedSlowNetwork = true;
+    }
+
     this.initTheme();
     this.initConnectivity();
     this.initUserProfile();
@@ -638,24 +642,224 @@ class RideCompareApp {
 
     // Active welcome sequence
     this.isWelcomeSplashActive = true;
+    this.isNetworkStrong = false;
+    this.isNetworkLoadingActive = false;
 
     // Enforce pure white canvas without background navigation bars
     this.enforceResponsiveNav();
 
-    // Sequence transition begins at 2.7s (2700ms) and finishes by 3.1s (3100ms)
-    this.welcomeTransitionTimer = setTimeout(() => {
-      this.finishWelcomeSplash();
+    // Start background network check immediately
+    this.initialNetworkPromise = this.checkNetworkStrength();
+
+    // Sequence route animation completes by 2.7s (2700ms)
+    this.welcomeTransitionTimer = setTimeout(async () => {
+      let netStatus = null;
+      try {
+        netStatus = await this.checkNetworkStrength();
+      } catch (_) {
+        netStatus = { strong: false, reason: 'error' };
+      }
+
+      if (netStatus && netStatus.strong && !this.isForcedSlowNetwork && !this.isForcedOffline) {
+        // Network is strong and website is responsive: finish welcome smoothly
+        this.finishWelcomeSplash();
+      } else {
+        // Website is taking time or network is slow/offline/weak:
+        // Engage the popping R logo loading state until user network gets strong!
+        this.startWelcomeNetworkLoading(netStatus);
+      }
     }, 2700);
+  }
+
+  // Engage Loading State: R logo pops rhythmically until network is strong
+  startWelcomeNetworkLoading(initialStatus) {
+    if (!this.isWelcomeSplashActive) return;
+    this.isNetworkLoadingActive = true;
+
+    // 1. Activate popping R logo animation
+    const logoWrapper = document.querySelector('.welcome-logo-wrapper');
+    if (logoWrapper) {
+      logoWrapper.classList.add('popping');
+    }
+
+    // 2. Hide route line and tap hint
+    const routeWrapper = document.querySelector('.welcome-route-wrapper');
+    const tapHint = document.querySelector('.welcome-tap-hint');
+    if (routeWrapper) routeWrapper.classList.add('hidden');
+    if (tapHint) tapHint.classList.add('hidden');
+
+    // 3. Reveal network loading container
+    const loadingContainer = document.getElementById('welcome-network-loading');
+    if (loadingContainer) {
+      loadingContainer.classList.remove('hidden');
+    }
+
+    // 4. Update status labels
+    this.updateNetworkLoadingUI(initialStatus);
+
+    // 5. Reveal retry button after 3.5s if still waiting
+    setTimeout(() => {
+      if (this.isNetworkLoadingActive) {
+        const retryBtn = document.getElementById('welcome-network-retry-btn');
+        if (retryBtn) retryBtn.classList.remove('hidden');
+      }
+    }, 3500);
+
+    // 6. Poll continuously until network becomes strong
+    if (this.networkStrengthPollTimer) clearInterval(this.networkStrengthPollTimer);
+    this.networkStrengthPollTimer = setInterval(async () => {
+      if (!this.isNetworkLoadingActive || !this.isWelcomeSplashActive) {
+        clearInterval(this.networkStrengthPollTimer);
+        this.networkStrengthPollTimer = null;
+        return;
+      }
+
+      const status = await this.checkNetworkStrength();
+      this.updateNetworkLoadingUI(status);
+
+      if (status.strong && !this.isForcedSlowNetwork && !this.isForcedOffline) {
+        // Network is now strong! Dismiss loading state smoothly
+        clearInterval(this.networkStrengthPollTimer);
+        this.networkStrengthPollTimer = null;
+        this.completeNetworkLoadingSuccess();
+      }
+    }, 1300);
+  }
+
+  updateNetworkLoadingUI(status) {
+    const textEl = document.getElementById('welcome-loading-text');
+    const subtextEl = document.getElementById('welcome-network-subtext');
+    const dotEl = document.getElementById('welcome-network-dot');
+    const barEl = document.getElementById('welcome-network-progress');
+
+    if (!textEl) return;
+
+    if (!status || status.reason === 'offline' || status.reason === 'forced_offline') {
+      textEl.textContent = 'Offline • Waiting for network...';
+      if (subtextEl) subtextEl.textContent = 'Internet connection unavailable. Checking automatically...';
+      if (dotEl) dotEl.className = 'network-radar-dot bg-red-500';
+      if (barEl) barEl.classList.remove('full');
+    } else if (status.reason === 'slow_connection' || status.reason === 'slow_response' || status.reason === 'high_latency') {
+      textEl.textContent = 'Weak Network Detected...';
+      if (subtextEl) subtextEl.textContent = 'Waiting for connection to strengthen for real-time rates...';
+      if (dotEl) dotEl.className = 'network-radar-dot bg-amber-500';
+      if (barEl) barEl.classList.remove('full');
+    } else if (status.strong) {
+      textEl.textContent = 'Strong Network Connected!';
+      if (subtextEl) subtextEl.textContent = 'Launching RideCompare with live routes & fares...';
+      if (dotEl) dotEl.className = 'network-radar-dot bg-emerald-500';
+      if (barEl) barEl.classList.add('full');
+    } else {
+      textEl.textContent = 'Connecting to network...';
+      if (subtextEl) subtextEl.textContent = 'Waiting for strong network connection...';
+      if (dotEl) dotEl.className = 'network-radar-dot bg-blue-500';
+      if (barEl) barEl.classList.remove('full');
+    }
+  }
+
+  completeNetworkLoadingSuccess() {
+    this.updateNetworkLoadingUI({ strong: true });
+
+    setTimeout(() => {
+      this.isNetworkLoadingActive = false;
+      const logoWrapper = document.querySelector('.welcome-logo-wrapper');
+      if (logoWrapper) logoWrapper.classList.remove('popping');
+      this.finishWelcomeSplash();
+    }, 450);
+  }
+
+  async checkNetworkStrength(force = false) {
+    if (this.isForcedOffline) {
+      this.isNetworkStrong = false;
+      return { strong: false, reason: 'offline', pingMs: null };
+    }
+    if (this.isForcedSlowNetwork) {
+      this.isNetworkStrong = false;
+      return { strong: false, reason: 'slow_connection', pingMs: 3200 };
+    }
+
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      this.isNetworkStrong = false;
+      return { strong: false, reason: 'offline', pingMs: null };
+    }
+
+    const conn = typeof navigator !== 'undefined' ? (navigator.connection || navigator.mozConnection || navigator.webkitConnection) : null;
+    if (conn) {
+      if (conn.effectiveType === 'slow-2g' || conn.effectiveType === '2g') {
+        this.isNetworkStrong = false;
+        return { strong: false, reason: 'slow_connection', effectiveType: conn.effectiveType };
+      }
+      if (typeof conn.rtt === 'number' && conn.rtt > 2200) {
+        this.isNetworkStrong = false;
+        return { strong: false, reason: 'high_latency', rtt: conn.rtt };
+      }
+    }
+
+    try {
+      const startTime = performance.now();
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2000);
+      
+      const pingUrl = 'https://www.gstatic.com/generate_204?' + Date.now();
+      await fetch(pingUrl, {
+        method: 'HEAD',
+        mode: 'no-cors',
+        cache: 'no-store',
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+
+      const duration = performance.now() - startTime;
+      const isStrong = duration < 1600;
+      this.isNetworkStrong = isStrong;
+      return { strong: isStrong, reason: isStrong ? 'strong' : 'slow_response', pingMs: Math.round(duration) };
+    } catch (err) {
+      try {
+        const localStart = performance.now();
+        const localCtrl = new AbortController();
+        const localTimeout = setTimeout(() => localCtrl.abort(), 1200);
+        await fetch(window.location.origin + '/?ping=' + Date.now(), {
+          method: 'HEAD',
+          cache: 'no-store',
+          signal: localCtrl.signal
+        });
+        clearTimeout(localTimeout);
+        const localDur = performance.now() - localStart;
+        if (localDur < 1200) {
+          this.isNetworkStrong = true;
+          return { strong: true, reason: 'strong', pingMs: Math.round(localDur) };
+        }
+      } catch (_) {}
+
+      this.isNetworkStrong = false;
+      return { strong: false, reason: 'ping_failed', error: err.message };
+    }
+  }
+
+  simulateSlowNetwork(isSlow = true) {
+    this.isForcedSlowNetwork = isSlow;
+    if (isSlow) {
+      this.isNetworkStrong = false;
+    }
+    return this.isForcedSlowNetwork;
   }
 
   finishWelcomeSplash() {
     if (!this.isWelcomeSplashActive && !document.getElementById('welcome-splash-screen')) return;
     this.isWelcomeSplashActive = false;
+    this.isNetworkLoadingActive = false;
 
     if (this.welcomeTransitionTimer) {
       clearTimeout(this.welcomeTransitionTimer);
       this.welcomeTransitionTimer = null;
     }
+    if (this.networkStrengthPollTimer) {
+      clearInterval(this.networkStrengthPollTimer);
+      this.networkStrengthPollTimer = null;
+    }
+
+    const logoWrapper = document.querySelector('.welcome-logo-wrapper');
+    if (logoWrapper) logoWrapper.classList.remove('popping');
 
     const splash = document.getElementById('welcome-splash-screen');
     if (!splash) return;
