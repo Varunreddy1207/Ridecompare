@@ -2454,37 +2454,46 @@ body.theme-light .profile-delete-account-btn:hover,
   color: #B91C1C !important;
 }
 
-/* 10. History Screen */
-body:not(.theme-dark) #screen-history header {
+/* 10. History & Saved Places Screens */
+body:not(.theme-dark) #screen-history header,
+body:not(.theme-dark) #screen-saved header {
   background: rgba(255, 255, 255, 0.95) !important;
   border-bottom: 1px solid #E2E8F0 !important;
 }
 
-body:not(.theme-dark) #screen-history h1 {
+body:not(.theme-dark) #screen-history h1,
+body:not(.theme-dark) #screen-saved h1 {
   color: #0F172A !important;
 }
 
-body:not(.theme-dark) #screen-history .text-white:not(button):not(button *) {
+body:not(.theme-dark) #screen-history .text-white:not(button):not(button *),
+body:not(.theme-dark) #screen-saved .text-white:not(button):not(button *) {
   color: #0F172A !important;
 }
 
-body:not(.theme-dark) #screen-history .text-slate-300 {
+body:not(.theme-dark) #screen-history .text-slate-300,
+body:not(.theme-dark) #screen-saved .text-slate-300 {
   color: #334155 !important;
 }
 
-body:not(.theme-dark) #screen-history .text-slate-400 {
+body:not(.theme-dark) #screen-history .text-slate-400,
+body:not(.theme-dark) #screen-saved .text-slate-400 {
   color: #64748B !important;
 }
 
 body:not(.theme-dark) #screen-history .bg-slate-800,
 body:not(.theme-dark) #screen-history .bg-slate-800\/80,
-body:not(.theme-dark) #screen-history .bg-slate-800\/90 {
+body:not(.theme-dark) #screen-history .bg-slate-800\/90,
+body:not(.theme-dark) #screen-saved .bg-slate-800,
+body:not(.theme-dark) #screen-saved .bg-slate-800\/80,
+body:not(.theme-dark) #screen-saved .bg-slate-800\/90 {
   background-color: #F1F5F9 !important;
   border: 1px solid #E2E8F0 !important;
   color: #334155 !important;
 }
 
-body:not(.theme-dark) #screen-history .bg-blue-950\/40 {
+body:not(.theme-dark) #screen-history .bg-blue-950\/40,
+body:not(.theme-dark) #screen-saved .bg-blue-950\/40 {
   background-color: #EFF6FF !important;
   border: 1px solid #BFDBFE !important;
   color: #1D4ED8 !important;
@@ -2984,6 +2993,7 @@ body:not(.theme-dark) button.bg-amber-600 * {
 /* 1. "Back to Home" Button in Light Mode — Blue Background */
 body:not(.theme-dark) .btn-back-home,
 body:not(.theme-dark) #screen-history .btn-back-home,
+body:not(.theme-dark) #screen-saved .btn-back-home,
 body:not(.theme-dark) #screen-profile .btn-back-home,
 body.theme-light .btn-back-home,
 [data-theme="light"] .btn-back-home,
@@ -2998,6 +3008,7 @@ html:not(.theme-dark) .btn-back-home {
 
 body:not(.theme-dark) .btn-back-home *,
 body:not(.theme-dark) #screen-history .btn-back-home *,
+body:not(.theme-dark) #screen-saved .btn-back-home *,
 body:not(.theme-dark) #screen-profile .btn-back-home *,
 body.theme-light .btn-back-home *,
 [data-theme="light"] .btn-back-home *,
@@ -3008,6 +3019,7 @@ html:not(.theme-dark) .btn-back-home * {
 
 body:not(.theme-dark) .btn-back-home:hover,
 body:not(.theme-dark) #screen-history .btn-back-home:hover,
+body:not(.theme-dark) #screen-saved .btn-back-home:hover,
 body:not(.theme-dark) #screen-profile .btn-back-home:hover,
 body.theme-light .btn-back-home:hover,
 [data-theme="light"] .btn-back-home:hover {
@@ -3021,6 +3033,7 @@ body.theme-light .btn-back-home:hover,
 
 body:not(.theme-dark) .btn-back-home:active,
 body:not(.theme-dark) #screen-history .btn-back-home:active,
+body:not(.theme-dark) #screen-saved .btn-back-home:active,
 body:not(.theme-dark) #screen-profile .btn-back-home:active,
 body.theme-light .btn-back-home:active,
 [data-theme="light"] .btn-back-home:active {
@@ -3243,6 +3256,7 @@ body:not(.theme-dark) #booking-confirmed-modal button:active {
   }
   #screen-home > div:last-child,
   #screen-history > div:last-child,
+  #screen-saved > div:last-child,
   #screen-profile > div:last-child,
   #screen-booking > div:last-child {
     height: 100vh !important;
@@ -3257,6 +3271,7 @@ body:not(.theme-dark) #booking-confirmed-modal button:active {
 @media (max-width: 1023px) {
   #screen-home > div:last-child,
   #screen-history > div:last-child,
+  #screen-saved > div:last-child,
   #screen-profile > div:last-child {
     padding-bottom: 80px !important;
   }

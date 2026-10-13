@@ -51,7 +51,7 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4LfkJpAF7Ggz83bF--j3vPztxlzrxPxg&libraries=places,geometry" async defer></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=66">
+  <link rel="stylesheet" href="css/styles.css?v=67">
 
   <style>
     /* Strict Responsive Display Rules: Bottom Nav for Mobile & Tablet (< 1024px) */
@@ -80,6 +80,7 @@
     /* CRITICAL LIGHT MODE ACTION BUTTONS: Back to Home & Notification Bell */
     body:not(.theme-dark) .btn-back-home,
     body:not(.theme-dark) #screen-history .btn-back-home,
+    body:not(.theme-dark) #screen-saved .btn-back-home,
     body:not(.theme-dark) #screen-profile .btn-back-home,
     body:not(.theme-dark) .desktop-topbar .btn-back-home,
     body:not(.theme-dark) button[onclick*="switchTab('home')"]:not(.sidebar-nav-item):not(.mob-nav-btn),
@@ -95,6 +96,7 @@
 
     body:not(.theme-dark) .btn-back-home *,
     body:not(.theme-dark) #screen-history .btn-back-home *,
+    body:not(.theme-dark) #screen-saved .btn-back-home *,
     body:not(.theme-dark) #screen-profile .btn-back-home *,
     body:not(.theme-dark) button[onclick*="switchTab('home')"]:not(.sidebar-nav-item):not(.mob-nav-btn) * {
       color: #FFFFFF !important;
@@ -1206,6 +1208,7 @@
       }
       #screen-home > div:last-child,
       #screen-history > div:last-child,
+      #screen-saved > div:last-child,
       #screen-profile > div:last-child,
       #screen-booking > div:last-child {
         height: 100vh !important;
@@ -1241,6 +1244,7 @@
     @media (max-width: 1023px) {
       #screen-home > div:last-child,
       #screen-history > div:last-child,
+      #screen-saved > div:last-child,
       #screen-profile > div:last-child {
         padding-bottom: 80px !important;
       }
@@ -1944,6 +1948,18 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
 
               <div id="home-recent-searches-list" class="recent-searches-list">
                 <!-- Dynamically populated by app.renderRecentSearches() -->
+              </div>
+            </div>
+
+            <!-- Saved Places Section (Dynamic: Empty state with saved symbol when no saved places, populated when user saves a place) -->
+            <div class="pt-1">
+              <div class="recent-searches-header">
+                <h3>Saved Places</h3>
+                <button id="saved-places-see-all" onclick="app.switchTab('saved')" class="see-all-link">See all</button>
+              </div>
+
+              <div id="home-saved-places-list" class="recent-searches-list">
+                <!-- Dynamically populated by app.renderSavedPlaces() -->
               </div>
             </div>
 
@@ -2778,6 +2794,153 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
 
     </div>
   </div>
+
+  <!-- ====================================================================== -->
+  <!-- SCREEN 4B: SAVED PLACES (Responsive across Mobile, Tablet & Desktop)   -->
+  <!-- ====================================================================== -->
+  <section id="screen-saved" class="screen-page">
+
+    <!-- DESKTOP PERMANENT LEFT SIDEBAR (>= 1024px) -->
+    <aside class="desktop-sidebar hidden lg:flex">
+      <div>
+        <!-- Brand Header with 3D Logo Emblem -->
+        <div onclick="event.stopPropagation(); app.reloadPage()" data-reload-brand="true" title="Reload RideCompare" class="desktop-brand-header flex items-center gap-3 px-2 py-2 cursor-pointer hover:opacity-90 transition-opacity">
+          <img src="assets/images/logo_cropped_clean.png" alt="VOZX Logo" class="w-9 h-9 object-contain filter drop-shadow-[0_0_8px_#38BDF8] pointer-events-none">
+          <div>
+            <h1 class="text-base font-extrabold tracking-tight text-white flex items-center pointer-events-none">
+              Ride<span class="text-[#0073FF] ml-0.5">Compare</span>
+            </h1>
+            <span class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold pointer-events-none">VOZX Ecosystem</span>
+          </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="desktop-nav-list">
+          <button onclick="app.switchTab('home')" class="sidebar-nav-item" data-tab="home">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            <span>Home</span>
+          </button>
+
+          <button onclick="app.switchTab('history')" class="sidebar-nav-item" data-tab="history">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span>History / Trips</span>
+          </button>
+
+          <button onclick="app.switchTab('compare')" class="sidebar-nav-item" data-tab="compare">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            <span>Compare Rates</span>
+          </button>
+
+          <button onclick="app.switchTab('saved')" class="sidebar-nav-item active" data-tab="saved">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+            <span>Saved Places</span>
+          </button>
+
+          <button class="sidebar-nav-item">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+            <span>Wallet & Offers</span>
+          </button>
+
+          <button class="sidebar-nav-item">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            <span>AI Assistant</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Bottom Profile -->
+      <div class="pt-4 border-t border-slate-800/80">
+        <div onclick="app.openProfile()" class="flex items-center justify-between p-2 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-blue-500/40 cursor-pointer transition-all group">
+          <div class="flex items-center gap-2.5">
+            <div id="desk-saved-avatar-badge" class="user-avatar-badge w-8 h-8 rounded-full bg-[#93C5FD] flex items-center justify-center text-[#1E3A8A] font-bold text-xs flex-shrink-0 shadow transition-transform group-hover:scale-105">
+              <svg class="w-5 h-5 text-[#1E3A8A]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+            </div>
+            <div>
+              <p id="desk-saved-profile-name" class="sidebar-user-name text-xs font-bold text-white group-hover:text-blue-300 transition-colors">Varun Reddy</p>
+              <p class="sidebar-user-status text-[10px] text-green-400 font-medium">● Connected</p>
+            </div>
+          </div>
+          <button onclick="event.stopPropagation(); app.logout()" title="Log Out" class="text-slate-400 hover:text-red-400 p-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN SAVED PLACES CONTENT WRAPPER -->
+    <div class="w-full flex-1 flex flex-col lg:pl-[260px] pb-20 lg:pb-6">
+
+      <!-- DESKTOP TOP BAR (>= 1024px) -->
+      <header class="desktop-topbar hidden lg:flex">
+        <div class="flex items-center gap-3">
+          <button onclick="app.switchTab('home')" class="btn-back-home flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white border border-blue-500 shadow-md transition-all active:scale-95 cursor-pointer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+            <span>Back to Home</span>
+          </button>
+          <div class="h-4 w-px bg-slate-800"></div>
+          <span class="text-xs text-slate-400 font-medium">Home &gt; <span class="text-white font-semibold">Saved Places</span></span>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <!-- Theme Mode Toggle -->
+          <button type="button" onclick="app.toggleTheme()" class="theme-toggle-btn w-9 h-9" aria-label="Toggle Dark / Light Theme" title="Toggle Theme">
+            <span class="theme-icon-light hidden">
+              <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41m14.14-14.14l-1.41 1.41"/></svg>
+            </span>
+            <span class="theme-icon-dark flex">
+              <svg class="w-4 h-4 text-slate-700" fill="currentColor" viewBox="0 0 24 24"><path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>
+            </span>
+          </button>
+          <div id="saved-places-count-badge-desk" class="px-3 py-1 rounded-full bg-blue-950/40 border border-blue-800/40 text-[11px] font-semibold text-sky-400">
+            0 Saved Places
+          </div>
+        </div>
+      </header>
+
+      <!-- MOBILE / TABLET HEADER (< 1024px) -->
+      <div class="lg:hidden px-4 md:px-8 pt-5 pb-3">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-3">
+            <button onclick="app.switchTab('home')" class="btn-back-home w-9 h-9 rounded-full bg-blue-600 hover:bg-blue-500 border border-blue-500 flex items-center justify-center text-white transition-all active:scale-95 shadow-md cursor-pointer">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Saved Places</h1>
+          </div>
+          <div class="flex items-center gap-2">
+            <!-- Theme Mode Toggle -->
+            <button type="button" onclick="app.toggleTheme()" class="theme-toggle-btn w-8 h-8" aria-label="Toggle Dark / Light Theme" title="Toggle Theme">
+              <span class="theme-icon-light hidden">
+                <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41m14.14-14.14l-1.41 1.41"/></svg>
+              </span>
+              <span class="theme-icon-dark flex">
+                <svg class="w-3.5 h-3.5 text-slate-700" fill="currentColor" viewBox="0 0 24 24"><path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>
+              </span>
+            </button>
+            <div id="saved-places-count-badge-mob" class="px-2.5 py-1 rounded-full bg-slate-800/80 border border-slate-700/50 text-[11px] font-bold text-slate-300">
+              0 Saved
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN RESPONSIVE CONTAINER -->
+      <div class="max-w-4xl w-full mx-auto px-4 md:px-8 py-2 md:py-6 flex-1">
+        <!-- DESKTOP HEADER BAR (>= 1024px) -->
+        <div class="hidden lg:flex items-center justify-between mb-6">
+          <div>
+            <h1 class="text-2xl font-extrabold text-white tracking-tight">Saved Places</h1>
+            <p class="text-xs text-slate-400 mt-1">Access your saved destinations for quick 1-tap ride comparison and booking</p>
+          </div>
+        </div>
+
+        <!-- SAVED PLACES DYNAMIC LIST / EMPTY STATE -->
+        <div id="saved-places-page-list" class="space-y-3">
+          <!-- Dynamically populated by app.renderSavedPlaces() -->
+        </div>
+      </div>
+
+    </div>
+  </section>
 
   <!-- ====================================================================== -->
   <!-- SCREEN 5: USER PROFILE (Exact Match to media_1790665329406.png)        -->
@@ -5382,7 +5545,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
         <span id="recent-action-dest-fare" class="recent-dest-fare px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex-shrink-0">₹228</span>
       </div>
 
-      <!-- The Two Options: Book Ride & Delete -->
+      <!-- The Three Options: Book Ride, Save this Place & Delete -->
       <div class="space-y-2.5 pt-1">
         <!-- Option 1: Book the Ride -->
         <button type="button" id="btn-recent-action-book" onclick="app.bookSelectedRecentRide()" class="btn-recent-book w-full py-3.5 px-4 rounded-2xl bg-[#0073FF] hover:bg-[#0060E6] text-white font-bold text-sm tracking-wide shadow-[0_4px_18px_rgba(0,115,255,0.4)] transition-all active:scale-[0.98] flex items-center justify-center gap-2.5 cursor-pointer">
@@ -5392,7 +5555,15 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
           <span>Book Ride</span>
         </button>
 
-        <!-- Option 2: Delete -->
+        <!-- Option 2: Save this Place -->
+        <button type="button" id="btn-recent-action-save" onclick="app.saveSelectedRecentPlace()" class="btn-recent-save w-full py-3 px-4 rounded-2xl bg-blue-500/15 hover:bg-blue-500/25 text-blue-400 hover:text-blue-300 border border-blue-500/30 font-semibold text-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+          </svg>
+          <span>Save this Place</span>
+        </button>
+
+        <!-- Option 3: Delete -->
         <button type="button" id="btn-recent-action-delete" onclick="app.deleteSelectedRecentSearch()" class="btn-recent-delete w-full py-3 px-4 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 border border-red-500/30 font-semibold text-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer">
           <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -5647,7 +5818,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
   <script src="js/bcrypt.min.js"></script>
   <script src="js/api.js?v=5"></script>
   <script src="js/audio.js?v=28"></script>
-  <script src="js/app.js?v=90"></script>
+  <script src="js/app.js?v=91"></script>
 
   <!-- Service Worker for Offline PWA Support -->
   <script>

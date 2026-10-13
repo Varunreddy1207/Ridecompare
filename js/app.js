@@ -346,6 +346,7 @@ class RideCompareApp {
       // Initial route map badges and headers setup
       this.updateResultsMapRoute();
       this.renderRecentSearches();
+      this.renderSavedPlaces();
       this.syncRecentSearchesFromBackend();
 
       // Automatically re-sync from backend/cloud when switching back to tab/app across devices
@@ -603,6 +604,8 @@ class RideCompareApp {
       } catch (_) {}
     } else if (this.currentScreen === 'screen-history' || this.currentTab === 'history') {
       window.location.hash = '#history';
+    } else if (this.currentScreen === 'screen-saved' || this.currentTab === 'saved') {
+      window.location.hash = '#saved';
     } else if (this.currentScreen === 'screen-profile' || this.currentTab === 'profile') {
       window.location.hash = '#profile';
     } else if (this.currentScreen === 'screen-booking') {
@@ -624,7 +627,7 @@ class RideCompareApp {
     // Check if user has already viewed the welcome animation in this browser session
     const hasViewed = sessionStorage.getItem('vozx_welcome_viewed') === 'true';
     const path = (window.location.pathname || '').toLowerCase().replace(/\/$/, '');
-    const isDeepPath = path.endsWith('/login') || path.endsWith('/signup') || path.endsWith('/system-status') || path.endsWith('/status') || path.endsWith('/profile') || path.endsWith('/rides') || path.endsWith('/history') || path.endsWith('/booking');
+    const isDeepPath = path.endsWith('/login') || path.endsWith('/signup') || path.endsWith('/system-status') || path.endsWith('/status') || path.endsWith('/profile') || path.endsWith('/rides') || path.endsWith('/history') || path.endsWith('/saved') || path.endsWith('/booking');
     const isDevPreview = window.location.search.includes('dev_preview=1') || window.self !== window.top;
 
     // If already viewed, in simulator preview, or entering directly with specific deep route
@@ -925,6 +928,11 @@ class RideCompareApp {
       this.currentTab = 'profile';
       this.navigateTo('screen-profile', false);
       this.updateActiveNavs('profile');
+    } else if (path.endsWith('/saved') || hash === '#saved') {
+      this.currentTab = 'saved';
+      this.navigateTo('screen-saved', false);
+      this.updateActiveNavs('saved');
+      this.renderSavedPlaces();
     } else if (path.endsWith('/rides') || path.endsWith('/history') || hash === '#rides' || hash === '#history') {
       this.currentTab = 'history';
       this.navigateTo('screen-history', false);
@@ -1046,6 +1054,11 @@ class RideCompareApp {
 
     if (hash === '#booking' || path.endsWith('/booking')) {
       this.navigateTo('screen-booking', false);
+    } else if (hash === '#saved' || path.endsWith('/saved')) {
+      this.currentTab = 'saved';
+      this.navigateTo('screen-saved', false);
+      this.updateActiveNavs('saved');
+      this.renderSavedPlaces();
     } else if (hash === '#history' || hash === '#rides' || path.endsWith('/history') || path.endsWith('/rides')) {
       this.currentTab = 'history';
       this.navigateTo('screen-history', false);
@@ -1700,6 +1713,7 @@ class RideCompareApp {
     this.enforceResponsiveNav();
     this.renderUserProfile();
     this.renderRecentSearches();
+    this.renderSavedPlaces();
     this.syncRecentSearchesFromBackend();
     const userName = (this.userProfile && this.userProfile.name) ? this.userProfile.name : 'User';
     if (this.lastAuthAction === 'login') {
@@ -1919,7 +1933,12 @@ class RideCompareApp {
       const raw = localStorage.getItem(key);
       if (raw) {
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) return parsed;
+        if (Array.isArray(parsed)) {
+          const savedNames = new Set(
+            this.getSavedPlaces().map(p => (p.name || '').toLowerCase().trim()).filter(Boolean)
+          );
+          return parsed.filter(item => !savedNames.has((item.name || '').toLowerCase().trim()));
+        }
       }
     } catch (e) {
       console.warn('Error reading recent searches:', e);
@@ -1933,6 +1952,40 @@ class RideCompareApp {
       localStorage.setItem(key, JSON.stringify(searches.slice(0, 8)));
     } catch (e) {
       console.warn('Error saving recent searches:', e);
+    }
+  }
+
+  // =========================================================================
+  // SAVED PLACES: Dynamic Persistence & Empty State Management
+  // =========================================================================
+  getSavedPlacesStorageKey() {
+    const userEmail = (this.userProfile && this.userProfile.email) ? this.userProfile.email.toLowerCase().trim() : '';
+    if (userEmail && userEmail !== 'guest' && userEmail !== 'guest user') {
+      return `ridecompare_saved_places_${userEmail}`;
+    }
+    return 'ridecompare_saved_places_guest';
+  }
+
+  getSavedPlaces() {
+    try {
+      const key = this.getSavedPlacesStorageKey();
+      const raw = localStorage.getItem(key);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch (e) {
+      console.warn('Error reading saved places:', e);
+    }
+    return [];
+  }
+
+  saveSavedPlaces(places) {
+    try {
+      const key = this.getSavedPlacesStorageKey();
+      localStorage.setItem(key, JSON.stringify(places.slice(0, 20)));
+    } catch (e) {
+      console.warn('Error saving saved places:', e);
     }
   }
 
@@ -1988,6 +2041,14 @@ class RideCompareApp {
     const cleanCity = (city || 'Kolhapur').trim();
     const estimatedFare = fare || this.calculateEstimatedMinFare(cleanName, pickup);
 
+    // If this place is already saved in Saved Places, keep it in Saved Places (do not re-add to Recent Searches)
+    const savedPlaces = this.getSavedPlaces();
+    const isAlreadySaved = savedPlaces.some(p => (p.name || '').toLowerCase().trim() === cleanName.toLowerCase());
+    if (isAlreadySaved) {
+      this.renderSavedPlaces();
+      return;
+    }
+
     let searches = this.getRecentSearches();
 
     // Deduplicate: filter out previous entry with same destination name
@@ -2033,6 +2094,7 @@ class RideCompareApp {
     }
     if (!email || email === 'guest' || email === 'guest user') {
       this.renderRecentSearches();
+      this.renderSavedPlaces();
       return;
     }
 
@@ -2040,20 +2102,23 @@ class RideCompareApp {
       try {
         const backendSearches = await window.RideCompareApi.getRecentSearches(8);
         const localSearches = this.getRecentSearches();
+        const savedNames = new Set(
+          this.getSavedPlaces().map(p => (p.name || '').toLowerCase().trim()).filter(Boolean)
+        );
 
         if (Array.isArray(backendSearches) && backendSearches.length > 0) {
           const merged = [];
           const seen = new Set();
           backendSearches.forEach(bs => {
             const k = (bs.name || '').toLowerCase().trim();
-            if (k && !seen.has(k)) {
+            if (k && !seen.has(k) && !savedNames.has(k)) {
               seen.add(k);
               merged.push(bs);
             }
           });
           localSearches.forEach(ls => {
             const k = (ls.name || '').toLowerCase().trim();
-            if (k && !seen.has(k)) {
+            if (k && !seen.has(k) && !savedNames.has(k)) {
               seen.add(k);
               merged.push(ls);
               // Also sync up to cloud so other devices receive it too
@@ -2062,6 +2127,7 @@ class RideCompareApp {
           });
           this.saveRecentSearches(merged.slice(0, 8));
           this.renderRecentSearches();
+          this.renderSavedPlaces();
           return;
         } else if (localSearches.length > 0) {
           // If backend has no searches yet, push local searches to cloud
@@ -2074,6 +2140,7 @@ class RideCompareApp {
       }
     }
     this.renderRecentSearches();
+    this.renderSavedPlaces();
   }
 
   clearRecentSearches() {
@@ -2134,7 +2201,7 @@ class RideCompareApp {
       const safePickup = (item.pickup || 'Current Location').replace(/'/g, "\\'");
 
       return `
-        <div onclick="app.openRecentSearchAction('${safeName}', '${safeCity}', '${safeFare}', '${safeId}', '${safePickup}')" class="recent-search-item cursor-pointer group hover:border-blue-500/40 transition-all" title="Click to Book Ride or Delete">
+        <div onclick="app.openRecentSearchAction('${safeName}', '${safeCity}', '${safeFare}', '${safeId}', '${safePickup}')" class="recent-search-item cursor-pointer group hover:border-blue-500/40 transition-all" title="Click to Book Ride, Save Place, or Delete">
           <div class="recent-item-left">
             <div class="recent-icon-badge group-hover:scale-105 transition-transform">
               ${iconSvg}
@@ -2155,7 +2222,168 @@ class RideCompareApp {
     }).join('');
   }
 
-  // Open Recent Search Action Modal: Two options (Book Ride & Delete)
+  renderSavedPlaces() {
+    const homeListContainer = document.getElementById('home-saved-places-list');
+    const homeSeeAllBtn = document.getElementById('saved-places-see-all');
+    const pageListContainer = document.getElementById('saved-places-page-list');
+    const countDesk = document.getElementById('saved-places-count-badge-desk');
+    const countMob = document.getElementById('saved-places-count-badge-mob');
+
+    const savedPlaces = this.getSavedPlaces();
+    const count = savedPlaces ? savedPlaces.length : 0;
+
+    if (countDesk) {
+      countDesk.textContent = `${count} Saved ${count === 1 ? 'Place' : 'Places'}`;
+    }
+    if (countMob) {
+      countMob.textContent = `${count} Saved`;
+    }
+
+    // Empty state: "No saved places" with saved bookmark symbol across all devices
+    if (!savedPlaces || count === 0) {
+      if (homeSeeAllBtn) homeSeeAllBtn.style.display = 'none';
+      const emptyCardHtml = `
+        <div class="no-recent-searches-card" data-empty-saved="true">
+          <div class="no-recent-icon-wrap">
+            <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+            </svg>
+          </div>
+          <h4 class="no-recent-title">No saved places</h4>
+          <p class="no-recent-subtitle">Save your favorite destinations for quick 1-tap booking</p>
+        </div>
+      `;
+      if (homeListContainer) homeListContainer.innerHTML = emptyCardHtml;
+      if (pageListContainer) pageListContainer.innerHTML = emptyCardHtml;
+      return;
+    }
+
+    if (homeSeeAllBtn) homeSeeAllBtn.style.display = 'inline-block';
+
+    const itemsHtml = savedPlaces.map(item => {
+      const safeName = (item.name || '').replace(/'/g, "\\'");
+      const safeCity = (item.city || '').replace(/'/g, "\\'");
+      const safeFare = (item.fare || '₹78').replace(/'/g, "\\'");
+      const safeId = (item.id || '').replace(/'/g, "\\'");
+      const safePickup = (item.pickup || 'Current Location').replace(/'/g, "\\'");
+
+      return `
+        <div onclick="app.bookSavedPlace('${safeName}', '${safeCity}', '${safeFare}', '${safePickup}')" class="recent-search-item saved-place-item cursor-pointer group hover:border-blue-500/40 transition-all" title="Click to Book Ride to ${item.name}">
+          <div class="recent-item-left">
+            <div class="recent-icon-badge group-hover:scale-105 transition-transform text-blue-400">
+              <svg class="w-4 h-4 text-[#0073FF]" fill="currentColor" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+              </svg>
+            </div>
+            <div class="recent-item-text">
+              <h4 class="recent-item-title group-hover:text-blue-400 transition-colors">${item.name}</h4>
+              <p class="recent-item-subtitle">${item.city}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="recent-fare-tag">${item.fare}</span>
+            <button type="button" onclick="event.stopPropagation(); app.deleteSavedPlace('${safeId}', '${safeName}')" class="btn-remove-saved-place w-7 h-7 rounded-full bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 flex items-center justify-center text-red-400 hover:text-red-300 transition-all cursor-pointer" title="Remove from Saved Places">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    if (homeListContainer) homeListContainer.innerHTML = itemsHtml;
+    if (pageListContainer) pageListContainer.innerHTML = itemsHtml;
+  }
+
+  // Save the currently selected Recent Search place into Saved Places and remove it from Recent Searches
+  async saveSelectedRecentPlace() {
+    if (window.soundFX && window.soundFX.playTap) {
+      window.soundFX.playTap();
+    }
+
+    const item = this.activeRecentSearchItem;
+    this.closeRecentSearchActionModal();
+
+    if (!item || !item.name) return;
+
+    const cleanName = item.name.trim();
+    const cleanCity = (item.city || 'Kolhapur').trim();
+    const fare = item.fare || this.calculateEstimatedMinFare(cleanName, item.pickup);
+    const pickup = item.pickup || 'Current Location';
+
+    // 1. Add to Saved Places (deduplicate by name)
+    let savedPlaces = this.getSavedPlaces();
+    savedPlaces = savedPlaces.filter(p => (p.name || '').toLowerCase().trim() !== cleanName.toLowerCase());
+    savedPlaces.unshift({
+      id: 'saved_' + Date.now(),
+      name: cleanName,
+      city: cleanCity,
+      fare: fare,
+      pickup: pickup,
+      timestamp: Date.now()
+    });
+    this.saveSavedPlaces(savedPlaces);
+
+    // 2. Remove from Recent Searches (Local & Cloud)
+    const targetName = cleanName.toLowerCase();
+    const targetId = item.id;
+    let recentSearches = [];
+    try {
+      const raw = localStorage.getItem(this.getRecentSearchesStorageKey());
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) recentSearches = parsed;
+      }
+    } catch (_) {}
+
+    recentSearches = recentSearches.filter(s => {
+      if (targetId && s.id && s.id === targetId) return false;
+      if (targetName && (s.name || '').toLowerCase().trim() === targetName) return false;
+      return true;
+    });
+    this.saveRecentSearches(recentSearches);
+
+    // 3. Re-render both lists immediately
+    this.renderRecentSearches();
+    this.renderSavedPlaces();
+
+    // 4. Also delete from backend recent searches if applicable
+    if (window.RideCompareApi && typeof window.RideCompareApi.deleteRecentSearch === 'function') {
+      try {
+        await window.RideCompareApi.deleteRecentSearch(targetId, item.name);
+      } catch (err) {
+        console.warn('Error deleting saved place from recent searches in cloud:', err);
+      }
+    }
+  }
+
+  deleteSavedPlace(id, name) {
+    if (window.soundFX && window.soundFX.playTap) {
+      window.soundFX.playTap();
+    }
+    const targetName = (name || '').toLowerCase().trim();
+    let savedPlaces = this.getSavedPlaces();
+    savedPlaces = savedPlaces.filter(p => {
+      if (id && p.id && p.id === id) return false;
+      if (targetName && (p.name || '').toLowerCase().trim() === targetName) return false;
+      return true;
+    });
+    this.saveSavedPlaces(savedPlaces);
+    this.renderSavedPlaces();
+    this.renderRecentSearches();
+  }
+
+  bookSavedPlace(name, city, fare, pickup) {
+    this.activeRecentSearchItem = {
+      name: name || '',
+      city: city || 'Kolhapur',
+      fare: fare || '₹78',
+      id: '',
+      pickup: pickup || 'Current Location'
+    };
+    this.bookSelectedRecentRide();
+  }
+
+  // Open Recent Search Action Modal: Three options (Book Ride, Save this Place & Delete)
   openRecentSearchAction(name, city, fare, id, pickup) {
     if (window.soundFX && window.soundFX.playTap) {
       window.soundFX.playTap();
@@ -2253,7 +2481,7 @@ class RideCompareApp {
     this.openBookingScreen('Rapido', numFare);
   }
 
-  // Option 2: Delete -> Delete from Recent Searches (Local & Cloud)
+  // Option 3: Delete -> Delete from Recent Searches (Local & Cloud)
   async deleteSelectedRecentSearch() {
     if (window.soundFX && window.soundFX.playTap) {
       window.soundFX.playTap();
@@ -2295,6 +2523,7 @@ class RideCompareApp {
     const title = document.querySelector('#recent-search-action-modal .recent-action-title');
     const destName = document.getElementById('recent-action-dest-name');
     const destSub = document.getElementById('recent-action-dest-sub');
+    const saveBtn = document.getElementById('btn-recent-action-save');
     const deleteBtn = document.getElementById('btn-recent-action-delete');
     const closeBtn = document.querySelector('#recent-search-action-modal .btn-recent-action-close');
 
@@ -2313,6 +2542,9 @@ class RideCompareApp {
       if (title) title.style.removeProperty('color');
       if (destName) destName.style.removeProperty('color');
       if (destSub) destSub.style.removeProperty('color');
+      if (saveBtn) {
+        saveBtn.className = 'btn-recent-save w-full py-3 px-4 rounded-2xl bg-blue-500/15 hover:bg-blue-500/25 text-blue-400 hover:text-blue-300 border border-blue-500/30 font-semibold text-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer';
+      }
       if (deleteBtn) {
         deleteBtn.className = 'btn-recent-delete w-full py-3 px-4 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 border border-red-500/30 font-semibold text-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer';
       }
@@ -2333,6 +2565,9 @@ class RideCompareApp {
       if (title) title.style.setProperty('color', '#0F172A', 'important');
       if (destName) destName.style.setProperty('color', '#0F172A', 'important');
       if (destSub) destSub.style.setProperty('color', '#64748B', 'important');
+      if (saveBtn) {
+        saveBtn.className = 'btn-recent-save w-full py-3 px-4 rounded-2xl bg-blue-50 hover:bg-blue-100 text-blue-600 hover:text-blue-700 border border-blue-200 font-semibold text-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer';
+      }
       if (deleteBtn) {
         deleteBtn.className = 'btn-recent-delete w-full py-3 px-4 rounded-2xl bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 border border-red-200 font-semibold text-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer';
       }
@@ -4057,6 +4292,11 @@ class RideCompareApp {
       this.navigateTo('screen-history', false);
       window.location.hash = '#history';
       this.selectHistoryTrip(this.selectedHistoryTripId || 1, false);
+    } else if (tab === 'saved') {
+      this.navigateTo('screen-saved', false);
+      window.location.hash = '#saved';
+      this.renderSavedPlaces();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (tab === 'compare') {
       this.navigateTo('screen-home', false);
       window.location.hash = '#home';
@@ -4860,6 +5100,8 @@ class RideCompareApp {
           iApp.switchTab('compare');
         } else if (screenName === 'history') {
           iApp.switchTab('history');
+        } else if (screenName === 'saved') {
+          iApp.switchTab('saved');
         } else if (screenName === 'profile') {
           iApp.switchTab('profile');
         } else if (screenName === 'booking') {
@@ -5373,7 +5615,7 @@ console.log(res.data);</code>`;
 
     // 1. Update text elements across screens (ALL sidebars, headers, and profile screen)
     const displayName = isGuest ? 'Guest User' : (p.name || 'User');
-    document.querySelectorAll('.sidebar-user-name, #sidebar-profile-name, #desk-home-profile-name, #desk-history-profile-name, #status-sidebar-profile-name').forEach(el => {
+    document.querySelectorAll('.sidebar-user-name, #sidebar-profile-name, #desk-home-profile-name, #desk-history-profile-name, #desk-saved-profile-name, #status-sidebar-profile-name').forEach(el => {
       el.textContent = displayName;
     });
 
@@ -5391,7 +5633,7 @@ console.log(res.data);</code>`;
     });
 
     const name = displayName;
-    document.querySelectorAll('.sidebar-user-name, #sidebar-profile-name, #desk-home-profile-name, #desk-history-profile-name, #status-sidebar-profile-name').forEach(el => {
+    document.querySelectorAll('.sidebar-user-name, #sidebar-profile-name, #desk-home-profile-name, #desk-history-profile-name, #desk-saved-profile-name, #status-sidebar-profile-name').forEach(el => {
       el.textContent = name;
     });
 
@@ -5424,7 +5666,7 @@ console.log(res.data);</code>`;
     const accent = accents[p.avatarAccent] || accents.blue;
 
     const avatars = document.querySelectorAll(
-      '#profile-avatar-display, #sidebar-avatar-badge, #edit-modal-avatar-preview, #btn-topbar-profile, #btn-mob-topbar-profile, #desk-home-avatar-badge, #desk-history-avatar-badge, .user-avatar-badge, .sidebar-avatar-badge'
+      '#profile-avatar-display, #sidebar-avatar-badge, #edit-modal-avatar-preview, #btn-topbar-profile, #btn-mob-topbar-profile, #desk-home-avatar-badge, #desk-history-avatar-badge, #desk-saved-avatar-badge, .user-avatar-badge, .sidebar-avatar-badge'
     );
     avatars.forEach(av => {
       av.style.setProperty('background', accent.bg, 'important');
@@ -5440,6 +5682,7 @@ console.log(res.data);</code>`;
     });
 
     this.renderRecentSearches();
+    this.renderSavedPlaces();
     this.syncRecentSearchesFromBackend();
   }
 
