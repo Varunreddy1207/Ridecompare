@@ -947,11 +947,14 @@ body:has(#screen-developer.active) .tablet-nav-dock {
 /* ==========================================================================
    LIVE REAL-TIME LEAFLET RESULTS MAP COMPONENT
    ========================================================================== */
-#results-live-leaflet-map {
+#results-live-leaflet-map,
+#booking-live-leaflet-map {
   background: #070D1E;
 }
 
-body:not(.theme-dark) #results-live-leaflet-map {
+body:not(.theme-dark) #results-live-leaflet-map,
+body:not(.theme-dark) #booking-live-leaflet-map,
+body.theme-light #booking-live-leaflet-map {
   background: #EEF2F6;
 }
 

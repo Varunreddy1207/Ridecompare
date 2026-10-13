@@ -429,6 +429,9 @@ class RideCompareApp {
       if (this.resultsMap && this.resultsTileLayer) {
         this.resultsTileLayer.setUrl('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}');
       }
+      if (this.bookingMap && this.bookingTileLayer) {
+        this.bookingTileLayer.setUrl('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}');
+      }
 
       // Update button accessibility labels
       document.querySelectorAll('.theme-toggle-btn').forEach(btn => {
@@ -450,6 +453,9 @@ class RideCompareApp {
       if (metaTheme) metaTheme.setAttribute('content', '#FFFFFF');
       if (this.resultsMap && this.resultsTileLayer) {
         this.resultsTileLayer.setUrl('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+      }
+      if (this.bookingMap && this.bookingTileLayer) {
+        this.bookingTileLayer.setUrl('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
       }
 
       // Update button accessibility labels
@@ -1941,6 +1947,21 @@ class RideCompareApp {
       this.enforceResponsiveNav();
       this.updateTopbarActionButtons();
       window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      if (screenId === 'screen-booking') {
+        const refreshBookingMap = () => {
+          if (this.bookingMap) {
+            this.bookingMap.invalidateSize();
+            if (this.currentBookingRouteBounds) {
+              try {
+                this.bookingMap.fitBounds(this.currentBookingRouteBounds, { padding: [55, 55], maxZoom: 16 });
+              } catch (_) {}
+            }
+          }
+        };
+        setTimeout(refreshBookingMap, 100);
+        setTimeout(refreshBookingMap, 300);
+      }
     }
   }
 
@@ -3015,6 +3036,13 @@ class RideCompareApp {
     const fallbackDist = this.calculateHaversineDistance(pickupCoords.lat, pickupCoords.lng, dropCoords.lat, dropCoords.lng);
     let distanceKm = Math.max(0.8, fallbackDist).toFixed(1);
     let durationMins = Math.max(4, Math.round(fallbackDist * 2.2));
+    this.currentRouteDistanceKm = distanceKm;
+    this.currentRouteDurationMins = durationMins;
+    this.currentRoutePickupCoords = pickupCoords;
+    this.currentRouteDropCoords = dropCoords;
+    this.currentRoutePickupName = pickupName;
+    this.currentRouteDropName = dropName;
+    this.currentRouteDropSub = this.selectedDropSub || dropName;
 
     const updateRouteHeaderUI = (distStr, durMin) => {
       const mapTitle = document.getElementById('map-route-title');
@@ -3106,6 +3134,8 @@ class RideCompareApp {
           if (osrmLatLngs.length >= 2) {
             distanceKm = Math.max(0.5, route.distance / 1000).toFixed(1);
             durationMins = Math.max(2, Math.round(route.duration / 60));
+            this.currentRouteDistanceKm = distanceKm;
+            this.currentRouteDurationMins = durationMins;
             updateRouteHeaderUI(distanceKm, durationMins);
 
             glowLine.setLatLngs(osrmLatLngs);
@@ -3317,14 +3347,12 @@ class RideCompareApp {
     this.openBookingScreen(provider, fare);
   }
 
-  // Open Booking Confirmation Screen (Matches media_1790660374330.png & media_1790660393523.png)
+  // Open Booking Confirmation Screen (Matches media_1791896632606_63e371dd.png)
   openBookingScreen(provider, fare) {
     const provLower = (provider || '').toLowerCase();
     let pName = 'Rapido';
     let pVehicle = 'Bike';
     let pFare = fare || 78;
-    let pEta = '12 min';
-    let pDistance = '4.2 km';
     let pAboutTitle = 'About Rapido';
     let pAboutTagline = 'Fast • Affordable • Bike Taxi';
     let pRating = '4.2 (1M+ reviews)';
@@ -3337,12 +3365,21 @@ class RideCompareApp {
 
     if (provLower.includes('ola')) {
       pName = 'Ola';
-      pVehicle = provLower.includes('auto') ? 'Auto' : 'Car';
-      pFare = fare || 142;
-      pEta = '18 min';
+      if (provLower.includes('auto')) {
+        pVehicle = 'Auto';
+        pAboutTagline = 'Quick • Meter Rates • Auto Rickshaw';
+        pFare = fare || 54;
+      } else if (provLower.includes('prime')) {
+        pVehicle = 'Prime Sedan';
+        pAboutTagline = 'Extra Legroom • WiFi • Top Drivers';
+        pFare = fare || 110;
+      } else {
+        pVehicle = 'Mini';
+        pAboutTagline = 'Reliable • Safe • Compact AC Cabs';
+        pFare = fare || 82;
+      }
       pAboutTitle = 'About Ola';
-      pAboutTagline = 'Reliable • Safe • Comfortable';
-      pRating = '4.1 (2M+ reviews)';
+      pRating = '4.2 (2M+ reviews)';
       pBoxClass = 'provider-box-ola';
       pIconSvg = `
         <div class="ola-ring">
@@ -3351,11 +3388,20 @@ class RideCompareApp {
       `;
     } else if (provLower.includes('uber')) {
       pName = 'Uber';
-      pVehicle = provLower.includes('auto') ? 'Auto' : (provLower.includes('premier') ? 'Premier' : 'Go');
-      pFare = fare || (provLower.includes('auto') ? 85 : 120);
-      pEta = '10 min';
+      if (provLower.includes('auto')) {
+        pVehicle = 'Auto';
+        pAboutTagline = 'Reliable • Direct Auto • Everyday Travel';
+        pFare = fare || 55;
+      } else if (provLower.includes('premier')) {
+        pVehicle = 'Premier';
+        pAboutTagline = 'Comfort • Top Drivers • Sedans';
+        pFare = fare || 115;
+      } else {
+        pVehicle = 'Go';
+        pAboutTagline = 'Reliable • Door-to-Door • Global Standard';
+        pFare = fare || 78;
+      }
       pAboutTitle = 'About Uber';
-      pAboutTagline = 'Reliable • Door-to-Door • Global Standard';
       pRating = '4.7 (5M+ reviews)';
       pBoxClass = 'provider-box-uber';
       pIconSvg = `<span class="text-white font-black text-xs tracking-tight" style="color: #FFFFFF !important;">Uber</span>`;
@@ -3363,7 +3409,6 @@ class RideCompareApp {
       pName = 'BluSmart';
       pVehicle = 'EV Sedan';
       pFare = fare || 95;
-      pEta = '8 min';
       pAboutTitle = 'About BluSmart';
       pAboutTagline = '100% Electric • Zero Surge • Clean Cabs';
       pRating = '4.9 (500k+ reviews)';
@@ -3373,7 +3418,91 @@ class RideCompareApp {
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
         </svg>
       `;
+    } else if (provLower.includes('rapido')) {
+      pName = 'Rapido';
+      if (provLower.includes('auto')) {
+        pVehicle = 'Auto';
+        pAboutTagline = 'Fast • Direct Auto • Lowest Fares';
+        pFare = fare || 52;
+      } else {
+        pVehicle = 'Bike';
+        pAboutTagline = 'Fast • Affordable • Bike Taxi';
+        pFare = fare || 45;
+      }
+      pAboutTitle = 'About Rapido';
+      pRating = '4.2 (1M+ reviews)';
+      pBoxClass = 'provider-box-rapido';
     }
+
+    // 1. Resolve Exact Pickup Location
+    const pickupTextEl = document.getElementById('home-pickup-text');
+    let pickupName = (this.pickupLocationName || '').trim();
+    if (!pickupName && pickupTextEl && !pickupTextEl.classList.contains('placeholder')) {
+      pickupName = pickupTextEl.textContent.trim();
+    }
+    let displayPickup = pickupName;
+    if (!displayPickup || displayPickup.toLowerCase() === 'select pickup location') {
+      displayPickup = 'Your Location';
+    } else if (displayPickup.toLowerCase() === 'current location') {
+      displayPickup = this.pickupLocationFull || 'Your Location';
+    }
+
+    // 2. Resolve Exact Drop Location
+    const dropTextEl = document.getElementById('home-drop-text');
+    let dropName = (this.selectedDropName || '').trim();
+    if (!dropName && dropTextEl && !dropTextEl.classList.contains('placeholder')) {
+      dropName = dropTextEl.textContent.trim();
+    }
+    let displayDrop = this.selectedDestination || '';
+    if (!displayDrop) {
+      if (dropName) {
+        displayDrop = this.selectedDropSub ? `${dropName}, ${this.selectedDropSub}` : dropName;
+      } else {
+        displayDrop = 'Shivaji Park, Shivaji Park, Shivaji Park, Kolhapur';
+      }
+    }
+
+    // 3. Resolve Coordinates for Both Points
+    let pickupCoords = null;
+    if (pickupName && pickupName.toLowerCase() !== 'current location' && pickupName.toLowerCase() !== 'your location') {
+      pickupCoords = this.getCoordinatesFor(pickupName, null) || this.pickupCoords;
+    }
+    if (!pickupCoords) {
+      pickupCoords = this.pickupCoords || this.currentLiveLocationCoords || this.userCoords || { lat: 16.7028, lng: 74.2405 };
+    }
+
+    let dropCoords = this.getCoordinatesFor(dropName, null) || this.selectedDropCoords || { lat: 16.7020, lng: 74.2460 };
+
+    // Ensure pickup and drop coordinates don't collide
+    if (Math.abs(pickupCoords.lat - dropCoords.lat) < 0.0008 && Math.abs(pickupCoords.lng - dropCoords.lng) < 0.0008) {
+      if (Math.abs(dropCoords.lat - 16.7020) < 0.005) {
+        pickupCoords = { lat: 16.7028, lng: 74.2405 };
+      } else {
+        pickupCoords = { lat: 16.7020, lng: 74.2460 };
+      }
+    }
+
+    // 4. Calculate Distance and Duration Accurately
+    let distanceKm = null;
+    let durationMins = null;
+
+    if (this.currentRouteDistanceKm) {
+      distanceKm = parseFloat(this.currentRouteDistanceKm).toFixed(1);
+    }
+    if (this.currentRouteDurationMins) {
+      durationMins = parseInt(this.currentRouteDurationMins, 10);
+    }
+
+    if (!distanceKm || isNaN(distanceKm)) {
+      const haversineDist = this.calculateHaversineDistance(pickupCoords.lat, pickupCoords.lng, dropCoords.lat, dropCoords.lng);
+      distanceKm = Math.max(0.8, haversineDist).toFixed(1);
+    }
+    if (!durationMins || isNaN(durationMins)) {
+      durationMins = Math.max(4, Math.round(parseFloat(distanceKm) * 2.5));
+    }
+
+    const pDistance = `${distanceKm} km`;
+    const pEta = `${durationMins} min`;
 
     // Populate Booking UI Elements
     const iconBox = document.getElementById('booking-provider-icon-box');
@@ -3391,9 +3520,15 @@ class RideCompareApp {
     if (etaEl) etaEl.textContent = pEta;
 
     const pickupEl = document.getElementById('booking-pickup-location');
-    if (pickupEl) pickupEl.textContent = 'Your Location';
+    if (pickupEl) {
+      pickupEl.textContent = displayPickup;
+      pickupEl.title = displayPickup;
+    }
     const dropEl = document.getElementById('booking-drop-location');
-    if (dropEl) dropEl.textContent = this.selectedDestination || 'Sanjay Ghodawat University';
+    if (dropEl) {
+      dropEl.textContent = displayDrop;
+      dropEl.title = displayDrop;
+    }
     const distEl = document.getElementById('booking-distance');
     if (distEl) distEl.textContent = pDistance;
     const timeEl = document.getElementById('booking-estimated-time');
@@ -3420,6 +3555,203 @@ class RideCompareApp {
     // Navigate to Booking Screen
     this.navigateTo('screen-booking', false);
     window.location.hash = '#booking';
+
+    // Render LIVE interactive route map on the booking screen
+    this.initBookingLiveMap(pickupCoords, dropCoords, displayPickup, displayDrop, distanceKm, durationMins);
+  }
+
+  // =========================================================================
+  // LIVE REAL-TIME LEAFLET BOOKING ROUTE MAP (Pickup -> Drop with Polylines & Markers)
+  // =========================================================================
+  initBookingLiveMap(pickupCoords, dropCoords, pickupName, dropName, distanceKm, durationMins) {
+    if (typeof L === 'undefined') {
+      console.warn('Leaflet library is not loaded');
+      return;
+    }
+
+    const container = document.getElementById('booking-live-leaflet-map');
+    if (!container) return;
+
+    const isDark = document.body.classList.contains('theme-dark') || 
+                   document.documentElement.getAttribute('data-theme') === 'dark';
+
+    const lightTileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    const darkTileUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
+    const tileUrl = isDark ? darkTileUrl : lightTileUrl;
+    const subdomains = isDark ? ['server', 'services'] : ['a', 'b', 'c'];
+
+    if (!this.bookingMap) {
+      this.bookingMap = L.map('booking-live-leaflet-map', {
+        zoomControl: false,
+        attributionControl: false
+      }).setView([pickupCoords.lat, pickupCoords.lng], 14);
+
+      this.bookingTileLayer = L.tileLayer(tileUrl, {
+        maxZoom: 19,
+        subdomains: subdomains
+      }).addTo(this.bookingMap);
+
+      L.control.zoom({ position: 'bottomright' }).addTo(this.bookingMap);
+    } else {
+      if (this.bookingTileLayer) {
+        this.bookingTileLayer.setUrl(tileUrl);
+      }
+    }
+
+    // Clear previous layers & markers
+    if (this.bookingRouteLayers) {
+      this.bookingRouteLayers.forEach(l => {
+        try { this.bookingMap.removeLayer(l); } catch (_) {}
+      });
+    }
+    this.bookingRouteLayers = [];
+
+    // 1. Pickup Marker (Radar Blue Pulse + Callout Badge)
+    const pickupIcon = L.divIcon({
+      className: 'custom-live-map-marker',
+      html: `
+        <div class="live-map-marker-wrap pickup-marker-wrap">
+          <div class="marker-pulse-ring"></div>
+          <div class="marker-core-dot"></div>
+          <div id="booking-map-pickup-badge" class="marker-callout-badge marker-pickup-badge" title="Pickup: ${pickupName}">
+            <span class="marker-dot-blue"></span>
+            <span class="truncate">${pickupName}</span>
+          </div>
+        </div>
+      `,
+      iconSize: [20, 20],
+      iconAnchor: [10, 10]
+    });
+    const pickupMarker = L.marker([pickupCoords.lat, pickupCoords.lng], {
+      icon: pickupIcon,
+      zIndexOffset: 1000
+    }).addTo(this.bookingMap);
+    this.bookingRouteLayers.push(pickupMarker);
+
+    // 2. Drop Marker (Red Pin Head + Callout Badge)
+    const dropIcon = L.divIcon({
+      className: 'custom-live-map-marker',
+      html: `
+        <div class="live-map-marker-wrap drop-marker-wrap">
+          <div class="marker-pin-head">
+            <svg class="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
+          </div>
+          <div id="booking-map-drop-badge" class="marker-callout-badge marker-drop-badge" title="Drop: ${dropName}">
+            <span class="marker-dot-red"></span>
+            <span class="truncate">${dropName}</span>
+          </div>
+        </div>
+      `,
+      iconSize: [28, 28],
+      iconAnchor: [14, 14]
+    });
+    const dropMarker = L.marker([dropCoords.lat, dropCoords.lng], {
+      icon: dropIcon,
+      zIndexOffset: 1000
+    }).addTo(this.bookingMap);
+    this.bookingRouteLayers.push(dropMarker);
+
+    // 3. Fallback smooth curved route polyline (instant zero-latency render)
+    let routeLatLngs = this.generateFallbackRoute(pickupCoords, dropCoords);
+
+    const glowLine = L.polyline(routeLatLngs, {
+      color: '#0073FF',
+      weight: 8,
+      opacity: 0.35,
+      lineCap: 'round',
+      lineJoin: 'round'
+    }).addTo(this.bookingMap);
+    this.bookingRouteLayers.push(glowLine);
+
+    const liveLine = L.polyline(routeLatLngs, {
+      color: '#0073FF',
+      weight: 4.5,
+      opacity: 0.95,
+      className: 'map-live-route-dash',
+      lineCap: 'round',
+      lineJoin: 'round'
+    }).addTo(this.bookingMap);
+    this.bookingRouteLayers.push(liveLine);
+
+    // 4. Moving / nearby vehicles along route
+    let v1 = null, v2 = null, v3 = null;
+    if (routeLatLngs.length >= 4) {
+      const p1 = routeLatLngs[Math.floor(routeLatLngs.length * 0.25)];
+      const p2 = routeLatLngs[Math.floor(routeLatLngs.length * 0.50)];
+      const p3 = routeLatLngs[Math.floor(routeLatLngs.length * 0.75)];
+
+      v1 = L.marker(p1, {
+        icon: L.divIcon({ className: '', html: '<div class="live-vehicle-marker-icon" title="Nearby Pilot">🏍️</div>', iconSize: [32, 32], iconAnchor: [16, 16] })
+      }).addTo(this.bookingMap);
+
+      v2 = L.marker(p2, {
+        icon: L.divIcon({ className: '', html: '<div class="live-vehicle-marker-icon" title="Nearby Driver">🛺</div>', iconSize: [32, 32], iconAnchor: [16, 16] })
+      }).addTo(this.bookingMap);
+
+      v3 = L.marker(p3, {
+        icon: L.divIcon({ className: '', html: '<div class="live-vehicle-marker-icon" title="Nearby Cab">🚗</div>', iconSize: [32, 32], iconAnchor: [16, 16] })
+      }).addTo(this.bookingMap);
+
+      this.bookingRouteLayers.push(v1, v2, v3);
+    }
+
+    // 5. Fit Bounds immediately
+    const initialBounds = L.latLngBounds(routeLatLngs);
+    this.currentBookingRouteBounds = initialBounds;
+    try {
+      this.bookingMap.fitBounds(initialBounds, { padding: [55, 55], maxZoom: 16 });
+    } catch (_) {}
+
+    // 6. Invalidate size after container renders
+    const refreshBookingBounds = () => {
+      if (this.bookingMap) {
+        this.bookingMap.invalidateSize();
+        if (this.currentBookingRouteBounds) {
+          try {
+            this.bookingMap.fitBounds(this.currentBookingRouteBounds, { padding: [55, 55], maxZoom: 16 });
+          } catch (_) {}
+        }
+      }
+    };
+    setTimeout(refreshBookingBounds, 120);
+    setTimeout(refreshBookingBounds, 350);
+
+    // 7. Background OSRM fetch for realistic roads polyline
+    const token = (this._bookingRouteToken = (this._bookingRouteToken || 0) + 1);
+    fetch(`https://router.project-osrm.org/route/v1/driving/${pickupCoords.lng},${pickupCoords.lat};${dropCoords.lng},${dropCoords.lat}?overview=full&geometries=geojson`)
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        if (!data || this._bookingRouteToken !== token || !this.bookingMap) return;
+        if (data.routes && data.routes.length > 0) {
+          const route = data.routes[0];
+          const osrmLatLngs = route.geometry.coordinates.map(pt => [pt[1], pt[0]]);
+          if (osrmLatLngs.length >= 2) {
+            glowLine.setLatLngs(osrmLatLngs);
+            liveLine.setLatLngs(osrmLatLngs);
+
+            if (osrmLatLngs.length >= 4) {
+              if (v1) v1.setLatLng(osrmLatLngs[Math.floor(osrmLatLngs.length * 0.25)]);
+              if (v2) v2.setLatLng(osrmLatLngs[Math.floor(osrmLatLngs.length * 0.50)]);
+              if (v3) v3.setLatLng(osrmLatLngs[Math.floor(osrmLatLngs.length * 0.75)]);
+            }
+
+            const osrmBounds = L.latLngBounds(osrmLatLngs);
+            this.currentBookingRouteBounds = osrmBounds;
+            this.bookingMap.fitBounds(osrmBounds, { padding: [55, 55], maxZoom: 16 });
+          }
+        }
+      })
+      .catch(() => {});
+  }
+
+  // Recenter Live Route on Booking Screen
+  recenterBookingMap() {
+    if (this.bookingMap && this.currentBookingRouteBounds) {
+      try {
+        this.bookingMap.fitBounds(this.currentBookingRouteBounds, { padding: [55, 55], maxZoom: 16, animate: true });
+        this.showToast('📍 Centered on Active Route');
+      } catch (_) {}
+    }
   }
 
   // Close Booking Screen and return to Home comparison
@@ -5461,7 +5793,11 @@ class RideCompareApp {
         } else if (screenName === 'profile') {
           iApp.switchTab('profile');
         } else if (screenName === 'booking') {
-          iApp.navigateTo('screen-booking', false);
+          if (typeof iApp.openBookingScreen === 'function') {
+            iApp.openBookingScreen('Rapido', 78);
+          } else {
+            iApp.navigateTo('screen-booking', false);
+          }
         } else if (screenName === 'login') {
           iApp.openAuthModal('login');
         }
