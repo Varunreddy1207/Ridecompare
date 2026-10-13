@@ -366,12 +366,20 @@ class RideCompareApp {
           if (e.key === 'Enter') {
             const val = deskSearchInput.value.trim();
             if (val) {
-              this.selectedDropName = val;
-              this.selectedDropSub = 'Kolhapur';
+              const matches = this.searchKnownLocations(val);
+              if (matches.length > 0) {
+                this.selectedDropName = matches[0].name;
+                this.selectedDropSub = matches[0].address;
+                this.selectedDropCoords = { lat: matches[0].lat, lng: matches[0].lng };
+              } else {
+                this.selectedDropName = val;
+                this.selectedDropSub = 'Kolhapur';
+                this.selectedDropCoords = this.getCoordinatesFor(val, { lat: 16.7450, lng: 74.3720 });
+              }
               this.hasDropSelected = true;
               const dropText = document.getElementById('home-drop-text');
               if (dropText) {
-                dropText.textContent = val;
+                dropText.textContent = this.selectedDropName;
                 dropText.classList.remove('placeholder');
               }
               if (!this.hasPickupSelected) {
@@ -2691,9 +2699,10 @@ class RideCompareApp {
     }
   }
 
-  // Updates the live location map header, subtitle, and badges to match selected pickup location
+  // Updates the route map header, subtitle, badges, and route polyline between pickup and drop locations
   updateResultsMapRoute() {
     const pickupText = document.getElementById('home-pickup-text');
+    const dropText = document.getElementById('home-drop-text');
 
     let pickupName = (this.pickupLocationName || '').trim();
     if (!pickupName && pickupText && !pickupText.classList.contains('placeholder')) {
@@ -2703,37 +2712,39 @@ class RideCompareApp {
       pickupName = 'Current Location';
     }
 
+    let dropName = (this.selectedDropName || '').trim();
+    if (!dropName && dropText && !dropText.classList.contains('placeholder')) {
+      dropName = dropText.textContent.trim();
+    }
+    if (!dropName || dropName === 'Select destination' || dropName === 'Select drop location') {
+      dropName = 'Sanjay Ghodawat University';
+    }
+
     // 1. Update Map Header Title
     const mapTitle = document.getElementById('map-route-title');
     if (mapTitle) {
-      mapTitle.textContent = `📍 Live Location: ${pickupName}`;
-      mapTitle.title = `Live Location: ${pickupName}`;
+      mapTitle.textContent = `📍 ${pickupName} ➔ ${dropName}`;
+      mapTitle.title = `${pickupName} ➔ ${dropName}`;
     }
 
     // 2. Update Map Header Subtitle
     const mapSub = document.getElementById('map-route-sub');
     if (mapSub) {
-      mapSub.textContent = `Tracking live location • Cabs & autos available nearby`;
-      mapSub.title = `Tracking live location: ${pickupName}`;
+      const detail = this.selectedDropSub || dropName;
+      mapSub.textContent = `Destination: ${detail} • Live route active`;
+      mapSub.title = `Route from ${pickupName} to ${dropName}`;
     }
 
-    // 3. Update Status Badges
-    const distBadge = document.getElementById('map-route-distance-badge');
-    if (distBadge) {
-      distBadge.textContent = '● Live GPS';
-      distBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
-    }
-
-    const mapStatus = document.getElementById('map-route-status');
-    if (mapStatus) {
-      mapStatus.textContent = '📍 9 Available Ride Options Nearby';
-    }
-
-    // 4. Update Pickup Marker Badge on Map Canvas
+    // 3. Update Pickup & Drop Marker Badges on Map Canvas if present
     const pickupBadge = document.getElementById('map-pickup-badge');
     if (pickupBadge) {
-      pickupBadge.textContent = pickupName;
-      pickupBadge.title = `Live Location: ${this.pickupLocationFull || pickupName}`;
+      pickupBadge.innerHTML = `<span class="marker-dot-blue"></span><span class="truncate">${pickupName}</span>`;
+      pickupBadge.title = `Pickup: ${this.pickupLocationFull || pickupName}`;
+    }
+    const dropBadge = document.getElementById('map-drop-badge');
+    if (dropBadge) {
+      dropBadge.innerHTML = `<span class="marker-dot-red"></span><span class="truncate">${dropName}</span>`;
+      dropBadge.title = `Drop: ${this.selectedDropSub || dropName}`;
     }
 
     if (this.resultsMap) {
@@ -2755,8 +2766,6 @@ class RideCompareApp {
 
   // Smooth Reveal of Results Panel (Map + comparison cards)
   showResultsPanel() {
-    this.updateResultsMapRoute();
-    this.initResultsLiveMap();
     const homeScreen = document.getElementById('screen-home');
     const panel = document.getElementById('home-results-panel');
     const searchContainer = document.getElementById('home-search-container');
@@ -2766,7 +2775,7 @@ class RideCompareApp {
       homeScreen.classList.add('results-active');
     }
 
-    // Reset animation state to ensure it plays freshly
+    // Make panel visible BEFORE initializing/fitting map so container has non-zero dimensions
     panel.classList.remove('results-panel-hidden');
     panel.classList.remove('results-panel-visible');
     void panel.offsetWidth; // Trigger DOM reflow
@@ -2781,15 +2790,26 @@ class RideCompareApp {
     this.currentTab = 'compare';
     this.updateActiveNavs('compare');
 
+    // Initialize map & render driving route now that container is visible
+    this.initResultsLiveMap();
+    this.updateResultsMapRoute();
+
     // Scroll to top so the comparison view begins directly at the top
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // Invalidate map size so Leaflet tiles and markers adjust cleanly
-    setTimeout(() => {
+    // Invalidate map size and fit route bounds cleanly across all viewports
+    const refreshMapBounds = () => {
       if (this.resultsMap) {
         this.resultsMap.invalidateSize();
+        if (this.currentRouteBounds) {
+          try {
+            this.resultsMap.fitBounds(this.currentRouteBounds, { padding: [55, 55], maxZoom: 16 });
+          } catch (_) {}
+        }
       }
-    }, 200);
+    };
+    setTimeout(refreshMapBounds, 120);
+    setTimeout(refreshMapBounds, 350);
   }
 
   // =========================================================================
@@ -2835,13 +2855,23 @@ class RideCompareApp {
     setTimeout(() => {
       if (this.resultsMap) {
         this.resultsMap.invalidateSize();
+        if (this.currentRouteBounds) {
+          try {
+            this.resultsMap.fitBounds(this.currentRouteBounds, { padding: [55, 55], maxZoom: 16 });
+          } catch (_) {}
+        }
       }
     }, 250);
   }
 
   recenterResultsMap() {
-    const coords = this.currentLiveLocationCoords || this.userCoords || this.pickupCoords || { lat: 16.7050, lng: 74.2433 };
     if (this.resultsMap) {
+      if (this.currentRouteBounds) {
+        this.resultsMap.fitBounds(this.currentRouteBounds, { padding: [55, 55], maxZoom: 16, animate: true });
+        this.showToast('📍 Centered on Active Route');
+        return;
+      }
+      const coords = this.currentLiveLocationCoords || this.userCoords || this.pickupCoords || { lat: 16.7050, lng: 74.2433 };
       this.resultsMap.setView([coords.lat, coords.lng], 15, { animate: true });
       this.showToast('📍 Recentered to Live Location');
     }
@@ -2867,6 +2897,7 @@ class RideCompareApp {
     if (!this.resultsMap || typeof L === 'undefined') return;
 
     const pickupText = document.getElementById('home-pickup-text');
+    const dropText = document.getElementById('home-drop-text');
 
     let pickupName = (this.pickupLocationName || '').trim();
     if (!pickupName && pickupText && !pickupText.classList.contains('placeholder')) {
@@ -2876,35 +2907,37 @@ class RideCompareApp {
       pickupName = 'Current Location';
     }
 
-    // Determine Live Coordinates
-    const liveCoords = this.userCoords || this.pickupCoords || this.getCoordinatesFor(pickupName, { lat: 16.7050, lng: 74.2433 });
-    this.currentLiveLocationCoords = liveCoords;
-
-    // Update Floating Info Header over Map
-    const mapTitle = document.getElementById('map-route-title');
-    if (mapTitle) {
-      mapTitle.textContent = `📍 Live Location: ${pickupName}`;
-      mapTitle.title = `Live Location: ${pickupName}`;
+    let dropName = (this.selectedDropName || '').trim();
+    if (!dropName && dropText && !dropText.classList.contains('placeholder')) {
+      dropName = dropText.textContent.trim();
+    }
+    if (!dropName || dropName === 'Select destination' || dropName === 'Select drop location') {
+      dropName = 'Sanjay Ghodawat University';
     }
 
-    const mapSub = document.getElementById('map-route-sub');
-    if (mapSub) {
-      mapSub.textContent = `Tracking live location • Cabs & autos available nearby`;
-      mapSub.title = `Tracking live location: ${pickupName}`;
+    // Resolve Pickup & Drop Coordinates
+    let pickupCoords = null;
+    if (pickupName.toLowerCase() !== 'current location') {
+      pickupCoords = this.getCoordinatesFor(pickupName, null) || this.pickupCoords;
+    }
+    if (!pickupCoords) {
+      pickupCoords = this.pickupCoords || this.userCoords || { lat: 16.7050, lng: 74.2433 };
     }
 
-    const distBadge = document.getElementById('map-route-distance-badge');
-    if (distBadge) {
-      distBadge.textContent = '● Live GPS';
-      distBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+    let dropCoords = this.getCoordinatesFor(dropName, null) || this.selectedDropCoords || { lat: 16.7450, lng: 74.3720 };
+
+    // Ensure Pickup and Drop have distinct coordinates so the route polyline is always clearly visible
+    if (Math.abs(pickupCoords.lat - dropCoords.lat) < 0.0008 && Math.abs(pickupCoords.lng - dropCoords.lng) < 0.0008) {
+      if (Math.abs(dropCoords.lat - 16.7450) < 0.005) {
+        pickupCoords = { lat: 16.7028, lng: 74.2405 };
+      } else {
+        pickupCoords = { lat: 16.7450, lng: 74.3720 };
+      }
     }
 
-    const mapStatus = document.getElementById('map-route-status');
-    if (mapStatus) {
-      mapStatus.textContent = '📍 9 Available Ride Options Nearby';
-    }
+    this.currentLiveLocationCoords = pickupCoords;
 
-    // Clear previous layers & markers
+    // Clear previous route layers & markers
     if (this.resultsRouteLayers) {
       this.resultsRouteLayers.forEach(l => {
         try { this.resultsMap.removeLayer(l); } catch (e) {}
@@ -2912,82 +2945,166 @@ class RideCompareApp {
     }
     this.resultsRouteLayers = [];
 
-    // 1. Radar Pulse / Accuracy Circle around Live Location
-    const accuracyCircle = L.circle([liveCoords.lat, liveCoords.lng], {
-      radius: 240,
-      color: '#0073FF',
-      fillColor: '#0073FF',
-      fillOpacity: 0.12,
-      weight: 1.5,
-      dashArray: '4, 4'
-    }).addTo(this.resultsMap);
-    this.resultsRouteLayers.push(accuracyCircle);
-
-    // 2. High-Visibility Pulsing Live Location Pin (Blue Radar Halo + Dot + Badge)
-    const liveIcon = L.divIcon({
+    // 1. Pickup Marker (Radar Blue Pulse + Callout Badge)
+    const pickupIcon = L.divIcon({
       className: 'custom-live-map-marker',
       html: `
         <div class="live-map-marker-wrap pickup-marker-wrap">
           <div class="marker-pulse-ring"></div>
           <div class="marker-core-dot"></div>
-          <div id="map-pickup-badge" class="marker-callout-badge marker-pickup-badge" title="Live Location">
+          <div id="map-pickup-badge" class="marker-callout-badge marker-pickup-badge" title="Pickup: ${pickupName}">
             <span class="marker-dot-blue"></span>
-            <span class="truncate">📍 ${pickupName}</span>
+            <span class="truncate">${pickupName}</span>
           </div>
         </div>
       `,
-      iconSize: [24, 24],
-      iconAnchor: [12, 12]
+      iconSize: [20, 20],
+      iconAnchor: [10, 10]
     });
-    const liveMarker = L.marker([liveCoords.lat, liveCoords.lng], {
-      icon: liveIcon,
+    const pickupMarker = L.marker([pickupCoords.lat, pickupCoords.lng], {
+      icon: pickupIcon,
       zIndexOffset: 1000
     }).addTo(this.resultsMap);
-    this.resultsRouteLayers.push(liveMarker);
+    this.resultsRouteLayers.push(pickupMarker);
 
-    // 3. Place Nearby Available Vehicles Around Live Location
-    const nearbyVehicles = [
-      { dLat: 0.0022, dLng: 0.0020, icon: '🚗', name: 'Uber Go', eta: '3 min' },
-      { dLat: -0.0020, dLng: 0.0024, icon: '🛺', name: 'Ola Auto', eta: '2 min' },
-      { dLat: 0.0018, dLng: -0.0026, icon: '🏍️', name: 'Rapido Bike', eta: '1 min' },
-      { dLat: -0.0025, dLng: -0.0018, icon: '🚗', name: 'Ola Mini', eta: '4 min' }
-    ];
-
-    nearbyVehicles.forEach(v => {
-      const vMarker = L.marker([liveCoords.lat + v.dLat, liveCoords.lng + v.dLng], {
-        icon: L.divIcon({
-          className: 'nearby-driver-pin',
-          html: `
-            <div class="flex items-center gap-1.5 px-2 py-1 rounded-full bg-slate-900/90 text-white text-[11px] font-bold shadow-lg border border-slate-700/80 backdrop-blur-sm pointer-events-auto transform hover:scale-105 transition-transform" title="${v.name} (${v.eta} away)">
-              <span>${v.icon}</span>
-              <span class="text-[9px] text-emerald-400 font-bold">${v.eta}</span>
-            </div>
-          `,
-          iconSize: [64, 26],
-          iconAnchor: [32, 13]
-        })
-      }).addTo(this.resultsMap);
-      this.resultsRouteLayers.push(vMarker);
+    // 2. Drop Marker (Red Pin Head + Callout Badge)
+    const dropIcon = L.divIcon({
+      className: 'custom-live-map-marker',
+      html: `
+        <div class="live-map-marker-wrap drop-marker-wrap">
+          <div class="marker-pin-head">
+            <svg class="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
+          </div>
+          <div id="map-drop-badge" class="marker-callout-badge marker-drop-badge" title="Drop: ${dropName}">
+            <span class="marker-dot-red"></span>
+            <span class="truncate">${dropName}</span>
+          </div>
+        </div>
+      `,
+      iconSize: [28, 28],
+      iconAnchor: [14, 14]
     });
+    const dropMarker = L.marker([dropCoords.lat, dropCoords.lng], {
+      icon: dropIcon,
+      zIndexOffset: 1000
+    }).addTo(this.resultsMap);
+    this.resultsRouteLayers.push(dropMarker);
 
-    // 4. Center Map Directly On Live Location (Zoom 15 for close live map view)
-    this.resultsMap.setView([liveCoords.lat, liveCoords.lng], 15);
+    // 3. Immediately Draw Fallback Route Polyline & Fit Bounds (Zero Latency)
+    let routeLatLngs = this.generateFallbackRoute(pickupCoords, dropCoords);
+    const fallbackDist = this.calculateHaversineDistance(pickupCoords.lat, pickupCoords.lng, dropCoords.lat, dropCoords.lng);
+    let distanceKm = Math.max(0.8, fallbackDist).toFixed(1);
+    let durationMins = Math.max(4, Math.round(fallbackDist * 2.2));
 
-    // Optional: If real browser geolocation hasn't been fetched yet, quietly update in background
-    if (navigator.geolocation && !this.userCoords && !this._hasFetchedLiveGps) {
-      this._hasFetchedLiveGps = true;
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const lat = pos.coords.latitude;
-          const lng = pos.coords.longitude;
-          this.userCoords = { lat, lng, accuracy: Math.round(pos.coords.accuracy) };
-          if (this.resultsMap) {
-            this.renderLiveRoute();
+    const updateRouteHeaderUI = (distStr, durMin) => {
+      const mapTitle = document.getElementById('map-route-title');
+      if (mapTitle) {
+        mapTitle.textContent = `📍 ${pickupName} ➔ ${dropName}`;
+        mapTitle.title = `${pickupName} ➔ ${dropName}`;
+      }
+      const distBadge = document.getElementById('map-route-distance-badge');
+      if (distBadge) {
+        distBadge.textContent = `${distStr} km • ${durMin} min`;
+        distBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30';
+      }
+      const mapSub = document.getElementById('map-route-sub');
+      if (mapSub) {
+        const detail = this.selectedDropSub || dropName;
+        mapSub.textContent = `Destination: ${detail} • ${distStr} km (${durMin} min) • Live route active`;
+        mapSub.title = `Destination: ${detail} • ${distStr} km (${durMin} min)`;
+      }
+      const mapStatus = document.getElementById('map-route-status');
+      if (mapStatus) {
+        mapStatus.textContent = `🛣️ Fastest Route (${distStr} km) • 9 Ride Options Available`;
+      }
+    };
+
+    updateRouteHeaderUI(distanceKm, durationMins);
+
+    const glowLine = L.polyline(routeLatLngs, {
+      color: '#0073FF',
+      weight: 8,
+      opacity: 0.35,
+      lineCap: 'round',
+      lineJoin: 'round'
+    }).addTo(this.resultsMap);
+    this.resultsRouteLayers.push(glowLine);
+
+    const liveLine = L.polyline(routeLatLngs, {
+      color: '#0073FF',
+      weight: 4.5,
+      opacity: 0.95,
+      className: 'map-live-route-dash',
+      lineCap: 'round',
+      lineJoin: 'round'
+    }).addTo(this.resultsMap);
+    this.resultsRouteLayers.push(liveLine);
+
+    // 4. Place Moving Vehicle Markers Along Route
+    let v1 = null, v2 = null, v3 = null;
+    if (routeLatLngs.length >= 4) {
+      const p1 = routeLatLngs[Math.floor(routeLatLngs.length * 0.25)];
+      const p2 = routeLatLngs[Math.floor(routeLatLngs.length * 0.50)];
+      const p3 = routeLatLngs[Math.floor(routeLatLngs.length * 0.75)];
+
+      v1 = L.marker(p1, {
+        icon: L.divIcon({ className: '', html: '<div class="live-vehicle-marker-icon" title="Ola Auto (2 min)">🛺</div>', iconSize: [32, 32], iconAnchor: [16, 16] })
+      }).addTo(this.resultsMap);
+
+      v2 = L.marker(p2, {
+        icon: L.divIcon({ className: '', html: '<div class="live-vehicle-marker-icon" title="Uber Go (3 min)">🚗</div>', iconSize: [32, 32], iconAnchor: [16, 16] })
+      }).addTo(this.resultsMap);
+
+      v3 = L.marker(p3, {
+        icon: L.divIcon({ className: '', html: '<div class="live-vehicle-marker-icon" title="Rapido Bike (1 min)">🏍️</div>', iconSize: [32, 32], iconAnchor: [16, 16] })
+      }).addTo(this.resultsMap);
+
+      this.resultsRouteLayers.push(v1, v2, v3);
+    }
+
+    // 5. Fit Map Bounds Immediately
+    const initialBounds = L.latLngBounds(routeLatLngs);
+    this.currentRouteBounds = initialBounds;
+    try {
+      this.resultsMap.fitBounds(initialBounds, { padding: [55, 55], maxZoom: 16 });
+    } catch (_) {}
+
+    // 6. Fetch Real OSRM Driving Geometry in Background & Smoothly Upgrade Polyline
+    const renderToken = (this._routeRenderToken = (this._routeRenderToken || 0) + 1);
+    try {
+      const url = `https://router.project-osrm.org/route/v1/driving/${pickupCoords.lng},${pickupCoords.lat};${dropCoords.lng},${dropCoords.lat}?overview=full&geometries=geojson`;
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 4000);
+      const res = await fetch(url, { signal: controller.signal });
+      clearTimeout(timeoutId);
+
+      if (res.ok && this._routeRenderToken === renderToken && this.resultsMap) {
+        const data = await res.json();
+        if (data.routes && data.routes.length > 0) {
+          const route = data.routes[0];
+          const osrmLatLngs = route.geometry.coordinates.map(pt => [pt[1], pt[0]]);
+          if (osrmLatLngs.length >= 2) {
+            distanceKm = Math.max(0.5, route.distance / 1000).toFixed(1);
+            durationMins = Math.max(2, Math.round(route.duration / 60));
+            updateRouteHeaderUI(distanceKm, durationMins);
+
+            glowLine.setLatLngs(osrmLatLngs);
+            liveLine.setLatLngs(osrmLatLngs);
+
+            if (osrmLatLngs.length >= 4) {
+              if (v1) v1.setLatLng(osrmLatLngs[Math.floor(osrmLatLngs.length * 0.25)]);
+              if (v2) v2.setLatLng(osrmLatLngs[Math.floor(osrmLatLngs.length * 0.50)]);
+              if (v3) v3.setLatLng(osrmLatLngs[Math.floor(osrmLatLngs.length * 0.75)]);
+            }
+
+            const osrmBounds = L.latLngBounds(osrmLatLngs);
+            this.currentRouteBounds = osrmBounds;
+            this.resultsMap.fitBounds(osrmBounds, { padding: [55, 55], maxZoom: 16 });
           }
-        },
-        () => {},
-        { enableHighAccuracy: true, timeout: 6000 }
-      );
+        }
+      }
+    } catch (_) {
+      // Fallback curve is already rendered on the map
     }
   }
 
@@ -3362,6 +3479,9 @@ class RideCompareApp {
     if (window.soundFX && typeof window.soundFX.playTap === 'function') {
       window.soundFX.playTap();
     }
+    if (this.dropMap && typeof this.dropMap.stop === 'function') {
+      try { this.dropMap.stop(); } catch (_) {}
+    }
     const modal = document.getElementById('drop-location-map-modal');
     if (modal) {
       modal.classList.remove('show');
@@ -3571,7 +3691,11 @@ class RideCompareApp {
         this.onDropMapClick(e.latlng);
       });
     } else {
-      this.dropMap.setView([coords.lat, coords.lng], 14);
+      try {
+        if (typeof this.dropMap.stop === 'function') this.dropMap.stop();
+        this.dropMap.invalidateSize();
+        this.dropMap.setView([coords.lat, coords.lng], 14, { animate: false });
+      } catch (_) {}
       if (this.dropMarker) {
         this.dropMarker.setIcon(currentIcon);
         this.dropMarker.setLatLng([coords.lat, coords.lng]);
@@ -3580,7 +3704,7 @@ class RideCompareApp {
 
     setTimeout(() => {
       if (this.dropMap) {
-        this.dropMap.invalidateSize();
+        try { this.dropMap.invalidateSize(); } catch (_) {}
       }
     }, 250);
   }
@@ -3598,7 +3722,10 @@ class RideCompareApp {
       this.dropMarker.setLatLng([lat, lng]);
     }
     if (this.dropMap) {
-      this.dropMap.panTo([lat, lng]);
+      try {
+        if (typeof this.dropMap.stop === 'function') this.dropMap.stop();
+        this.dropMap.panTo([lat, lng]);
+      } catch (_) {}
     }
 
     const titleEl = document.getElementById('drop-modal-selected-title');
@@ -3686,28 +3813,26 @@ class RideCompareApp {
 
     this.hideSearchSuggestions();
 
-    // Smoothly fly map to location
+    // Smoothly move map to location safely
     if (this.dropMap) {
-      if (typeof this.dropMap.flyTo === 'function') {
-        this.dropMap.flyTo([lat, lng], 16, {
-          animate: true,
-          duration: 1.1,
-          easeLinearity: 0.25
-        });
-      } else {
-        this.dropMap.setView([lat, lng], 16);
-      }
+      try {
+        if (typeof this.dropMap.stop === 'function') this.dropMap.stop();
+        this.dropMap.invalidateSize();
+        this.dropMap.setView([lat, lng], 16, { animate: true });
+      } catch (_) {}
     }
 
     // Move marker and trigger bounce animation
     if (this.dropMarker) {
-      this.dropMarker.setLatLng([lat, lng]);
-      const markerEl = this.dropMarker.getElement();
-      if (markerEl) {
-        markerEl.classList.remove('pin-bounce-navigate');
-        void markerEl.offsetWidth; // force DOM reflow
-        markerEl.classList.add('pin-bounce-navigate');
-      }
+      try {
+        this.dropMarker.setLatLng([lat, lng]);
+        const markerEl = this.dropMarker.getElement();
+        if (markerEl) {
+          markerEl.classList.remove('pin-bounce-navigate');
+          void markerEl.offsetWidth; // force DOM reflow
+          markerEl.classList.add('pin-bounce-navigate');
+        }
+      } catch (_) {}
     }
 
     // Update preset pills active highlight
@@ -3998,6 +4123,20 @@ class RideCompareApp {
   // 4. CONFIRMATION HANDLERS (Pickup vs Drop)
   // -------------------------------------------------------------------------
   confirmLocationSelection() {
+    const searchInput = document.getElementById('drop-map-search-input');
+    const typedVal = searchInput ? searchInput.value.trim() : '';
+    if (typedVal && (!this.tempSelectedName || typedVal.toLowerCase() !== this.tempSelectedName.toLowerCase())) {
+      const matches = this.searchKnownLocations(typedVal);
+      if (matches.length > 0) {
+        this.tempSelectedName = matches[0].name;
+        this.tempSelectedSub = matches[0].address;
+        this.tempSelectedCoords = { lat: matches[0].lat, lng: matches[0].lng };
+      } else {
+        this.tempSelectedName = typedVal;
+        this.tempSelectedSub = 'Kolhapur';
+        this.tempSelectedCoords = this.getCoordinatesFor(typedVal, this.tempSelectedCoords || { lat: 16.7450, lng: 74.3720 });
+      }
+    }
     if (this.locationPickerMode === 'pickup') {
       this.confirmPickupLocation();
     } else {
