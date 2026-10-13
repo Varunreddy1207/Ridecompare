@@ -63,7 +63,7 @@ html, body {
   background-color: var(--bg-deep);
   color: var(--text-white);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
-  overflow-x: hidden;
+  overflow-x: clip;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   transition: background-color 0.25s ease, color 0.25s ease;
@@ -3287,7 +3287,9 @@ body:not(.theme-dark) #booking-confirmed-modal button:active {
   #screen-wallet > div:last-child,
   #screen-ai > div:last-child,
   #screen-profile > div:last-child,
-  #screen-booking > div:last-child {
+  #screen-booking > div:last-child,
+  #screen-admin > main,
+  #screen-developer > main {
     height: 100vh !important;
     max-height: 100vh !important;
     overflow-y: auto !important;
@@ -3305,6 +3307,9 @@ body:not(.theme-dark) #booking-confirmed-modal button:active {
   #screen-ai > div:last-child,
   #screen-profile > div:last-child {
     padding-bottom: 80px !important;
+  }
+  #screen-developer > main {
+    overflow: visible !important;
   }
 }
 
@@ -4629,6 +4634,16 @@ body.theme-dark #admin-login-modal .admin-login-back-btn:hover,
 /* ==========================================================================
    DEVELOPER DASHBOARD: RESPONSIVE DEVICE & UI PREVIEW SIMULATOR
    ========================================================================== */
+#dev-device-inspector-header,
+.dev-device-inspector-sticky {
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  top: 0px !important;
+  z-index: 60 !important;
+  background-color: #FFFFFF !important;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.1), 0 -24px 0 24px #F8FAFC !important;
+}
+
 .device-bezel-laptop {
   width: 1304px;
   height: 838px;

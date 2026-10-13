@@ -51,7 +51,7 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4LfkJpAF7Ggz83bF--j3vPztxlzrxPxg&libraries=places,geometry" async defer></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=68">
+  <link rel="stylesheet" href="css/styles.css?v=69">
 
   <style>
     /* Strict Responsive Display Rules: Bottom Nav for Mobile & Tablet (< 1024px) */
@@ -4144,7 +4144,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
     </aside>
 
     <!-- MAIN DEVELOPER CONTENT CANVAS -->
-    <main class="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 overflow-y-auto space-y-6">
+    <main id="dev-main-scroll" class="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 lg:overflow-y-auto space-y-6">
 
       <!-- Top Bar: Header & Actions -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-1">
@@ -4794,7 +4794,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
       <div id="dev-panel-devices" class="hidden space-y-6">
 
         <!-- TOP HEADER & CONTROLS BANNER -->
-        <div class="bg-white rounded-2xl border border-slate-200/90 shadow-[0_1px_3px_rgba(0,0,0,0.05)] p-5 sm:p-6 flex flex-col xl:flex-row items-start xl:items-center justify-between gap-4">
+        <div id="dev-device-inspector-header" class="dev-device-inspector-sticky sticky top-0 z-50 bg-white rounded-2xl border border-slate-200/90 shadow-[0_1px_3px_rgba(0,0,0,0.05)] p-5 sm:p-6 flex flex-col xl:flex-row items-start xl:items-center justify-between gap-4">
           <div>
             <div class="flex items-center gap-2.5">
               <div class="w-8 h-8 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600">
