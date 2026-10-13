@@ -2223,8 +2223,6 @@ class RideCompareApp {
   }
 
   renderSavedPlaces() {
-    const homeListContainer = document.getElementById('home-saved-places-list');
-    const homeSeeAllBtn = document.getElementById('saved-places-see-all');
     const pageListContainer = document.getElementById('saved-places-page-list');
     const countDesk = document.getElementById('saved-places-count-badge-desk');
     const countMob = document.getElementById('saved-places-count-badge-mob');
@@ -2239,10 +2237,11 @@ class RideCompareApp {
       countMob.textContent = `${count} Saved`;
     }
 
+    if (!pageListContainer) return;
+
     // Empty state: "No saved places" with saved bookmark symbol across all devices
     if (!savedPlaces || count === 0) {
-      if (homeSeeAllBtn) homeSeeAllBtn.style.display = 'none';
-      const emptyCardHtml = `
+      pageListContainer.innerHTML = `
         <div class="no-recent-searches-card" data-empty-saved="true">
           <div class="no-recent-icon-wrap">
             <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -2253,14 +2252,10 @@ class RideCompareApp {
           <p class="no-recent-subtitle">Save your favorite destinations for quick 1-tap booking</p>
         </div>
       `;
-      if (homeListContainer) homeListContainer.innerHTML = emptyCardHtml;
-      if (pageListContainer) pageListContainer.innerHTML = emptyCardHtml;
       return;
     }
 
-    if (homeSeeAllBtn) homeSeeAllBtn.style.display = 'inline-block';
-
-    const itemsHtml = savedPlaces.map(item => {
+    pageListContainer.innerHTML = savedPlaces.map(item => {
       const safeName = (item.name || '').replace(/'/g, "\\'");
       const safeCity = (item.city || '').replace(/'/g, "\\'");
       const safeFare = (item.fare || '₹78').replace(/'/g, "\\'");
@@ -2289,9 +2284,6 @@ class RideCompareApp {
         </div>
       `;
     }).join('');
-
-    if (homeListContainer) homeListContainer.innerHTML = itemsHtml;
-    if (pageListContainer) pageListContainer.innerHTML = itemsHtml;
   }
 
   // Save the currently selected Recent Search place into Saved Places and remove it from Recent Searches
@@ -2373,6 +2365,7 @@ class RideCompareApp {
   }
 
   bookSavedPlace(name, city, fare, pickup) {
+    this.switchTab('home');
     this.activeRecentSearchItem = {
       name: name || '',
       city: city || 'Kolhapur',
