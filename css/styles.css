@@ -740,13 +740,14 @@ body:has(#screen-developer.active) .tablet-nav-dock {
   background: none;
   border: none;
   color: #94A3B8;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 500;
   gap: 3px;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  min-width: 64px;
-  padding: 4px 8px;
+  min-width: 48px;
+  flex: 1 1 0%;
+  padding: 4px 4px;
   border-radius: 12px;
 }
 
@@ -2454,30 +2455,40 @@ body.theme-light .profile-delete-account-btn:hover,
   color: #B91C1C !important;
 }
 
-/* 10. History & Saved Places Screens */
+/* 10. History, Saved Places, Wallet & AI Screens */
 body:not(.theme-dark) #screen-history header,
-body:not(.theme-dark) #screen-saved header {
+body:not(.theme-dark) #screen-saved header,
+body:not(.theme-dark) #screen-wallet header,
+body:not(.theme-dark) #screen-ai header {
   background: rgba(255, 255, 255, 0.95) !important;
   border-bottom: 1px solid #E2E8F0 !important;
 }
 
 body:not(.theme-dark) #screen-history h1,
-body:not(.theme-dark) #screen-saved h1 {
+body:not(.theme-dark) #screen-saved h1,
+body:not(.theme-dark) #screen-wallet h1,
+body:not(.theme-dark) #screen-ai h1 {
   color: #0F172A !important;
 }
 
 body:not(.theme-dark) #screen-history .text-white:not(button):not(button *),
-body:not(.theme-dark) #screen-saved .text-white:not(button):not(button *) {
+body:not(.theme-dark) #screen-saved .text-white:not(button):not(button *),
+body:not(.theme-dark) #screen-wallet .text-white:not(button):not(button *),
+body:not(.theme-dark) #screen-ai .text-white:not(button):not(button *) {
   color: #0F172A !important;
 }
 
 body:not(.theme-dark) #screen-history .text-slate-300,
-body:not(.theme-dark) #screen-saved .text-slate-300 {
+body:not(.theme-dark) #screen-saved .text-slate-300,
+body:not(.theme-dark) #screen-wallet .text-slate-300,
+body:not(.theme-dark) #screen-ai .text-slate-300 {
   color: #334155 !important;
 }
 
 body:not(.theme-dark) #screen-history .text-slate-400,
-body:not(.theme-dark) #screen-saved .text-slate-400 {
+body:not(.theme-dark) #screen-saved .text-slate-400,
+body:not(.theme-dark) #screen-wallet .text-slate-400,
+body:not(.theme-dark) #screen-ai .text-slate-400 {
   color: #64748B !important;
 }
 
@@ -2486,14 +2497,22 @@ body:not(.theme-dark) #screen-history .bg-slate-800\/80,
 body:not(.theme-dark) #screen-history .bg-slate-800\/90,
 body:not(.theme-dark) #screen-saved .bg-slate-800,
 body:not(.theme-dark) #screen-saved .bg-slate-800\/80,
-body:not(.theme-dark) #screen-saved .bg-slate-800\/90 {
+body:not(.theme-dark) #screen-saved .bg-slate-800\/90,
+body:not(.theme-dark) #screen-wallet .bg-slate-800,
+body:not(.theme-dark) #screen-wallet .bg-slate-800\/80,
+body:not(.theme-dark) #screen-wallet .bg-slate-800\/90,
+body:not(.theme-dark) #screen-ai .bg-slate-800,
+body:not(.theme-dark) #screen-ai .bg-slate-800\/80,
+body:not(.theme-dark) #screen-ai .bg-slate-800\/90 {
   background-color: #F1F5F9 !important;
   border: 1px solid #E2E8F0 !important;
   color: #334155 !important;
 }
 
 body:not(.theme-dark) #screen-history .bg-blue-950\/40,
-body:not(.theme-dark) #screen-saved .bg-blue-950\/40 {
+body:not(.theme-dark) #screen-saved .bg-blue-950\/40,
+body:not(.theme-dark) #screen-wallet .bg-blue-950\/40,
+body:not(.theme-dark) #screen-ai .bg-blue-950\/40 {
   background-color: #EFF6FF !important;
   border: 1px solid #BFDBFE !important;
   color: #1D4ED8 !important;
@@ -2994,6 +3013,8 @@ body:not(.theme-dark) button.bg-amber-600 * {
 body:not(.theme-dark) .btn-back-home,
 body:not(.theme-dark) #screen-history .btn-back-home,
 body:not(.theme-dark) #screen-saved .btn-back-home,
+body:not(.theme-dark) #screen-wallet .btn-back-home,
+body:not(.theme-dark) #screen-ai .btn-back-home,
 body:not(.theme-dark) #screen-profile .btn-back-home,
 body.theme-light .btn-back-home,
 [data-theme="light"] .btn-back-home,
@@ -3009,6 +3030,8 @@ html:not(.theme-dark) .btn-back-home {
 body:not(.theme-dark) .btn-back-home *,
 body:not(.theme-dark) #screen-history .btn-back-home *,
 body:not(.theme-dark) #screen-saved .btn-back-home *,
+body:not(.theme-dark) #screen-wallet .btn-back-home *,
+body:not(.theme-dark) #screen-ai .btn-back-home *,
 body:not(.theme-dark) #screen-profile .btn-back-home *,
 body.theme-light .btn-back-home *,
 [data-theme="light"] .btn-back-home *,
@@ -3020,6 +3043,8 @@ html:not(.theme-dark) .btn-back-home * {
 body:not(.theme-dark) .btn-back-home:hover,
 body:not(.theme-dark) #screen-history .btn-back-home:hover,
 body:not(.theme-dark) #screen-saved .btn-back-home:hover,
+body:not(.theme-dark) #screen-wallet .btn-back-home:hover,
+body:not(.theme-dark) #screen-ai .btn-back-home:hover,
 body:not(.theme-dark) #screen-profile .btn-back-home:hover,
 body.theme-light .btn-back-home:hover,
 [data-theme="light"] .btn-back-home:hover {
@@ -3034,6 +3059,8 @@ body.theme-light .btn-back-home:hover,
 body:not(.theme-dark) .btn-back-home:active,
 body:not(.theme-dark) #screen-history .btn-back-home:active,
 body:not(.theme-dark) #screen-saved .btn-back-home:active,
+body:not(.theme-dark) #screen-wallet .btn-back-home:active,
+body:not(.theme-dark) #screen-ai .btn-back-home:active,
 body:not(.theme-dark) #screen-profile .btn-back-home:active,
 body.theme-light .btn-back-home:active,
 [data-theme="light"] .btn-back-home:active {
@@ -3257,6 +3284,8 @@ body:not(.theme-dark) #booking-confirmed-modal button:active {
   #screen-home > div:last-child,
   #screen-history > div:last-child,
   #screen-saved > div:last-child,
+  #screen-wallet > div:last-child,
+  #screen-ai > div:last-child,
   #screen-profile > div:last-child,
   #screen-booking > div:last-child {
     height: 100vh !important;
@@ -3272,6 +3301,8 @@ body:not(.theme-dark) #booking-confirmed-modal button:active {
   #screen-home > div:last-child,
   #screen-history > div:last-child,
   #screen-saved > div:last-child,
+  #screen-wallet > div:last-child,
+  #screen-ai > div:last-child,
   #screen-profile > div:last-child {
     padding-bottom: 80px !important;
   }

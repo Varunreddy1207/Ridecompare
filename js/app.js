@@ -614,6 +614,10 @@ class RideCompareApp {
       window.location.hash = '#history';
     } else if (this.currentScreen === 'screen-saved' || this.currentTab === 'saved') {
       window.location.hash = '#saved';
+    } else if (this.currentScreen === 'screen-wallet' || this.currentTab === 'wallet') {
+      window.location.hash = '#wallet';
+    } else if (this.currentScreen === 'screen-ai' || this.currentTab === 'ai') {
+      window.location.hash = '#ai';
     } else if (this.currentScreen === 'screen-profile' || this.currentTab === 'profile') {
       window.location.hash = '#profile';
     } else if (this.currentScreen === 'screen-booking') {
@@ -635,7 +639,7 @@ class RideCompareApp {
     // Check if user has already viewed the welcome animation in this browser session
     const hasViewed = sessionStorage.getItem('vozx_welcome_viewed') === 'true';
     const path = (window.location.pathname || '').toLowerCase().replace(/\/$/, '');
-    const isDeepPath = path.endsWith('/login') || path.endsWith('/signup') || path.endsWith('/system-status') || path.endsWith('/status') || path.endsWith('/profile') || path.endsWith('/rides') || path.endsWith('/history') || path.endsWith('/saved') || path.endsWith('/booking');
+    const isDeepPath = path.endsWith('/login') || path.endsWith('/signup') || path.endsWith('/system-status') || path.endsWith('/status') || path.endsWith('/profile') || path.endsWith('/rides') || path.endsWith('/history') || path.endsWith('/saved') || path.endsWith('/wallet') || path.endsWith('/ai') || path.endsWith('/booking');
     const isDevPreview = window.location.search.includes('dev_preview=1') || window.self !== window.top;
 
     // If already viewed, in simulator preview, or entering directly with specific deep route
@@ -941,6 +945,14 @@ class RideCompareApp {
       this.navigateTo('screen-saved', false);
       this.updateActiveNavs('saved');
       this.renderSavedPlaces();
+    } else if (path.endsWith('/wallet') || hash === '#wallet') {
+      this.currentTab = 'wallet';
+      this.navigateTo('screen-wallet', false);
+      this.updateActiveNavs('wallet');
+    } else if (path.endsWith('/ai') || hash === '#ai') {
+      this.currentTab = 'ai';
+      this.navigateTo('screen-ai', false);
+      this.updateActiveNavs('ai');
     } else if (path.endsWith('/rides') || path.endsWith('/history') || hash === '#rides' || hash === '#history') {
       this.currentTab = 'history';
       this.navigateTo('screen-history', false);
@@ -1067,6 +1079,14 @@ class RideCompareApp {
       this.navigateTo('screen-saved', false);
       this.updateActiveNavs('saved');
       this.renderSavedPlaces();
+    } else if (hash === '#wallet' || path.endsWith('/wallet')) {
+      this.currentTab = 'wallet';
+      this.navigateTo('screen-wallet', false);
+      this.updateActiveNavs('wallet');
+    } else if (hash === '#ai' || path.endsWith('/ai')) {
+      this.currentTab = 'ai';
+      this.navigateTo('screen-ai', false);
+      this.updateActiveNavs('ai');
     } else if (hash === '#history' || hash === '#rides' || path.endsWith('/history') || path.endsWith('/rides')) {
       this.currentTab = 'history';
       this.navigateTo('screen-history', false);
@@ -4429,6 +4449,14 @@ class RideCompareApp {
       window.location.hash = '#saved';
       this.renderSavedPlaces();
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (tab === 'wallet') {
+      this.navigateTo('screen-wallet', false);
+      window.location.hash = '#wallet';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (tab === 'ai') {
+      this.navigateTo('screen-ai', false);
+      window.location.hash = '#ai';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (tab === 'compare') {
       this.navigateTo('screen-home', false);
       window.location.hash = '#home';
@@ -5234,6 +5262,10 @@ class RideCompareApp {
           iApp.switchTab('history');
         } else if (screenName === 'saved') {
           iApp.switchTab('saved');
+        } else if (screenName === 'wallet') {
+          iApp.switchTab('wallet');
+        } else if (screenName === 'ai') {
+          iApp.switchTab('ai');
         } else if (screenName === 'profile') {
           iApp.switchTab('profile');
         } else if (screenName === 'booking') {
@@ -5747,7 +5779,7 @@ console.log(res.data);</code>`;
 
     // 1. Update text elements across screens (ALL sidebars, headers, and profile screen)
     const displayName = isGuest ? 'Guest User' : (p.name || 'User');
-    document.querySelectorAll('.sidebar-user-name, #sidebar-profile-name, #desk-home-profile-name, #desk-history-profile-name, #desk-saved-profile-name, #status-sidebar-profile-name').forEach(el => {
+    document.querySelectorAll('.sidebar-user-name, #sidebar-profile-name, #desk-home-profile-name, #desk-history-profile-name, #desk-saved-profile-name, #desk-wallet-profile-name, #desk-ai-profile-name, #status-sidebar-profile-name').forEach(el => {
       el.textContent = displayName;
     });
 
@@ -5765,7 +5797,7 @@ console.log(res.data);</code>`;
     });
 
     const name = displayName;
-    document.querySelectorAll('.sidebar-user-name, #sidebar-profile-name, #desk-home-profile-name, #desk-history-profile-name, #desk-saved-profile-name, #status-sidebar-profile-name').forEach(el => {
+    document.querySelectorAll('.sidebar-user-name, #sidebar-profile-name, #desk-home-profile-name, #desk-history-profile-name, #desk-saved-profile-name, #desk-wallet-profile-name, #desk-ai-profile-name, #status-sidebar-profile-name').forEach(el => {
       el.textContent = name;
     });
 
@@ -5798,7 +5830,7 @@ console.log(res.data);</code>`;
     const accent = accents[p.avatarAccent] || accents.blue;
 
     const avatars = document.querySelectorAll(
-      '#profile-avatar-display, #sidebar-avatar-badge, #edit-modal-avatar-preview, #btn-topbar-profile, #btn-mob-topbar-profile, #desk-home-avatar-badge, #desk-history-avatar-badge, #desk-saved-avatar-badge, .user-avatar-badge, .sidebar-avatar-badge'
+      '#profile-avatar-display, #sidebar-avatar-badge, #edit-modal-avatar-preview, #btn-topbar-profile, #btn-mob-topbar-profile, #desk-home-avatar-badge, #desk-history-avatar-badge, #desk-saved-avatar-badge, #desk-wallet-avatar-badge, #desk-ai-avatar-badge, .user-avatar-badge, .sidebar-avatar-badge'
     );
     avatars.forEach(av => {
       av.style.setProperty('background', accent.bg, 'important');
