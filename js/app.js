@@ -3033,7 +3033,7 @@ class RideCompareApp {
 
     // 3. Immediately Draw Fallback Route Polyline & Fit Bounds (Zero Latency)
     let routeLatLngs = this.generateFallbackRoute(pickupCoords, dropCoords);
-    const fallbackDist = this.calculateHaversineDistance(pickupCoords.lat, pickupCoords.lng, dropCoords.lat, dropCoords.lng);
+    const fallbackDist = this.calculateHaversineDistance(pickupCoords.lat, pickupCoords.lng, dropCoords.lat, dropCoords.lng) * 1.20;
     let distanceKm = Math.max(0.8, fallbackDist).toFixed(1);
     let durationMins = Math.max(4, Math.round(fallbackDist * 2.2));
     this.currentRouteDistanceKm = distanceKm;
@@ -3070,9 +3070,9 @@ class RideCompareApp {
     updateRouteHeaderUI(distanceKm, durationMins);
 
     const glowLine = L.polyline(routeLatLngs, {
-      color: '#0073FF',
+      color: '#0A3F9C',
       weight: 8,
-      opacity: 0.35,
+      opacity: 0.95,
       lineCap: 'round',
       lineJoin: 'round'
     }).addTo(this.resultsMap);
@@ -3080,13 +3080,23 @@ class RideCompareApp {
 
     const liveLine = L.polyline(routeLatLngs, {
       color: '#0073FF',
-      weight: 4.5,
-      opacity: 0.95,
-      className: 'map-live-route-dash',
+      weight: 5,
+      opacity: 1.0,
       lineCap: 'round',
       lineJoin: 'round'
     }).addTo(this.resultsMap);
     this.resultsRouteLayers.push(liveLine);
+
+    const flowLine = L.polyline(routeLatLngs, {
+      color: '#93C5FD',
+      weight: 2.5,
+      opacity: 0.95,
+      dashArray: '10, 14',
+      className: 'leaflet-route-flow-line',
+      lineCap: 'round',
+      lineJoin: 'round'
+    }).addTo(this.resultsMap);
+    this.resultsRouteLayers.push(flowLine);
 
     // 4. Place Moving Vehicle Markers Along Route
     let v1 = null, v2 = null, v3 = null;
@@ -3140,6 +3150,7 @@ class RideCompareApp {
 
             glowLine.setLatLngs(osrmLatLngs);
             liveLine.setLatLngs(osrmLatLngs);
+            if (flowLine) flowLine.setLatLngs(osrmLatLngs);
 
             if (osrmLatLngs.length >= 4) {
               if (v1) v1.setLatLng(osrmLatLngs[Math.floor(osrmLatLngs.length * 0.25)]);
@@ -3486,19 +3497,25 @@ class RideCompareApp {
     let distanceKm = null;
     let durationMins = null;
 
-    if (this.currentRouteDistanceKm) {
+    const coordsMatch = this.currentRoutePickupCoords && this.currentRouteDropCoords &&
+      Math.abs(this.currentRoutePickupCoords.lat - pickupCoords.lat) < 0.001 &&
+      Math.abs(this.currentRoutePickupCoords.lng - pickupCoords.lng) < 0.001 &&
+      Math.abs(this.currentRouteDropCoords.lat - dropCoords.lat) < 0.001 &&
+      Math.abs(this.currentRouteDropCoords.lng - dropCoords.lng) < 0.001;
+
+    if (coordsMatch && this.currentRouteDistanceKm) {
       distanceKm = parseFloat(this.currentRouteDistanceKm).toFixed(1);
     }
-    if (this.currentRouteDurationMins) {
+    if (coordsMatch && this.currentRouteDurationMins) {
       durationMins = parseInt(this.currentRouteDurationMins, 10);
     }
 
     if (!distanceKm || isNaN(distanceKm)) {
       const haversineDist = this.calculateHaversineDistance(pickupCoords.lat, pickupCoords.lng, dropCoords.lat, dropCoords.lng);
-      distanceKm = Math.max(0.8, haversineDist).toFixed(1);
+      distanceKm = Math.max(0.8, haversineDist * 1.20).toFixed(1);
     }
     if (!durationMins || isNaN(durationMins)) {
-      durationMins = Math.max(4, Math.round(parseFloat(distanceKm) * 2.5));
+      durationMins = Math.max(4, Math.round(parseFloat(distanceKm) * 2.2));
     }
 
     const pDistance = `${distanceKm} km`;
@@ -3654,24 +3671,37 @@ class RideCompareApp {
     // 3. Fallback smooth curved route polyline (instant zero-latency render)
     let routeLatLngs = this.generateFallbackRoute(pickupCoords, dropCoords);
 
+    // Solid outer casing for high contrast against any tile layer (day & night)
     const glowLine = L.polyline(routeLatLngs, {
-      color: '#0073FF',
+      color: '#0A3F9C',
       weight: 8,
-      opacity: 0.35,
+      opacity: 0.95,
       lineCap: 'round',
       lineJoin: 'round'
     }).addTo(this.bookingMap);
     this.bookingRouteLayers.push(glowLine);
 
+    // Vivid solid electric royal blue core line
     const liveLine = L.polyline(routeLatLngs, {
       color: '#0073FF',
-      weight: 4.5,
-      opacity: 0.95,
-      className: 'map-live-route-dash',
+      weight: 5,
+      opacity: 1.0,
       lineCap: 'round',
       lineJoin: 'round'
     }).addTo(this.bookingMap);
     this.bookingRouteLayers.push(liveLine);
+
+    // Animated pulse directional accent line
+    const flowLine = L.polyline(routeLatLngs, {
+      color: '#93C5FD',
+      weight: 2.5,
+      opacity: 0.95,
+      dashArray: '10, 14',
+      className: 'leaflet-route-flow-line',
+      lineCap: 'round',
+      lineJoin: 'round'
+    }).addTo(this.bookingMap);
+    this.bookingRouteLayers.push(flowLine);
 
     // 4. Moving / nearby vehicles along route
     let v1 = null, v2 = null, v3 = null;
@@ -3702,7 +3732,7 @@ class RideCompareApp {
       this.bookingMap.fitBounds(initialBounds, { padding: [55, 55], maxZoom: 16 });
     } catch (_) {}
 
-    // 6. Invalidate size after container renders
+    // 6. Invalidate size after container renders across all devices
     const refreshBookingBounds = () => {
       if (this.bookingMap) {
         this.bookingMap.invalidateSize();
@@ -3713,10 +3743,14 @@ class RideCompareApp {
         }
       }
     };
-    setTimeout(refreshBookingBounds, 120);
-    setTimeout(refreshBookingBounds, 350);
+    if (this.bookingMap) {
+      this.bookingMap.invalidateSize();
+    }
+    setTimeout(refreshBookingBounds, 60);
+    setTimeout(refreshBookingBounds, 180);
+    setTimeout(refreshBookingBounds, 400);
 
-    // 7. Background OSRM fetch for realistic roads polyline
+    // 7. Background OSRM fetch for realistic roads polyline & exact distance
     const token = (this._bookingRouteToken = (this._bookingRouteToken || 0) + 1);
     fetch(`https://router.project-osrm.org/route/v1/driving/${pickupCoords.lng},${pickupCoords.lat};${dropCoords.lng},${dropCoords.lat}?overview=full&geometries=geojson`)
       .then(res => res.ok ? res.json() : null)
@@ -3728,6 +3762,22 @@ class RideCompareApp {
           if (osrmLatLngs.length >= 2) {
             glowLine.setLatLngs(osrmLatLngs);
             liveLine.setLatLngs(osrmLatLngs);
+            if (flowLine) flowLine.setLatLngs(osrmLatLngs);
+
+            // Update real road distance & ETA directly on the screen
+            const realDistKm = Math.max(0.5, route.distance / 1000).toFixed(1);
+            const realDurationMins = Math.max(2, Math.round(route.duration / 60));
+            this.currentRouteDistanceKm = realDistKm;
+            this.currentRouteDurationMins = realDurationMins;
+
+            const distEl = document.getElementById('booking-distance');
+            if (distEl) distEl.textContent = `${realDistKm} km`;
+            const timeEl = document.getElementById('booking-estimated-time');
+            if (timeEl) timeEl.textContent = `${realDurationMins} min`;
+            const etaEl = document.getElementById('booking-eta');
+            if (etaEl) etaEl.textContent = `${realDurationMins} min`;
+            const mapEta = document.getElementById('booking-map-eta');
+            if (mapEta) mapEta.textContent = `Fastest Route • ${realDurationMins} min (${realDistKm} km)`;
 
             if (osrmLatLngs.length >= 4) {
               if (v1) v1.setLatLng(osrmLatLngs[Math.floor(osrmLatLngs.length * 0.25)]);

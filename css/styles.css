@@ -950,12 +950,59 @@ body:has(#screen-developer.active) .tablet-nav-dock {
 #results-live-leaflet-map,
 #booking-live-leaflet-map {
   background: #070D1E;
+  width: 100% !important;
+  height: 100% !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 1 !important;
 }
 
 body:not(.theme-dark) #results-live-leaflet-map,
 body:not(.theme-dark) #booking-live-leaflet-map,
 body.theme-light #booking-live-leaflet-map {
   background: #EEF2F6;
+}
+
+#results-live-leaflet-map .leaflet-pane,
+#booking-live-leaflet-map .leaflet-pane {
+  z-index: 400;
+}
+
+#results-live-leaflet-map .leaflet-tile-pane,
+#booking-live-leaflet-map .leaflet-tile-pane {
+  z-index: 200 !important;
+}
+
+#results-live-leaflet-map .leaflet-overlay-pane,
+#booking-live-leaflet-map .leaflet-overlay-pane {
+  z-index: 450 !important;
+  pointer-events: none;
+}
+
+#results-live-leaflet-map .leaflet-marker-pane,
+#booking-live-leaflet-map .leaflet-marker-pane {
+  z-index: 600 !important;
+}
+
+#results-live-leaflet-map .leaflet-overlay-pane svg,
+#booking-live-leaflet-map .leaflet-overlay-pane svg {
+  width: auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: unset !important;
+  display: block !important;
+}
+
+#results-live-leaflet-map .leaflet-overlay-pane path,
+#booking-live-leaflet-map .leaflet-overlay-pane path {
+  pointer-events: stroke;
+}
+
+.leaflet-route-flow-line {
+  stroke-dasharray: 10, 14;
+  animation: routeDashFlow 18s linear infinite;
 }
 
 .custom-live-map-marker {
@@ -2758,12 +2805,20 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
     align-self: stretch !important;
     position: relative !important;
   }
-  #screen-booking > div:first-child svg,
-  #booking-map-container svg {
+  #booking-live-leaflet-map {
     width: 100% !important;
     height: 100% !important;
-    min-height: 100% !important;
-    object-fit: cover !important;
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 1 !important;
+  }
+  #booking-live-leaflet-map .leaflet-overlay-pane svg {
+    width: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: unset !important;
     display: block !important;
   }
   #screen-booking > div:last-child {

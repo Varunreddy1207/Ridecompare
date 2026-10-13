@@ -51,7 +51,7 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4LfkJpAF7Ggz83bF--j3vPztxlzrxPxg&libraries=places,geometry" async defer></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=71">
+  <link rel="stylesheet" href="css/styles.css?v=72">
 
   <style>
     /* Strict Responsive Display Rules: Bottom Nav for Mobile & Tablet (< 1024px) */
@@ -1024,6 +1024,15 @@
     body:not(.theme-dark) #booking-live-leaflet-map,
     body.theme-light #booking-live-leaflet-map {
       background-color: #E8EEF5 !important;
+    }
+    #booking-live-leaflet-map .leaflet-overlay-pane svg {
+      width: auto !important;
+      height: auto !important;
+      min-height: 0 !important;
+      max-width: none !important;
+      max-height: none !important;
+      object-fit: unset !important;
+      display: block !important;
     }
     body:not(.theme-dark) #screen-booking svg rect,
     body.theme-light #screen-booking svg rect,
@@ -6685,7 +6694,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
   <script src="js/bcrypt.min.js"></script>
   <script src="js/api.js?v=5"></script>
   <script src="js/audio.js?v=28"></script>
-  <script src="js/app.js?v=96"></script>
+  <script src="js/app.js?v=97"></script>
 
   <!-- Service Worker for Offline PWA Support -->
   <script>
