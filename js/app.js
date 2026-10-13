@@ -4463,6 +4463,7 @@ class RideCompareApp {
       this.showResultsPanel();
       this.updateActiveNavs('compare');
     } else if (tab === 'profile') {
+      this.closeProfileSubpage(false);
       this.navigateTo('screen-profile', false);
       window.location.hash = '#profile';
     } else if (tab === 'status' || tab === 'system-status') {
@@ -4484,6 +4485,197 @@ class RideCompareApp {
       window.soundFX.playTap();
     }
     this.switchTab('profile');
+  }
+
+  // Open Profile Subpage ('preferences' | 'notifications' | 'help' | 'about')
+  openProfileSubpage(subpageKey) {
+    if (this.currentScreen !== 'screen-profile') {
+      this.currentTab = 'profile';
+      this.navigateTo('screen-profile', false);
+      this.updateActiveNavs('profile');
+    }
+
+    const profileScreen = document.getElementById('screen-profile');
+    const mainView = document.getElementById('profile-main-view');
+    const subviews = document.querySelectorAll('#screen-profile .profile-subview-panel');
+
+    if (profileScreen) profileScreen.classList.add('subview-active');
+    if (mainView) mainView.classList.remove('active');
+
+    subviews.forEach((panel) => {
+      const isTarget = panel.id === `profile-subview-${subpageKey}`;
+      panel.classList.toggle('active', isTarget);
+    });
+
+    this.loadProfileSubpageState();
+
+    const scrollWrap = document.querySelector('#screen-profile > div:last-child');
+    if (scrollWrap) scrollWrap.scrollTop = 0;
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }
+
+  // Close Profile Subpage and return to main Profile menu
+  closeProfileSubpage(scrollTop = true) {
+    const profileScreen = document.getElementById('screen-profile');
+    const mainView = document.getElementById('profile-main-view');
+    const subviews = document.querySelectorAll('#screen-profile .profile-subview-panel');
+
+    if (profileScreen) profileScreen.classList.remove('subview-active');
+    subviews.forEach((panel) => panel.classList.remove('active'));
+    if (mainView) mainView.classList.add('active');
+
+    if (scrollTop) {
+      const scrollWrap = document.querySelector('#screen-profile > div:last-child');
+      if (scrollWrap) scrollWrap.scrollTop = 0;
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+  }
+
+  loadProfileSubpageState() {
+    try {
+      const savedPref = JSON.parse(localStorage.getItem('ridecompare_ride_preferences') || 'null');
+      const vehicle = (savedPref && savedPref.vehicle) || this.preferredVehicle || 'bike';
+      const mode = (savedPref && savedPref.mode) || this.preferredRideMode || 'fastest';
+      this.selectPreferredVehicle(vehicle, false);
+      this.selectPreferredRideMode(mode, false);
+    } catch (_) {}
+
+    try {
+      const savedNotifs = JSON.parse(localStorage.getItem('ridecompare_notification_prefs') || 'null');
+      if (savedNotifs) {
+        ['rideUpdates', 'priceAlerts', 'offersPromos', 'tripReminders'].forEach((key) => {
+          if (typeof savedNotifs[key] === 'boolean') {
+            const btn = document.getElementById(`notif-toggle-${key}`);
+            if (btn) {
+              btn.classList.toggle('active', savedNotifs[key]);
+              btn.setAttribute('aria-checked', savedNotifs[key] ? 'true' : 'false');
+            }
+          }
+        });
+        if (savedNotifs.quietHours) {
+          const qEl = document.getElementById('notif-quiet-hours-text');
+          if (qEl) qEl.textContent = savedNotifs.quietHours;
+        }
+      }
+    } catch (_) {}
+  }
+
+  selectPreferredVehicle(vehicleType) {
+    this.preferredVehicle = vehicleType;
+    const cards = document.querySelectorAll('#profile-subview-preferences .pref-vehicle-card');
+    cards.forEach((card) => {
+      const match = card.getAttribute('data-vehicle') === vehicleType;
+      card.classList.toggle('active', match);
+    });
+  }
+
+  selectPreferredRideMode(mode) {
+    this.preferredRideMode = mode;
+    const btns = document.querySelectorAll('#profile-subview-preferences .pref-ride-mode-btn');
+    btns.forEach((btn) => {
+      const match = btn.getAttribute('data-mode') === mode;
+      btn.classList.toggle('active', match);
+    });
+  }
+
+  saveRidePreferences() {
+    const vehicle = this.preferredVehicle || 'bike';
+    const mode = this.preferredRideMode || 'fastest';
+    try {
+      localStorage.setItem('ridecompare_ride_preferences', JSON.stringify({ vehicle, mode }));
+    } catch (_) {}
+
+    const labelEl = document.getElementById('save-ride-pref-label');
+    if (labelEl) {
+      labelEl.textContent = 'Preferences Saved!';
+      setTimeout(() => {
+        if (labelEl) labelEl.textContent = 'Save Preferences';
+      }, 1600);
+    }
+  }
+
+  toggleNotificationPref(key, btnEl) {
+    const btn = btnEl || document.getElementById(`notif-toggle-${key}`);
+    if (!btn) return;
+    const isNowActive = !btn.classList.contains('active');
+    btn.classList.toggle('active', isNowActive);
+    btn.setAttribute('aria-checked', isNowActive ? 'true' : 'false');
+
+    try {
+      const current = JSON.parse(localStorage.getItem('ridecompare_notification_prefs') || '{}');
+      current[key] = isNowActive;
+      localStorage.setItem('ridecompare_notification_prefs', JSON.stringify(current));
+    } catch (_) {}
+  }
+
+  cycleQuietHours() {
+    const schedules = ['10:00 PM – 6:00 AM', '11:00 PM – 7:00 AM', '12:00 AM – 6:00 AM', 'Off'];
+    const qEl = document.getElementById('notif-quiet-hours-text');
+    if (!qEl) return;
+    const curr = qEl.textContent.trim();
+    const idx = schedules.indexOf(curr);
+    const next = schedules[(idx + 1) % schedules.length];
+    qEl.textContent = next;
+
+    try {
+      const current = JSON.parse(localStorage.getItem('ridecompare_notification_prefs') || '{}');
+      current.quietHours = next;
+      localStorage.setItem('ridecompare_notification_prefs', JSON.stringify(current));
+    } catch (_) {}
+  }
+
+  filterHelpFAQs(query = '') {
+    const q = String(query || '').trim().toLowerCase();
+    const items = document.querySelectorAll('#help-faq-list .help-faq-item');
+    items.forEach((item) => {
+      const text = item.textContent.toLowerCase();
+      item.style.display = !q || text.includes(q) ? '' : 'none';
+    });
+  }
+
+  toggleHelpFAQ(index) {
+    const item = document.querySelector(`#help-faq-list .help-faq-item[data-faq-index="${index}"]`);
+    if (!item) return;
+    const ans = item.querySelector('.help-faq-answer');
+    const chev = item.querySelector('.help-faq-chevron');
+    if (ans) {
+      const willShow = ans.classList.contains('hidden');
+      ans.classList.toggle('hidden', !willShow);
+      if (chev) chev.style.transform = willShow ? 'rotate(90deg)' : '';
+    }
+  }
+
+  toggleAllHelpFAQs() {
+    const answers = document.querySelectorAll('#help-faq-list .help-faq-answer');
+    const chevrons = document.querySelectorAll('#help-faq-list .help-faq-chevron');
+    const label = document.getElementById('help-view-all-label');
+    const anyHidden = Array.from(answers).some((a) => a.classList.contains('hidden'));
+
+    answers.forEach((a) => a.classList.toggle('hidden', !anyHidden));
+    chevrons.forEach((c) => {
+      c.style.transform = anyHidden ? 'rotate(90deg)' : '';
+    });
+    if (label) label.textContent = anyHidden ? 'Collapse' : 'View all';
+  }
+
+  triggerSupportAction(actionType) {
+    const banner = document.getElementById('help-support-feedback-banner');
+    if (!banner) return;
+    const messages = {
+      chat: '💬 Live Support Chat is ready — our support team typically responds within 2 minutes.',
+      email: '✉️ Support email: support@ridecompare.com',
+      report: '⚠️ Issue reporting form opened — thank you for helping improve RideCompare.',
+      center: '📖 All quick-start guides and FAQs are unlocked above.'
+    };
+    banner.textContent = messages[actionType] || messages.center;
+    banner.classList.remove('hidden');
+  }
+
+  toggleAboutLegalItem(key) {
+    const el = document.getElementById(`about-legal-detail-${key}`);
+    if (el) {
+      el.classList.toggle('hidden');
+    }
   }
 
   // Log Out Action - Opens the Confirmation Modal

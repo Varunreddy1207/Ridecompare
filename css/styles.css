@@ -4788,3 +4788,625 @@ body.theme-dark #admin-login-modal .admin-login-back-btn:hover,
   display: block !important;
 }
 
+/* ==========================================================================
+   PROFILE SUBPAGES: RIDE PREFERENCES, NOTIFICATIONS, HELP & SUPPORT, ABOUT
+   Matches media_1791864856816, media_1791864872953, media_1791864888449, media_1791864903024
+   ========================================================================== */
+.profile-main-view:not(.active),
+.profile-subview-panel:not(.active) {
+  display: none !important;
+}
+
+.profile-main-view.active,
+.profile-subview-panel.active {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+#screen-profile.subview-active #profile-mobile-header {
+  display: none !important;
+}
+
+.profile-subpage-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 6px;
+}
+
+.profile-subpage-back-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: #0F172A;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: -6px;
+}
+
+.profile-subpage-back-btn:hover {
+  background-color: rgba(148, 163, 184, 0.14);
+}
+
+.profile-subpage-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0F172A !important;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.profile-subpage-lead {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: #475569;
+  font-weight: 400;
+}
+
+.profile-subpage-divider {
+  height: 1px;
+  width: 100%;
+  background-color: #E2E8F0;
+}
+
+.profile-subpage-section-title {
+  font-size: 15.5px;
+  font-weight: 800;
+  color: #0F172A;
+  letter-spacing: -0.01em;
+}
+
+.profile-subpage-section-sub {
+  font-size: 12.5px;
+  color: #64748B;
+  margin-top: 2px;
+}
+
+/* 1. Ride Preferences Subpage */
+.pref-vehicle-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background-color: #FFFFFF;
+  border: 1.5px solid #E2E8F0;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pref-vehicle-card:hover {
+  border-color: #93C5FD;
+}
+
+.pref-vehicle-card.active {
+  background-color: #EFF6FF;
+  border-color: #0073FF;
+  box-shadow: 0 4px 14px rgba(0, 115, 255, 0.09);
+}
+
+.pref-vehicle-art {
+  width: 82px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pref-vehicle-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.25;
+}
+
+.pref-vehicle-desc {
+  font-size: 12.5px;
+  color: #64748B;
+  line-height: 1.38;
+  margin-top: 3px;
+}
+
+.pref-radio-ring {
+  width: 22px;
+  height: 22px;
+  border-radius: 9999px;
+  border: 2px solid #CBD5E1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  background-color: #FFFFFF;
+}
+
+.pref-radio-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 9999px;
+  background-color: transparent;
+  transition: all 0.2s ease;
+}
+
+.pref-vehicle-card.active .pref-radio-ring {
+  border-color: #0073FF;
+}
+
+.pref-vehicle-card.active .pref-radio-dot {
+  background-color: #0073FF;
+}
+
+.pref-ride-mode-box {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  padding: 10px;
+  border-radius: 18px;
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+}
+
+.pref-ride-mode-btn {
+  padding: 11px 8px;
+  border-radius: 12px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #1E293B;
+  background-color: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.pref-ride-mode-btn:hover {
+  border-color: #CBD5E1;
+  background-color: #F1F5F9;
+}
+
+.pref-ride-mode-btn.active {
+  background-color: #0073FF !important;
+  border-color: #0073FF !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 12px rgba(0, 115, 255, 0.28);
+}
+
+.pref-save-btn {
+  width: 100%;
+  padding: 14px 20px;
+  border-radius: 16px;
+  background-color: #0073FF !important;
+  color: #FFFFFF !important;
+  font-size: 14px;
+  font-weight: 700;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  box-shadow: 0 8px 20px -4px rgba(0, 115, 255, 0.4);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pref-save-btn:hover {
+  background-color: #0060E6 !important;
+}
+
+.pref-save-btn:active {
+  transform: scale(0.99);
+}
+
+/* 2. Notifications Subpage */
+.notif-setting-card {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+}
+
+.notif-card-heading {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: #0F172A;
+}
+
+.notif-card-desc {
+  font-size: 12px;
+  color: #64748B;
+  line-height: 1.45;
+  margin-top: 3px;
+}
+
+.notif-card-row {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #F1F5F9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.notif-clickable-row {
+  cursor: pointer;
+  border-radius: 10px;
+  transition: background-color 0.15s ease;
+}
+
+.notif-row-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1E3A8A;
+  flex-shrink: 0;
+}
+
+.notif-row-title {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0F172A;
+  line-height: 1.25;
+}
+
+.notif-row-sub {
+  display: block;
+  font-size: 11.5px;
+  color: #64748B;
+  margin-top: 2px;
+}
+
+.notif-toggle-switch {
+  width: 46px;
+  height: 26px;
+  border-radius: 9999px;
+  background-color: #CBD5E1;
+  border: none;
+  padding: 2px;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.22s ease;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+}
+
+.notif-toggle-switch.active {
+  background-color: #0073FF !important;
+}
+
+.notif-toggle-knob {
+  width: 22px;
+  height: 22px;
+  border-radius: 9999px;
+  background-color: #FFFFFF !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transform: translateX(0);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  display: block;
+}
+
+.notif-toggle-switch.active .notif-toggle-knob {
+  transform: translateX(20px);
+}
+
+/* 3. Help & Support Subpage */
+.help-search-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  background-color: #F1F5F9;
+  border: 1px solid #E2E8F0;
+}
+
+.help-search-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 13.5px;
+  color: #0F172A;
+}
+
+.help-search-input::placeholder {
+  color: #94A3B8;
+}
+
+.help-view-all-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #0073FF !important;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.help-faq-card,
+.help-contact-card,
+.about-legal-card {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+}
+
+.help-faq-item,
+.about-legal-item {
+  border-bottom: 1px solid #F1F5F9;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.help-faq-item:last-child,
+.about-legal-item:last-child {
+  border-bottom: none;
+}
+
+.help-faq-item:hover,
+.help-contact-row:hover,
+.about-legal-item:hover {
+  background-color: #F8FAFC;
+}
+
+.help-faq-row,
+.about-legal-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 15px 16px;
+}
+
+.help-doc-icon,
+.about-legal-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background-color: #F1F5F9;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.help-faq-question,
+.about-legal-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+.help-faq-answer,
+.about-legal-detail {
+  padding: 0 16px 14px 58px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #475569;
+}
+
+.help-contact-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 15px 16px;
+  border-bottom: 1px solid #F1F5F9;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.help-contact-row:last-child {
+  border-bottom: none;
+}
+
+.help-contact-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background-color: #EFF6FF;
+  color: #0073FF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.help-contact-title {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+.help-contact-sub {
+  display: block;
+  font-size: 12px;
+  color: #64748B;
+  margin-top: 2px;
+}
+
+.help-center-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 15px 16px;
+  border-radius: 18px;
+  background-color: #EFF6FF;
+  border: 1px solid #BFDBFE;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.help-center-banner:hover {
+  background-color: #DBEAFE;
+}
+
+/* 4. About RideCompare Subpage */
+.about-hero-diamond {
+  width: 68px;
+  height: 68px;
+  border-radius: 18px;
+  transform: rotate(45deg);
+  background: linear-gradient(135deg, #0073FF 0%, #2563EB 100%);
+  box-shadow: 0 12px 28px -6px rgba(0, 115, 255, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.about-hero-pin-svg {
+  color: #FFFFFF !important;
+  fill: #FFFFFF !important;
+}
+
+.about-brand-title {
+  font-size: 24px;
+  font-weight: 900;
+  color: #0F172A;
+  letter-spacing: -0.02em;
+}
+
+.about-brand-tagline {
+  font-size: 13.5px;
+  color: #475569;
+  font-weight: 500;
+}
+
+.about-info-card {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 18px;
+  padding: 14px 18px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.about-info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13.5px;
+}
+
+.about-info-label {
+  font-weight: 600;
+  color: #334155;
+}
+
+.about-info-val {
+  font-weight: 600;
+  color: #475569;
+}
+
+.about-copyright-footer {
+  font-size: 12px;
+  color: #64748B;
+  text-align: center;
+  padding-top: 28px;
+  padding-bottom: 12px;
+}
+
+/* Dark Mode Overrides for Profile Subpages */
+body.theme-dark .profile-subpage-back-btn,
+body.theme-dark .profile-subpage-title,
+body.theme-dark .profile-subpage-section-title,
+body.theme-dark .pref-vehicle-title,
+body.theme-dark .notif-card-heading,
+body.theme-dark .notif-row-title,
+body.theme-dark .help-faq-question,
+body.theme-dark .help-contact-title,
+body.theme-dark .about-brand-title,
+body.theme-dark .about-legal-title,
+body.theme-dark .help-search-input {
+  color: #FFFFFF !important;
+}
+
+body.theme-dark .profile-subpage-lead,
+body.theme-dark .profile-subpage-section-sub,
+body.theme-dark .pref-vehicle-desc,
+body.theme-dark .notif-card-desc,
+body.theme-dark .notif-row-sub,
+body.theme-dark .help-contact-sub,
+body.theme-dark .help-faq-answer,
+body.theme-dark .about-brand-tagline,
+body.theme-dark .about-info-label,
+body.theme-dark .about-info-val,
+body.theme-dark .about-legal-detail {
+  color: #94A3B8 !important;
+}
+
+body.theme-dark .profile-subpage-divider {
+  background-color: #1E293B;
+}
+
+body.theme-dark .pref-vehicle-card,
+body.theme-dark .pref-ride-mode-box,
+body.theme-dark .notif-setting-card,
+body.theme-dark .help-faq-card,
+body.theme-dark .help-contact-card,
+body.theme-dark .about-info-card,
+body.theme-dark .about-legal-card {
+  background-color: #0A1124;
+  border-color: #1E293B;
+}
+
+body.theme-dark .pref-vehicle-card.active {
+  background-color: rgba(0, 115, 255, 0.14);
+  border-color: #0073FF;
+}
+
+body.theme-dark .pref-radio-ring {
+  background-color: #020617;
+  border-color: #475569;
+}
+
+body.theme-dark .pref-ride-mode-btn {
+  background-color: #020617;
+  border-color: #1E293B;
+  color: #CBD5E1;
+}
+
+body.theme-dark .notif-card-row,
+body.theme-dark .help-faq-item,
+body.theme-dark .help-contact-row,
+body.theme-dark .about-legal-item {
+  border-color: #1E293B;
+}
+
+body.theme-dark .help-search-box,
+body.theme-dark .help-doc-icon,
+body.theme-dark .about-legal-icon {
+  background-color: #0A1124;
+  border-color: #1E293B;
+  color: #CBD5E1;
+}
+
+body.theme-dark .help-center-banner {
+  background-color: rgba(0, 115, 255, 0.14);
+  border-color: rgba(59, 130, 246, 0.35);
+}
+
+

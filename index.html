@@ -51,7 +51,7 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4LfkJpAF7Ggz83bF--j3vPztxlzrxPxg&libraries=places,geometry" async defer></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=69">
+  <link rel="stylesheet" href="css/styles.css?v=70">
 
   <style>
     /* Strict Responsive Display Rules: Bottom Nav for Mobile & Tablet (< 1024px) */
@@ -3364,7 +3364,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
       </header>
 
       <!-- MOBILE & TABLET TOP HEADER (< 1024px) -->
-      <header class="flex lg:hidden items-center justify-between px-5 pt-5 pb-3 border-b border-slate-800/80">
+      <header id="profile-mobile-header" class="flex lg:hidden items-center justify-between px-5 pt-5 pb-3 border-b border-slate-800/80">
         <div class="flex items-center gap-3">
           <button onclick="app.switchTab('home')" class="btn-back-home w-9 h-9 rounded-full bg-blue-600 hover:bg-blue-500 border border-blue-500 flex items-center justify-center text-white transition-all active:scale-95 shadow-md cursor-pointer">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -3390,8 +3390,9 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
       </header>
 
       <!-- PROFILE CONTENT CONTAINER (Exact Match to media_1790665329406.png) -->
-      <main class="w-full max-w-md mx-auto px-4 sm:px-6 pt-3 sm:pt-6 lg:pt-8 flex flex-col space-y-5">
+      <main class="w-full max-w-md lg:max-w-lg mx-auto px-4 sm:px-6 pt-3 sm:pt-6 lg:pt-8 flex flex-col space-y-5">
         
+        <div id="profile-main-view" class="profile-main-view active space-y-5">
         <div class="space-y-4">
           <!-- Desktop Title (Hidden on mobile/tablet since it is in header) -->
           <div class="hidden lg:block pb-1">
@@ -3491,7 +3492,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
             </div>
 
             <!-- 3. Ride Preferences (with Subtitle: Bike, Auto, Cab) -->
-            <div class="profile-menu-item group py-3" role="button" tabindex="0">
+            <div id="profile-menu-ride-preferences" onclick="app.openProfileSubpage('preferences')" class="profile-menu-item group py-3" role="button" tabindex="0">
               <div class="flex items-center gap-3.5 min-w-0">
                 <div class="w-7 h-7 flex items-center justify-center text-slate-300 group-hover:text-yellow-400 transition-colors flex-shrink-0">
                   <!-- Compass / Radar -->
@@ -3501,14 +3502,14 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
                 </div>
                 <div class="min-w-0">
                   <span class="text-sm font-semibold text-slate-100 group-hover:text-white transition-colors block leading-tight">Ride Preferences</span>
-                  <span class="text-[11px] text-slate-400 font-medium block mt-0.5">Bike, Auto, Cab</span>
+                  <span id="profile-ride-pref-subtitle" class="text-[11px] text-slate-400 font-medium block mt-0.5">Bike, Auto, Cab</span>
                 </div>
               </div>
               <svg class="w-4 h-4 text-slate-500 group-hover:text-slate-300 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </div>
 
             <!-- 4. Notifications -->
-            <div class="profile-menu-item group" role="button" tabindex="0">
+            <div id="profile-menu-notifications" onclick="app.openProfileSubpage('notifications')" class="profile-menu-item group" role="button" tabindex="0">
               <div class="flex items-center gap-3.5 min-w-0">
                 <div class="w-7 h-7 flex items-center justify-center text-slate-300 group-hover:text-purple-400 transition-colors flex-shrink-0">
                   <!-- Bell -->
@@ -3522,7 +3523,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
             </div>
 
             <!-- 5. Help & Support -->
-            <div class="profile-menu-item group" role="button" tabindex="0">
+            <div id="profile-menu-help-support" onclick="app.openProfileSubpage('help')" class="profile-menu-item group" role="button" tabindex="0">
               <div class="flex items-center gap-3.5 min-w-0">
                 <div class="w-7 h-7 flex items-center justify-center text-slate-300 group-hover:text-emerald-400 transition-colors flex-shrink-0">
                   <!-- Question in circle -->
@@ -3530,13 +3531,13 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                   </svg>
                 </div>
-                <span class="text-sm font-semibold text-slate-100 group-hover:text-white transition-colors">Help & Support</span>
+                <span class="text-sm font-semibold text-slate-100 group-hover:text-white transition-colors">Help &amp; Support</span>
               </div>
               <svg class="w-4 h-4 text-slate-500 group-hover:text-slate-300 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </div>
 
             <!-- 6. About RideCompare -->
-            <div class="profile-menu-item group" role="button" tabindex="0">
+            <div id="profile-menu-about" onclick="app.openProfileSubpage('about')" class="profile-menu-item group" role="button" tabindex="0">
               <div class="flex items-center gap-3.5 min-w-0">
                 <div class="w-7 h-7 flex items-center justify-center text-slate-300 group-hover:text-sky-400 transition-colors flex-shrink-0">
                   <!-- Info in circle -->
@@ -3563,6 +3564,595 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
             </svg>
             Delete Account Permanently
           </button>
+        </div>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- SUBVIEW 1: RIDE PREFERENCES (Exact Match to media_1791864856816_6e0c9f96.png) -->
+        <!-- ============================================================== -->
+        <div id="profile-subview-preferences" class="profile-subview-panel space-y-5 pb-6">
+          <div class="profile-subpage-header flex items-center gap-3 pt-1">
+            <button type="button" id="btn-back-from-preferences" onclick="app.closeProfileSubpage()" class="profile-subpage-back-btn" aria-label="Back to Profile">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 19l-7-7 7-7"/>
+              </svg>
+            </button>
+            <h2 class="profile-subpage-title">Ride Preferences</h2>
+          </div>
+
+          <p class="profile-subpage-lead">Set your preferred ride options for a faster and better experience.</p>
+
+          <div class="profile-subpage-divider"></div>
+
+          <!-- Vehicle Preferences -->
+          <div class="space-y-3">
+            <div>
+              <h3 class="profile-subpage-section-title">Vehicle Preferences</h3>
+              <p class="profile-subpage-section-sub">Choose the types of vehicles you prefer to use.</p>
+            </div>
+
+            <!-- 1. Bike Card -->
+            <div id="pref-card-bike" data-vehicle="bike" onclick="app.selectPreferredVehicle('bike')" class="pref-vehicle-card active" role="button" tabindex="0">
+              <div class="pref-vehicle-art">
+                <svg viewBox="0 0 110 72" class="w-20 h-14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <ellipse cx="55" cy="64" rx="42" ry="4" fill="#CBD5E1" fill-opacity="0.45"/>
+                  <!-- Rear & Front Wheels -->
+                  <circle cx="24" cy="49" r="13" fill="#1E293B" stroke="#0F172A" stroke-width="2"/>
+                  <circle cx="24" cy="49" r="7.5" fill="#E2E8F0" stroke="#64748B" stroke-width="1.5"/>
+                  <circle cx="24" cy="49" r="3" fill="#334155"/>
+                  <circle cx="84" cy="49" r="13" fill="#1E293B" stroke="#0F172A" stroke-width="2"/>
+                  <circle cx="84" cy="49" r="7.5" fill="#E2E8F0" stroke="#64748B" stroke-width="1.5"/>
+                  <circle cx="84" cy="49" r="3" fill="#334155"/>
+                  <!-- Exhaust & Engine Block -->
+                  <path d="M14 48L44 46L46 52L14 52Z" fill="#94A3B8"/>
+                  <rect x="42" y="38" width="16" height="12" rx="3" fill="#475569"/>
+                  <!-- Front Fork & Fender -->
+                  <path d="M72 20L84 49" stroke="#64748B" stroke-width="3.5" stroke-linecap="round"/>
+                  <path d="M73 36C79 34 87 35 92 40" stroke="#2563EB" stroke-width="4" stroke-linecap="round"/>
+                  <!-- Main Frame, Tank & Tail Fairing -->
+                  <path d="M20 35L42 33L52 25L71 27L62 41L38 42L20 35Z" fill="#1D4ED8"/>
+                  <path d="M47 24C54 20 65 20 71 26L61 34L45 33L47 24Z" fill="#3B82F6"/>
+                  <!-- Seat -->
+                  <path d="M24 31C31 31 39 33 46 31L44 36L22 35L24 31Z" fill="#0F172A"/>
+                  <!-- Headlight & Handlebars -->
+                  <path d="M71 21L79 23L77 29L70 28Z" fill="#2563EB"/>
+                  <ellipse cx="79" cy="26" rx="2.5" ry="3.5" fill="#FEF08A"/>
+                  <path d="M66 16L72 20M66 16L62 15" stroke="#0F172A" stroke-width="2.2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <h4 class="pref-vehicle-title">Bike</h4>
+                <p class="pref-vehicle-desc">Fast, affordable<br>and convenient</p>
+              </div>
+              <div class="pref-radio-ring">
+                <div class="pref-radio-dot"></div>
+              </div>
+            </div>
+
+            <!-- 2. Auto Card -->
+            <div id="pref-card-auto" data-vehicle="auto" onclick="app.selectPreferredVehicle('auto')" class="pref-vehicle-card" role="button" tabindex="0">
+              <div class="pref-vehicle-art">
+                <svg viewBox="0 0 110 72" class="w-20 h-14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <ellipse cx="55" cy="64" rx="40" ry="4" fill="#CBD5E1" fill-opacity="0.45"/>
+                  <!-- Wheels -->
+                  <circle cx="28" cy="53" r="9.5" fill="#1E293B" stroke="#0F172A" stroke-width="2"/>
+                  <circle cx="28" cy="53" r="4.5" fill="#CBD5E1"/>
+                  <circle cx="82" cy="53" r="9.5" fill="#1E293B" stroke="#0F172A" stroke-width="2"/>
+                  <circle cx="82" cy="53" r="4.5" fill="#CBD5E1"/>
+                  <!-- Cabin Interior -->
+                  <path d="M24 22H74L82 38V50H22V22Z" fill="#1E293B"/>
+                  <!-- Yellow Canopy Top -->
+                  <path d="M21 22C21 15 30 12 52 12C68 12 76 15 79 22L84 34H74L70 21H26L24 34H19L21 22Z" fill="#FACC15"/>
+                  <path d="M23 18C32 14 64 14 75 18" stroke="#EAB308" stroke-width="2" stroke-linecap="round"/>
+                  <!-- Windshield -->
+                  <path d="M72 21L81 35H71L68 21H72Z" fill="#BAE6FD" fill-opacity="0.85"/>
+                  <!-- Green Lower Body -->
+                  <path d="M19 35H46V49H19C18 44 18 39 19 35Z" fill="#16A34A"/>
+                  <path d="M62 35H85L88 44L84 50H62V35Z" fill="#15803D"/>
+                  <!-- Yellow Front Nose & Fender -->
+                  <path d="M74 35H85L87 42H74V35Z" fill="#FACC15"/>
+                  <path d="M75 45C80 43 86 44 89 48" stroke="#16A34A" stroke-width="3.5" stroke-linecap="round"/>
+                  <!-- Headlight -->
+                  <circle cx="86" cy="39" r="2.8" fill="#FEF08A" stroke="#CA8A04" stroke-width="1"/>
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <h4 class="pref-vehicle-title">Auto</h4>
+                <p class="pref-vehicle-desc">Comfortable for<br>short and mid rides</p>
+              </div>
+              <div class="pref-radio-ring">
+                <div class="pref-radio-dot"></div>
+              </div>
+            </div>
+
+            <!-- 3. Cab Card -->
+            <div id="pref-card-cab" data-vehicle="cab" onclick="app.selectPreferredVehicle('cab')" class="pref-vehicle-card" role="button" tabindex="0">
+              <div class="pref-vehicle-art">
+                <svg viewBox="0 0 110 72" class="w-20 h-14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <ellipse cx="55" cy="61" rx="45" ry="4" fill="#CBD5E1" fill-opacity="0.5"/>
+                  <!-- Main White Sedan Body -->
+                  <path d="M12 41L18 32L34 21C44 19 59 19 69 21L84 31L98 36C101 38 102 42 101 47L96 50H14L11 46C10 44 11 42 12 41Z" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/>
+                  <!-- Side Body Sculpting Line -->
+                  <path d="M16 42H95" stroke="#E2E8F0" stroke-width="2"/>
+                  <path d="M14 48H96" stroke="#94A3B8" stroke-width="1.5"/>
+                  <!-- Windows -->
+                  <path d="M35 23H52V32H23L35 23Z" fill="#1E293B"/>
+                  <path d="M55 23H68L80 32H55V23Z" fill="#1E293B"/>
+                  <!-- Front Grille & Headlight -->
+                  <path d="M90 36L99 38L98 42L89 40Z" fill="#38BDF8"/>
+                  <path d="M96 43H101V47H95L96 43Z" fill="#0F172A"/>
+                  <!-- Wheels -->
+                  <circle cx="29" cy="49" r="10" fill="#1E293B" stroke="#0F172A" stroke-width="2"/>
+                  <circle cx="29" cy="49" r="5.5" fill="#E2E8F0"/>
+                  <circle cx="80" cy="49" r="10" fill="#1E293B" stroke="#0F172A" stroke-width="2"/>
+                  <circle cx="80" cy="49" r="5.5" fill="#E2E8F0"/>
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <h4 class="pref-vehicle-title">Cab</h4>
+                <p class="pref-vehicle-desc">Safe, comfortable<br>and premium</p>
+              </div>
+              <div class="pref-radio-ring">
+                <div class="pref-radio-dot"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Preferred Ride Mode -->
+          <div class="space-y-2.5 pt-1">
+            <div>
+              <h3 class="profile-subpage-section-title">Preferred Ride</h3>
+              <p class="profile-subpage-section-sub">Select your default ride type when available.</p>
+            </div>
+
+            <div class="pref-ride-mode-box">
+              <button type="button" id="pref-mode-fastest" data-mode="fastest" onclick="app.selectPreferredRideMode('fastest')" class="pref-ride-mode-btn active">Fastest</button>
+              <button type="button" id="pref-mode-cheapest" data-mode="cheapest" onclick="app.selectPreferredRideMode('cheapest')" class="pref-ride-mode-btn">Cheapest</button>
+              <button type="button" id="pref-mode-balanced" data-mode="balanced" onclick="app.selectPreferredRideMode('balanced')" class="pref-ride-mode-btn">Balanced</button>
+            </div>
+          </div>
+
+          <!-- Save Preferences Button -->
+          <div class="pt-3">
+            <button type="button" id="btn-save-ride-preferences" onclick="app.saveRidePreferences()" class="pref-save-btn">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
+              </svg>
+              <span id="save-ride-pref-label">Save Preferences</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- SUBVIEW 2: NOTIFICATIONS (Exact Match to media_1791864872953_ba84a824.png) -->
+        <!-- ============================================================== -->
+        <div id="profile-subview-notifications" class="profile-subview-panel space-y-4 pb-6">
+          <div class="profile-subpage-header flex items-center gap-3 pt-1">
+            <button type="button" id="btn-back-from-notifications" onclick="app.closeProfileSubpage()" class="profile-subpage-back-btn" aria-label="Back to Profile">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 19l-7-7 7-7"/>
+              </svg>
+            </button>
+            <h2 class="profile-subpage-title">Notifications</h2>
+          </div>
+
+          <p class="profile-subpage-lead">Stay updated with your rides, offers and important alerts.</p>
+
+          <!-- 1. Ride Updates -->
+          <div class="notif-setting-card">
+            <h3 class="notif-card-heading">Ride Updates</h3>
+            <p class="notif-card-desc">Get notified about your ride status, driver details and trip updates.</p>
+            <div class="notif-card-row">
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="notif-row-icon">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                  </svg>
+                </div>
+                <div class="min-w-0">
+                  <span class="notif-row-title">Ride Updates</span>
+                  <span class="notif-row-sub">Driver assigned, arrived, started, completed</span>
+                </div>
+              </div>
+              <button type="button" id="notif-toggle-rideUpdates" data-notif-key="rideUpdates" onclick="app.toggleNotificationPref('rideUpdates', this)" class="notif-toggle-switch active" role="switch" aria-checked="true" aria-label="Toggle Ride Updates">
+                <span class="notif-toggle-knob"></span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 2. Price Alerts -->
+          <div class="notif-setting-card">
+            <h3 class="notif-card-heading">Price Alerts</h3>
+            <p class="notif-card-desc">Get notified when prices change for your route or preferred rides.</p>
+            <div class="notif-card-row">
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="notif-row-icon">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                  </svg>
+                </div>
+                <div class="min-w-0">
+                  <span class="notif-row-title">Price Alerts</span>
+                  <span class="notif-row-sub">When prices rise or drop</span>
+                </div>
+              </div>
+              <button type="button" id="notif-toggle-priceAlerts" data-notif-key="priceAlerts" onclick="app.toggleNotificationPref('priceAlerts', this)" class="notif-toggle-switch active" role="switch" aria-checked="true" aria-label="Toggle Price Alerts">
+                <span class="notif-toggle-knob"></span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 3. Offers & Promotions -->
+          <div class="notif-setting-card">
+            <h3 class="notif-card-heading">Offers &amp; Promotions</h3>
+            <p class="notif-card-desc">Get the latest deals, discounts and special offers.</p>
+            <div class="notif-card-row">
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="notif-row-icon">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/>
+                  </svg>
+                </div>
+                <div class="min-w-0">
+                  <span class="notif-row-title">Offers &amp; Promotions</span>
+                  <span class="notif-row-sub">Exclusive offers and cashback</span>
+                </div>
+              </div>
+              <button type="button" id="notif-toggle-offersPromos" data-notif-key="offersPromos" onclick="app.toggleNotificationPref('offersPromos', this)" class="notif-toggle-switch active" role="switch" aria-checked="true" aria-label="Toggle Offers and Promotions">
+                <span class="notif-toggle-knob"></span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 4. Trip Reminders -->
+          <div class="notif-setting-card">
+            <h3 class="notif-card-heading">Trip Reminders</h3>
+            <p class="notif-card-desc">Never miss your ride with timely reminders.</p>
+            <div class="notif-card-row">
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="notif-row-icon">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                </div>
+                <div class="min-w-0">
+                  <span class="notif-row-title">Trip Reminders</span>
+                  <span class="notif-row-sub">Before your scheduled ride</span>
+                </div>
+              </div>
+              <button type="button" id="notif-toggle-tripReminders" data-notif-key="tripReminders" onclick="app.toggleNotificationPref('tripReminders', this)" class="notif-toggle-switch active" role="switch" aria-checked="true" aria-label="Toggle Trip Reminders">
+                <span class="notif-toggle-knob"></span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 5. Quiet Hours -->
+          <div class="notif-setting-card">
+            <h3 class="notif-card-heading">Quiet Hours</h3>
+            <p class="notif-card-desc">Pause notifications during your rest time.</p>
+            <div onclick="app.cycleQuietHours()" class="notif-card-row notif-clickable-row" role="button" tabindex="0">
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="notif-row-icon">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                  </svg>
+                </div>
+                <div class="min-w-0">
+                  <span class="notif-row-title">Quiet Hours</span>
+                  <span id="notif-quiet-hours-text" class="notif-row-sub">10:00 PM – 6:00 AM</span>
+                </div>
+              </div>
+              <svg class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- SUBVIEW 3: HELP & SUPPORT (Exact Match to media_1791864888449_e322fba8.png) -->
+        <!-- ============================================================== -->
+        <div id="profile-subview-help" class="profile-subview-panel space-y-5 pb-6">
+          <div class="profile-subpage-header flex items-center gap-3 pt-1">
+            <button type="button" id="btn-back-from-help" onclick="app.closeProfileSubpage()" class="profile-subpage-back-btn" aria-label="Back to Profile">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 19l-7-7 7-7"/>
+              </svg>
+            </button>
+            <h2 class="profile-subpage-title">Help &amp; Support</h2>
+          </div>
+
+          <p class="profile-subpage-lead">Find answers to common questions or get in touch with our support team.</p>
+
+          <!-- Search Input -->
+          <div class="help-search-box">
+            <svg class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+            <input id="help-support-search-input" type="text" placeholder="Search for help..." oninput="app.filterHelpFAQs(this.value)" class="help-search-input">
+          </div>
+
+          <!-- Frequently Asked Questions -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="profile-subpage-section-title !mb-0">Frequently Asked Questions</h3>
+              <button type="button" onclick="app.toggleAllHelpFAQs()" class="help-view-all-btn">
+                <span id="help-view-all-label">View all</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 5l7 7-7 7"/>
+                </svg>
+              </button>
+            </div>
+
+            <div id="help-faq-list" class="help-faq-card">
+              <!-- FAQ 1 -->
+              <div class="help-faq-item" data-faq-index="0" onclick="app.toggleHelpFAQ(0)">
+                <div class="help-faq-row">
+                  <div class="flex items-center gap-3 min-w-0">
+                    <div class="help-doc-icon">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                      </svg>
+                    </div>
+                    <span class="help-faq-question">How do I book a ride?</span>
+                  </div>
+                  <svg class="help-faq-chevron w-4 h-4 text-slate-400 flex-shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                  </svg>
+                </div>
+                <div class="help-faq-answer hidden">
+                  Enter your pickup and drop-off locations on the Home screen, tap <strong>Search Rides</strong> to compare real-time fares across Uber, Ola, Rapido, and Namma Yatri, then select your preferred ride to book.
+                </div>
+              </div>
+
+              <!-- FAQ 2 -->
+              <div class="help-faq-item" data-faq-index="1" onclick="app.toggleHelpFAQ(1)">
+                <div class="help-faq-row">
+                  <div class="flex items-center gap-3 min-w-0">
+                    <div class="help-doc-icon">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                      </svg>
+                    </div>
+                    <span class="help-faq-question">How is the fare calculated?</span>
+                  </div>
+                  <svg class="help-faq-chevron w-4 h-4 text-slate-400 flex-shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                  </svg>
+                </div>
+                <div class="help-faq-answer hidden">
+                  Fares are calculated using real-time route distance, estimated travel duration, vehicle category (Bike, Auto, Cab), and live traffic conditions across each ride provider.
+                </div>
+              </div>
+
+              <!-- FAQ 3 -->
+              <div class="help-faq-item" data-faq-index="2" onclick="app.toggleHelpFAQ(2)">
+                <div class="help-faq-row">
+                  <div class="flex items-center gap-3 min-w-0">
+                    <div class="help-doc-icon">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                      </svg>
+                    </div>
+                    <span class="help-faq-question">Can I cancel my ride?</span>
+                  </div>
+                  <svg class="help-faq-chevron w-4 h-4 text-slate-400 flex-shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                  </svg>
+                </div>
+                <div class="help-faq-answer hidden">
+                  Yes, you can cancel or modify your ride selection at any time from the booking confirmation screen before final dispatch.
+                </div>
+              </div>
+
+              <!-- FAQ 4 -->
+              <div class="help-faq-item" data-faq-index="3" onclick="app.toggleHelpFAQ(3)">
+                <div class="help-faq-row">
+                  <div class="flex items-center gap-3 min-w-0">
+                    <div class="help-doc-icon">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                      </svg>
+                    </div>
+                    <span class="help-faq-question">Which payment methods are accepted?</span>
+                  </div>
+                  <svg class="help-faq-chevron w-4 h-4 text-slate-400 flex-shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                  </svg>
+                </div>
+                <div class="help-faq-answer hidden">
+                  UPI (Google Pay, PhonePe, Paytm), credit/debit cards, net banking, and cash are supported across all partner ride providers.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact Support -->
+          <div class="space-y-3 pt-1">
+            <div>
+              <h3 class="profile-subpage-section-title">Contact Support</h3>
+              <p class="profile-subpage-section-sub">Need more help? We're here for you.</p>
+            </div>
+
+            <div class="help-contact-card">
+              <!-- Chat with Support -->
+              <div onclick="app.triggerSupportAction('chat')" class="help-contact-row" role="button" tabindex="0">
+                <div class="flex items-center gap-3.5 min-w-0">
+                  <div class="help-contact-icon">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                    </svg>
+                  </div>
+                  <div class="min-w-0">
+                    <span class="help-contact-title">Chat with Support</span>
+                    <span class="help-contact-sub">Get instant help from our team</span>
+                  </div>
+                </div>
+                <svg class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+              </div>
+
+              <!-- Email Support -->
+              <div onclick="app.triggerSupportAction('email')" class="help-contact-row" role="button" tabindex="0">
+                <div class="flex items-center gap-3.5 min-w-0">
+                  <div class="help-contact-icon">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                  </div>
+                  <div class="min-w-0">
+                    <span class="help-contact-title">Email Support</span>
+                    <span class="help-contact-sub">support@ridecompare.com</span>
+                  </div>
+                </div>
+                <svg class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+              </div>
+
+              <!-- Report a Problem -->
+              <div onclick="app.triggerSupportAction('report')" class="help-contact-row" role="button" tabindex="0">
+                <div class="flex items-center gap-3.5 min-w-0">
+                  <div class="help-contact-icon">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                  </div>
+                  <div class="min-w-0">
+                    <span class="help-contact-title">Report a Problem</span>
+                    <span class="help-contact-sub">Share feedback or report an issue</span>
+                  </div>
+                </div>
+                <svg class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Help Center Banner -->
+            <div onclick="app.triggerSupportAction('center')" class="help-center-banner" role="button" tabindex="0">
+              <div class="flex items-center gap-3.5 min-w-0">
+                <div class="help-contact-icon">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                  </svg>
+                </div>
+                <div class="min-w-0">
+                  <span class="help-contact-title">Help Center</span>
+                  <span class="help-contact-sub">Browse our complete guide and tutorials</span>
+                </div>
+              </div>
+              <svg class="w-4 h-4 text-[#0073FF] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </div>
+
+            <div id="help-support-feedback-banner" class="hidden p-3.5 rounded-xl bg-blue-50 border border-blue-200 text-xs font-medium text-blue-800"></div>
+          </div>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- SUBVIEW 4: ABOUT RIDECOMPARE (Exact Match to media_1791864903024_644c7167.png) -->
+        <!-- ============================================================== -->
+        <div id="profile-subview-about" class="profile-subview-panel space-y-5 pb-6">
+          <div class="profile-subpage-header flex items-center gap-3 pt-1">
+            <button type="button" id="btn-back-from-about" onclick="app.closeProfileSubpage()" class="profile-subpage-back-btn" aria-label="Back to Profile">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 19l-7-7 7-7"/>
+              </svg>
+            </button>
+            <h2 class="profile-subpage-title">About RideCompare</h2>
+          </div>
+
+          <!-- Centered Brand Hero -->
+          <div class="flex flex-col items-center text-center pt-4 pb-2">
+            <div class="about-hero-diamond">
+              <svg class="about-hero-pin-svg w-8 h-8 -rotate-45" fill="currentColor" viewBox="0 0 24 24">
+                <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/>
+              </svg>
+            </div>
+            <h3 class="about-brand-title mt-5">RideCompare</h3>
+            <p class="about-brand-tagline mt-1">Compare rides. Choose smarter.</p>
+          </div>
+
+          <!-- Version & Build Card -->
+          <div class="about-info-card">
+            <div class="about-info-row">
+              <span class="about-info-label">Version</span>
+              <span class="about-info-val">1.0.0</span>
+            </div>
+            <div class="about-info-row">
+              <span class="about-info-label">Build</span>
+              <span class="about-info-val">2025.05.02</span>
+            </div>
+          </div>
+
+          <!-- Legal Links Card -->
+          <div class="about-legal-card">
+            <!-- Terms of Service -->
+            <div class="about-legal-item" onclick="app.toggleAboutLegalItem('terms')" role="button" tabindex="0">
+              <div class="about-legal-row">
+                <div class="flex items-center gap-3.5">
+                  <div class="about-legal-icon">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                  </div>
+                  <span class="about-legal-title">Terms of Service</span>
+                </div>
+                <svg class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+              </div>
+              <div id="about-legal-detail-terms" class="about-legal-detail hidden">
+                RideCompare aggregates real-time fare estimates and ETAs across partner mobility providers to help you compare and choose the best ride option.
+              </div>
+            </div>
+
+            <!-- Privacy Policy -->
+            <div class="about-legal-item" onclick="app.toggleAboutLegalItem('privacy')" role="button" tabindex="0">
+              <div class="about-legal-row">
+                <div class="flex items-center gap-3.5">
+                  <div class="about-legal-icon">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                    </svg>
+                  </div>
+                  <span class="about-legal-title">Privacy Policy</span>
+                </div>
+                <svg class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+              </div>
+              <div id="about-legal-detail-privacy" class="about-legal-detail hidden">
+                Your location searches, saved places, and ride preferences are encrypted and used solely to provide accurate route comparisons.
+              </div>
+            </div>
+
+            <!-- Licenses -->
+            <div class="about-legal-item" onclick="app.toggleAboutLegalItem('licenses')" role="button" tabindex="0">
+              <div class="about-legal-row">
+                <div class="flex items-center gap-3.5">
+                  <div class="about-legal-icon">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+                    </svg>
+                  </div>
+                  <span class="about-legal-title">Licenses</span>
+                </div>
+                <svg class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+              </div>
+              <div id="about-legal-detail-licenses" class="about-legal-detail hidden">
+                Built with open-source web technologies, Google Maps Platform APIs, and the VOZX Ecosystem UI framework.
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer Copyright -->
+          <p class="about-copyright-footer">© 2025 RideCompare. All rights reserved.</p>
         </div>
 
       </main>
@@ -6155,7 +6745,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
   <script src="js/bcrypt.min.js"></script>
   <script src="js/api.js?v=5"></script>
   <script src="js/audio.js?v=28"></script>
-  <script src="js/app.js?v=94"></script>
+  <script src="js/app.js?v=95"></script>
 
   <!-- Service Worker for Offline PWA Support -->
   <script>
