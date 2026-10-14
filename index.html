@@ -4721,34 +4721,6 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
 
       <!-- ADMIN TAB 2: USERS MANAGEMENT FULL PANEL -->
       <div id="admin-panel-users" class="hidden space-y-6">
-        
-        <!-- Fullscreen Users Quick Navigation & Back Bar -->
-        <div class="flex items-center justify-between bg-white rounded-2xl border border-slate-200/90 shadow-sm p-3.5 sm:p-4 gap-3">
-          <div class="flex items-center gap-2.5 sm:gap-3 flex-wrap">
-            <button type="button" onclick="app.exitUsersFullScreen()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md hover:shadow-lg transition-all cursor-pointer active:scale-95 group" title="Return to Dashboard & normal layout">
-              <svg class="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-              </svg>
-              <span>Back to Dashboard</span>
-            </button>
-
-            <button type="button" onclick="app.toggleAdminUsersTab()" class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-all cursor-pointer active:scale-95" title="Click on User again to return to normal position">
-              <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-              </svg>
-              <span>Users (Full Screen)</span>
-              <span class="text-[10px] font-bold text-slate-500 bg-white px-2 py-0.5 rounded-md border border-slate-200">Click to exit</span>
-            </button>
-          </div>
-
-          <div class="flex items-center gap-2">
-            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200 shadow-xs">
-              <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-              <span class="hidden sm:inline">Full Screen Mode Active</span>
-              <span class="sm:hidden">Full Screen</span>
-            </span>
-          </div>
-        </div>
 
         <!-- Users Header Banner -->
         <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -4813,12 +4785,6 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
       </div>
 
     </main>
-
-    <!-- Floating Quick Restore Button when Sidebar is Animated Away -->
-    <button type="button" id="btn-floating-restore-sidebar" onclick="app.exitUsersFullScreen()" class="hidden fixed left-5 bottom-6 z-40 items-center gap-2 px-4 py-2.5 rounded-full bg-slate-900/90 hover:bg-slate-900 text-white text-xs font-bold shadow-xl backdrop-blur-md border border-slate-700/50 transition-all cursor-pointer active:scale-95 group" title="Exit Full Screen & Restore Sidebar">
-      <svg class="w-4 h-4 text-blue-400 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-      <span>Normal View</span>
-    </button>
   </section>
 
   <!-- ====================================================================== -->
@@ -7191,7 +7157,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
   <script src="js/bcrypt.min.js"></script>
   <script src="js/api.js?v=8"></script>
   <script src="js/audio.js?v=28"></script>
-  <script src="js/app.js?v=103"></script>
+  <script src="js/app.js?v=104"></script>
 
   <!-- Service Worker for Offline PWA Support -->
   <script>

@@ -5813,12 +5813,6 @@ class RideCompareApp {
     if (!screenAdmin) return;
     screenAdmin.classList.add('users-fullscreen');
 
-    const floatBtn = document.getElementById('btn-floating-restore-sidebar');
-    if (floatBtn) {
-      floatBtn.classList.remove('hidden');
-      floatBtn.classList.add('flex');
-    }
-
     const topbarBack = document.getElementById('admin-topbar-back-btn-container');
     if (topbarBack) {
       topbarBack.classList.remove('hidden');
@@ -5835,12 +5829,6 @@ class RideCompareApp {
     const screenAdmin = document.getElementById('screen-admin');
     if (screenAdmin) {
       screenAdmin.classList.remove('users-fullscreen');
-    }
-
-    const floatBtn = document.getElementById('btn-floating-restore-sidebar');
-    if (floatBtn) {
-      floatBtn.classList.add('hidden');
-      floatBtn.classList.remove('flex');
     }
 
     const topbarBack = document.getElementById('admin-topbar-back-btn-container');
