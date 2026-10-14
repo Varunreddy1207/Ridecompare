@@ -1961,6 +1961,12 @@ class RideCompareApp {
         };
         setTimeout(refreshBookingMap, 100);
         setTimeout(refreshBookingMap, 300);
+      } else {
+        this.stopVehicleAnimation('booking');
+      }
+
+      if (screenId !== 'screen-home') {
+        this.stopVehicleAnimation('results');
       }
     }
   }
@@ -2979,6 +2985,7 @@ class RideCompareApp {
     this.currentLiveLocationCoords = pickupCoords;
 
     // Clear previous route layers & markers
+    this.stopVehicleAnimation('results');
     if (this.resultsRouteLayers) {
       this.resultsRouteLayers.forEach(l => {
         try { this.resultsMap.removeLayer(l); } catch (e) {}
@@ -2987,6 +2994,9 @@ class RideCompareApp {
     this.resultsRouteLayers = [];
 
     // 1. Pickup Marker (Radar Blue Pulse + Callout Badge)
+    const badgePickup = (pickupName.split(',')[0] || pickupName).trim();
+    const badgeDrop = (dropName.split(',')[0] || dropName).trim();
+
     const pickupIcon = L.divIcon({
       className: 'custom-live-map-marker',
       html: `
@@ -2995,7 +3005,7 @@ class RideCompareApp {
           <div class="marker-core-dot"></div>
           <div id="map-pickup-badge" class="marker-callout-badge marker-pickup-badge" title="Pickup: ${pickupName}">
             <span class="marker-dot-blue"></span>
-            <span class="truncate">${pickupName}</span>
+            <span class="truncate">${badgePickup}</span>
           </div>
         </div>
       `,
@@ -3018,7 +3028,7 @@ class RideCompareApp {
           </div>
           <div id="map-drop-badge" class="marker-callout-badge marker-drop-badge" title="Drop: ${dropName}">
             <span class="marker-dot-red"></span>
-            <span class="truncate">${dropName}</span>
+            <span class="truncate">${badgeDrop}</span>
           </div>
         </div>
       `,
@@ -3098,27 +3108,13 @@ class RideCompareApp {
     }).addTo(this.resultsMap);
     this.resultsRouteLayers.push(flowLine);
 
-    // 4. Place Moving Vehicle Markers Along Route
-    let v1 = null, v2 = null, v3 = null;
-    if (routeLatLngs.length >= 4) {
-      const p1 = routeLatLngs[Math.floor(routeLatLngs.length * 0.25)];
-      const p2 = routeLatLngs[Math.floor(routeLatLngs.length * 0.50)];
-      const p3 = routeLatLngs[Math.floor(routeLatLngs.length * 0.75)];
-
-      v1 = L.marker(p1, {
-        icon: L.divIcon({ className: '', html: '<div class="live-vehicle-marker-icon" title="Ola Auto (2 min)">🛺</div>', iconSize: [32, 32], iconAnchor: [16, 16] })
-      }).addTo(this.resultsMap);
-
-      v2 = L.marker(p2, {
-        icon: L.divIcon({ className: '', html: '<div class="live-vehicle-marker-icon" title="Uber Go (3 min)">🚗</div>', iconSize: [32, 32], iconAnchor: [16, 16] })
-      }).addTo(this.resultsMap);
-
-      v3 = L.marker(p3, {
-        icon: L.divIcon({ className: '', html: '<div class="live-vehicle-marker-icon" title="Rapido Bike (1 min)">🏍️</div>', iconSize: [32, 32], iconAnchor: [16, 16] })
-      }).addTo(this.resultsMap);
-
-      this.resultsRouteLayers.push(v1, v2, v3);
-    }
+    // 4. Start Live Moving Vehicle Animation along Route
+    const resultsVehicleConfigs = [
+      { emoji: '🛺', tag: 'Ola Auto', isPrimary: false, speedKmPerSec: 0.038, fraction: 0.20, direction: 1 },
+      { emoji: '🚗', tag: 'Uber Go', isPrimary: false, speedKmPerSec: 0.048, fraction: 0.52, direction: 1 },
+      { emoji: '🏍️', tag: 'Rapido Bike', isPrimary: false, speedKmPerSec: 0.060, fraction: 0.82, direction: -1 }
+    ];
+    this.startVehicleAnimation('results', routeLatLngs, resultsVehicleConfigs);
 
     // 5. Fit Map Bounds Immediately
     const initialBounds = L.latLngBounds(routeLatLngs);
@@ -3152,11 +3148,7 @@ class RideCompareApp {
             liveLine.setLatLngs(osrmLatLngs);
             if (flowLine) flowLine.setLatLngs(osrmLatLngs);
 
-            if (osrmLatLngs.length >= 4) {
-              if (v1) v1.setLatLng(osrmLatLngs[Math.floor(osrmLatLngs.length * 0.25)]);
-              if (v2) v2.setLatLng(osrmLatLngs[Math.floor(osrmLatLngs.length * 0.50)]);
-              if (v3) v3.setLatLng(osrmLatLngs[Math.floor(osrmLatLngs.length * 0.75)]);
-            }
+            this.startVehicleAnimation('results', osrmLatLngs, resultsVehicleConfigs);
 
             const osrmBounds = L.latLngBounds(osrmLatLngs);
             this.currentRouteBounds = osrmBounds;
@@ -3198,6 +3190,7 @@ class RideCompareApp {
 
   // Hide Results Panel and return to clean search form
   hideResultsPanel(silent = false) {
+    this.stopVehicleAnimation('results');
     if (!silent && window.soundFX && window.soundFX.playTap) {
       window.soundFX.playTap();
     }
@@ -3469,7 +3462,7 @@ class RideCompareApp {
       if (dropName) {
         displayDrop = this.selectedDropSub ? `${dropName}, ${this.selectedDropSub}` : dropName;
       } else {
-        displayDrop = 'Shivaji Park, Shivaji Park, Shivaji Park, Kolhapur';
+        displayDrop = 'Shivaji Park, Kolhapur';
       }
     }
 
@@ -3574,13 +3567,13 @@ class RideCompareApp {
     window.location.hash = '#booking';
 
     // Render LIVE interactive route map on the booking screen
-    this.initBookingLiveMap(pickupCoords, dropCoords, displayPickup, displayDrop, distanceKm, durationMins);
+    this.initBookingLiveMap(pickupCoords, dropCoords, displayPickup, displayDrop, distanceKm, durationMins, pVehicle, pName);
   }
 
   // =========================================================================
   // LIVE REAL-TIME LEAFLET BOOKING ROUTE MAP (Pickup -> Drop with Polylines & Markers)
   // =========================================================================
-  initBookingLiveMap(pickupCoords, dropCoords, pickupName, dropName, distanceKm, durationMins) {
+  initBookingLiveMap(pickupCoords, dropCoords, pickupName, dropName, distanceKm, durationMins, vehicleType = 'Bike', providerName = 'Rapido') {
     if (typeof L === 'undefined') {
       console.warn('Leaflet library is not loaded');
       return;
@@ -3616,6 +3609,7 @@ class RideCompareApp {
     }
 
     // Clear previous layers & markers
+    this.stopVehicleAnimation('booking');
     if (this.bookingRouteLayers) {
       this.bookingRouteLayers.forEach(l => {
         try { this.bookingMap.removeLayer(l); } catch (_) {}
@@ -3624,6 +3618,9 @@ class RideCompareApp {
     this.bookingRouteLayers = [];
 
     // 1. Pickup Marker (Radar Blue Pulse + Callout Badge)
+    const badgePickup = (pickupName.split(',')[0] || pickupName).trim();
+    const badgeDrop = (dropName.split(',')[0] || dropName).trim();
+
     const pickupIcon = L.divIcon({
       className: 'custom-live-map-marker',
       html: `
@@ -3632,7 +3629,7 @@ class RideCompareApp {
           <div class="marker-core-dot"></div>
           <div id="booking-map-pickup-badge" class="marker-callout-badge marker-pickup-badge" title="Pickup: ${pickupName}">
             <span class="marker-dot-blue"></span>
-            <span class="truncate">${pickupName}</span>
+            <span class="truncate">${badgePickup}</span>
           </div>
         </div>
       `,
@@ -3655,7 +3652,7 @@ class RideCompareApp {
           </div>
           <div id="booking-map-drop-badge" class="marker-callout-badge marker-drop-badge" title="Drop: ${dropName}">
             <span class="marker-dot-red"></span>
-            <span class="truncate">${dropName}</span>
+            <span class="truncate">${badgeDrop}</span>
           </div>
         </div>
       `,
@@ -3704,32 +3701,30 @@ class RideCompareApp {
     this.bookingRouteLayers.push(flowLine);
 
     // 4. Moving / nearby vehicles along route
-    let v1 = null, v2 = null, v3 = null;
-    if (routeLatLngs.length >= 4) {
-      const p1 = routeLatLngs[Math.floor(routeLatLngs.length * 0.25)];
-      const p2 = routeLatLngs[Math.floor(routeLatLngs.length * 0.50)];
-      const p3 = routeLatLngs[Math.floor(routeLatLngs.length * 0.75)];
-
-      v1 = L.marker(p1, {
-        icon: L.divIcon({ className: '', html: '<div class="live-vehicle-marker-icon" title="Nearby Pilot">🏍️</div>', iconSize: [32, 32], iconAnchor: [16, 16] })
-      }).addTo(this.bookingMap);
-
-      v2 = L.marker(p2, {
-        icon: L.divIcon({ className: '', html: '<div class="live-vehicle-marker-icon" title="Nearby Driver">🛺</div>', iconSize: [32, 32], iconAnchor: [16, 16] })
-      }).addTo(this.bookingMap);
-
-      v3 = L.marker(p3, {
-        icon: L.divIcon({ className: '', html: '<div class="live-vehicle-marker-icon" title="Nearby Cab">🚗</div>', iconSize: [32, 32], iconAnchor: [16, 16] })
-      }).addTo(this.bookingMap);
-
-      this.bookingRouteLayers.push(v1, v2, v3);
+    let primaryEmoji = '🏍️';
+    let primaryTag = 'Live Pilot';
+    const vehLower = (vehicleType || '').toLowerCase();
+    const provLower = (providerName || '').toLowerCase();
+    if (vehLower.includes('auto') || provLower.includes('auto')) {
+      primaryEmoji = '🛺';
+      primaryTag = 'Live Auto';
+    } else if (vehLower.includes('sedan') || vehLower.includes('prime') || vehLower.includes('premier') || vehLower.includes('go') || vehLower.includes('ev') || provLower.includes('uber') || provLower.includes('blusmart')) {
+      primaryEmoji = '🚗';
+      primaryTag = 'Live Driver';
     }
+
+    const bookingVehicleConfigs = [
+      { emoji: primaryEmoji, tag: primaryTag, isPrimary: true, speedKmPerSec: 0.055, fraction: 0.22, direction: 1 },
+      { emoji: primaryEmoji === '🛺' ? '🏍️' : '🛺', tag: 'Nearby Driver', isPrimary: false, speedKmPerSec: 0.040, fraction: 0.52, direction: 1 },
+      { emoji: primaryEmoji === '🚗' ? '🛺' : '🚗', tag: 'Nearby Cab', isPrimary: false, speedKmPerSec: 0.048, fraction: 0.78, direction: -1 }
+    ];
+    this.startVehicleAnimation('booking', routeLatLngs, bookingVehicleConfigs);
 
     // 5. Fit Bounds immediately
     const initialBounds = L.latLngBounds(routeLatLngs);
     this.currentBookingRouteBounds = initialBounds;
     try {
-      this.bookingMap.fitBounds(initialBounds, { padding: [55, 55], maxZoom: 16 });
+      this.bookingMap.fitBounds(initialBounds, { padding: [65, 65], maxZoom: 15 });
     } catch (_) {}
 
     // 6. Invalidate size after container renders across all devices
@@ -3738,7 +3733,7 @@ class RideCompareApp {
         this.bookingMap.invalidateSize();
         if (this.currentBookingRouteBounds) {
           try {
-            this.bookingMap.fitBounds(this.currentBookingRouteBounds, { padding: [55, 55], maxZoom: 16 });
+            this.bookingMap.fitBounds(this.currentBookingRouteBounds, { padding: [65, 65], maxZoom: 15 });
           } catch (_) {}
         }
       }
@@ -3779,15 +3774,11 @@ class RideCompareApp {
             const mapEta = document.getElementById('booking-map-eta');
             if (mapEta) mapEta.textContent = `Fastest Route • ${realDurationMins} min (${realDistKm} km)`;
 
-            if (osrmLatLngs.length >= 4) {
-              if (v1) v1.setLatLng(osrmLatLngs[Math.floor(osrmLatLngs.length * 0.25)]);
-              if (v2) v2.setLatLng(osrmLatLngs[Math.floor(osrmLatLngs.length * 0.50)]);
-              if (v3) v3.setLatLng(osrmLatLngs[Math.floor(osrmLatLngs.length * 0.75)]);
-            }
+            this.startVehicleAnimation('booking', osrmLatLngs, bookingVehicleConfigs);
 
             const osrmBounds = L.latLngBounds(osrmLatLngs);
             this.currentBookingRouteBounds = osrmBounds;
-            this.bookingMap.fitBounds(osrmBounds, { padding: [55, 55], maxZoom: 16 });
+            this.bookingMap.fitBounds(osrmBounds, { padding: [65, 65], maxZoom: 15 });
           }
         }
       })
@@ -3798,7 +3789,7 @@ class RideCompareApp {
   recenterBookingMap() {
     if (this.bookingMap && this.currentBookingRouteBounds) {
       try {
-        this.bookingMap.fitBounds(this.currentBookingRouteBounds, { padding: [55, 55], maxZoom: 16, animate: true });
+        this.bookingMap.fitBounds(this.currentBookingRouteBounds, { padding: [65, 65], maxZoom: 15, animate: true });
         this.showToast('📍 Centered on Active Route');
       } catch (_) {}
     }
@@ -3806,6 +3797,7 @@ class RideCompareApp {
 
   // Close Booking Screen and return to Home comparison
   closeBookingScreen() {
+    this.stopVehicleAnimation('booking');
     if (window.soundFX) {
       window.soundFX.playTap();
     }
@@ -3851,6 +3843,198 @@ class RideCompareApp {
       modal.classList.remove('show');
     }
     this.switchTab('home');
+  }
+
+  // =========================================================================
+  // LIVE VEHICLE REAL-TIME ANIMATION ENGINE (60fps continuous road traversal)
+  // Animates driver vehicles (Bike, Auto, Cab) smoothly along the route polyline
+  // =========================================================================
+  startVehicleAnimation(mapType, routeLatLngs, vehicleConfigs) {
+    if (typeof L === 'undefined' || !routeLatLngs || routeLatLngs.length < 2) return;
+
+    const map = (mapType === 'booking') ? this.bookingMap : this.resultsMap;
+    if (!map) return;
+
+    this._vehicleAnim = this._vehicleAnim || {};
+    const existing = this._vehicleAnim[mapType];
+
+    // Precompute cumulative distances along the route polyline in km
+    const cumDists = [0];
+    let totalDistKm = 0;
+    for (let i = 0; i < routeLatLngs.length - 1; i++) {
+      const pA = routeLatLngs[i];
+      const pB = routeLatLngs[i + 1];
+      const d = this.calculateHaversineDistance(pA[0], pA[1], pB[0], pB[1]);
+      totalDistKm += d;
+      cumDists.push(totalDistKm);
+    }
+    if (totalDistKm <= 0.001) totalDistKm = 0.05;
+
+    // Helper: interpolate [lat, lng, bearing] at cumulative distance d
+    const interpolateAtDist = (dist) => {
+      const clampedDist = Math.max(0, Math.min(totalDistKm, dist));
+      let segIdx = 0;
+      for (let i = 0; i < cumDists.length - 1; i++) {
+        if (clampedDist >= cumDists[i] && clampedDist <= cumDists[i + 1]) {
+          segIdx = i;
+          break;
+        }
+      }
+      const segStartDist = cumDists[segIdx];
+      const segEndDist = cumDists[segIdx + 1] || totalDistKm;
+      const segLen = segEndDist - segStartDist;
+      const t = segLen > 0.00001 ? (clampedDist - segStartDist) / segLen : 0;
+
+      const p1 = routeLatLngs[segIdx];
+      const p2 = routeLatLngs[Math.min(segIdx + 1, routeLatLngs.length - 1)];
+
+      const lat = p1[0] + t * (p2[0] - p1[0]);
+      const lng = p1[1] + t * (p2[1] - p1[1]);
+
+      // Calculate forward bearing angle
+      const dLon = (p2[1] - p1[1]) * Math.PI / 180;
+      const y = Math.sin(dLon) * Math.cos(p2[0] * Math.PI / 180);
+      const x = Math.cos(p1[0] * Math.PI / 180) * Math.sin(p2[0] * Math.PI / 180) -
+                Math.sin(p1[0] * Math.PI / 180) * Math.cos(p2[0] * Math.PI / 180) * Math.cos(dLon);
+      let bearing = Math.atan2(y, x) * 180 / Math.PI;
+      bearing = (bearing + 360) % 360;
+
+      return { lat, lng, bearing };
+    };
+
+    // If already running on this map, update route geometry smoothly without resetting markers
+    if (existing && existing.vehicles && existing.vehicles.length === vehicleConfigs.length) {
+      existing.routeLatLngs = routeLatLngs;
+      existing.cumDists = cumDists;
+      existing.totalDistKm = totalDistKm;
+      existing.vehicles.forEach((v, idx) => {
+        const curFraction = (v.totalDist && v.totalDist > 0) ? (v.currentDist / v.totalDist) : (vehicleConfigs[idx].fraction || 0.2);
+        v.totalDist = totalDistKm;
+        v.currentDist = Math.max(0, Math.min(totalDistKm, curFraction * totalDistKm));
+        const pos = interpolateAtDist(v.currentDist);
+        if (v.marker) {
+          v.marker.setLatLng([pos.lat, pos.lng]);
+          const rotBearing = (v.direction >= 0) ? pos.bearing : (pos.bearing + 180) % 360;
+          if (v.iconElement) {
+            v.iconElement.style.transform = `rotate(${Math.round(rotBearing)}deg)`;
+          }
+        }
+      });
+      return;
+    }
+
+    // Otherwise, stop any old animation and create fresh vehicle markers
+    this.stopVehicleAnimation(mapType);
+
+    const vehicles = [];
+    const markers = [];
+
+    vehicleConfigs.forEach((cfg) => {
+      const initDist = (cfg.fraction !== undefined ? cfg.fraction : 0.3) * totalDistKm;
+      const pos = interpolateAtDist(initDist);
+      const rotBearing = (cfg.direction >= 0) ? pos.bearing : (pos.bearing + 180) % 360;
+
+      const markerHtml = `
+        <div class="live-moving-vehicle-wrap ${cfg.isPrimary ? 'primary-driver-wrap' : ''}">
+          <div class="live-vehicle-pulse-halo ${cfg.isPrimary ? 'primary-pulse' : ''}"></div>
+          <div class="live-vehicle-marker-icon ${cfg.isPrimary ? 'primary-vehicle-icon' : ''}" style="transform: rotate(${Math.round(rotBearing)}deg);" title="${cfg.tag}">
+            ${cfg.emoji}
+          </div>
+          <div class="live-vehicle-floating-tag">${cfg.tag}</div>
+        </div>
+      `;
+
+      const markerIcon = L.divIcon({
+        className: 'custom-live-vehicle-marker',
+        html: markerHtml,
+        iconSize: [44, 44],
+        iconAnchor: [22, 22]
+      });
+
+      const marker = L.marker([pos.lat, pos.lng], {
+        icon: markerIcon,
+        zIndexOffset: cfg.isPrimary ? 800 : 700
+      }).addTo(map);
+
+      markers.push(marker);
+
+      vehicles.push({
+        marker: marker,
+        iconElement: null,
+        currentDist: initDist,
+        totalDist: totalDistKm,
+        speedKmPerSec: cfg.speedKmPerSec || 0.05,
+        direction: cfg.direction || 1,
+        isPrimary: !!cfg.isPrimary,
+        tag: cfg.tag
+      });
+    });
+
+    const state = {
+      map: map,
+      mapType: mapType,
+      markers: markers,
+      vehicles: vehicles,
+      routeLatLngs: routeLatLngs,
+      cumDists: cumDists,
+      totalDistKm: totalDistKm,
+      lastTimestamp: null,
+      animId: null
+    };
+    this._vehicleAnim[mapType] = state;
+
+    // 60fps Animation Loop
+    const animate = (timestamp) => {
+      if (!this._vehicleAnim || this._vehicleAnim[mapType] !== state) return;
+
+      if (!state.lastTimestamp) state.lastTimestamp = timestamp;
+      const dt = Math.min(0.1, (timestamp - state.lastTimestamp) / 1000);
+      state.lastTimestamp = timestamp;
+
+      state.vehicles.forEach(v => {
+        if (!v.iconElement && v.marker && v.marker._icon) {
+          v.iconElement = v.marker._icon.querySelector('.live-vehicle-marker-icon');
+        }
+
+        v.currentDist += v.direction * v.speedKmPerSec * dt;
+
+        if (v.currentDist >= state.totalDistKm) {
+          v.currentDist = state.totalDistKm;
+          v.direction = -1;
+        } else if (v.currentDist <= 0) {
+          v.currentDist = 0;
+          v.direction = 1;
+        }
+
+        const pos = interpolateAtDist(v.currentDist);
+        if (v.marker) {
+          v.marker.setLatLng([pos.lat, pos.lng]);
+          if (v.iconElement) {
+            const rotBearing = (v.direction >= 0) ? pos.bearing : (pos.bearing + 180) % 360;
+            v.iconElement.style.transform = `rotate(${Math.round(rotBearing)}deg)`;
+          }
+        }
+      });
+
+      state.animId = requestAnimationFrame(animate);
+    };
+
+    state.animId = requestAnimationFrame(animate);
+  }
+
+  stopVehicleAnimation(mapType) {
+    if (!this._vehicleAnim || !this._vehicleAnim[mapType]) return;
+    const state = this._vehicleAnim[mapType];
+    if (state.animId) {
+      cancelAnimationFrame(state.animId);
+      state.animId = null;
+    }
+    if (state.markers && state.map) {
+      state.markers.forEach(m => {
+        try { state.map.removeLayer(m); } catch (_) {}
+      });
+    }
+    this._vehicleAnim[mapType] = null;
   }
 
   // =========================================================================
