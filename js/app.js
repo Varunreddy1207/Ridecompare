@@ -6140,13 +6140,65 @@ class RideCompareApp {
     });
   }
 
+  formatUserTime(rawTs, isCurrent = false) {
+    if (isCurrent) {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+      return {
+        time: timeStr,
+        relative: 'Just now',
+        dateOnly: now.toLocaleDateString([], { day: 'numeric', month: 'short', year: 'numeric' })
+      };
+    }
+    if (!rawTs) {
+      return { time: '—', relative: 'Offline', dateOnly: 'Recent' };
+    }
+
+    let s = String(rawTs).trim();
+    if (s && !s.endsWith('Z') && !/[+-]\d{2}(:\d{2})?$/.test(s)) {
+      s += 'Z';
+    }
+    const d = new Date(s);
+    if (isNaN(d.getTime())) {
+      return { time: '—', relative: 'Offline', dateOnly: 'Recent' };
+    }
+
+    const timeStr = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+    
+    // Relative day calculation
+    const now = new Date();
+    const isToday = d.toDateString() === now.toDateString();
+    
+    const yesterday = new Date(now);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const isYesterday = d.toDateString() === yesterday.toDateString();
+
+    let dayLabel = '';
+    if (isToday) {
+      dayLabel = 'Today';
+    } else if (isYesterday) {
+      dayLabel = 'Yesterday';
+    } else {
+      dayLabel = d.toLocaleDateString([], { day: 'numeric', month: 'short' });
+    }
+
+    return {
+      time: timeStr,
+      relative: `${dayLabel}, ${timeStr}`,
+      dateOnly: d.toLocaleDateString([], { day: 'numeric', month: 'short', year: 'numeric' })
+    };
+  }
+
   renderUserRowHtml(u, showFullCols = false) {
     const isCurrent = !!u.isCurrentSession;
     const initials = u.initials || (u.name || 'U').slice(0, 2).toUpperCase();
     const bgCol = u.avatarColor || '#2563EB';
 
-    const joinedFormatted = u.createdAt ? new Date(u.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent';
-    const lastActiveFormatted = u.lastActive ? new Date(u.lastActive).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Active now';
+    const createdInfo = this.formatUserTime(u.createdAt, false);
+    const joinedFormatted = createdInfo.dateOnly || 'Recent';
+    const timeInfo = this.formatUserTime(u.lastActive, isCurrent);
+    const lastActiveDisplay = isCurrent ? 'Just now' : timeInfo.relative;
+    const userCity = u.city || 'Kolhapur, Maharashtra';
 
     let statusBadge = '';
     if (isCurrent) {
@@ -6172,6 +6224,7 @@ class RideCompareApp {
     }
 
     if (showFullCols) {
+      // 8 Columns: User | Email & Phone | Login City / Place | Registered | Last Active | Devices | Login Status | Action
       return `
         <tr class="hover:bg-blue-50/70 transition-colors cursor-pointer group ${isCurrent ? 'bg-emerald-50/30' : ''}" onclick="app.openUserOptionsModal('${this.escapeHtml(u.id || '')}', '${this.escapeHtml(u.email || '')}')" title="Click on user to view options: Remove User, Delete Account">
           <td class="py-3 px-4">
@@ -6192,12 +6245,24 @@ class RideCompareApp {
             <div class="font-medium text-slate-800">${this.escapeHtml(u.email || '—')}</div>
             <div class="text-[11px] text-slate-400">${this.escapeHtml(u.phone || '—')}</div>
           </td>
-          <td class="py-3 px-4 text-slate-600 font-medium whitespace-nowrap">${joinedFormatted}</td>
-          <td class="py-3 px-4">
-            <div class="text-slate-800 font-medium">${lastActiveFormatted}</div>
-            <div class="text-[11px] text-slate-400">${this.escapeHtml(u.device || 'Web Browser')}</div>
+          <td class="py-3 px-4 whitespace-nowrap">
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 text-slate-800 font-medium text-xs border border-slate-200/60 shadow-xs">
+              <svg class="w-3.5 h-3.5 text-rose-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+              <span class="truncate max-w-[150px] font-semibold">${this.escapeHtml(userCity)}</span>
+            </div>
           </td>
-          <td class="py-3 px-4">${statusBadge}</td>
+          <td class="py-3 px-4 text-slate-600 font-medium whitespace-nowrap">${joinedFormatted}</td>
+          <td class="py-3 px-4 whitespace-nowrap">
+            <div class="text-slate-800 font-semibold">${lastActiveDisplay}</div>
+            <div class="text-[11px] text-slate-400">${timeInfo.time}</div>
+          </td>
+          <td class="py-3 px-4">
+            <div class="text-slate-700 font-medium truncate max-w-[130px]">${this.escapeHtml(u.device || 'Web Browser')}</div>
+          </td>
+          <td class="py-3 px-4 whitespace-nowrap">${statusBadge}</td>
           <td class="py-3 px-4 text-right whitespace-nowrap">
             <button type="button" onclick="event.stopPropagation(); app.openUserOptionsModal('${this.escapeHtml(u.id || '')}', '${this.escapeHtml(u.email || '')}')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 group-hover:bg-blue-600 group-hover:text-white text-slate-700 transition-all shadow-xs cursor-pointer active:scale-95" title="User options">
               <span>Manage</span>
@@ -6208,6 +6273,7 @@ class RideCompareApp {
       `;
     }
 
+    // 7 Columns: User | Contact | Login City / Place | Registered | Last Active / Device | Status | Action
     return `
       <tr class="hover:bg-blue-50/70 transition-colors cursor-pointer group ${isCurrent ? 'bg-emerald-50/30' : ''}" onclick="app.openUserOptionsModal('${this.escapeHtml(u.id || '')}', '${this.escapeHtml(u.email || '')}')" title="Click on user to view options: Remove User, Delete Account">
         <td class="py-3">
@@ -6225,9 +6291,15 @@ class RideCompareApp {
           <div class="font-medium text-slate-800 truncate max-w-[170px]">${this.escapeHtml(u.email || '—')}</div>
           <div class="text-[10px] text-slate-400">${this.escapeHtml(u.phone || '—')}</div>
         </td>
+        <td class="py-3 whitespace-nowrap">
+          <div class="inline-flex items-center gap-1 text-[11px] font-medium text-slate-700 bg-slate-100 px-2 py-0.5 rounded-md">
+            <svg class="w-3 h-3 text-rose-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <span class="truncate max-w-[120px] font-medium">${this.escapeHtml(userCity)}</span>
+          </div>
+        </td>
         <td class="py-3 text-slate-500 whitespace-nowrap text-[11px]">${joinedFormatted}</td>
         <td class="py-3">
-          <div class="text-slate-700 text-[11px] font-medium">${lastActiveFormatted}</div>
+          <div class="text-slate-700 text-[11px] font-semibold">${lastActiveDisplay}</div>
           <div class="text-[10px] text-slate-400 truncate max-w-[120px]">${this.escapeHtml(u.device || 'Web Browser')}</div>
         </td>
         <td class="py-3 whitespace-nowrap">${statusBadge}</td>
@@ -6247,7 +6319,7 @@ class RideCompareApp {
 
     const users = (data.users || []).slice(0, 8);
     if (users.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="5" class="py-6 text-center text-slate-400 text-xs">No users found</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="6" class="py-6 text-center text-slate-400 text-xs">No users found</td></tr>';
       return;
     }
 
@@ -6255,7 +6327,9 @@ class RideCompareApp {
       const isCurrent = !!u.isCurrentSession;
       const initials = u.initials || (u.name || 'U').slice(0, 2).toUpperCase();
       const bgCol = u.avatarColor || '#2563EB';
-      const joinedFormatted = u.createdAt ? new Date(u.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent';
+      const createdInfo = this.formatUserTime(u.createdAt, false);
+      const joinedFormatted = createdInfo.dateOnly || 'Recent';
+      const userCity = u.city || 'Kolhapur, Maharashtra';
       
       let statusHtml = '<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-600">Registered</span>';
       if (isCurrent) {
@@ -6275,6 +6349,12 @@ class RideCompareApp {
             </div>
           </td>
           <td class="py-3 pr-3 text-slate-600 truncate max-w-[190px]">${this.escapeHtml(u.email || '—')}</td>
+          <td class="py-3 pr-3 whitespace-nowrap">
+            <span class="inline-flex items-center gap-1 text-[11px] font-medium text-slate-700 bg-slate-100 px-2 py-0.5 rounded-md">
+              <svg class="w-3 h-3 text-rose-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              <span class="truncate max-w-[130px]">${this.escapeHtml(userCity)}</span>
+            </span>
+          </td>
           <td class="py-3 pr-3 text-slate-500 whitespace-nowrap">${joinedFormatted}</td>
           <td class="py-3 text-right whitespace-nowrap">${statusHtml}</td>
           <td class="py-3 text-right pl-2 whitespace-nowrap">
@@ -6294,7 +6374,7 @@ class RideCompareApp {
 
     const list = filterList || (data ? data.users : (this.lastDashboardData ? this.lastDashboardData.users : [])) || [];
     if (list.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="7" class="py-8 text-center text-slate-400 text-xs">No users matching search criteria</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8" class="py-8 text-center text-slate-400 text-xs">No users matching search criteria</td></tr>';
       return;
     }
 
@@ -6307,7 +6387,7 @@ class RideCompareApp {
 
     const list = filterList || (data ? data.users : (this.lastDashboardData ? this.lastDashboardData.users : [])) || [];
     if (list.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-slate-400 text-xs">No users found</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" class="py-8 text-center text-slate-400 text-xs">No users found</td></tr>';
       return;
     }
 
@@ -6320,7 +6400,7 @@ class RideCompareApp {
 
     const list = filterList || (data ? data.users : (this.lastDashboardData ? this.lastDashboardData.users : [])) || [];
     if (list.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-slate-400 text-xs">No users matching filter</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8" class="py-8 text-center text-slate-400 text-xs">No users matching filter</td></tr>';
       return;
     }
 
@@ -6441,13 +6521,20 @@ class RideCompareApp {
     }
     const filtered = this.lastDashboardData.users.filter(u => 
       (u.name && u.name.toLowerCase().includes(q)) ||
-      (u.email && u.email.toLowerCase().includes(q))
+      (u.email && u.email.toLowerCase().includes(q)) ||
+      (u.city && u.city.toLowerCase().includes(q))
     );
+    if (filtered.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" class="py-6 text-center text-slate-400 text-xs">No matching users</td></tr>';
+      return;
+    }
     tbody.innerHTML = filtered.slice(0, 8).map(u => {
       const isCurrent = !!u.isCurrentSession;
       const initials = u.initials || (u.name || 'U').slice(0, 2).toUpperCase();
       const bgCol = u.avatarColor || '#2563EB';
-      const joinedFormatted = u.createdAt ? new Date(u.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent';
+      const createdInfo = this.formatUserTime(u.createdAt, false);
+      const joinedFormatted = createdInfo.dateOnly || 'Recent';
+      const userCity = u.city || 'Kolhapur, Maharashtra';
       return `
         <tr class="hover:bg-blue-50/70 transition-colors cursor-pointer group ${isCurrent ? 'bg-emerald-50/30' : ''}" onclick="app.openUserOptionsModal('${this.escapeHtml(u.id || '')}', '${this.escapeHtml(u.email || '')}')" title="Click on user to view options: Remove User, Delete Account">
           <td class="py-3 pr-3">
@@ -6459,6 +6546,12 @@ class RideCompareApp {
             </div>
           </td>
           <td class="py-3 pr-3 text-slate-600 truncate max-w-[190px]">${this.escapeHtml(u.email || '—')}</td>
+          <td class="py-3 pr-3 whitespace-nowrap">
+            <span class="inline-flex items-center gap-1 text-[11px] font-medium text-slate-700 bg-slate-100 px-2 py-0.5 rounded-md">
+              <svg class="w-3 h-3 text-rose-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              <span class="truncate max-w-[130px]">${this.escapeHtml(userCity)}</span>
+            </span>
+          </td>
           <td class="py-3 pr-3 text-slate-500 whitespace-nowrap">${joinedFormatted}</td>
           <td class="py-3 text-right whitespace-nowrap">
             <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold ${isCurrent ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'}">
@@ -6486,7 +6579,8 @@ class RideCompareApp {
     const filtered = this.lastDashboardData.users.filter(u => 
       (u.name && u.name.toLowerCase().includes(q)) ||
       (u.email && u.email.toLowerCase().includes(q)) ||
-      (u.phone && u.phone.includes(q))
+      (u.phone && u.phone.includes(q)) ||
+      (u.city && u.city.toLowerCase().includes(q))
     );
     this.renderAdminAllUsers(this.lastDashboardData, filtered);
   }
@@ -7321,6 +7415,17 @@ console.log(res.data);</code>`;
       }
     }
 
+    const cityTextEl = document.getElementById('user-opt-city-text');
+    if (cityTextEl) {
+      cityTextEl.textContent = user.city || 'Kolhapur, Maharashtra';
+    }
+
+    const lastActiveEl = document.getElementById('user-opt-last-active');
+    if (lastActiveEl) {
+      const timeInfo = this.formatUserTime(user.lastActive, isCurrent);
+      lastActiveEl.textContent = isCurrent ? 'Just now' : (timeInfo.relative || timeInfo.time || 'Recently');
+    }
+
     const modal = document.getElementById('admin-user-options-modal');
     if (modal) {
       modal.classList.add('show');
@@ -7479,14 +7584,29 @@ console.log(res.data);</code>`;
     const modalPanel = document.querySelector('#admin-user-options-modal .user-options-modal-panel');
     if (!modalPanel) return;
 
+    const cityBadge = document.getElementById('user-opt-city-badge');
+    const lastActiveEl = document.getElementById('user-opt-last-active');
+
     if (isDarkMode) {
       modalPanel.style.backgroundColor = '#0A1124';
       modalPanel.style.borderColor = '#1E293B';
       modalPanel.style.color = '#FFFFFF';
+      if (cityBadge) {
+        cityBadge.className = 'inline-flex items-center gap-1 text-[11px] text-slate-300 font-medium bg-slate-800 border border-slate-700 px-2 py-0.5 rounded-md';
+      }
+      if (lastActiveEl) {
+        lastActiveEl.className = 'font-semibold text-slate-200';
+      }
     } else {
       modalPanel.style.backgroundColor = '#FFFFFF';
       modalPanel.style.borderColor = '#E2E8F0';
       modalPanel.style.color = '#0F172A';
+      if (cityBadge) {
+        cityBadge.className = 'inline-flex items-center gap-1 text-[11px] text-slate-700 font-medium bg-slate-100 border border-slate-200/80 px-2 py-0.5 rounded-md';
+      }
+      if (lastActiveEl) {
+        lastActiveEl.className = 'font-semibold text-slate-800';
+      }
     }
   }
 
