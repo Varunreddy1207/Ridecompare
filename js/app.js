@@ -301,6 +301,16 @@ class RideCompareApp {
         });
       }
 
+      // Close Admin User Options Modal on backdrop click
+      const userOptModal = document.getElementById('admin-user-options-modal');
+      if (userOptModal) {
+        userOptModal.addEventListener('click', (e) => {
+          if (e.target === userOptModal) {
+            this.closeUserOptionsModal();
+          }
+        });
+      }
+
       // Close Drop Location Map Modal on backdrop click
       const dropModal = document.getElementById('drop-location-map-modal');
       if (dropModal) {
@@ -328,6 +338,7 @@ class RideCompareApp {
           this.closeAuthModal();
           this.closeLogoutConfirmModal();
           this.closeDeleteAccountModal();
+          this.closeUserOptionsModal();
           this.closeDropMapModal();
         }
       });
@@ -480,6 +491,7 @@ class RideCompareApp {
     this.updateAuthModalTheme(theme === 'dark');
     this.updateLogoutModalTheme(theme === 'dark');
     this.updateDeleteAccountModalTheme(theme === 'dark');
+    this.updateUserOptionsModalTheme(theme === 'dark');
     this.updateRestrictedModalTheme(theme === 'dark');
     this.updateRecentActionModalTheme(theme === 'dark');
   }
@@ -6161,7 +6173,7 @@ class RideCompareApp {
 
     if (showFullCols) {
       return `
-        <tr class="hover:bg-slate-50/70 transition-colors ${isCurrent ? 'bg-emerald-50/30' : ''}">
+        <tr class="hover:bg-blue-50/70 transition-colors cursor-pointer group ${isCurrent ? 'bg-emerald-50/30' : ''}" onclick="app.openUserOptionsModal('${this.escapeHtml(u.id || '')}', '${this.escapeHtml(u.email || '')}')" title="Click on user to view options: Remove User, Delete Account">
           <td class="py-3 px-4">
             <div class="flex items-center gap-3">
               <div class="w-8 h-8 rounded-full text-white font-bold text-xs flex items-center justify-center flex-shrink-0 shadow-xs" style="background-color: ${bgCol}">
@@ -6186,12 +6198,18 @@ class RideCompareApp {
             <div class="text-[11px] text-slate-400">${this.escapeHtml(u.device || 'Web Browser')}</div>
           </td>
           <td class="py-3 px-4">${statusBadge}</td>
+          <td class="py-3 px-4 text-right whitespace-nowrap">
+            <button type="button" onclick="event.stopPropagation(); app.openUserOptionsModal('${this.escapeHtml(u.id || '')}', '${this.escapeHtml(u.email || '')}')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 group-hover:bg-blue-600 group-hover:text-white text-slate-700 transition-all shadow-xs cursor-pointer active:scale-95" title="User options">
+              <span>Manage</span>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
+            </button>
+          </td>
         </tr>
       `;
     }
 
     return `
-      <tr class="hover:bg-slate-50/70 transition-colors ${isCurrent ? 'bg-emerald-50/30' : ''}">
+      <tr class="hover:bg-blue-50/70 transition-colors cursor-pointer group ${isCurrent ? 'bg-emerald-50/30' : ''}" onclick="app.openUserOptionsModal('${this.escapeHtml(u.id || '')}', '${this.escapeHtml(u.email || '')}')" title="Click on user to view options: Remove User, Delete Account">
         <td class="py-3">
           <div class="flex items-center gap-2.5">
             <div class="w-7 h-7 rounded-full text-white font-bold text-xs flex items-center justify-center flex-shrink-0 shadow-xs" style="background-color: ${bgCol}">
@@ -6213,6 +6231,12 @@ class RideCompareApp {
           <div class="text-[10px] text-slate-400 truncate max-w-[120px]">${this.escapeHtml(u.device || 'Web Browser')}</div>
         </td>
         <td class="py-3 whitespace-nowrap">${statusBadge}</td>
+        <td class="py-3 text-right whitespace-nowrap pl-2">
+          <button type="button" onclick="event.stopPropagation(); app.openUserOptionsModal('${this.escapeHtml(u.id || '')}', '${this.escapeHtml(u.email || '')}')" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold bg-slate-100 group-hover:bg-blue-600 group-hover:text-white text-slate-700 transition-all shadow-xs cursor-pointer active:scale-95" title="User options">
+            <span>Manage</span>
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          </button>
+        </td>
       </tr>
     `;
   }
@@ -6223,7 +6247,7 @@ class RideCompareApp {
 
     const users = (data.users || []).slice(0, 8);
     if (users.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="4" class="py-6 text-center text-slate-400 text-xs">No users found</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="5" class="py-6 text-center text-slate-400 text-xs">No users found</td></tr>';
       return;
     }
 
@@ -6241,10 +6265,10 @@ class RideCompareApp {
       }
 
       return `
-        <tr class="hover:bg-slate-50/70 transition-colors ${isCurrent ? 'bg-emerald-50/30' : ''}">
+        <tr class="hover:bg-blue-50/70 transition-colors cursor-pointer group ${isCurrent ? 'bg-emerald-50/30' : ''}" onclick="app.openUserOptionsModal('${this.escapeHtml(u.id || '')}', '${this.escapeHtml(u.email || '')}')" title="Click on user to view options: Remove User, Delete Account">
           <td class="py-3 pr-3">
             <div class="flex items-center gap-3">
-              <div class="w-7 h-7 rounded-full text-white font-bold text-xs flex items-center justify-center flex-shrink-0" style="background-color: ${bgCol}">
+              <div class="w-7 h-7 rounded-full text-white font-bold text-xs flex items-center justify-center flex-shrink-0 shadow-xs" style="background-color: ${bgCol}">
                 ${initials}
               </div>
               <span class="font-bold text-slate-900">${this.escapeHtml(u.name || 'User')} ${isCurrent ? '<span class="text-emerald-600 text-[10px] font-black">(YOU)</span>' : ''}</span>
@@ -6253,6 +6277,12 @@ class RideCompareApp {
           <td class="py-3 pr-3 text-slate-600 truncate max-w-[190px]">${this.escapeHtml(u.email || '—')}</td>
           <td class="py-3 pr-3 text-slate-500 whitespace-nowrap">${joinedFormatted}</td>
           <td class="py-3 text-right whitespace-nowrap">${statusHtml}</td>
+          <td class="py-3 text-right pl-2 whitespace-nowrap">
+            <button type="button" onclick="event.stopPropagation(); app.openUserOptionsModal('${this.escapeHtml(u.id || '')}', '${this.escapeHtml(u.email || '')}')" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold bg-slate-100 group-hover:bg-blue-600 group-hover:text-white text-slate-700 transition-all shadow-xs cursor-pointer active:scale-95" title="User options">
+              <span>Manage</span>
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </button>
+          </td>
         </tr>
       `;
     }).join('');
@@ -6264,7 +6294,7 @@ class RideCompareApp {
 
     const list = filterList || (data ? data.users : (this.lastDashboardData ? this.lastDashboardData.users : [])) || [];
     if (list.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-slate-400 text-xs">No users matching search criteria</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" class="py-8 text-center text-slate-400 text-xs">No users matching search criteria</td></tr>';
       return;
     }
 
@@ -6277,7 +6307,7 @@ class RideCompareApp {
 
     const list = filterList || (data ? data.users : (this.lastDashboardData ? this.lastDashboardData.users : [])) || [];
     if (list.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-slate-400 text-xs">No users found</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-slate-400 text-xs">No users found</td></tr>';
       return;
     }
 
@@ -6290,7 +6320,7 @@ class RideCompareApp {
 
     const list = filterList || (data ? data.users : (this.lastDashboardData ? this.lastDashboardData.users : [])) || [];
     if (list.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-slate-400 text-xs">No users matching filter</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-slate-400 text-xs">No users matching filter</td></tr>';
       return;
     }
 
@@ -6419,21 +6449,27 @@ class RideCompareApp {
       const bgCol = u.avatarColor || '#2563EB';
       const joinedFormatted = u.createdAt ? new Date(u.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent';
       return `
-        <tr class="hover:bg-slate-50/70 transition-colors ${isCurrent ? 'bg-emerald-50/30' : ''}">
-          <td class="py-3">
+        <tr class="hover:bg-blue-50/70 transition-colors cursor-pointer group ${isCurrent ? 'bg-emerald-50/30' : ''}" onclick="app.openUserOptionsModal('${this.escapeHtml(u.id || '')}', '${this.escapeHtml(u.email || '')}')" title="Click on user to view options: Remove User, Delete Account">
+          <td class="py-3 pr-3">
             <div class="flex items-center gap-3">
-              <div class="w-7 h-7 rounded-full text-white font-bold text-xs flex items-center justify-center flex-shrink-0" style="background-color: ${bgCol}">
+              <div class="w-7 h-7 rounded-full text-white font-bold text-xs flex items-center justify-center flex-shrink-0 shadow-xs" style="background-color: ${bgCol}">
                 ${initials}
               </div>
               <span class="font-bold text-slate-900">${this.escapeHtml(u.name || 'User')} ${isCurrent ? '<span class="text-emerald-600 text-[10px] font-black">(YOU)</span>' : ''}</span>
             </div>
           </td>
-          <td class="py-3 text-slate-600">${this.escapeHtml(u.email || '—')}</td>
-          <td class="py-3 text-slate-500">${joinedFormatted}</td>
-          <td class="py-3">
+          <td class="py-3 pr-3 text-slate-600 truncate max-w-[190px]">${this.escapeHtml(u.email || '—')}</td>
+          <td class="py-3 pr-3 text-slate-500 whitespace-nowrap">${joinedFormatted}</td>
+          <td class="py-3 text-right whitespace-nowrap">
             <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold ${isCurrent ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'}">
               ${isCurrent ? 'Logged In Now' : 'Registered'}
             </span>
+          </td>
+          <td class="py-3 text-right pl-2 whitespace-nowrap">
+            <button type="button" onclick="event.stopPropagation(); app.openUserOptionsModal('${this.escapeHtml(u.id || '')}', '${this.escapeHtml(u.email || '')}')" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold bg-slate-100 group-hover:bg-blue-600 group-hover:text-white text-slate-700 transition-all shadow-xs cursor-pointer active:scale-95" title="User options">
+              <span>Manage</span>
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </button>
           </td>
         </tr>
       `;
@@ -7212,6 +7248,245 @@ console.log(res.data);</code>`;
         btnBack.style.borderColor = '#CBD5E1';
         btnBack.style.color = '#334155';
       }
+    }
+  }
+
+  // =========================================================================
+  // ADMIN USER MANAGEMENT MODAL: REMOVE USER (AUTO-LOGOUT) & DELETE ACCOUNT
+  // =========================================================================
+  openUserOptionsModal(userId, email) {
+    const normEmail = (email || '').toLowerCase().trim();
+    const user = (this.lastDashboardData?.users || []).find(u => 
+      (userId && u.id === userId) || (normEmail && u.email && u.email.toLowerCase().trim() === normEmail)
+    ) || {
+      id: userId || 'usr_unknown',
+      email: email || '',
+      name: email ? email.split('@')[0] : 'User',
+      phone: '—',
+      createdAt: new Date().toISOString(),
+      status: 'Registered',
+      avatarColor: '#2563EB',
+      initials: (email ? email.slice(0, 2) : 'US').toUpperCase()
+    };
+
+    this.selectedAdminUser = user;
+
+    // Reset views
+    const mainView = document.getElementById('user-opt-main-view');
+    const confirmView = document.getElementById('user-opt-confirm-delete-view');
+    const statusMsg = document.getElementById('user-opt-status-msg');
+    if (mainView) mainView.classList.remove('hidden');
+    if (confirmView) confirmView.classList.add('hidden');
+    if (statusMsg) {
+      statusMsg.classList.add('hidden');
+      statusMsg.innerHTML = '';
+    }
+
+    // Populate user preview
+    const avatarEl = document.getElementById('user-opt-avatar');
+    const nameEl = document.getElementById('user-opt-name');
+    const emailEl = document.getElementById('user-opt-email');
+    const phoneEl = document.getElementById('user-opt-phone');
+    const statusBadgeEl = document.getElementById('user-opt-status-badge');
+
+    const curAuthUser = window.RideCompareAuth?.currentUser;
+    const isCurrent = !!user.isCurrentSession || !!(curAuthUser && (
+      (user.id && curAuthUser.id === user.id) ||
+      (normEmail && curAuthUser.email && curAuthUser.email.toLowerCase().trim() === normEmail)
+    ));
+
+    if (avatarEl) {
+      avatarEl.textContent = user.initials || (user.name || 'U').slice(0, 2).toUpperCase();
+      avatarEl.style.backgroundColor = user.avatarColor || '#2563EB';
+    }
+    if (nameEl) {
+      nameEl.innerHTML = `<span>${this.escapeHtml(user.name || 'User')}</span> ${isCurrent ? '<span class="ml-1.5 px-2 py-0.5 rounded text-[10px] font-black bg-emerald-500 text-white">YOU</span>' : ''}`;
+    }
+    if (emailEl) {
+      emailEl.textContent = user.email || '—';
+    }
+    if (phoneEl) {
+      phoneEl.textContent = (user.phone && user.phone !== '—') ? `Phone: ${user.phone}` : 'No phone linked';
+    }
+    if (statusBadgeEl) {
+      if (isCurrent) {
+        statusBadgeEl.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200';
+        statusBadgeEl.innerHTML = '<span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1 animate-pulse"></span>Logged In Now';
+      } else if (user.status === 'Active Session') {
+        statusBadgeEl.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-200';
+        statusBadgeEl.textContent = 'Active Session';
+      } else {
+        statusBadgeEl.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-600';
+        statusBadgeEl.textContent = 'Registered';
+      }
+    }
+
+    const modal = document.getElementById('admin-user-options-modal');
+    if (modal) {
+      modal.classList.add('show');
+      this.updateUserOptionsModalTheme();
+    }
+  }
+
+  closeUserOptionsModal() {
+    const modal = document.getElementById('admin-user-options-modal');
+    if (modal) {
+      modal.classList.remove('show');
+    }
+    this.selectedAdminUser = null;
+  }
+
+  async executeRemoveUser() {
+    const user = this.selectedAdminUser;
+    if (!user) return;
+
+    const btn = document.getElementById('btn-user-opt-remove');
+    const originalText = btn ? btn.innerHTML : 'Remove User (Auto-Logout)';
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = `
+        <svg class="w-4 h-4 animate-spin mr-1.5" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span>Revoking Sessions & Logging Out...</span>
+      `;
+    }
+
+    try {
+      if (window.RideCompareAuth && typeof window.RideCompareAuth.adminRemoveUser === 'function') {
+        const res = await window.RideCompareAuth.adminRemoveUser(user.id, user.email);
+
+        if (res && res.isCurrentLoggedIn) {
+          // Logged-in user in this browser removed their own sessions -> immediate auto-logout!
+          this.closeUserOptionsModal();
+          this.currentTab = 'home';
+          this.navigateTo('screen-splash', false);
+          try { history.pushState(null, '', '#splash'); } catch (_) { window.location.hash = '#splash'; }
+          this.enforceResponsiveNav();
+          return;
+        }
+      }
+
+      // Another user was removed
+      const statusMsg = document.getElementById('user-opt-status-msg');
+      if (statusMsg) {
+        statusMsg.className = 'p-3 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-xs font-medium text-center mb-3 block';
+        statusMsg.innerHTML = `Sessions revoked for <b>${this.escapeHtml(user.email || user.name)}</b>. User has been logged out automatically.`;
+        statusMsg.classList.remove('hidden');
+      }
+
+      // Re-sync dashboard in background
+      if (typeof this.loadDashboardLiveData === 'function') {
+        await this.loadDashboardLiveData();
+      }
+
+      setTimeout(() => {
+        this.closeUserOptionsModal();
+      }, 1400);
+
+    } catch (err) {
+      console.error('[Admin] Error removing user sessions:', err);
+      const statusMsg = document.getElementById('user-opt-status-msg');
+      if (statusMsg) {
+        statusMsg.className = 'p-3 rounded-xl bg-red-500/15 border border-red-500/30 text-red-700 dark:text-red-300 text-xs font-medium text-center mb-3 block';
+        statusMsg.textContent = 'Failed to remove user sessions: ' + (err.message || 'Unknown error');
+        statusMsg.classList.remove('hidden');
+      }
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    }
+  }
+
+  promptDeleteUserConfirm() {
+    const user = this.selectedAdminUser;
+    if (!user) return;
+
+    const mainView = document.getElementById('user-opt-main-view');
+    const confirmView = document.getElementById('user-opt-confirm-delete-view');
+    const confirmName = document.getElementById('user-opt-confirm-name');
+    const confirmEmail = document.getElementById('user-opt-confirm-email');
+
+    if (confirmName) confirmName.textContent = user.name || 'User';
+    if (confirmEmail) confirmEmail.textContent = user.email || '—';
+
+    if (mainView) mainView.classList.add('hidden');
+    if (confirmView) confirmView.classList.remove('hidden');
+  }
+
+  cancelDeleteUserConfirm() {
+    const mainView = document.getElementById('user-opt-main-view');
+    const confirmView = document.getElementById('user-opt-confirm-delete-view');
+    if (mainView) mainView.classList.remove('hidden');
+    if (confirmView) confirmView.classList.add('hidden');
+  }
+
+  async executeDeleteUserAccount() {
+    const user = this.selectedAdminUser;
+    if (!user) return;
+
+    const btn = document.getElementById('btn-user-opt-delete-exec');
+    const originalText = btn ? btn.innerHTML : 'Yes, Delete Account';
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = `
+        <svg class="w-4 h-4 animate-spin mr-1.5" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span>Deleting Account Permanently...</span>
+      `;
+    }
+
+    try {
+      if (window.RideCompareAuth && typeof window.RideCompareAuth.adminDeleteAccount === 'function') {
+        const res = await window.RideCompareAuth.adminDeleteAccount(user.id, user.email);
+
+        if (res && res.isCurrentLoggedIn) {
+          // Logged-in user in this browser deleted their own account -> auto-logout!
+          this.closeUserOptionsModal();
+          this.currentTab = 'home';
+          this.navigateTo('screen-splash', false);
+          try { history.pushState(null, '', '#splash'); } catch (_) { window.location.hash = '#splash'; }
+          this.enforceResponsiveNav();
+          return;
+        }
+      }
+
+      // Re-sync dashboard live data to immediately remove user from table and update KPI counts
+      if (typeof this.loadDashboardLiveData === 'function') {
+        await this.loadDashboardLiveData();
+      }
+
+      this.closeUserOptionsModal();
+
+    } catch (err) {
+      console.error('[Admin] Error deleting user account:', err);
+      alert('Failed to permanently delete user account: ' + (err.message || 'Unknown error'));
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    }
+  }
+
+  updateUserOptionsModalTheme(isDark = false) {
+    const isDarkMode = isDark || document.body.classList.contains('theme-dark') || document.documentElement.getAttribute('data-theme') === 'dark';
+    const modalPanel = document.querySelector('#admin-user-options-modal .user-options-modal-panel');
+    if (!modalPanel) return;
+
+    if (isDarkMode) {
+      modalPanel.style.backgroundColor = '#0A1124';
+      modalPanel.style.borderColor = '#1E293B';
+      modalPanel.style.color = '#FFFFFF';
+    } else {
+      modalPanel.style.backgroundColor = '#FFFFFF';
+      modalPanel.style.borderColor = '#E2E8F0';
+      modalPanel.style.color = '#0F172A';
     }
   }
 

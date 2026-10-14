@@ -836,6 +836,64 @@
     }
   }
 
+  /**
+   * Remove user sessions from Supabase (Forces auto logout across all devices)
+   */
+  async function supabaseDirectRemoveUserSessions(userId, email) {
+    try {
+      const promises = [];
+      if (userId) {
+        promises.push(supabaseRequest(`/DeviceSession?userId=eq.${encodeURIComponent(userId)}`, 'DELETE').catch(() => {}));
+      }
+      if (email) {
+        const normEmail = (email || '').toLowerCase().trim();
+        const users = await supabaseRequest(`/User?email=eq.${encodeURIComponent(normEmail)}&select=id`).catch(() => []);
+        if (users && users.length > 0) {
+          const sbUserId = users[0].id;
+          promises.push(supabaseRequest(`/DeviceSession?userId=eq.${encodeURIComponent(sbUserId)}`, 'DELETE').catch(() => {}));
+        }
+      }
+      await Promise.all(promises);
+      return { success: true };
+    } catch (err) {
+      console.warn('[SupabaseDirect] Error removing user sessions:', err);
+      return { success: false, error: err.message };
+    }
+  }
+
+  /**
+   * Permanently delete user account and all related records from Supabase
+   */
+  async function supabaseDirectDeleteUserAccount(userId, email) {
+    try {
+      let resolvedUserId = userId;
+      const normEmail = (email || '').toLowerCase().trim();
+
+      if (!resolvedUserId && normEmail) {
+        const users = await supabaseRequest(`/User?email=eq.${encodeURIComponent(normEmail)}&select=id`).catch(() => []);
+        if (users && users.length > 0) {
+          resolvedUserId = users[0].id;
+        }
+      }
+
+      const promises = [];
+      if (resolvedUserId) {
+        promises.push(supabaseRequest(`/DeviceSession?userId=eq.${encodeURIComponent(resolvedUserId)}`, 'DELETE').catch(() => {}));
+        promises.push(supabaseRequest(`/RideSearch?userId=eq.${encodeURIComponent(resolvedUserId)}`, 'DELETE').catch(() => {}));
+        promises.push(supabaseRequest(`/User?id=eq.${encodeURIComponent(resolvedUserId)}`, 'DELETE').catch(() => {}));
+      }
+      if (normEmail) {
+        promises.push(supabaseRequest(`/User?email=eq.${encodeURIComponent(normEmail)}`, 'DELETE').catch(() => {}));
+      }
+
+      await Promise.all(promises);
+      return { success: true };
+    } catch (err) {
+      console.warn('[SupabaseDirect] Error permanently deleting user account:', err);
+      return { success: false, error: err.message };
+    }
+  }
+
   // =========================================================================
   // CENTRALIZED AUTHENTICATION STORE / STATE
   // =========================================================================
@@ -864,6 +922,24 @@
         } catch (e) {
           this.currentUser = null;
         }
+      }
+
+      if (typeof window !== 'undefined') {
+        window.addEventListener('storage', async (e) => {
+          if (e.key === 'ridecompare_revoked_session_event' && e.newValue) {
+            try {
+              const data = JSON.parse(e.newValue);
+              const curUser = this.currentUser;
+              if (curUser && ((data.userId && curUser.id === data.userId) || (data.email && curUser.email && curUser.email.toLowerCase().trim() === data.email.toLowerCase().trim()))) {
+                console.log('[RideCompareAuth] Active session was revoked/deleted by admin, logging out immediately...');
+                await this.logout();
+                if (typeof window.app !== 'undefined' && typeof window.app.navigateTo === 'function') {
+                  window.app.navigateTo('screen-splash', false);
+                }
+              }
+            } catch (_) {}
+          }
+        });
       }
     }
 
@@ -1404,11 +1480,25 @@
             if (userId) {
               const rows = await supabaseRequest(`/User?id=eq.${encodeURIComponent(userId)}&select=id,name,email,phone,createdAt,updatedAt`);
               if (rows && rows.length > 0) {
+                // Verify active device session has not been revoked by admin
+                const deviceId = this.api.getDeviceId();
+                if (deviceId) {
+                  const devSessions = await supabaseRequest(`/DeviceSession?userId=eq.${encodeURIComponent(userId)}&deviceId=eq.${encodeURIComponent(deviceId)}&select=id`).catch(() => null);
+                  if (Array.isArray(devSessions) && devSessions.length === 0) {
+                    console.log('[RideCompareAuth] Device session removed by admin in Supabase, auto-logging out...');
+                    await this.logout();
+                    return null;
+                  }
+                }
                 const sbUser = rows[0];
                 this.currentUser = sbUser;
                 localStorage.setItem('ridecompare_user_profile', JSON.stringify(sbUser));
                 this.notify();
                 return sbUser;
+              } else {
+                console.log('[RideCompareAuth] User account permanently deleted in Supabase, auto-logging out...');
+                await this.logout();
+                return null;
               }
             }
           } catch (sbErr) {
@@ -1464,6 +1554,107 @@
         localStorage.removeItem('ridecompare_user_profile');
         localStorage.removeItem('ridecompare_has_started');
         this.notify();
+      }
+    }
+
+    /**
+     * Admin: Remove user sessions (Forces auto-logout)
+     */
+    async adminRemoveUser(userId, email) {
+      this.loading = true;
+      this.notify();
+      const normEmail = (email || '').toLowerCase().trim();
+      const isCurrent = !!(this.currentUser && (
+        (userId && this.currentUser.id === userId) ||
+        (normEmail && this.currentUser.email && this.currentUser.email.toLowerCase().trim() === normEmail)
+      ));
+
+      try {
+        await supabaseDirectRemoveUserSessions(userId, normEmail);
+
+        // Record audit activity
+        this.recordActivityEvent('REMOVE_USER', `Admin removed sessions for: ${normEmail || userId} (Auto-logout triggered)`);
+
+        // Broadcast cross-tab session revocation
+        try {
+          localStorage.setItem('ridecompare_revoked_session_event', JSON.stringify({
+            action: 'remove_user',
+            userId,
+            email: normEmail,
+            time: Date.now()
+          }));
+        } catch (_) {}
+
+        if (isCurrent) {
+          await this.logout();
+          return { success: true, isCurrentLoggedIn: true };
+        } else {
+          this.loading = false;
+          this.notify();
+          if (typeof window !== 'undefined' && window.app && typeof window.app.loadDashboardLiveData === 'function') {
+            try { window.app.loadDashboardLiveData(); } catch (_) {}
+          }
+          return { success: true, isCurrentLoggedIn: false };
+        }
+      } catch (err) {
+        this.loading = false;
+        this.notify();
+        throw err;
+      }
+    }
+
+    /**
+     * Admin: Permanently delete user account and all related data
+     */
+    async adminDeleteAccount(userId, email) {
+      this.loading = true;
+      this.notify();
+      const normEmail = (email || '').toLowerCase().trim();
+      const isCurrent = !!(this.currentUser && (
+        (userId && this.currentUser.id === userId) ||
+        (normEmail && this.currentUser.email && this.currentUser.email.toLowerCase().trim() === normEmail)
+      ));
+
+      try {
+        await supabaseDirectDeleteUserAccount(userId, normEmail);
+
+        // Clean up from local fallback storage
+        try {
+          const localUsers = this.getLocalUsers();
+          if (normEmail && localUsers[normEmail]) {
+            delete localUsers[normEmail];
+            localStorage.setItem('ridecompare_local_users', JSON.stringify(localUsers));
+          }
+        } catch (_) {}
+
+        // Record audit activity
+        this.recordActivityEvent('DELETE_ACCOUNT', `Admin permanently deleted user account: ${normEmail || userId}`);
+
+        // Broadcast cross-tab deletion
+        try {
+          localStorage.setItem('ridecompare_revoked_session_event', JSON.stringify({
+            action: 'delete_account',
+            userId,
+            email: normEmail,
+            time: Date.now()
+          }));
+        } catch (_) {}
+
+        if (isCurrent) {
+          await this.logout();
+          return { success: true, isCurrentLoggedIn: true };
+        } else {
+          this.loading = false;
+          this.notify();
+          if (typeof window !== 'undefined' && window.app && typeof window.app.loadDashboardLiveData === 'function') {
+            try { window.app.loadDashboardLiveData(); } catch (_) {}
+          }
+          return { success: true, isCurrentLoggedIn: false };
+        }
+      } catch (err) {
+        this.loading = false;
+        this.notify();
+        throw err;
       }
     }
   }

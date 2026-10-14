@@ -974,6 +974,27 @@
       color: #0F172A !important;
     }
 
+    /* ==========================================================================
+       ADMIN USER OPTIONS MODAL: Pure White Theme in Light Mode
+       ========================================================================== */
+    body:not(.theme-dark) #admin-user-options-modal,
+    body.theme-light #admin-user-options-modal,
+    [data-theme="light"] #admin-user-options-modal {
+      background-color: rgba(15, 23, 42, 0.45) !important;
+      backdrop-filter: blur(8px) !important;
+      -webkit-backdrop-filter: blur(8px) !important;
+    }
+
+    body:not(.theme-dark) #admin-user-options-modal .user-options-modal-panel,
+    body.theme-light #admin-user-options-modal .user-options-modal-panel,
+    [data-theme="light"] #admin-user-options-modal .user-options-modal-panel {
+      background-color: #FFFFFF !important;
+      background: #FFFFFF !important;
+      border: 1px solid #E2E8F0 !important;
+      box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.04) !important;
+      color: #0F172A !important;
+    }
+
     /* Screen Booking: Desktop Edge-to-Edge Full Height Layout (Only when active) */
     @media (min-width: 1024px) {
       #screen-booking.active {
@@ -1151,6 +1172,7 @@
     #auth-modal:not(.show),
     #logout-confirm-modal:not(.show),
     #delete-account-modal:not(.show),
+    #admin-user-options-modal:not(.show),
     #system-status-restricted-modal:not(.show),
     #drop-location-map-modal:not(.show) {
       display: none !important;
@@ -1163,6 +1185,7 @@
     #auth-modal.show,
     #logout-confirm-modal.show,
     #delete-account-modal.show,
+    #admin-user-options-modal.show,
     #system-status-restricted-modal.show,
     #drop-location-map-modal.show {
       display: flex !important;
@@ -4548,12 +4571,13 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
                   <th class="pb-3 pr-2 font-semibold">Email</th>
                   <th class="pb-3 pr-2 font-semibold whitespace-nowrap">Joined</th>
                   <th class="pb-3 font-semibold text-right">Status</th>
+                  <th class="pb-3 pl-2 font-semibold text-right">Action</th>
                 </tr>
               </thead>
               <tbody id="admin-recent-users-tbody" class="divide-y divide-slate-100 text-slate-700">
                 <!-- Populated dynamically with real live data from Supabase & current session -->
                 <tr>
-                  <td colspan="4" class="py-6 text-center text-slate-400">
+                  <td colspan="5" class="py-6 text-center text-slate-400">
                     <div class="inline-flex items-center gap-2 text-xs font-medium">
                       <span class="w-2 h-2 rounded-full bg-blue-500 animate-ping"></span>
                       <span>Loading real-time user database...</span>
@@ -4661,6 +4685,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
                   <th class="py-3.5 px-4 font-semibold">Last Active</th>
                   <th class="py-3.5 px-4 font-semibold">Devices</th>
                   <th class="py-3.5 px-4 font-semibold">Login Status</th>
+                  <th class="py-3.5 px-4 font-semibold text-right">Action</th>
                 </tr>
               </thead>
               <tbody id="admin-all-users-tbody" class="divide-y divide-slate-100 text-slate-700">
@@ -4966,12 +4991,13 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
                   <th class="pb-3 font-semibold">Registered</th>
                   <th class="pb-3 font-semibold">Last Active / Device</th>
                   <th class="pb-3 font-semibold">Status</th>
+                  <th class="pb-3 font-semibold text-right">Action</th>
                 </tr>
               </thead>
               <tbody id="dev-live-users-tbody" class="divide-y divide-slate-100 text-slate-700">
                 <!-- Populated dynamically with real Supabase users -->
                 <tr>
-                  <td colspan="5" class="py-6 text-center text-slate-400">
+                  <td colspan="6" class="py-6 text-center text-slate-400">
                     <div class="inline-flex items-center gap-2 text-xs font-medium">
                       <span class="w-2 h-2 rounded-full bg-blue-500 animate-ping"></span>
                       <span>Loading real-time user database...</span>
@@ -5299,6 +5325,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
                     <th class="py-3 px-4 font-semibold">Registered</th>
                     <th class="py-3 px-4 font-semibold">Last Active / Device</th>
                     <th class="py-3 px-4 font-semibold">Status</th>
+                    <th class="py-3 px-4 font-semibold text-right">Action</th>
                   </tr>
                 </thead>
                 <tbody id="dev-full-users-tbody" class="divide-y divide-slate-100 text-slate-700">
@@ -6778,6 +6805,111 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
     </div>
   </div>
 
+  <!-- ==================================================================== -->
+  <!-- ADMIN USER MANAGEMENT & OPTIONS MODAL (REMOVE USER & DELETE ACCOUNT) -->
+  <!-- ==================================================================== -->
+  <div id="admin-user-options-modal" onclick="if(event.target === this) app.closeUserOptionsModal()" class="fixed inset-0 z-[2850] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300">
+    <div class="user-options-modal-panel w-full max-w-md bg-white border border-slate-200 rounded-3xl p-5 sm:p-6 shadow-2xl relative text-slate-900 transform scale-95 transition-all duration-300">
+      
+      <!-- Modal Header: User Info & Close -->
+      <div class="flex items-start justify-between gap-3 pb-4 border-b border-slate-100">
+        <div class="flex items-center gap-3 min-w-0">
+          <div id="user-opt-avatar" class="w-12 h-12 rounded-2xl bg-blue-600 text-white font-black text-base flex items-center justify-center flex-shrink-0 shadow-sm">
+            VR
+          </div>
+          <div class="min-w-0">
+            <h3 id="user-opt-name" class="text-base font-bold text-slate-900 truncate flex items-center gap-1.5">
+              <span>Varun Reddy</span>
+            </h3>
+            <p id="user-opt-email" class="text-xs text-slate-500 font-mono truncate">varunreddy@gmail.com</p>
+            <div class="flex items-center gap-2 mt-1 flex-wrap">
+              <span id="user-opt-phone" class="text-[11px] text-slate-400">Phone: —</span>
+              <span id="user-opt-status-badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">Logged In Now</span>
+            </div>
+          </div>
+        </div>
+        <button type="button" onclick="app.closeUserOptionsModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center transition-colors cursor-pointer flex-shrink-0 active:scale-95" title="Close modal">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- In-Modal Status Notification Banner (hidden by default) -->
+      <div id="user-opt-status-msg" class="hidden my-3"></div>
+
+      <!-- Main Action Options View -->
+      <div id="user-opt-main-view" class="pt-4 space-y-3">
+        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Administrative Actions</p>
+        
+        <!-- OPTION 1: REMOVE USER (Auto Logout) -->
+        <div class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/25 space-y-2.5">
+          <div class="flex items-start gap-3">
+            <div class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+              </svg>
+            </div>
+            <div class="min-w-0 flex-1">
+              <h4 class="text-sm font-bold text-slate-900">Remove User</h4>
+              <p class="text-xs text-slate-600 mt-0.5 leading-relaxed">
+                Revokes all active device sessions. If this user is currently logged in, their account will be <b>logged out automatically</b> immediately.
+              </p>
+            </div>
+          </div>
+          <button type="button" id="btn-user-opt-remove" onclick="app.executeRemoveUser()" class="w-full py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+            <span>Remove User (Auto-Logout)</span>
+          </button>
+        </div>
+
+        <!-- OPTION 2: DELETE ACCOUNT (Permanent Deletion) -->
+        <div class="p-4 rounded-2xl bg-red-500/10 border border-red-500/25 space-y-2.5">
+          <div class="flex items-start gap-3">
+            <div class="w-9 h-9 rounded-xl bg-red-500/20 text-red-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+              </svg>
+            </div>
+            <div class="min-w-0 flex-1">
+              <h4 class="text-sm font-bold text-slate-900">Delete Account</h4>
+              <p class="text-xs text-slate-600 mt-0.5 leading-relaxed">
+                Permanently deletes this user, their credentials, active device sessions, and ride comparisons from Supabase Cloud.
+              </p>
+            </div>
+          </div>
+          <button type="button" id="btn-user-opt-delete-prompt" onclick="app.promptDeleteUserConfirm()" class="w-full py-2.5 px-4 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            <span>Delete Account Permanently</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Danger Confirmation View for Account Deletion (hidden by default) -->
+      <div id="user-opt-confirm-delete-view" class="hidden pt-4 text-center space-y-4">
+        <div class="w-14 h-14 rounded-full bg-red-500/15 border border-red-500/40 text-red-600 flex items-center justify-center mx-auto shadow-sm">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        </div>
+        <div>
+          <h4 class="text-base font-bold text-slate-900">Confirm Permanent Deletion?</h4>
+          <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+            Are you sure you want to permanently delete user <b id="user-opt-confirm-name" class="text-slate-900">User</b> (<span id="user-opt-confirm-email" class="font-mono text-red-600 font-bold"></span>)?
+            <br>
+            All account records, active device sessions, and ride history will be completely erased from the database. This action cannot be reversed.
+          </p>
+        </div>
+        <div class="flex items-center gap-3 pt-2">
+          <button type="button" onclick="app.cancelDeleteUserConfirm()" class="flex-1 py-2.5 px-4 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 text-xs sm:text-sm font-semibold transition-all cursor-pointer active:scale-95">
+            Cancel
+          </button>
+          <button type="button" id="btn-user-opt-delete-exec" onclick="app.executeDeleteUserAccount()" class="flex-1 py-2.5 px-4 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm font-bold shadow-md transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            <span>Yes, Delete Account</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 
   <!-- ==================================================================== -->
   <!-- UNIFIED FIXED BOTTOM NAVIGATION (Mobile < 768px & Tablet 768px-1023px) -->
@@ -6924,9 +7056,9 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
 
   <!-- Scripts -->
   <script src="js/bcrypt.min.js"></script>
-  <script src="js/api.js?v=6"></script>
+  <script src="js/api.js?v=7"></script>
   <script src="js/audio.js?v=28"></script>
-  <script src="js/app.js?v=100"></script>
+  <script src="js/app.js?v=101"></script>
 
   <!-- Service Worker for Offline PWA Support -->
   <script>
