@@ -1615,6 +1615,82 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
       color: #0F172A !important;
     }
 
+    /* ==========================================================================
+       ADMIN DASHBOARD: USER SECTION FULL SCREEN & SIDEBAR ANIMATION
+       ========================================================================== */
+    .admin-sidebar {
+      transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                  margin 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                  width 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                  min-width 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                  max-width 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                  padding 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                  opacity 0.38s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      will-change: transform, margin, opacity;
+    }
+
+    #screen-admin.users-fullscreen .admin-sidebar {
+      transform: translateX(-100%) !important;
+      width: 0 !important;
+      min-width: 0 !important;
+      max-width: 0 !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      border: none !important;
+      overflow: hidden !important;
+      box-shadow: none !important;
+    }
+
+    @media (max-width: 1023px) {
+      #screen-admin.users-fullscreen .admin-sidebar {
+        transform: translateY(-100%) !important;
+        margin-top: -100% !important;
+        margin-left: 0 !important;
+        max-height: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        overflow: hidden !important;
+      }
+    }
+
+    #screen-admin main {
+      transition: padding 0.35s cubic-bezier(0.16, 1, 0.3, 1), max-width 0.35s ease, width 0.35s ease !important;
+    }
+
+    #screen-admin.users-fullscreen main {
+      width: 100% !important;
+      max-width: 100% !important;
+      flex: 1 1 100% !important;
+      padding-left: 1.5rem !important;
+      padding-right: 1.5rem !important;
+    }
+
+    @media (min-width: 1024px) {
+      #screen-admin.users-fullscreen main {
+        padding-left: 2.5rem !important;
+        padding-right: 2.5rem !important;
+      }
+    }
+
+    #screen-admin.users-fullscreen #admin-panel-users {
+      animation: usersSectionExpandIn 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes usersSectionExpandIn {
+      0% {
+        opacity: 0.6;
+        transform: translateY(8px) scale(0.995);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
   </style>
 </head>
 <body class="min-h-screen selection:bg-blue-600 selection:text-white antialiased theme-light">
@@ -4222,7 +4298,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
             <span>Dashboard</span>
           </button>
 
-          <button type="button" onclick="app.switchAdminTab('users')" class="admin-nav-item w-full px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
+          <button type="button" id="admin-nav-users" onclick="app.toggleAdminUsersTab()" class="admin-nav-item w-full px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
             <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
             <span>Users</span>
           </button>
@@ -4275,9 +4351,17 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
       
       <!-- Top Bar: Header & Actions -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-1">
-        <div>
-          <h1 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Admin Dashboard</h1>
-          <p class="text-xs text-slate-500 mt-0.5">Monitor, manage and keep RideCompare running smoothly.</p>
+        <div class="flex items-center gap-3">
+          <div id="admin-topbar-back-btn-container" class="hidden">
+            <button type="button" onclick="app.exitUsersFullScreen()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 font-bold text-xs shadow-xs transition-all cursor-pointer active:scale-95 group" title="Return to Dashboard & Normal Layout">
+              <svg class="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+              <span>Back</span>
+            </button>
+          </div>
+          <div>
+            <h1 id="admin-dashboard-title" class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Admin Dashboard</h1>
+            <p id="admin-dashboard-subtitle" class="text-xs text-slate-500 mt-0.5">Monitor, manage and keep RideCompare running smoothly.</p>
+          </div>
         </div>
 
         <div class="flex items-center gap-3">
@@ -4637,6 +4721,35 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
 
       <!-- ADMIN TAB 2: USERS MANAGEMENT FULL PANEL -->
       <div id="admin-panel-users" class="hidden space-y-6">
+        
+        <!-- Fullscreen Users Quick Navigation & Back Bar -->
+        <div class="flex items-center justify-between bg-white rounded-2xl border border-slate-200/90 shadow-sm p-3.5 sm:p-4 gap-3">
+          <div class="flex items-center gap-2.5 sm:gap-3 flex-wrap">
+            <button type="button" onclick="app.exitUsersFullScreen()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md hover:shadow-lg transition-all cursor-pointer active:scale-95 group" title="Return to Dashboard & normal layout">
+              <svg class="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+              </svg>
+              <span>Back to Dashboard</span>
+            </button>
+
+            <button type="button" onclick="app.toggleAdminUsersTab()" class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-all cursor-pointer active:scale-95" title="Click on User again to return to normal position">
+              <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+              </svg>
+              <span>Users (Full Screen)</span>
+              <span class="text-[10px] font-bold text-slate-500 bg-white px-2 py-0.5 rounded-md border border-slate-200">Click to exit</span>
+            </button>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200 shadow-xs">
+              <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+              <span class="hidden sm:inline">Full Screen Mode Active</span>
+              <span class="sm:hidden">Full Screen</span>
+            </span>
+          </div>
+        </div>
+
         <!-- Users Header Banner -->
         <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
@@ -4650,11 +4763,12 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
           </div>
 
           <div class="flex items-center gap-2">
-            <button type="button" onclick="app.refreshDashboardData(true)" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 text-xs font-bold transition-all cursor-pointer">
+            <button type="button" onclick="app.refreshDashboardData(true)" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 text-xs font-bold transition-all cursor-pointer">
               <svg class="w-3.5 h-3.5 admin-sync-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
               <span>Refresh</span>
             </button>
-            <button type="button" onclick="app.switchAdminTab('dashboard')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all cursor-pointer">
+            <button type="button" onclick="app.exitUsersFullScreen()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-all cursor-pointer shadow-xs active:scale-95 group">
+              <svg class="w-3.5 h-3.5 text-slate-600 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
               <span>← Back to Dashboard</span>
             </button>
           </div>
@@ -4699,6 +4813,12 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
       </div>
 
     </main>
+
+    <!-- Floating Quick Restore Button when Sidebar is Animated Away -->
+    <button type="button" id="btn-floating-restore-sidebar" onclick="app.exitUsersFullScreen()" class="hidden fixed left-5 bottom-6 z-40 items-center gap-2 px-4 py-2.5 rounded-full bg-slate-900/90 hover:bg-slate-900 text-white text-xs font-bold shadow-xl backdrop-blur-md border border-slate-700/50 transition-all cursor-pointer active:scale-95 group" title="Exit Full Screen & Restore Sidebar">
+      <svg class="w-4 h-4 text-blue-400 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+      <span>Normal View</span>
+    </button>
   </section>
 
   <!-- ====================================================================== -->
@@ -7071,7 +7191,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
   <script src="js/bcrypt.min.js"></script>
   <script src="js/api.js?v=8"></script>
   <script src="js/audio.js?v=28"></script>
-  <script src="js/app.js?v=102"></script>
+  <script src="js/app.js?v=103"></script>
 
   <!-- Service Worker for Offline PWA Support -->
   <script>

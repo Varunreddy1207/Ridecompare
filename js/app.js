@@ -5808,13 +5808,76 @@ class RideCompareApp {
     }
   }
 
-  switchAdminTab(tabName) {
-    if (window.soundFX && window.soundFX.playTap) {
-      try { window.soundFX.playTap(); } catch (_) {}
+  enterUsersFullScreen() {
+    const screenAdmin = document.getElementById('screen-admin');
+    if (!screenAdmin) return;
+    screenAdmin.classList.add('users-fullscreen');
+
+    const floatBtn = document.getElementById('btn-floating-restore-sidebar');
+    if (floatBtn) {
+      floatBtn.classList.remove('hidden');
+      floatBtn.classList.add('flex');
     }
+
+    const topbarBack = document.getElementById('admin-topbar-back-btn-container');
+    if (topbarBack) {
+      topbarBack.classList.remove('hidden');
+      topbarBack.classList.add('flex');
+    }
+
+    const titleEl = document.getElementById('admin-dashboard-title');
+    if (titleEl) {
+      titleEl.innerHTML = 'Users &amp; Live Sessions <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 align-middle ml-2">Full Screen</span>';
+    }
+  }
+
+  exitUsersFullScreen(returnToDashboard = true) {
+    const screenAdmin = document.getElementById('screen-admin');
+    if (screenAdmin) {
+      screenAdmin.classList.remove('users-fullscreen');
+    }
+
+    const floatBtn = document.getElementById('btn-floating-restore-sidebar');
+    if (floatBtn) {
+      floatBtn.classList.add('hidden');
+      floatBtn.classList.remove('flex');
+    }
+
+    const topbarBack = document.getElementById('admin-topbar-back-btn-container');
+    if (topbarBack) {
+      topbarBack.classList.add('hidden');
+      topbarBack.classList.remove('flex');
+    }
+
+    const titleEl = document.getElementById('admin-dashboard-title');
+    if (titleEl) {
+      titleEl.textContent = 'Admin Dashboard';
+    }
+
+    if (returnToDashboard) {
+      this.switchAdminTab('dashboard', false);
+    }
+  }
+
+  toggleAdminUsersTab() {
+    const screenAdmin = document.getElementById('screen-admin');
+    const isFullScreen = screenAdmin && screenAdmin.classList.contains('users-fullscreen');
+    const isUsersTab = this.currentAdminTab === 'users';
+
+    if (isFullScreen || isUsersTab) {
+      // User clicked "User" again! Return to normal position!
+      this.exitUsersFullScreen(true);
+    } else {
+      // User clicked "User" -> extend to full screen!
+      this.switchAdminTab('users', true);
+    }
+  }
+
+  switchAdminTab(tabName, triggerFullScreen = true) {
+    this.currentAdminTab = tabName;
     const navItems = document.querySelectorAll('.admin-nav-item');
     navItems.forEach(item => {
-      const isMatch = item.getAttribute('onclick')?.includes(`'${tabName}'`);
+      const isMatch = item.id === `admin-nav-${tabName}` || item.getAttribute('onclick')?.includes(`'${tabName}'`);
       item.classList.toggle('active', !!isMatch);
       if (isMatch) {
         item.classList.add('bg-[#2563EB]', 'text-white');
@@ -5831,13 +5894,16 @@ class RideCompareApp {
       if (dashboardPanel) dashboardPanel.classList.add('hidden');
       if (usersPanel) usersPanel.classList.remove('hidden');
       this.loadDashboardLiveData(true);
+      if (triggerFullScreen) {
+        this.enterUsersFullScreen();
+      }
     } else {
       if (usersPanel) usersPanel.classList.add('hidden');
       if (dashboardPanel) dashboardPanel.classList.remove('hidden');
-    }
-
-    if (tabName !== 'dashboard') {
-      this.showToast(`Admin: ${tabName.charAt(0).toUpperCase() + tabName.slice(1)} view loaded`, 'info');
+      const screenAdmin = document.getElementById('screen-admin');
+      if (screenAdmin && screenAdmin.classList.contains('users-fullscreen')) {
+        this.exitUsersFullScreen(false);
+      }
     }
   }
 
