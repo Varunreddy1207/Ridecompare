@@ -5800,10 +5800,13 @@ class RideCompareApp {
     }
   }
 
-  enterUsersFullScreen() {
+  enterAdminFullScreen(tabName = 'users') {
     const screenAdmin = document.getElementById('screen-admin');
     if (!screenAdmin) return;
-    screenAdmin.classList.add('users-fullscreen');
+    screenAdmin.classList.add('admin-fullscreen');
+    if (tabName === 'users') {
+      screenAdmin.classList.add('users-fullscreen');
+    }
 
     const topbarBack = document.getElementById('admin-topbar-back-btn-container');
     if (topbarBack) {
@@ -5812,14 +5815,29 @@ class RideCompareApp {
     }
 
     const titleEl = document.getElementById('admin-dashboard-title');
+    const subtitleEl = document.getElementById('admin-dashboard-subtitle');
+    const titles = {
+      users: { title: 'Users & Live Sessions', sub: 'Active user accounts, device sessions, location & activity.' },
+      rides: { title: 'Rides & Dispatch', sub: 'Live active rides, completed bookings and driver allocation.' },
+      comparisons: { title: 'Fare Comparisons', sub: 'Real-time multi-provider fare comparisons and price tracking.' },
+      analytics: { title: 'Analytics Overview', sub: 'Comprehensive platform statistics, conversion rates & volume.' },
+      logs: { title: 'System Logs', sub: 'Monitor system activity, errors and events across all microservices.' },
+      settings: { title: 'Platform Settings', sub: 'System configuration, provider integrations and API thresholds.' }
+    };
+
+    const info = titles[tabName] || { title: tabName.charAt(0).toUpperCase() + tabName.slice(1), sub: 'Admin Management Panel' };
     if (titleEl) {
-      titleEl.innerHTML = 'Users &amp; Live Sessions <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 align-middle ml-2">Full Screen</span>';
+      titleEl.innerHTML = `${info.title} <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 align-middle ml-2">Full Screen</span>`;
+    }
+    if (subtitleEl) {
+      subtitleEl.textContent = info.sub;
     }
   }
 
-  exitUsersFullScreen(returnToDashboard = true) {
+  exitAdminFullScreen(returnToDashboard = true) {
     const screenAdmin = document.getElementById('screen-admin');
     if (screenAdmin) {
+      screenAdmin.classList.remove('admin-fullscreen');
       screenAdmin.classList.remove('users-fullscreen');
     }
 
@@ -5833,23 +5851,48 @@ class RideCompareApp {
     if (titleEl) {
       titleEl.textContent = 'Admin Dashboard';
     }
+    const subtitleEl = document.getElementById('admin-dashboard-subtitle');
+    if (subtitleEl) {
+      subtitleEl.textContent = 'Monitor, manage and keep RideCompare running smoothly.';
+    }
 
     if (returnToDashboard) {
       this.switchAdminTab('dashboard', false);
     }
   }
 
-  toggleAdminUsersTab() {
-    const screenAdmin = document.getElementById('screen-admin');
-    const isFullScreen = screenAdmin && screenAdmin.classList.contains('users-fullscreen');
-    const isUsersTab = this.currentAdminTab === 'users';
+  enterUsersFullScreen() {
+    this.enterAdminFullScreen('users');
+  }
 
-    if (isFullScreen || isUsersTab) {
-      // User clicked "User" again! Return to normal position!
-      this.exitUsersFullScreen(true);
+  exitUsersFullScreen(returnToDashboard = true) {
+    this.exitAdminFullScreen(returnToDashboard);
+  }
+
+  toggleAdminUsersTab() {
+    this.toggleAdminTab('users');
+  }
+
+  toggleAdminTab(tabName) {
+    const screenAdmin = document.getElementById('screen-admin');
+    const isFullScreen = screenAdmin && (screenAdmin.classList.contains('admin-fullscreen') || screenAdmin.classList.contains('users-fullscreen'));
+    const isSameTab = this.currentAdminTab === tabName;
+
+    if (tabName === 'dashboard') {
+      if (isFullScreen || this.currentAdminTab !== 'dashboard') {
+        this.exitAdminFullScreen(true);
+      } else {
+        this.switchAdminTab('dashboard', false);
+      }
+      return;
+    }
+
+    if (isFullScreen && isSameTab) {
+      // User clicked active tab again: toggle back to normal layout!
+      this.exitAdminFullScreen(true);
     } else {
-      // User clicked "User" -> extend to full screen!
-      this.switchAdminTab('users', true);
+      // Expand to full screen with smooth animation
+      this.switchAdminTab(tabName, true);
     }
   }
 
@@ -5868,29 +5911,144 @@ class RideCompareApp {
       }
     });
 
-    const dashboardPanel = document.getElementById('admin-panel-dashboard');
-    const usersPanel = document.getElementById('admin-panel-users');
-    if (tabName === 'users') {
-      if (dashboardPanel) dashboardPanel.classList.add('hidden');
-      if (usersPanel) usersPanel.classList.remove('hidden');
+    const allPanels = ['dashboard', 'users', 'comparisons', 'analytics', 'logs', 'rides', 'settings'];
+    allPanels.forEach(p => {
+      const el = document.getElementById(`admin-panel-${p}`);
+      if (el) {
+        if (p === tabName) {
+          el.classList.remove('hidden');
+        } else {
+          el.classList.add('hidden');
+        }
+      }
+    });
+
+    if (tabName === 'users' || tabName === 'dashboard') {
       this.loadDashboardLiveData(true);
-      if (triggerFullScreen) {
-        this.enterUsersFullScreen();
-      }
-    } else {
-      if (usersPanel) usersPanel.classList.add('hidden');
-      if (dashboardPanel) dashboardPanel.classList.remove('hidden');
+    }
+
+    if (tabName === 'dashboard') {
       const screenAdmin = document.getElementById('screen-admin');
-      if (screenAdmin && screenAdmin.classList.contains('users-fullscreen')) {
-        this.exitUsersFullScreen(false);
+      if (screenAdmin && (screenAdmin.classList.contains('admin-fullscreen') || screenAdmin.classList.contains('users-fullscreen'))) {
+        this.exitAdminFullScreen(false);
       }
+    } else if (triggerFullScreen) {
+      this.enterAdminFullScreen(tabName);
     }
   }
 
-  switchDevTab(tabName) {
+  showAdminLogDetail(level, service, message, reqId, status) {
+    const badgeEl = document.getElementById('log-detail-badge');
+    const timeEl = document.getElementById('log-detail-time');
+    const serviceEl = document.getElementById('log-detail-service');
+    const msgEl = document.getElementById('log-detail-msg');
+    const reqEl = document.getElementById('log-detail-req');
+    const statusEl = document.getElementById('log-detail-status');
+
+    if (badgeEl) {
+      badgeEl.textContent = level;
+      if (level === 'ERROR') {
+        badgeEl.className = 'px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 font-bold text-[10px]';
+      } else if (level === 'WARN') {
+        badgeEl.className = 'px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 font-bold text-[10px]';
+      } else {
+        badgeEl.className = 'px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-bold text-[10px]';
+      }
+    }
+
+    const now = new Date();
+    if (timeEl) timeEl.textContent = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' ' + now.toLocaleTimeString('en-US', { hour12: false });
+    if (serviceEl) serviceEl.textContent = service;
+    if (msgEl) {
+      msgEl.textContent = message;
+      msgEl.className = (level === 'ERROR') ? 'font-semibold text-rose-600 text-right' : 'font-semibold text-slate-800 text-right';
+    }
+    if (reqEl) reqEl.textContent = reqId;
+    if (statusEl) {
+      statusEl.textContent = status;
+      statusEl.className = (status >= 400) ? 'px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 font-bold text-[10px]' : 'px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-bold text-[10px]';
+    }
+  }
+
+  enterDevFullScreen(tabName = 'playground') {
+    const screenDev = document.getElementById('screen-developer');
+    if (!screenDev) return;
+    screenDev.classList.add('dev-fullscreen');
+
+    const topbarBack = document.getElementById('dev-topbar-back-btn-container');
+    if (topbarBack) {
+      topbarBack.classList.remove('hidden');
+      topbarBack.classList.add('flex');
+    }
+
+    const titleEl = document.getElementById('dev-dashboard-title');
+    const subtitleEl = document.getElementById('dev-dashboard-subtitle');
+    const titles = {
+      playground: { title: 'API Playground', sub: 'Interactive sandbox to test RideCompare query and booking endpoints.' },
+      status: { title: 'System Status Console', sub: 'Real-time telemetry, provider health checks and operational state.' },
+      devices: { title: 'Device & UI Preview Simulator', sub: 'Multi-screen responsive viewport emulator across laptop, tablet & mobile.' },
+      users: { title: 'Developer Live Users & Sessions', sub: 'Real-time active client connections and authentication states.' },
+      docs: { title: 'API & SDK Documentation', sub: 'Comprehensive guides, code examples and REST API reference.' },
+      keys: { title: 'API Keys & Secrets', sub: 'Manage production, staging and development API credentials.' },
+      logs: { title: 'Developer Traces & Logs', sub: 'Low-level API telemetry, payload traces and request latency logs.' },
+      webhooks: { title: 'Webhooks & Event Streams', sub: 'Configure event dispatch endpoints and inspect delivered events.' },
+      settings: { title: 'Developer Configuration', sub: 'Sandbox configurations, rate limit thresholds and sandbox credentials.' }
+    };
+
+    const info = titles[tabName] || { title: tabName.charAt(0).toUpperCase() + tabName.slice(1), sub: 'Developer Panel' };
+    if (titleEl) {
+      titleEl.innerHTML = `${info.title} <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 align-middle ml-2">Full Screen</span>`;
+    }
+    if (subtitleEl) {
+      subtitleEl.textContent = info.sub;
+    }
+  }
+
+  exitDevFullScreen(returnToPlayground = false) {
+    const screenDev = document.getElementById('screen-developer');
+    if (screenDev) {
+      screenDev.classList.remove('dev-fullscreen');
+    }
+
+    const topbarBack = document.getElementById('dev-topbar-back-btn-container');
+    if (topbarBack) {
+      topbarBack.classList.add('hidden');
+      topbarBack.classList.remove('flex');
+    }
+
+    const titleEl = document.getElementById('dev-dashboard-title');
+    if (titleEl) {
+      titleEl.textContent = 'Developer Dashboard';
+    }
+    const subtitleEl = document.getElementById('dev-dashboard-subtitle');
+    if (subtitleEl) {
+      subtitleEl.textContent = 'Build, test and integrate with RideCompare APIs.';
+    }
+
+    if (returnToPlayground) {
+      this.switchDevTab('playground', false);
+    }
+  }
+
+  toggleDevTab(tabName) {
+    const screenDev = document.getElementById('screen-developer');
+    const isFullScreen = screenDev && screenDev.classList.contains('dev-fullscreen');
+    const isSameTab = this.currentDevTab === tabName;
+
+    if (isFullScreen && isSameTab) {
+      // User clicked active tab again: animate sidebar back in!
+      this.exitDevFullScreen(false);
+    } else {
+      // Switch tab and slide sidebar out into full screen!
+      this.switchDevTab(tabName, true);
+    }
+  }
+
+  switchDevTab(tabName, triggerFullScreen = true) {
     if (window.soundFX && window.soundFX.playTap) {
       try { window.soundFX.playTap(); } catch (_) {}
     }
+    this.currentDevTab = tabName;
     const navItems = document.querySelectorAll('.dev-nav-item');
     navItems.forEach(item => {
       const isMatch = item.id === `dev-tab-${tabName}` || item.getAttribute('onclick')?.includes(`'${tabName}'`);
@@ -5913,35 +6071,36 @@ class RideCompareApp {
       }
     });
 
-    const playgroundPanel = document.getElementById('dev-panel-playground');
-    const statusPanel = document.getElementById('dev-panel-status');
-    const devicesPanel = document.getElementById('dev-panel-devices');
-    const usersPanel = document.getElementById('dev-panel-users');
-
-    if (playgroundPanel) playgroundPanel.classList.add('hidden');
-    if (statusPanel) statusPanel.classList.add('hidden');
-    if (devicesPanel) devicesPanel.classList.add('hidden');
-    if (usersPanel) usersPanel.classList.add('hidden');
+    const allDevPanels = ['playground', 'status', 'devices', 'users', 'docs', 'keys', 'logs', 'webhooks', 'settings'];
+    allDevPanels.forEach(p => {
+      const el = document.getElementById(`dev-panel-${p}`);
+      if (el) {
+        if (p === tabName) {
+          el.classList.remove('hidden');
+        } else {
+          el.classList.add('hidden');
+        }
+      }
+    });
 
     if (tabName === 'status') {
-      if (statusPanel) statusPanel.classList.remove('hidden');
       this.initSystemStatus();
     } else if (tabName === 'devices') {
-      if (devicesPanel) {
-        devicesPanel.classList.remove('hidden');
-        if (window.innerWidth < 1024) {
-          setTimeout(() => {
-            devicesPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }, 100);
-        }
+      const devicesPanel = document.getElementById('dev-panel-devices');
+      if (devicesPanel && window.innerWidth < 1024) {
+        setTimeout(() => {
+          devicesPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
       }
       this.initDeviceInspector();
     } else if (tabName === 'users') {
-      if (usersPanel) usersPanel.classList.remove('hidden');
       this.loadDashboardLiveData(true);
-    } else {
-      if (playgroundPanel) playgroundPanel.classList.remove('hidden');
+    } else if (tabName === 'playground') {
       this.loadDashboardLiveData(true);
+    }
+
+    if (triggerFullScreen) {
+      this.enterDevFullScreen(tabName);
     }
 
     if (tabName !== 'playground') {
