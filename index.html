@@ -51,7 +51,7 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4LfkJpAF7Ggz83bF--j3vPztxlzrxPxg&libraries=places,geometry" async defer></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=81">
+  <link rel="stylesheet" href="css/styles.css?v=82">
 
   <style>
     /* Strict Responsive Display Rules: Bottom Nav for Mobile & Tablet (< 1024px) */
@@ -7631,13 +7631,13 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
   </div>
 
   <!-- LOGOUT CONFIRMATION MODAL -->
-  <div id="logout-confirm-modal" onclick="if(event.target === this) app.closeLogoutConfirmModal()" class="fixed inset-0 z-[2600] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300">
+  <div id="logout-confirm-modal" onclick="if(event.target === this) app.closeLogoutConfirmModal()" class="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300">
     <div class="logout-modal-panel w-full max-w-[340px] sm:max-w-sm bg-[#0A1124] border border-slate-700/80 rounded-[28px] p-6 sm:p-7 shadow-2xl relative text-center text-white transform scale-95 transition-all duration-300">
       <div class="logout-icon-circle w-14 h-14 rounded-full bg-red-500/15 border border-red-500/30 flex items-center justify-center mx-auto mb-4 text-red-400">
         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
       </div>
       <h3 class="logout-modal-title text-xl font-bold tracking-tight">Log Out</h3>
-      <p class="logout-modal-sub text-sm text-slate-300 mt-1.5 leading-relaxed">Are you sure you want to log out?</p>
+      <p class="logout-modal-sub text-sm text-slate-300 mt-1.5 leading-relaxed">Are you sure to logout?</p>
       <div class="mt-6 flex items-center gap-3">
         <button type="button" onclick="app.closeLogoutConfirmModal()" class="btn-logout-no flex-1 py-3 px-4 rounded-2xl border border-slate-700/80 hover:bg-slate-800 text-slate-300 text-sm font-semibold transition-all cursor-pointer active:scale-95">No</button>
         <button type="button" onclick="app.confirmLogout()" class="btn-logout-yes flex-1 py-3 px-4 rounded-2xl bg-red-600 hover:bg-red-500 text-white text-sm font-bold shadow-[0_4px_16px_rgba(220,38,38,0.4)] transition-all cursor-pointer active:scale-95">Yes</button>
@@ -7992,7 +7992,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
   <script src="js/bcrypt.min.js"></script>
   <script src="js/api.js?v=8"></script>
   <script src="js/audio.js?v=28"></script>
-  <script src="js/app.js?v=111"></script>
+  <script src="js/app.js?v=112"></script>
 
   <!-- Service Worker for Offline PWA Support -->
   <script>

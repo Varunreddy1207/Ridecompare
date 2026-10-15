@@ -5371,8 +5371,9 @@ class RideCompareApp {
   // Log Out Action - Opens the Confirmation Modal
   logout() {
     if (window.soundFX && window.soundFX.playTap) {
-      window.soundFX.playTap();
+      try { window.soundFX.playTap(); } catch (_) {}
     }
+    this.isLoggingOutAdmin = (this.currentScreen === 'screen-admin' || this.currentScreen === 'screen-developer');
     this.openLogoutConfirmModal();
   }
 
@@ -5388,8 +5389,9 @@ class RideCompareApp {
 
   closeLogoutConfirmModal() {
     if (window.soundFX && window.soundFX.playTap) {
-      window.soundFX.playTap();
+      try { window.soundFX.playTap(); } catch (_) {}
     }
+    this.isLoggingOutAdmin = false;
     const modal = document.getElementById('logout-confirm-modal');
     if (modal) {
       modal.classList.remove('show');
@@ -5397,7 +5399,14 @@ class RideCompareApp {
   }
 
   async confirmLogout() {
+    const wasAdmin = this.isLoggingOutAdmin || this.currentScreen === 'screen-admin' || this.currentScreen === 'screen-developer';
     this.closeLogoutConfirmModal();
+
+    if (wasAdmin) {
+      this.performAdminLogout();
+      return;
+    }
+
     const name = (this.userProfile && this.userProfile.name && this.userProfile.name !== 'Guest User') ? this.userProfile.name : 'User';
 
     // 1. Invalidate API and auth tokens
@@ -5744,7 +5753,11 @@ class RideCompareApp {
     if (window.soundFX && window.soundFX.playTap) {
       try { window.soundFX.playTap(); } catch (_) {}
     }
+    this.isLoggingOutAdmin = true;
+    this.openLogoutConfirmModal();
+  }
 
+  performAdminLogout() {
     // 1. Invalidate and clear admin session authorization
     sessionStorage.removeItem('ridecompare_admin_access');
     localStorage.removeItem('ridecompare_admin_access');
@@ -5762,7 +5775,9 @@ class RideCompareApp {
     if (adminPassInp) adminPassInp.value = '';
     const adminErr = document.getElementById('admin-login-error');
     if (adminErr) adminErr.classList.add('hidden');
-    this.closeAdminLoginModal();
+    if (typeof this.closeAdminLoginModal === 'function') {
+      this.closeAdminLoginModal();
+    }
 
     // 4. Reset admin profile flag if applicable
     if (this.userProfile && this.userProfile.isAdmin) {
@@ -5773,9 +5788,13 @@ class RideCompareApp {
 
     // 5. Navigate away from Admin/Developer screens to Home base
     this.currentTab = 'home';
-    this.hideResultsPanel(true);
+    if (typeof this.hideResultsPanel === 'function') {
+      this.hideResultsPanel(true);
+    }
     this.navigateTo('screen-home', false);
-    this.enforceResponsiveNav();
+    if (typeof this.enforceResponsiveNav === 'function') {
+      this.enforceResponsiveNav();
+    }
 
     // 6. Update URL route to #login
     try {
@@ -5786,8 +5805,10 @@ class RideCompareApp {
 
     // 7. Open the Login Modal directly
     setTimeout(() => {
-      this.openAuthModal('login');
-      this.showToast('Logged out from Admin Dashboard. Please log in to continue. 👋', 'info');
+      if (typeof this.openAuthModal === 'function') {
+        this.openAuthModal('login');
+      }
+      this.showToast('Logged out from Dashboard. Please log in to continue. 👋', 'info');
     }, 100);
   }
 
