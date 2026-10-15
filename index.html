@@ -51,7 +51,7 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4LfkJpAF7Ggz83bF--j3vPztxlzrxPxg&libraries=places,geometry" async defer></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=80">
+  <link rel="stylesheet" href="css/styles.css?v=81">
 
   <style>
     /* Strict Responsive Display Rules: Bottom Nav for Mobile & Tablet (< 1024px) */
@@ -4383,12 +4383,6 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
             <span class="hidden sm:inline">Sync Live Data</span>
           </button>
 
-          <!-- Device Preview Quick Button -->
-          <button type="button" onclick="app.toggleAdminTab('devices')" id="btn-admin-quick-device-preview" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 font-bold text-xs shadow-xs transition-all cursor-pointer active:scale-95" title="Preview Laptop, Tablet & Mobile Views">
-            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2zM9 3h6"/></svg>
-            <span class="hidden sm:inline">Device Preview</span>
-          </button>
-
           <!-- Switch to Developer Dashboard button -->
           <button type="button" onclick="app.switchToDeveloperDashboard()" id="btn-switch-to-dev" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-600 font-bold text-xs shadow-sm transition-all cursor-pointer active:scale-95" title="Switch to Developer Dashboard">
             <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
@@ -4413,10 +4407,6 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
 
             <!-- Dropdown Menu -->
             <div id="admin-user-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-2xl shadow-xl py-1.5 z-30 text-xs">
-              <button type="button" onclick="app.toggleAdminTab('devices')" class="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 font-medium flex items-center gap-2">
-                <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2zM9 3h6"/></svg>
-                <span>Device &amp; UI Preview</span>
-              </button>
               <button type="button" onclick="app.switchToDeveloperDashboard()" class="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 font-medium flex items-center gap-2">
                 <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
                 <span>Developer Dashboard</span>
@@ -5570,6 +5560,12 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
             <span>System Status</span>
           </button>
 
+          <button type="button" onclick="app.toggleDevTab('devices')" id="dev-tab-devices" class="dev-nav-item w-full px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2zM9 3h6"/></svg>
+            <span>Device &amp; UI Preview</span>
+            <span class="ml-auto px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-100 text-blue-700">Simulator</span>
+          </button>
+
           <button type="button" onclick="app.toggleDevTab('users')" id="dev-tab-users" class="dev-nav-item w-full px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
             <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
             <span>Live Users &amp; Sessions</span>
@@ -5637,6 +5633,12 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
             <span class="hidden sm:inline">Sync Live Data</span>
           </button>
 
+          <!-- Device Preview Quick Button -->
+          <button type="button" onclick="app.switchDevTab('devices')" id="btn-quick-device-preview" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 font-bold text-xs shadow-xs transition-all cursor-pointer active:scale-95" title="Preview Laptop, Tablet & Mobile Views">
+            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2zM9 3h6"/></svg>
+            <span class="hidden sm:inline">Device Preview</span>
+          </button>
+
           <!-- Switch to Admin Dashboard button -->
           <button type="button" onclick="app.switchToAdminDashboard()" id="btn-switch-to-admin" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-600 font-bold text-xs shadow-sm transition-all cursor-pointer active:scale-95" title="Switch to Admin Dashboard">
             <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
@@ -5661,6 +5663,10 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
 
             <!-- Dropdown Menu -->
             <div id="dev-user-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-2xl shadow-xl py-1.5 z-30 text-xs">
+              <button type="button" onclick="app.switchDevTab('devices')" class="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 font-medium flex items-center gap-2">
+                <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2zM9 3h6"/></svg>
+                <span>Device &amp; UI Preview</span>
+              </button>
               <button type="button" onclick="app.switchToAdminDashboard()" class="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 font-medium flex items-center gap-2">
                 <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                 <span>Admin Dashboard</span>
@@ -7986,7 +7992,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
   <script src="js/bcrypt.min.js"></script>
   <script src="js/api.js?v=8"></script>
   <script src="js/audio.js?v=28"></script>
-  <script src="js/app.js?v=110"></script>
+  <script src="js/app.js?v=111"></script>
 
   <!-- Service Worker for Offline PWA Support -->
   <script>
