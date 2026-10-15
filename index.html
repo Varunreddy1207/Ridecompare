@@ -51,7 +51,7 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4LfkJpAF7Ggz83bF--j3vPztxlzrxPxg&libraries=places,geometry" async defer></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=77">
+  <link rel="stylesheet" href="css/styles.css?v=78">
 
   <style>
     /* Strict Responsive Display Rules: Bottom Nav for Mobile & Tablet (< 1024px) */
@@ -4348,7 +4348,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
           </button>
 
           <!-- Direct Device & UI Preview Option in Admin Dashboard -->
-          <button type="button" onclick="window.app.switchToDevDevicePreview()" id="admin-tab-devices" class="admin-nav-item w-full px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer" title="Preview App in Laptop, Tablet & Mobile Views">
+          <button type="button" onclick="app.toggleAdminTab('devices')" id="admin-tab-devices" class="admin-nav-item w-full px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer" title="Preview App in Laptop, Tablet & Mobile Views">
             <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2zM9 3h6"/></svg>
             <span>Device &amp; UI Preview</span>
             <span class="ml-auto px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-100 text-blue-700">Simulator</span>
@@ -4391,7 +4391,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
           </button>
 
           <!-- Device Preview Quick Button in Admin Header -->
-          <button type="button" onclick="window.app.switchToDevDevicePreview()" id="btn-admin-quick-device-preview" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 font-bold text-xs shadow-xs transition-all cursor-pointer active:scale-95" title="Preview Laptop, Tablet & Mobile Views">
+          <button type="button" onclick="app.toggleAdminTab('devices')" id="btn-admin-quick-device-preview" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 font-bold text-xs shadow-xs transition-all cursor-pointer active:scale-95" title="Preview Laptop, Tablet & Mobile Views">
             <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2zM9 3h6"/></svg>
             <span class="hidden sm:inline">Device Preview</span>
           </button>
@@ -4420,7 +4420,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
 
             <!-- Dropdown Menu -->
             <div id="admin-user-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-2xl shadow-xl py-1.5 z-30 text-xs">
-              <button type="button" onclick="window.app.switchToDevDevicePreview()" class="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 font-medium flex items-center gap-2">
+              <button type="button" onclick="app.toggleAdminTab('devices')" class="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 font-medium flex items-center gap-2">
                 <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2zM9 3h6"/></svg>
                 <span>Device &amp; UI Preview</span>
               </button>
@@ -5540,6 +5540,9 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
         </div>
       </div>
 
+      <!-- ADMIN TAB 8: DEVICE & UI PREVIEW SIMULATOR PANEL -->
+      <div id="admin-panel-devices" class="hidden space-y-6 admin-panel-expanded"></div>
+
     </main>
   </section>
 
@@ -6507,7 +6510,8 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
       </div>
 
       <!-- DEV TAB 3: RESPONSIVE DEVICE & UI PERFECTION INSPECTOR -->
-      <div id="dev-panel-devices" class="hidden space-y-6">
+      <div id="dev-devices-slot">
+        <div id="dev-panel-devices" class="hidden space-y-6">
 
         <!-- TOP HEADER & CONTROLS BANNER -->
         <div id="dev-device-inspector-header" class="dev-device-inspector-sticky sticky top-0 z-50 bg-white rounded-2xl border border-slate-200/90 shadow-[0_1px_3px_rgba(0,0,0,0.05)] p-5 sm:p-6 flex flex-col xl:flex-row items-start xl:items-center justify-between gap-4">
@@ -6786,7 +6790,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
         </div>
 
       </div>
-
+      </div>
 
       <!-- DEV TAB 5: DOCUMENTATION -->
       <div id="dev-panel-docs" class="hidden space-y-6 dev-panel-expanded">
@@ -8005,7 +8009,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
   <script src="js/bcrypt.min.js"></script>
   <script src="js/api.js?v=8"></script>
   <script src="js/audio.js?v=28"></script>
-  <script src="js/app.js?v=107"></script>
+  <script src="js/app.js?v=108"></script>
 
   <!-- Service Worker for Offline PWA Support -->
   <script>

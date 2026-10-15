@@ -5725,6 +5725,11 @@ class RideCompareApp {
     const devMenu = document.getElementById('dev-user-dropdown');
     if (devMenu) devMenu.classList.add('hidden');
 
+    if (this.currentScreen === 'screen-admin') {
+      this.toggleAdminTab('devices');
+      return;
+    }
+
     this.navigateTo('screen-developer', false);
     this.switchDevTab('devices');
     try {
@@ -5822,7 +5827,8 @@ class RideCompareApp {
       comparisons: { title: 'Fare Comparisons', sub: 'Real-time multi-provider fare comparisons and price tracking.' },
       analytics: { title: 'Analytics Overview', sub: 'Comprehensive platform statistics, conversion rates & volume.' },
       logs: { title: 'System Logs', sub: 'Monitor system activity, errors and events across all microservices.' },
-      settings: { title: 'Platform Settings', sub: 'System configuration, provider integrations and API thresholds.' }
+      settings: { title: 'Platform Settings', sub: 'System configuration, provider integrations and API thresholds.' },
+      devices: { title: 'Device & UI Preview Simulator', sub: 'Preview and test RideCompare across Laptop, Tablet & Mobile views.' }
     };
 
     const info = titles[tabName] || { title: tabName.charAt(0).toUpperCase() + tabName.slice(1), sub: 'Admin Management Panel' };
@@ -5900,18 +5906,27 @@ class RideCompareApp {
     this.currentAdminTab = tabName;
     const navItems = document.querySelectorAll('.admin-nav-item');
     navItems.forEach(item => {
-      const isMatch = item.id === `admin-nav-${tabName}` || item.getAttribute('onclick')?.includes(`'${tabName}'`);
+      const isMatch = item.id === `admin-nav-${tabName}` || item.id === `admin-tab-${tabName}` || item.getAttribute('onclick')?.includes(`'${tabName}'`);
       item.classList.toggle('active', !!isMatch);
+      const icon = item.querySelector('svg');
       if (isMatch) {
         item.classList.add('bg-[#2563EB]', 'text-white');
         item.classList.remove('text-slate-600', 'hover:bg-slate-100');
+        if (icon) {
+          icon.classList.remove('text-slate-400');
+          icon.classList.add('text-white');
+        }
       } else {
         item.classList.remove('bg-[#2563EB]', 'text-white');
         item.classList.add('text-slate-600', 'hover:bg-slate-100');
+        if (icon) {
+          icon.classList.add('text-slate-400');
+          icon.classList.remove('text-white');
+        }
       }
     });
 
-    const allPanels = ['dashboard', 'users', 'comparisons', 'analytics', 'logs', 'rides', 'settings'];
+    const allPanels = ['dashboard', 'users', 'comparisons', 'analytics', 'logs', 'rides', 'settings', 'devices'];
     allPanels.forEach(p => {
       const el = document.getElementById(`admin-panel-${p}`);
       if (el) {
@@ -5923,7 +5938,19 @@ class RideCompareApp {
       }
     });
 
-    if (tabName === 'users' || tabName === 'dashboard') {
+    if (tabName === 'devices') {
+      this.mountDeviceInspector('admin');
+      const devPanelDevices = document.getElementById('dev-panel-devices');
+      if (devPanelDevices) {
+        devPanelDevices.classList.remove('hidden');
+        if (window.innerWidth < 1024) {
+          setTimeout(() => {
+            devPanelDevices.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 100);
+        }
+      }
+      this.initDeviceInspector();
+    } else if (tabName === 'users' || tabName === 'dashboard') {
       this.loadDashboardLiveData(true);
     }
 
@@ -6004,6 +6031,27 @@ class RideCompareApp {
     }
   }
 
+  mountDeviceInspector(targetDashboard = 'dev') {
+    const inspector = document.getElementById('dev-panel-devices');
+    if (!inspector) return;
+    if (targetDashboard === 'admin') {
+      const adminContainer = document.getElementById('admin-panel-devices');
+      if (adminContainer && inspector.parentElement !== adminContainer) {
+        adminContainer.appendChild(inspector);
+      }
+    } else {
+      const devSlot = document.getElementById('dev-devices-slot') || document.getElementById('dev-main-scroll');
+      if (devSlot && inspector.parentElement !== devSlot) {
+        const docsPanel = document.getElementById('dev-panel-docs');
+        if (docsPanel && docsPanel.parentElement === devSlot) {
+          devSlot.insertBefore(inspector, docsPanel);
+        } else {
+          devSlot.appendChild(inspector);
+        }
+      }
+    }
+  }
+
   exitDevFullScreen(returnToPlayground = false) {
     const screenDev = document.getElementById('screen-developer');
     if (screenDev) {
@@ -6023,6 +6071,13 @@ class RideCompareApp {
     const subtitleEl = document.getElementById('dev-dashboard-subtitle');
     if (subtitleEl) {
       subtitleEl.textContent = 'Build, test and integrate with RideCompare APIs.';
+    }
+
+    if (this.devPreviewOpenedFromAdmin) {
+      this.devPreviewOpenedFromAdmin = false;
+      this.navigateTo('screen-admin', false);
+      this.exitAdminFullScreen(true);
+      return;
     }
 
     if (returnToPlayground) {
@@ -6086,11 +6141,15 @@ class RideCompareApp {
     if (tabName === 'status') {
       this.initSystemStatus();
     } else if (tabName === 'devices') {
+      this.mountDeviceInspector('dev');
       const devicesPanel = document.getElementById('dev-panel-devices');
-      if (devicesPanel && window.innerWidth < 1024) {
-        setTimeout(() => {
-          devicesPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
+      if (devicesPanel) {
+        devicesPanel.classList.remove('hidden');
+        if (window.innerWidth < 1024) {
+          setTimeout(() => {
+            devicesPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 100);
+        }
       }
       this.initDeviceInspector();
     } else if (tabName === 'users') {
