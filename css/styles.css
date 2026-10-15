@@ -948,8 +948,9 @@ body:has(#screen-developer.active) .tablet-nav-dock {
    LIVE REAL-TIME LEAFLET RESULTS MAP COMPONENT
    ========================================================================== */
 #results-live-leaflet-map,
-#booking-live-leaflet-map {
-  background: #070D1E;
+#booking-live-leaflet-map,
+#drop-picker-leaflet-map {
+  background: #EEF2F6 !important;
   width: 100% !important;
   height: 100% !important;
   position: absolute !important;
@@ -957,10 +958,16 @@ body:has(#screen-developer.active) .tablet-nav-dock {
   z-index: 1 !important;
 }
 
+body #results-live-leaflet-map,
+body #booking-live-leaflet-map,
+body #drop-picker-leaflet-map,
+body.theme-dark #results-live-leaflet-map,
+body.theme-dark #booking-live-leaflet-map,
+body.theme-dark #drop-picker-leaflet-map,
 body:not(.theme-dark) #results-live-leaflet-map,
 body:not(.theme-dark) #booking-live-leaflet-map,
 body.theme-light #booking-live-leaflet-map {
-  background: #EEF2F6;
+  background: #EEF2F6 !important;
 }
 
 #results-live-leaflet-map .leaflet-pane,

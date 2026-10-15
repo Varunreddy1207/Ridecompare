@@ -442,10 +442,10 @@ class RideCompareApp {
       localStorage.setItem('ridecompare_theme', 'dark');
       if (metaTheme) metaTheme.setAttribute('content', '#020617');
       if (this.resultsMap && this.resultsTileLayer) {
-        this.resultsTileLayer.setUrl('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}');
+        this.resultsTileLayer.setUrl('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
       }
       if (this.bookingMap && this.bookingTileLayer) {
-        this.bookingTileLayer.setUrl('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}');
+        this.bookingTileLayer.setUrl('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
       }
 
       // Update button accessibility labels
@@ -2927,13 +2927,9 @@ class RideCompareApp {
     const container = document.getElementById('results-live-leaflet-map');
     if (!container) return;
 
-    const isDark = document.body.classList.contains('theme-dark') || 
-                   document.documentElement.getAttribute('data-theme') === 'dark';
-
-    const lightTileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-    const darkTileUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
-    const tileUrl = isDark ? darkTileUrl : lightTileUrl;
-    const subdomains = isDark ? ['server', 'services'] : ['a', 'b', 'c'];
+    // Use vibrant full-color OpenStreetMap across all themes and devices
+    const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    const subdomains = ['a', 'b', 'c'];
 
     if (!this.resultsMap) {
       this.resultsMap = L.map('results-live-leaflet-map', {
@@ -3669,13 +3665,9 @@ class RideCompareApp {
     const container = document.getElementById('booking-live-leaflet-map');
     if (!container) return;
 
-    const isDark = document.body.classList.contains('theme-dark') || 
-                   document.documentElement.getAttribute('data-theme') === 'dark';
-
-    const lightTileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-    const darkTileUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
-    const tileUrl = isDark ? darkTileUrl : lightTileUrl;
-    const subdomains = isDark ? ['server', 'services'] : ['a', 'b', 'c'];
+    // Use vibrant full-color OpenStreetMap across all themes and devices
+    const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    const subdomains = ['a', 'b', 'c'];
 
     if (!this.bookingMap) {
       this.bookingMap = L.map('booking-live-leaflet-map', {
