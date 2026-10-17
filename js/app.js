@@ -56,25 +56,21 @@ const KNOWN_LOCATIONS = [
 
 // Recognized metropolitan & urban hubs where ride-hailing services (cabs, autos, bikes) operate
 const SERVICEABLE_CITY_HUBS = [
-  // 1. Kolhapur Urban Core & Immediate Suburbs (Railway station, CBS, Mahalaxmi, Rajarampuri, Shahupuri, Rankala, Tarabai Park, Bawada, University, DY Patil, MIDCs)
-  { name: 'Kolhapur City', lat: 16.7028, lng: 74.2405, radiusKm: 13.5 },
-  // 2. Sanjay Ghodawat University (SGU) & Atigre Highway Corridor (Official campus partner hub)
-  { name: 'Sanjay Ghodawat University / Atigre', lat: 16.7450, lng: 74.3720, radiusKm: 4.5 },
-  // 3. Ichalkaranji City Center (Textile city hub)
-  { name: 'Ichalkaranji', lat: 16.6965, lng: 74.4628, radiusKm: 6.5 },
-  // 4. Kagal MIDC Five Star Zone (Industrial hub south of Kolhapur)
-  { name: 'Kagal MIDC', lat: 16.5812, lng: 74.3168, radiusKm: 3.5 },
-  // 5. Pune Metropolitan & PCMC (Pune City, Hinjawadi, Kothrud, Viman Nagar, Kharadi, Hadapsar, Baner, Wakad, PCMC)
-  { name: 'Pune & PCMC', lat: 18.5204, lng: 73.8567, radiusKm: 22.0 },
-  // 6. Mumbai Metropolitan Region (MMR, Thane, Navi Mumbai, Island City)
-  { name: 'Mumbai Metropolitan Region', lat: 19.0760, lng: 72.8777, radiusKm: 32.0 },
-  // 7. Sangli & Miraj Urban Limits
-  { name: 'Sangli & Miraj', lat: 16.8524, lng: 74.5815, radiusKm: 9.0 },
-  // 8. Satara City Center
-  { name: 'Satara City', lat: 17.6805, lng: 73.9935, radiusKm: 6.0 },
-  // 9. Belagavi / Belgaum City Center
-  { name: 'Belagavi City', lat: 15.8497, lng: 74.4977, radiusKm: 8.0 },
-  // 10. Major Tier-1 Indian Metros
+  // 1. Kolhapur Urban Core & Municipal Limits (excludes outside rural villages like Rukadi, Atigre, SGU, Tamgaon, Mangaon, etc.)
+  { name: 'Kolhapur City', lat: 16.7028, lng: 74.2405, radiusKm: 9.0 },
+  // 2. Ichalkaranji City Center
+  { name: 'Ichalkaranji', lat: 16.6965, lng: 74.4628, radiusKm: 5.5 },
+  // 3. Pune Metropolitan & PCMC (Pune City, Hinjawadi, Kothrud, Viman Nagar, Kharadi, Hadapsar, Baner, Wakad, PCMC)
+  { name: 'Pune & PCMC', lat: 18.5204, lng: 73.8567, radiusKm: 20.0 },
+  // 4. Mumbai Metropolitan Region (MMR, Thane, Navi Mumbai, Island City)
+  { name: 'Mumbai Metropolitan Region', lat: 19.0760, lng: 72.8777, radiusKm: 30.0 },
+  // 5. Sangli & Miraj Urban Limits
+  { name: 'Sangli & Miraj', lat: 16.8524, lng: 74.5815, radiusKm: 8.0 },
+  // 6. Satara City Center
+  { name: 'Satara City', lat: 17.6805, lng: 73.9935, radiusKm: 5.5 },
+  // 7. Belagavi / Belgaum City Center
+  { name: 'Belagavi City', lat: 15.8497, lng: 74.4977, radiusKm: 7.0 },
+  // 8. Major Tier-1 Indian Metros
   { name: 'Bengaluru', lat: 12.9716, lng: 77.5946, radiusKm: 25.0 },
   { name: 'Delhi NCR', lat: 28.6139, lng: 77.2090, radiusKm: 30.0 },
   { name: 'Hyderabad', lat: 17.3850, lng: 78.4867, radiusKm: 25.0 },
@@ -84,7 +80,10 @@ const SERVICEABLE_CITY_HUBS = [
 
 // Comprehensive dictionary of rural talukas, villages, and remote zones where ride-hailing is unavailable
 const OUTSIDE_CITY_KEYWORDS = [
-  // Kolhapur district rural talukas & villages (outside Kolhapur city hub)
+  // Kolhapur district rural villages & talukas (outside Kolhapur city limits)
+  'rukadi', 'atigre', 'tamgaon', 'mangaon', 'vasagade', 'hatkanangle', 'hatkanangale',
+  'tilwani', 'sangawade', 'valivade', 'mudshingi', 'nigave', 'nigave dumala',
+  'kerli', 'wadange', 'prayag chikhali', 'shinganapur', 'kushire', 'porle', 'asure',
   'gargoti', 'radhanagari', 'gaganbawda', 'gagan bavda', 'bhudargad', 'ajara', 'ajra',
   'chandgad', 'gadhinglaj', 'shahuwadi', 'malkapur', 'dajipur', 'amboli',
   'kasba thana', 'kapashi', 'nesari', 'kadgaon', 'bambavade', 'anuskura', 'chandoli',
@@ -92,7 +91,7 @@ const OUTSIDE_CITY_KEYWORDS = [
   'manoli', 'salwan', 'parite', 'turambe', 'murgud', 'bidri', 'rendal', 'hupari',
   'kurundwad', 'shirol', 'narsingpur', 'khidrapur', 'herwad', 'chikhali',
   'kotoli', 'pissurve', 'bajar bhogaon', 'bhambrade', 'dhangarwada', 'borpadale',
-  'kuditre', 'koparde', 'warananagar', 'kodoli',
+  'kuditre', 'koparde', 'warananagar', 'kodoli', 'peth vadgaon',
   // Maharashtra rural & non-serviced regions
   'shirala', 'islampur', 'tasgaon', 'vita', 'atpadi', 'kavthe mahankal',
   'koregaon', 'khandala', 'wai', 'patan', 'medha', 'mahableshwar', 'panchgani',
@@ -126,7 +125,7 @@ class RideCompareApp {
     this.isLiveGpsActive = false;
     this.dropMap = null;
     this.dropMarker = null;
-    this.selectedDropCoords = { lat: 16.7450, lng: 74.3720 };
+    this.selectedDropCoords = { lat: 16.6946, lng: 74.2238 };
     this.selectedDropName = '';
     this.selectedDropSub = '';
     this.hasDropSelected = false;
@@ -2877,45 +2876,69 @@ class RideCompareApp {
   }
 
   // Determines whether rides (cabs/autos/bikes) are available for a given location or coordinates
+  // Ride options show ONLY when locations are strictly within recognized city urban limits
   isLocationServiceable(name, address = '', coords = null) {
     const raw = `${name || ''} ${address || ''}`.trim();
     const text = raw.toLowerCase();
-    if (!text) return true;
+    if (!text && (!coords || coords.lat == null)) return true;
 
-    // 1. Live GPS / Current Location is always serviceable
-    if (text.includes('current location') || text.includes('your location') || text.includes('live location') || text.includes('live gps')) {
-      return true;
-    }
-
-    // 2. Explicit outside-city / rural check with word boundary matching
+    // 1. Explicit outside-city / rural check with word boundary matching
     if (this.isOutsideCityKeywordMatch(raw)) {
       return false;
     }
 
-    // 3. Direct match with KNOWN_LOCATIONS (if no coordinates or coordinates match)
-    const isDirectKnownMatch = KNOWN_LOCATIONS.some(loc => {
-      const locName = loc.name.toLowerCase();
-      if (text.includes(locName) || locName.includes(text)) {
-        if (locName.includes('panhala')) return false; // Panhala fort is outside city perimeter
-        return true;
-      }
-      return false;
-    });
-    if (isDirectKnownMatch && (!coords || coords.lat == null)) return true;
+    // Resolve coordinates if missing and text refers to current/live location
+    let resolvedCoords = coords;
+    if ((!resolvedCoords || resolvedCoords.lat == null) && 
+        (text.includes('current location') || text.includes('your location') || text.includes('live location') || text.includes('live gps'))) {
+      resolvedCoords = this.pickupCoords || this.userCoords || this.currentLiveLocationCoords;
+    }
 
-    // 4. Geodesic Haversine distance check against recognized city urban hubs
-    if (coords && coords.lat != null && coords.lng != null && !isNaN(coords.lat) && !isNaN(coords.lng)) {
-      const lat = Number(coords.lat);
-      const lng = Number(coords.lng);
+    // 2. Geodesic Haversine distance check against recognized city urban hubs
+    // If coordinates exist, they MUST be strictly within a recognized city hub radius
+    if (resolvedCoords && resolvedCoords.lat != null && resolvedCoords.lng != null && !isNaN(resolvedCoords.lat) && !isNaN(resolvedCoords.lng)) {
+      const lat = Number(resolvedCoords.lat);
+      const lng = Number(resolvedCoords.lng);
 
       for (const hub of SERVICEABLE_CITY_HUBS) {
         const dist = this.calculateHaversineDistance(lat, lng, hub.lat, hub.lng);
         if (dist <= hub.radiusKm) {
-          return true; // Within recognized urban radius!
+          return true; // Within recognized urban city radius!
         }
       }
-      // If valid coordinates exist and are outside all serviceable city hubs, it is outside the city
+      // If valid coordinates exist and are outside all serviceable city hubs, it is in a village/rural area
       return false;
+    }
+
+    // 3. Fallback when coordinates are missing and text indicates current location
+    if (text.includes('current location') || text.includes('your location') || text.includes('live location') || text.includes('live gps')) {
+      if (this.userCoords && this.userCoords.lat != null && !isNaN(this.userCoords.lat)) {
+        for (const hub of SERVICEABLE_CITY_HUBS) {
+          const dist = this.calculateHaversineDistance(this.userCoords.lat, this.userCoords.lng, hub.lat, hub.lng);
+          if (dist <= hub.radiusKm) return true;
+        }
+      }
+      return false;
+    }
+
+    // 4. Direct match with KNOWN_LOCATIONS (if no coordinates or coordinates match)
+    const knownMatch = KNOWN_LOCATIONS.find(loc => {
+      const locName = loc.name.toLowerCase();
+      if (text.includes(locName) || locName.includes(text)) {
+        return true;
+      }
+      return false;
+    });
+    if (knownMatch) {
+      if (knownMatch.name.toLowerCase().includes('panhala')) return false;
+      if (knownMatch.lat != null && knownMatch.lng != null) {
+        for (const hub of SERVICEABLE_CITY_HUBS) {
+          const dist = this.calculateHaversineDistance(knownMatch.lat, knownMatch.lng, hub.lat, hub.lng);
+          if (dist <= hub.radiusKm) return true;
+        }
+        return false;
+      }
+      return true;
     }
 
     // 5. Urban city core name checks (only when coordinates could not be geocoded)
@@ -2938,8 +2961,8 @@ class RideCompareApp {
 
     const urbanLocalities = [
       'rajarampuri', 'shahupuri', 'tarabai park', 'kawala naka', 'rankala', 'mahalaxmi', 'ambabai',
-      'bhavani mandap', 'kasaba bawada', 'cbs', 'shivaji university', 'dy patil', 'dypcet', 'atigre',
-      'ghodawat', 'sgu', 'shiroli midc', 'gokul shirgaon', 'kagal midc', 'unchgaon', 'uchgaon',
+      'bhavani mandap', 'kasaba bawada', 'cbs', 'shivaji university', 'dy patil', 'dypcet',
+      'shiroli midc', 'gokul shirgaon', 'kagal midc', 'unchgaon', 'uchgaon',
       'kalamba', 'pachgaon', 'phulewadi', 'line bazar', 'station road', 'kothrud', 'swargate',
       'hadapsar', 'viman nagar', 'kharadi', 'baner', 'wakad', 'aundh', 'bhosari', 'katraj',
       'bkc', 'dadar', 'csmt', 'marine drive', 'andheri', 'vishrambag', 'walchand'
@@ -3039,7 +3062,7 @@ class RideCompareApp {
       dropName = dropText.textContent.trim();
     }
     if (!dropName || dropName === 'Select destination' || dropName === 'Select drop location') {
-      dropName = 'Sanjay Ghodawat University';
+      dropName = 'Shri Ambabai Mahalaxmi Temple';
     }
 
     // Resolve Pickup & Drop Coordinates
@@ -3050,7 +3073,7 @@ class RideCompareApp {
     if (!pickupCoords) {
       pickupCoords = this.pickupCoords || this.userCoords || { lat: 16.7028, lng: 74.2405 };
     }
-    let dropCoords = this.getCoordinatesFor(dropName, null) || this.selectedDropCoords || { lat: 16.7450, lng: 74.3720 };
+    let dropCoords = this.getCoordinatesFor(dropName, null) || this.selectedDropCoords || { lat: 16.6946, lng: 74.2238 };
 
     // Determine whether both pickup and drop fall within serviceable cities/areas
     const isPickupServiceable = this.isLocationServiceable(pickupName, this.pickupLocationFull, pickupCoords);
@@ -3253,7 +3276,7 @@ class RideCompareApp {
       dropName = dropText.textContent.trim();
     }
     if (!dropName || dropName === 'Select destination' || dropName === 'Select drop location') {
-      dropName = 'Sanjay Ghodawat University';
+      dropName = 'Shri Ambabai Mahalaxmi Temple';
     }
 
     // Resolve Pickup & Drop Coordinates
@@ -3262,17 +3285,17 @@ class RideCompareApp {
       pickupCoords = this.getCoordinatesFor(pickupName, null) || this.pickupCoords;
     }
     if (!pickupCoords) {
-      pickupCoords = this.pickupCoords || this.userCoords || { lat: 16.7050, lng: 74.2433 };
+      pickupCoords = this.pickupCoords || this.userCoords || { lat: 16.7028, lng: 74.2405 };
     }
 
-    let dropCoords = this.getCoordinatesFor(dropName, null) || this.selectedDropCoords || { lat: 16.7450, lng: 74.3720 };
+    let dropCoords = this.getCoordinatesFor(dropName, null) || this.selectedDropCoords || { lat: 16.6946, lng: 74.2238 };
 
     // Ensure Pickup and Drop have distinct coordinates so the route polyline is always clearly visible
     if (Math.abs(pickupCoords.lat - dropCoords.lat) < 0.0008 && Math.abs(pickupCoords.lng - dropCoords.lng) < 0.0008) {
-      if (Math.abs(dropCoords.lat - 16.7450) < 0.005) {
-        pickupCoords = { lat: 16.7028, lng: 74.2405 };
+      if (Math.abs(dropCoords.lat - 16.7028) < 0.005) {
+        pickupCoords = { lat: 16.6946, lng: 74.2238 };
       } else {
-        pickupCoords = { lat: 16.7450, lng: 74.3720 };
+        pickupCoords = { lat: 16.7028, lng: 74.2405 };
       }
     }
 
@@ -3565,6 +3588,7 @@ class RideCompareApp {
 
   // Toggle More Ride Options Section
   toggleMoreRides() {
+    if (this.isCurrentRouteServiceable === false) return;
     if (window.soundFX) {
       window.soundFX.playTap();
     }
@@ -3589,6 +3613,7 @@ class RideCompareApp {
 
   // Filter Rides by Category (All, Cabs, Autos, Bikes, EV)
   filterRideCategory(category) {
+    if (this.isCurrentRouteServiceable === false) return;
     if (window.soundFX) {
       window.soundFX.playTap();
     }
@@ -3635,6 +3660,7 @@ class RideCompareApp {
 
   // Sort Rides by Price or ETA
   sortRides(criteria) {
+    if (this.isCurrentRouteServiceable === false) return;
     if (window.soundFX) {
       window.soundFX.playTap();
     }
@@ -4478,9 +4504,9 @@ class RideCompareApp {
 
       this.renderLocationPresets('pickup');
     } else {
-      this.tempSelectedName = this.selectedDropName || 'Sanjay Ghodawat University';
-      this.tempSelectedSub = this.selectedDropSub || 'Kolhapur-Sangli Highway, Atigre';
-      this.tempSelectedCoords = this.selectedDropCoords || { lat: 16.7450, lng: 74.3720 };
+      this.tempSelectedName = this.selectedDropName || 'Shri Ambabai Mahalaxmi Temple';
+      this.tempSelectedSub = this.selectedDropSub || 'Bhavani Mandap, Kolhapur';
+      this.tempSelectedCoords = this.selectedDropCoords || { lat: 16.6946, lng: 74.2238 };
 
       if (titleEl) titleEl.textContent = 'Select Drop Location';
       if (subtitleEl) subtitleEl.textContent = 'Click anywhere on the map or pick a destination';
@@ -4608,7 +4634,7 @@ class RideCompareApp {
 
     const isPickup = (this.locationPickerMode === 'pickup');
     const pinColor = isPickup ? '#0073FF' : '#EF4444';
-    const coords = this.tempSelectedCoords || (isPickup ? (this.pickupCoords || { lat: 16.7050, lng: 74.2433 }) : (this.selectedDropCoords || { lat: 16.7450, lng: 74.3720 }));
+    const coords = this.tempSelectedCoords || (isPickup ? (this.pickupCoords || { lat: 16.7028, lng: 74.2405 }) : (this.selectedDropCoords || { lat: 16.6946, lng: 74.2238 }));
     const currentIcon = this.getPinIcon(pinColor);
 
     if (!this.dropMap) {
@@ -5159,7 +5185,7 @@ class RideCompareApp {
       }
     }
 
-    const selectedName = this.tempSelectedName || this.selectedDropName || 'Sanjay Ghodawat University';
+    const selectedName = this.tempSelectedName || this.selectedDropName || 'Shri Ambabai Mahalaxmi Temple';
     const selectedSub = this.tempSelectedSub || this.selectedDropSub || 'Kolhapur';
 
     this.selectedDropName = selectedName;
