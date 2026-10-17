@@ -54,6 +54,57 @@ const KNOWN_LOCATIONS = [
   { name: 'Belagavi (Belgaum) Railway Station', address: 'Station Road, Belagavi', lat: 15.8497, lng: 74.4977, tags: ['belgaum', 'belagavi', 'railway station'] }
 ];
 
+// Recognized metropolitan & urban hubs where ride-hailing services (cabs, autos, bikes) operate
+const SERVICEABLE_CITY_HUBS = [
+  // 1. Kolhapur Urban Core & Immediate Suburbs (Railway station, CBS, Mahalaxmi, Rajarampuri, Shahupuri, Rankala, Tarabai Park, Bawada, University, DY Patil, MIDCs)
+  { name: 'Kolhapur City', lat: 16.7028, lng: 74.2405, radiusKm: 13.5 },
+  // 2. Sanjay Ghodawat University (SGU) & Atigre Highway Corridor (Official campus partner hub)
+  { name: 'Sanjay Ghodawat University / Atigre', lat: 16.7450, lng: 74.3720, radiusKm: 4.5 },
+  // 3. Ichalkaranji City Center (Textile city hub)
+  { name: 'Ichalkaranji', lat: 16.6965, lng: 74.4628, radiusKm: 6.5 },
+  // 4. Kagal MIDC Five Star Zone (Industrial hub south of Kolhapur)
+  { name: 'Kagal MIDC', lat: 16.5812, lng: 74.3168, radiusKm: 3.5 },
+  // 5. Pune Metropolitan & PCMC (Pune City, Hinjawadi, Kothrud, Viman Nagar, Kharadi, Hadapsar, Baner, Wakad, PCMC)
+  { name: 'Pune & PCMC', lat: 18.5204, lng: 73.8567, radiusKm: 22.0 },
+  // 6. Mumbai Metropolitan Region (MMR, Thane, Navi Mumbai, Island City)
+  { name: 'Mumbai Metropolitan Region', lat: 19.0760, lng: 72.8777, radiusKm: 32.0 },
+  // 7. Sangli & Miraj Urban Limits
+  { name: 'Sangli & Miraj', lat: 16.8524, lng: 74.5815, radiusKm: 9.0 },
+  // 8. Satara City Center
+  { name: 'Satara City', lat: 17.6805, lng: 73.9935, radiusKm: 6.0 },
+  // 9. Belagavi / Belgaum City Center
+  { name: 'Belagavi City', lat: 15.8497, lng: 74.4977, radiusKm: 8.0 },
+  // 10. Major Tier-1 Indian Metros
+  { name: 'Bengaluru', lat: 12.9716, lng: 77.5946, radiusKm: 25.0 },
+  { name: 'Delhi NCR', lat: 28.6139, lng: 77.2090, radiusKm: 30.0 },
+  { name: 'Hyderabad', lat: 17.3850, lng: 78.4867, radiusKm: 25.0 },
+  { name: 'Chennai', lat: 13.0827, lng: 80.2707, radiusKm: 22.0 },
+  { name: 'Ahmedabad', lat: 23.0225, lng: 72.5714, radiusKm: 20.0 }
+];
+
+// Comprehensive dictionary of rural talukas, villages, and remote zones where ride-hailing is unavailable
+const OUTSIDE_CITY_KEYWORDS = [
+  // Kolhapur district rural talukas & villages (outside Kolhapur city hub)
+  'gargoti', 'radhanagari', 'gaganbawda', 'gagan bavda', 'bhudargad', 'ajara', 'ajra',
+  'chandgad', 'gadhinglaj', 'shahuwadi', 'malkapur', 'dajipur', 'amboli',
+  'kasba thana', 'kapashi', 'nesari', 'kadgaon', 'bambavade', 'anuskura', 'chandoli',
+  'panhala fort', 'pawankhind', 'radhanagari dam', 'dudhganga', 'kallammawadi', 'tillari',
+  'manoli', 'salwan', 'parite', 'turambe', 'murgud', 'bidri', 'rendal', 'hupari',
+  'kurundwad', 'shirol', 'narsingpur', 'khidrapur', 'herwad', 'chikhali',
+  'kotoli', 'pissurve', 'bajar bhogaon', 'bhambrade', 'dhangarwada', 'borpadale',
+  'kuditre', 'koparde', 'warananagar', 'kodoli',
+  // Maharashtra rural & non-serviced regions
+  'shirala', 'islampur', 'tasgaon', 'vita', 'atpadi', 'kavthe mahankal',
+  'koregaon', 'khandala', 'wai', 'patan', 'medha', 'mahableshwar', 'panchgani',
+  'jawali', 'khatav', 'phaltan', 'bhor', 'velhe', 'mulshi', 'junnar', 'ambegaon',
+  'otur', 'ghodegaon', 'narayangaon', 'lonavala', 'lavasa',
+  // Generic terms representing rural or unserviceable areas
+  'remote area', 'remote village', 'rural', 'village', 'forest reserve',
+  'wildlife sanctuary', 'tiger reserve', 'ghat section', 'deep forest', 'valley view',
+  'unserved zone', 'out of service', 'unserviceable', 'unavailable', 'no rides', 'no cabs',
+  'no auto', 'outside city', 'farm', 'farmland', 'dam site'
+];
+
 // =============================================================================
 // VOZX RideCompare — Responsive Master Application Controller
 // Seamless screen routing, sound FX, and multi-device responsive interaction
@@ -378,7 +429,7 @@ class RideCompareApp {
       // Desktop search input: Enter key to search
       const deskSearchInput = document.getElementById('desktop-search-input');
       if (deskSearchInput) {
-        deskSearchInput.addEventListener('keydown', (e) => {
+        deskSearchInput.addEventListener('keydown', async (e) => {
           if (e.key === 'Enter') {
             const val = deskSearchInput.value.trim();
             if (val) {
@@ -389,8 +440,28 @@ class RideCompareApp {
                 this.selectedDropCoords = { lat: matches[0].lat, lng: matches[0].lng };
               } else {
                 this.selectedDropName = val;
-                this.selectedDropSub = 'Kolhapur';
-                this.selectedDropCoords = this.getCoordinatesFor(val, { lat: 16.7450, lng: 74.3720 });
+                this.selectedDropSub = val;
+                this.selectedDropCoords = this.getCoordinatesFor(val, null);
+                // Attempt geocoding via OpenStreetMap Nominatim for accurate outside-city detection
+                try {
+                  const controller = new AbortController();
+                  const timeoutId = setTimeout(() => controller.abort(), 2800);
+                  const res = await fetch(
+                    'https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(val) + '&limit=1&addressdetails=1',
+                    { signal: controller.signal, headers: { 'Accept-Language': 'en' } }
+                  );
+                  clearTimeout(timeoutId);
+                  if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.length > 0) {
+                      const item = data[0];
+                      const parts = (item.display_name || '').split(',');
+                      this.selectedDropName = parts[0].trim() || val;
+                      this.selectedDropSub = parts.slice(1, 4).join(',').trim() || item.display_name;
+                      this.selectedDropCoords = { lat: parseFloat(item.lat), lng: parseFloat(item.lon) };
+                    }
+                  }
+                } catch (_) {}
               }
               this.hasDropSelected = true;
               const dropText = document.getElementById('home-drop-text');
@@ -2798,64 +2869,85 @@ class RideCompareApp {
     }
   }
 
+  // Helper to test if a given text contains explicit rural/outside-city keywords with word boundaries
+  isOutsideCityKeywordMatch(rawText) {
+    if (!rawText) return false;
+    const t = ' ' + rawText.toLowerCase().replace(/[,;:.\\-_/()]/g, ' ') + ' ';
+    return OUTSIDE_CITY_KEYWORDS.some(kw => t.includes(' ' + kw + ' '));
+  }
+
   // Determines whether rides (cabs/autos/bikes) are available for a given location or coordinates
   isLocationServiceable(name, address = '', coords = null) {
     const raw = `${name || ''} ${address || ''}`.trim();
     const text = raw.toLowerCase();
     if (!text) return true;
 
-    // 1. Explicit unserviceable keywords (remote areas, ghats, forests, out-of-service zones)
-    const unserviceableKeywords = [
-      'out of service', 'unserviceable', 'unavailable', 'no rides', 'no cabs', 'no auto',
-      'remote area', 'remote village', 'gaganbawda', 'radhanagari', 'dajipur',
-      'bhudargad', 'ajara', 'chandgad', 'forest reserve', 'wildlife sanctuary',
-      'rural outskirts', 'deep forest', 'valley view', 'ghat section', 'unserved zone'
-    ];
-    if (unserviceableKeywords.some(kw => text.includes(kw))) {
-      return false;
-    }
-
-    // 2. Direct match with any entry in KNOWN_LOCATIONS
-    const isKnown = KNOWN_LOCATIONS.some(loc => {
-      const locName = loc.name.toLowerCase();
-      const locAddr = (loc.address || '').toLowerCase();
-      if (text.includes(locName) || locName.includes(text)) return true;
-      if (loc.tags && loc.tags.some(tag => text.includes(tag.toLowerCase()))) return true;
-      return false;
-    });
-    if (isKnown) return true;
-
-    // 3. Supported cities, metropolitan hubs, and districts where ride hailing operates
-    const supportedCities = [
-      'kolhapur', 'ichalkaranji', 'atigre', 'pune', 'pimpri', 'chinchwad', 'hinjawadi', 'hinjewadi',
-      'mumbai', 'navi mumbai', 'thane', 'kalyan', 'dombivli', 'sangli', 'miraj', 'satara', 'karad',
-      'belgaum', 'belagavi', 'kagal', 'shiroli', 'hatkanangale', 'jaysingpur', 'wadgaon',
-      'bengaluru', 'bangalore', 'delhi', 'new delhi', 'noida', 'gurgaon', 'gurugram', 'hyderabad',
-      'chennai', 'kolkata', 'ahmedabad', 'surat', 'jaipur', 'chandigarh', 'lucknow', 'indore',
-      'bhopal', 'nagpur', 'nashik', 'goa', 'panaji', 'margao', 'kochi', 'visakhapatnam',
-      'current location', 'your location', 'live location', 'live gps'
-    ];
-    if (supportedCities.some(city => text.includes(city))) {
+    // 1. Live GPS / Current Location is always serviceable
+    if (text.includes('current location') || text.includes('your location') || text.includes('live location') || text.includes('live gps')) {
       return true;
     }
 
-    // 4. Coordinate bounding boxes for primary serviced regions
-    if (coords && coords.lat && coords.lng) {
-      const lat = Number(coords.lat);
-      const lng = Number(coords.lng);
-      // Kolhapur & Sangli & Ichalkaranji corridor (approx lat 16.58 to 16.90, lng 74.15 to 74.65)
-      if (lat >= 16.58 && lat <= 16.90 && lng >= 74.15 && lng <= 74.65) return true;
-      // Pune & PCMC metro area (approx lat 18.38 to 18.72, lng 73.68 to 74.02)
-      if (lat >= 18.38 && lat <= 18.72 && lng >= 73.68 && lng <= 74.02) return true;
-      // Mumbai, Thane, Navi Mumbai (approx lat 18.88 to 19.32, lng 72.75 to 73.15)
-      if (lat >= 18.88 && lat <= 19.32 && lng >= 72.75 && lng <= 73.15) return true;
-      // Satara city (approx lat 17.65 to 17.72, lng 73.98 to 74.05)
-      if (lat >= 17.65 && lat <= 17.72 && lng >= 73.98 && lng <= 74.05) return true;
-      // Belagavi city (approx lat 15.82 to 15.90, lng 74.48 to 74.55)
-      if (lat >= 15.82 && lat <= 15.90 && lng >= 74.48 && lng <= 74.55) return true;
+    // 2. Explicit outside-city / rural check with word boundary matching
+    if (this.isOutsideCityKeywordMatch(raw)) {
+      return false;
     }
 
-    // Locations outside supported cities & known service areas are considered unserviceable
+    // 3. Direct match with KNOWN_LOCATIONS (if no coordinates or coordinates match)
+    const isDirectKnownMatch = KNOWN_LOCATIONS.some(loc => {
+      const locName = loc.name.toLowerCase();
+      if (text.includes(locName) || locName.includes(text)) {
+        if (locName.includes('panhala')) return false; // Panhala fort is outside city perimeter
+        return true;
+      }
+      return false;
+    });
+    if (isDirectKnownMatch && (!coords || coords.lat == null)) return true;
+
+    // 4. Geodesic Haversine distance check against recognized city urban hubs
+    if (coords && coords.lat != null && coords.lng != null && !isNaN(coords.lat) && !isNaN(coords.lng)) {
+      const lat = Number(coords.lat);
+      const lng = Number(coords.lng);
+
+      for (const hub of SERVICEABLE_CITY_HUBS) {
+        const dist = this.calculateHaversineDistance(lat, lng, hub.lat, hub.lng);
+        if (dist <= hub.radiusKm) {
+          return true; // Within recognized urban radius!
+        }
+      }
+      // If valid coordinates exist and are outside all serviceable city hubs, it is outside the city
+      return false;
+    }
+
+    // 5. Urban city core name checks (only when coordinates could not be geocoded)
+    const primaryName = (name || '').split(',')[0].trim().toLowerCase();
+    const cityNames = [
+      'kolhapur', 'ichalkaranji', 'pune', 'pcmc', 'pimpri', 'chinchwad', 'hinjawadi', 'hinjewadi',
+      'mumbai', 'navi mumbai', 'thane', 'sangli', 'miraj', 'satara', 'belgaum', 'belagavi',
+      'bengaluru', 'bangalore', 'delhi', 'new delhi', 'noida', 'gurgaon', 'gurugram', 'hyderabad',
+      'chennai', 'kolkata', 'ahmedabad', 'surat', 'jaipur', 'lucknow', 'nagpur', 'nashik'
+    ];
+
+    const isPrimaryCity = cityNames.some(c => 
+      primaryName === c || 
+      primaryName.includes(c + ' city') || 
+      primaryName.includes(c + ' railway') || 
+      primaryName.includes(c + ' bus') || 
+      primaryName.includes(c + ' airport')
+    );
+    if (isPrimaryCity) return true;
+
+    const urbanLocalities = [
+      'rajarampuri', 'shahupuri', 'tarabai park', 'kawala naka', 'rankala', 'mahalaxmi', 'ambabai',
+      'bhavani mandap', 'kasaba bawada', 'cbs', 'shivaji university', 'dy patil', 'dypcet', 'atigre',
+      'ghodawat', 'sgu', 'shiroli midc', 'gokul shirgaon', 'kagal midc', 'unchgaon', 'uchgaon',
+      'kalamba', 'pachgaon', 'phulewadi', 'line bazar', 'station road', 'kothrud', 'swargate',
+      'hadapsar', 'viman nagar', 'kharadi', 'baner', 'wakad', 'aundh', 'bhosari', 'katraj',
+      'bkc', 'dadar', 'csmt', 'marine drive', 'andheri', 'vishrambag', 'walchand'
+    ];
+    if (urbanLocalities.some(loc => text.includes(loc))) {
+      return true;
+    }
+
     return false;
   }
 
@@ -2868,12 +2960,17 @@ class RideCompareApp {
     const statusText = document.getElementById('results-panel-status-text');
     const mapStatus = document.getElementById('map-route-status');
     const distBadge = document.getElementById('map-route-distance-badge');
+    const etaBadge = document.getElementById('map-route-eta-badge');
 
     if (isAvailable) {
       // Show normal comparison cards
       if (comparisonSection) {
         comparisonSection.classList.remove('hidden');
         comparisonSection.style.display = 'flex';
+      }
+      if (moreRidesSection) {
+        moreRidesSection.classList.remove('hidden');
+        moreRidesSection.style.display = '';
       }
       if (unavailableSection) {
         unavailableSection.classList.add('hidden');
@@ -2884,6 +2981,10 @@ class RideCompareApp {
       }
       if (statusText) {
         statusText.textContent = 'Live Fares';
+      }
+      if (etaBadge) {
+        etaBadge.style.display = '';
+        etaBadge.textContent = 'Fastest: 1 min away';
       }
     } else {
       // Hide comparison matrix & more options, reveal the exact "No cars and autos are available here" UI
@@ -2911,6 +3012,9 @@ class RideCompareApp {
       if (distBadge) {
         distBadge.textContent = 'Out of Service Area';
         distBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30';
+      }
+      if (etaBadge) {
+        etaBadge.style.display = 'none';
       }
       // Stop moving vehicle animation since rides cannot be dispatched
       this.stopVehicleAnimation('results');
@@ -4462,6 +4566,12 @@ class RideCompareApp {
         <button type="button" onclick="app.selectLocationPreset('Remote Area (Out of Service)', 'Gaganbawda Hills, Kolhapur Rural', 16.5400, 73.8300)" class="drop-preset-pill px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap bg-rose-950/40 text-rose-300 border border-rose-500/30 hover:bg-rose-900/60 hover:text-white transition-all">
           🏔️ Remote Area (Out of Service)
         </button>
+        <button type="button" onclick="app.selectLocationPreset('Gargoti (Rural Taluka)', 'Bhudargad, Kolhapur Rural', 16.3150, 74.1350)" class="drop-preset-pill px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap bg-rose-950/40 text-rose-300 border border-rose-500/30 hover:bg-rose-900/60 hover:text-white transition-all">
+          🌾 Gargoti (Outside City)
+        </button>
+        <button type="button" onclick="app.selectLocationPreset('Radhanagari (Wildlife)', 'Radhanagari Dam, Kolhapur Rural', 16.4170, 74.0040)" class="drop-preset-pill px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap bg-rose-950/40 text-rose-300 border border-rose-500/30 hover:bg-rose-900/60 hover:text-white transition-all">
+          🦌 Radhanagari (Outside City)
+        </button>
       `;
     }
   }
@@ -4968,8 +5078,11 @@ class RideCompareApp {
         this.tempSelectedCoords = { lat: matches[0].lat, lng: matches[0].lng };
       } else {
         this.tempSelectedName = typedVal;
-        this.tempSelectedSub = 'Kolhapur';
-        this.tempSelectedCoords = this.getCoordinatesFor(typedVal, this.tempSelectedCoords || { lat: 16.7450, lng: 74.3720 });
+        this.tempSelectedSub = typedVal;
+        const existing = this.getCoordinatesFor(typedVal, null);
+        if (existing) {
+          this.tempSelectedCoords = existing;
+        }
       }
     }
     if (this.locationPickerMode === 'pickup') {

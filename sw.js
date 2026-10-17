@@ -1,11 +1,11 @@
 // VOZX RideCompare Service Worker (PWA Offline Support with Network-First Strategy)
-const CACHE_NAME = 'ridecompare-offline-v84';
+const CACHE_NAME = 'ridecompare-offline-v85';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
-  './css/styles.css?v=86',
+  './css/styles.css?v=87',
   './js/api.js?v=8',
-  './js/app.js?v=115',
+  './js/app.js?v=116',
   './js/profile.js?v=53',
   './js/audio.js?v=28',
   './assets/images/logo_cropped_clean.png',
