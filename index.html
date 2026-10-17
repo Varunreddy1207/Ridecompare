@@ -51,7 +51,7 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4LfkJpAF7Ggz83bF--j3vPztxlzrxPxg&libraries=places,geometry" async defer></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=85">
+  <link rel="stylesheet" href="css/styles.css?v=86">
 
   <style>
     /* Strict Responsive Display Rules: Bottom Nav for Mobile & Tablet (< 1024px) */
@@ -2097,9 +2097,9 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                 <span>Back to Search</span>
               </button>
-              <div class="flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                <span class="text-xs font-bold text-green-400">Live Comparison Active</span>
+              <div id="results-panel-status-indicator" class="flex items-center gap-2">
+                <span id="results-panel-status-dot" class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                <span id="results-panel-status-text" class="text-xs font-bold text-green-400">Live Comparison Active</span>
               </div>
             </div>
 
@@ -2118,8 +2118,8 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
                   <span id="map-route-distance-badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                     ● Live GPS
                   </span>
-                  <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-green-500/15 text-green-400 border border-green-500/30">
-                    Live Fares
+                  <span id="results-panel-status-pill" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-green-500/15 text-green-400 border border-green-500/30">
+                    <span id="results-panel-status-text">Live Fares</span>
                   </span>
                 </div>
               </div>
@@ -2451,6 +2451,54 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
                 </div>
 
               </div>
+            </div>
+
+            <!-- NO RIDES AVAILABLE SECTION (Shown only when rides are unavailable in selected location - Exact Match to media_1792233724066_8c9191db.png) -->
+            <div id="home-rides-unavailable-section" class="hidden flex-col items-center justify-center py-6 sm:py-8 px-4 w-full text-center transition-all duration-300">
+              
+              <!-- Clean Centered Illustration Matching media_1792233724066_8c9191db.png -->
+              <div class="w-full flex justify-center items-center mb-2 sm:mb-3">
+                <img src="assets/images/no_rides_illustration.png" alt="No cars and autos are available here" class="w-full max-w-[280px] sm:max-w-[340px] md:max-w-[380px] h-auto object-contain pointer-events-none select-none drop-shadow-sm">
+              </div>
+
+              <!-- Primary Bold Heading -->
+              <h3 class="rides-unavailable-title text-xl sm:text-2xl md:text-[26px] font-extrabold tracking-tight leading-snug max-w-md mx-auto">
+                No cars and autos<br class="hidden sm:inline"> are available here
+              </h3>
+
+              <!-- Subtitle Description -->
+              <p class="rides-unavailable-subtitle text-xs sm:text-sm max-w-sm sm:max-w-md mx-auto mt-2 sm:mt-2.5 leading-relaxed font-normal">
+                We couldn’t find any cars or autos at the moment. Please try again in a few minutes or choose a different location.
+              </p>
+
+              <!-- Action Card: Choose other location? -->
+              <div onclick="app.openLocationPicker('drop')" onkeydown="if(event.key === 'Enter' || event.key === ' ') { event.preventDefault(); app.openLocationPicker('drop'); }" class="rides-unavailable-action-card group cursor-pointer flex items-center justify-between p-3.5 sm:p-4 rounded-2xl w-full max-w-md mx-auto mt-5 sm:mt-6 transition-all active:scale-[0.98] select-none shadow-xs" role="button" tabindex="0" title="Choose another pickup or drop location">
+                <div class="flex items-center gap-3 min-w-0 text-left">
+                  <!-- Emerald Pin Icon Box -->
+                  <div class="w-10 h-10 rounded-xl bg-emerald-100/90 dark:bg-emerald-950/60 border border-emerald-300/40 dark:border-emerald-500/30 flex items-center justify-center flex-shrink-0 text-emerald-600 dark:text-emerald-400 shadow-xs group-hover:scale-105 transition-transform">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                  </div>
+                  <!-- Text -->
+                  <div class="min-w-0">
+                    <h4 class="rides-unavailable-card-title text-xs sm:text-sm font-bold group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition-colors leading-tight truncate">
+                      Choose other location?
+                    </h4>
+                    <p class="rides-unavailable-card-desc text-[11px] sm:text-xs mt-0.5 truncate leading-tight">
+                      Change your pickup or drop location to find rides.
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Right Arrow Icon -->
+                <div class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 dark:text-slate-500 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:translate-x-1 transition-all flex-shrink-0 ml-2">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                  </svg>
+                </div>
+              </div>
+
             </div>
 
           </div>
@@ -7171,6 +7219,9 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
           <button type="button" onclick="app.selectLocationPreset('Pune Junction', 'Agarkar Nagar, Pune', 18.5284, 73.8739)" class="drop-preset-pill px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap bg-blue-600/20 text-blue-300 border border-blue-500/40 hover:bg-blue-600 hover:text-white transition-all">
             🚉 Pune Junction
           </button>
+          <button type="button" onclick="app.selectLocationPreset('Gaganbawda (Remote Area)', 'Western Ghats, Rural Outskirts', 16.5400, 73.8200)" class="drop-preset-pill px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap bg-rose-500/20 text-rose-300 border border-rose-500/40 hover:bg-rose-600 hover:text-white transition-all">
+            🏔️ Remote Area (Out of Service)
+          </button>
         </div>
       </div>
 
@@ -8026,7 +8077,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
   <script src="js/bcrypt.min.js"></script>
   <script src="js/api.js?v=8"></script>
   <script src="js/audio.js?v=28"></script>
-  <script src="js/app.js?v=114"></script>
+  <script src="js/app.js?v=115"></script>
 
   <!-- Service Worker for Offline PWA Support -->
   <script>

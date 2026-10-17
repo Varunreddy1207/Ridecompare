@@ -92,6 +92,7 @@ class RideCompareApp {
     this.currentRouteBounds = null;
     this.isFetchingRoute = false;
     this.googleMapsApiKey = GOOGLE_MAPS_API_KEY;
+    this.isCurrentRouteServiceable = true;
 
     // Master History Trips Dataset (Exact Match to media_1790658953621.png)
     this.historyTrips = [
@@ -2776,6 +2777,10 @@ class RideCompareApp {
     this.updateResultsMapRoute();
     this.showResultsPanel();
 
+    if (this.isCurrentRouteServiceable === false) {
+      this.showToast('⚠️ No cars or autos are available in this area.', 'warning');
+    }
+
     // Register search into Recent Searches
     const searchedDrop = (this.selectedDropName || '').trim() || (dropText ? dropText.textContent.trim() : '');
     const searchedSub = (this.selectedDropSub || '').trim() || 'Kolhapur';
@@ -2790,6 +2795,125 @@ class RideCompareApp {
     if (window.RideCompareAuth && typeof window.RideCompareAuth.recordActivityEvent === 'function') {
       const u = window.RideCompareAuth.currentUser;
       window.RideCompareAuth.recordActivityEvent('SEARCH', `Search: ${searchedPickup} → ${searchedDrop}`, u);
+    }
+  }
+
+  // Determines whether rides (cabs/autos/bikes) are available for a given location or coordinates
+  isLocationServiceable(name, address = '', coords = null) {
+    const raw = `${name || ''} ${address || ''}`.trim();
+    const text = raw.toLowerCase();
+    if (!text) return true;
+
+    // 1. Explicit unserviceable keywords (remote areas, ghats, forests, out-of-service zones)
+    const unserviceableKeywords = [
+      'out of service', 'unserviceable', 'unavailable', 'no rides', 'no cabs', 'no auto',
+      'remote area', 'remote village', 'gaganbawda', 'radhanagari', 'dajipur',
+      'bhudargad', 'ajara', 'chandgad', 'forest reserve', 'wildlife sanctuary',
+      'rural outskirts', 'deep forest', 'valley view', 'ghat section', 'unserved zone'
+    ];
+    if (unserviceableKeywords.some(kw => text.includes(kw))) {
+      return false;
+    }
+
+    // 2. Direct match with any entry in KNOWN_LOCATIONS
+    const isKnown = KNOWN_LOCATIONS.some(loc => {
+      const locName = loc.name.toLowerCase();
+      const locAddr = (loc.address || '').toLowerCase();
+      if (text.includes(locName) || locName.includes(text)) return true;
+      if (loc.tags && loc.tags.some(tag => text.includes(tag.toLowerCase()))) return true;
+      return false;
+    });
+    if (isKnown) return true;
+
+    // 3. Supported cities, metropolitan hubs, and districts where ride hailing operates
+    const supportedCities = [
+      'kolhapur', 'ichalkaranji', 'atigre', 'pune', 'pimpri', 'chinchwad', 'hinjawadi', 'hinjewadi',
+      'mumbai', 'navi mumbai', 'thane', 'kalyan', 'dombivli', 'sangli', 'miraj', 'satara', 'karad',
+      'belgaum', 'belagavi', 'kagal', 'shiroli', 'hatkanangale', 'jaysingpur', 'wadgaon',
+      'bengaluru', 'bangalore', 'delhi', 'new delhi', 'noida', 'gurgaon', 'gurugram', 'hyderabad',
+      'chennai', 'kolkata', 'ahmedabad', 'surat', 'jaipur', 'chandigarh', 'lucknow', 'indore',
+      'bhopal', 'nagpur', 'nashik', 'goa', 'panaji', 'margao', 'kochi', 'visakhapatnam',
+      'current location', 'your location', 'live location', 'live gps'
+    ];
+    if (supportedCities.some(city => text.includes(city))) {
+      return true;
+    }
+
+    // 4. Coordinate bounding boxes for primary serviced regions
+    if (coords && coords.lat && coords.lng) {
+      const lat = Number(coords.lat);
+      const lng = Number(coords.lng);
+      // Kolhapur & Sangli & Ichalkaranji corridor (approx lat 16.58 to 16.90, lng 74.15 to 74.65)
+      if (lat >= 16.58 && lat <= 16.90 && lng >= 74.15 && lng <= 74.65) return true;
+      // Pune & PCMC metro area (approx lat 18.38 to 18.72, lng 73.68 to 74.02)
+      if (lat >= 18.38 && lat <= 18.72 && lng >= 73.68 && lng <= 74.02) return true;
+      // Mumbai, Thane, Navi Mumbai (approx lat 18.88 to 19.32, lng 72.75 to 73.15)
+      if (lat >= 18.88 && lat <= 19.32 && lng >= 72.75 && lng <= 73.15) return true;
+      // Satara city (approx lat 17.65 to 17.72, lng 73.98 to 74.05)
+      if (lat >= 17.65 && lat <= 17.72 && lng >= 73.98 && lng <= 74.05) return true;
+      // Belagavi city (approx lat 15.82 to 15.90, lng 74.48 to 74.55)
+      if (lat >= 15.82 && lat <= 15.90 && lng >= 74.48 && lng <= 74.55) return true;
+    }
+
+    // Locations outside supported cities & known service areas are considered unserviceable
+    return false;
+  }
+
+  // Dynamically switches between the ride comparison options and the "No rides available" state UI
+  updateRideAvailabilityUI(isAvailable) {
+    const comparisonSection = document.getElementById('home-comparison-section');
+    const moreRidesSection = document.getElementById('more-rides-section');
+    const unavailableSection = document.getElementById('home-rides-unavailable-section');
+    const statusPill = document.getElementById('results-panel-status-pill');
+    const statusText = document.getElementById('results-panel-status-text');
+    const mapStatus = document.getElementById('map-route-status');
+    const distBadge = document.getElementById('map-route-distance-badge');
+
+    if (isAvailable) {
+      // Show normal comparison cards
+      if (comparisonSection) {
+        comparisonSection.classList.remove('hidden');
+        comparisonSection.style.display = 'flex';
+      }
+      if (unavailableSection) {
+        unavailableSection.classList.add('hidden');
+        unavailableSection.style.display = 'none';
+      }
+      if (statusPill) {
+        statusPill.className = 'px-2.5 py-1 rounded-full text-[11px] font-bold bg-green-500/15 text-green-400 border border-green-500/30';
+      }
+      if (statusText) {
+        statusText.textContent = 'Live Fares';
+      }
+    } else {
+      // Hide comparison matrix & more options, reveal the exact "No cars and autos are available here" UI
+      if (comparisonSection) {
+        comparisonSection.classList.add('hidden');
+        comparisonSection.style.display = 'none';
+      }
+      if (moreRidesSection) {
+        moreRidesSection.classList.add('hidden');
+        moreRidesSection.style.display = 'none';
+      }
+      if (unavailableSection) {
+        unavailableSection.classList.remove('hidden');
+        unavailableSection.style.display = 'flex';
+      }
+      if (statusPill) {
+        statusPill.className = 'px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30';
+      }
+      if (statusText) {
+        statusText.textContent = 'Service Unavailable';
+      }
+      if (mapStatus) {
+        mapStatus.innerHTML = '<span class="text-amber-400 font-bold">⚠️ No cars or autos are available here</span>';
+      }
+      if (distBadge) {
+        distBadge.textContent = 'Out of Service Area';
+        distBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30';
+      }
+      // Stop moving vehicle animation since rides cannot be dispatched
+      this.stopVehicleAnimation('results');
     }
   }
 
@@ -2814,6 +2938,22 @@ class RideCompareApp {
       dropName = 'Sanjay Ghodawat University';
     }
 
+    // Resolve Pickup & Drop Coordinates
+    let pickupCoords = null;
+    if (pickupName.toLowerCase() !== 'current location') {
+      pickupCoords = this.getCoordinatesFor(pickupName, null) || this.pickupCoords;
+    }
+    if (!pickupCoords) {
+      pickupCoords = this.pickupCoords || this.userCoords || { lat: 16.7028, lng: 74.2405 };
+    }
+    let dropCoords = this.getCoordinatesFor(dropName, null) || this.selectedDropCoords || { lat: 16.7450, lng: 74.3720 };
+
+    // Determine whether both pickup and drop fall within serviceable cities/areas
+    const isPickupServiceable = this.isLocationServiceable(pickupName, this.pickupLocationFull, pickupCoords);
+    const isDropServiceable = this.isLocationServiceable(dropName, this.selectedDropSub, dropCoords);
+    this.isCurrentRouteServiceable = isPickupServiceable && isDropServiceable;
+    this.updateRideAvailabilityUI(this.isCurrentRouteServiceable);
+
     // 1. Update Map Header Title
     const mapTitle = document.getElementById('map-route-title');
     if (mapTitle) {
@@ -2825,7 +2965,11 @@ class RideCompareApp {
     const mapSub = document.getElementById('map-route-sub');
     if (mapSub) {
       const detail = this.selectedDropSub || dropName;
-      mapSub.textContent = `Destination: ${detail} • Live route active`;
+      if (this.isCurrentRouteServiceable) {
+        mapSub.textContent = `Destination: ${detail} • Live route active`;
+      } else {
+        mapSub.textContent = `Destination: ${detail} • Service currently unavailable`;
+      }
       mapSub.title = `Route from ${pickupName} to ${dropName}`;
     }
 
@@ -2874,6 +3018,9 @@ class RideCompareApp {
     panel.classList.remove('results-panel-visible');
     void panel.offsetWidth; // Trigger DOM reflow
     panel.classList.add('results-panel-visible');
+
+    // Sync availability UI according to current route serviceability
+    this.updateRideAvailabilityUI(this.isCurrentRouteServiceable !== false);
 
     // On Desktop & Tablet landscape (>= 1024px): adjust search container to left column
     if (searchContainer) {
@@ -3108,18 +3255,31 @@ class RideCompareApp {
       }
       const distBadge = document.getElementById('map-route-distance-badge');
       if (distBadge) {
-        distBadge.textContent = `${distStr} km • ${durMin} min`;
-        distBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30';
+        if (this.isCurrentRouteServiceable === false) {
+          distBadge.textContent = 'Out of Service Area';
+          distBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30';
+        } else {
+          distBadge.textContent = `${distStr} km • ${durMin} min`;
+          distBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30';
+        }
       }
       const mapSub = document.getElementById('map-route-sub');
       if (mapSub) {
         const detail = this.selectedDropSub || dropName;
-        mapSub.textContent = `Destination: ${detail} • ${distStr} km (${durMin} min) • Live route active`;
+        if (this.isCurrentRouteServiceable === false) {
+          mapSub.textContent = `Destination: ${detail} • ${distStr} km • Service currently unavailable`;
+        } else {
+          mapSub.textContent = `Destination: ${detail} • ${distStr} km (${durMin} min) • Live route active`;
+        }
         mapSub.title = `Destination: ${detail} • ${distStr} km (${durMin} min)`;
       }
       const mapStatus = document.getElementById('map-route-status');
       if (mapStatus) {
-        mapStatus.textContent = `🛣️ Fastest Route (${distStr} km) • 9 Ride Options Available`;
+        if (this.isCurrentRouteServiceable === false) {
+          mapStatus.innerHTML = '<span class="text-amber-400 font-bold">⚠️ No cars or autos are available here</span>';
+        } else {
+          mapStatus.textContent = `🛣️ Fastest Route (${distStr} km) • 9 Ride Options Available`;
+        }
       }
     };
 
@@ -3154,13 +3314,17 @@ class RideCompareApp {
     }).addTo(this.resultsMap);
     this.resultsRouteLayers.push(flowLine);
 
-    // 4. Start Live Moving Vehicle Animation along Route
+    // 4. Start Live Moving Vehicle Animation along Route (Only if route is serviceable)
     const resultsVehicleConfigs = [
       { emoji: '🛺', tag: 'Ola Auto', isPrimary: false, speedKmPerSec: 0.038, fraction: 0.20, direction: 1 },
       { emoji: '🚗', tag: 'Uber Go', isPrimary: false, speedKmPerSec: 0.048, fraction: 0.52, direction: 1 },
       { emoji: '🏍️', tag: 'Rapido Bike', isPrimary: false, speedKmPerSec: 0.060, fraction: 0.82, direction: -1 }
     ];
-    this.startVehicleAnimation('results', routeLatLngs, resultsVehicleConfigs);
+    if (this.isCurrentRouteServiceable !== false) {
+      this.startVehicleAnimation('results', routeLatLngs, resultsVehicleConfigs);
+    } else {
+      this.stopVehicleAnimation('results');
+    }
 
     // 5. Fit Map Bounds Immediately
     const initialBounds = L.latLngBounds(routeLatLngs);
@@ -3194,7 +3358,11 @@ class RideCompareApp {
             liveLine.setLatLngs(osrmLatLngs);
             if (flowLine) flowLine.setLatLngs(osrmLatLngs);
 
-            this.startVehicleAnimation('results', osrmLatLngs, resultsVehicleConfigs);
+            if (this.isCurrentRouteServiceable !== false) {
+              this.startVehicleAnimation('results', osrmLatLngs, resultsVehicleConfigs);
+            } else {
+              this.stopVehicleAnimation('results');
+            }
 
             const osrmBounds = L.latLngBounds(osrmLatLngs);
             this.currentRouteBounds = osrmBounds;
@@ -4290,6 +4458,9 @@ class RideCompareApp {
         </button>
         <button type="button" onclick="app.selectLocationPreset('Pune Junction', 'Agarkar Nagar, Pune', 18.5284, 73.8739)" class="drop-preset-pill px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 hover:text-white transition-all">
           🚉 Pune Junction
+        </button>
+        <button type="button" onclick="app.selectLocationPreset('Remote Area (Out of Service)', 'Gaganbawda Hills, Kolhapur Rural', 16.5400, 73.8300)" class="drop-preset-pill px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap bg-rose-950/40 text-rose-300 border border-rose-500/30 hover:bg-rose-900/60 hover:text-white transition-all">
+          🏔️ Remote Area (Out of Service)
         </button>
       `;
     }
