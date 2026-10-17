@@ -1506,31 +1506,217 @@ body:not(.theme-dark) .live-vehicle-floating-tag {
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 24px rgba(168, 85, 247, 0.3);
 }
 
-/* Category Filter Pills */
+/* ==========================================================================
+   RIDE COMPARISON SECTION & UNIQUE BUTTON DESIGNS
+   ========================================================================== */
+
+/* Pushes the comparison section comfortably down across all devices */
+#home-comparison-section {
+  margin-top: 26px !important;
+  padding-top: 6px !important;
+}
+@media (min-width: 640px) {
+  #home-comparison-section {
+    margin-top: 34px !important;
+  }
+}
+
+/* Category Filter Pills - Modern Segmented Capsule Styling */
 .ride-filter-pill {
-  padding: 5px 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
   border-radius: 9999px;
-  background: rgba(15, 23, 42, 0.8);
-  border: 1px solid rgba(56, 189, 248, 0.2);
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(148, 163, 184, 0.2);
   color: #94A3B8;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  user-select: none;
+}
+
+.ride-filter-pill .pill-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background-color: #38BDF8;
+  box-shadow: 0 0 8px #38BDF8;
+}
+
+.ride-filter-pill .pill-icon {
+  font-size: 13px;
+  line-height: 1;
+}
+
+.ride-filter-pill .pill-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9999px;
+  font-size: 10px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.1);
+  color: #94A3B8;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.2s ease;
 }
 
 .ride-filter-pill:hover {
-  color: #FFFFFF;
+  color: #F8FAFC;
   border-color: rgba(56, 189, 248, 0.5);
-  background: rgba(15, 23, 42, 0.95);
+  background: rgba(30, 41, 59, 0.9);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+.ride-filter-pill:hover .pill-badge {
+  color: #F8FAFC;
+  background: rgba(255, 255, 255, 0.18);
 }
 
 .ride-filter-pill.active {
-  background: #0073FF;
-  border-color: #38BDF8;
+  background: linear-gradient(135deg, #0073FF 0%, #2563EB 55%, #4F46E5 100%) !important;
+  border: 1px solid rgba(147, 197, 253, 0.6) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+  transform: translateY(-1px);
+}
+
+.ride-filter-pill.active .pill-dot {
+  background-color: #FFFFFF;
+  box-shadow: 0 0 8px #FFFFFF;
+}
+
+.ride-filter-pill.active .pill-badge {
+  background: rgba(255, 255, 255, 0.25) !important;
+  color: #FFFFFF !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+/* Quick Sort Buttons */
+.ride-sort-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  color: #93C5FD;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.ride-sort-btn:hover {
+  background: rgba(30, 58, 138, 0.4);
+  border-color: rgba(96, 165, 250, 0.6);
   color: #FFFFFF;
-  box-shadow: 0 0 12px rgba(0, 115, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+.ride-sort-btn:active {
+  transform: scale(0.96);
+}
+
+/* Unique Action Buttons on Comparison Cards */
+.btn-book-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.btn-book-action:active {
+  transform: scale(0.95);
+}
+
+/* 1. Uber: Signature Obsidian Carbon Black */
+.btn-book-uber {
+  background: linear-gradient(135deg, #090A0F 0%, #171A24 50%, #000000 100%) !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+}
+
+.btn-book-uber:hover {
+  background: linear-gradient(135deg, #000000 0%, #202433 100%) !important;
+  border-color: rgba(255, 255, 255, 0.45) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+  transform: translateY(-1px);
+}
+
+/* 2. Rapido: Vibrant Electric Emerald Green */
+.btn-book-rapido {
+  background: linear-gradient(135deg, #047857 0%, #059669 45%, #10B981 100%) !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(52, 211, 153, 0.45) !important;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+}
+
+.btn-book-rapido:hover {
+  background: linear-gradient(135deg, #059669 0%, #10B981 50%, #34D399 100%) !important;
+  border-color: #6EE7B7 !important;
+  box-shadow: 0 6px 22px rgba(16, 185, 129, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+  transform: translateY(-1px);
+}
+
+/* 3. Ola: Vibrant High-Energy Amber-Gold */
+.btn-book-ola {
+  background: linear-gradient(135deg, #D97706 0%, #F59E0B 50%, #FBBF24 100%) !important;
+  color: #0F172A !important;
+  border: 1px solid rgba(253, 224, 71, 0.6) !important;
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
+}
+
+.btn-book-ola * {
+  color: #0F172A !important;
+  stroke: #0F172A !important;
+}
+
+.btn-book-ola:hover {
+  background: linear-gradient(135deg, #F59E0B 0%, #FBBF24 50%, #FDE047 100%) !important;
+  border-color: #FEF08A !important;
+  box-shadow: 0 6px 22px rgba(245, 158, 11, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+  transform: translateY(-1px);
+}
+
+/* 4. More Options: Electric Royal Violet Gradient */
+.btn-book-more {
+  background: linear-gradient(135deg, #6D28D9 0%, #7C3AED 50%, #9333EA 100%) !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(192, 132, 252, 0.4) !important;
+  box-shadow: 0 4px 16px rgba(147, 51, 234, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+}
+
+.btn-book-more:hover {
+  background: linear-gradient(135deg, #7C3AED 0%, #9333EA 50%, #A855F7 100%) !important;
+  border-color: #D8B4FE !important;
+  box-shadow: 0 6px 22px rgba(147, 51, 234, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+  transform: translateY(-1px);
 }
 
 .no-scrollbar::-webkit-scrollbar {
@@ -2449,33 +2635,122 @@ body:not(.theme-dark) .map-dark-canvas .bg-slate-950\/80 {
 }
 
 body:not(.theme-dark) .ride-filter-pill {
-  background-color: #FFFFFF !important;
-  border: 1px solid #CBD5E1 !important;
+  background: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
   color: #334155 !important;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04) !important;
+}
+
+body:not(.theme-dark) .ride-filter-pill .pill-dot {
+  background-color: #0073FF;
+  box-shadow: 0 0 6px #0073FF;
+}
+
+body:not(.theme-dark) .ride-filter-pill .pill-badge {
+  background: #F1F5F9 !important;
+  color: #64748B !important;
+  border: 1px solid #E2E8F0 !important;
 }
 
 body:not(.theme-dark) .ride-filter-pill:hover {
-  background-color: #F1F5F9 !important;
+  background-color: #F8FAFC !important;
   color: #0F172A !important;
+  border-color: #93C5FD !important;
 }
 
 body:not(.theme-dark) .ride-filter-pill.active {
-  background-color: #0073FF !important;
+  background: linear-gradient(135deg, #0073FF 0%, #2563EB 100%) !important;
   border-color: #0073FF !important;
   color: #FFFFFF !important;
+  box-shadow: 0 4px 14px rgba(0, 115, 255, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
 }
 
+body:not(.theme-dark) .ride-filter-pill.active .pill-dot {
+  background-color: #FFFFFF;
+  box-shadow: 0 0 8px #FFFFFF;
+}
+
+body:not(.theme-dark) .ride-filter-pill.active .pill-badge {
+  background: rgba(255, 255, 255, 0.25) !important;
+  color: #FFFFFF !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+body:not(.theme-dark) .ride-sort-btn,
 body:not(.theme-dark) #sort-btn-price,
 body:not(.theme-dark) #sort-btn-eta {
-  background-color: #FFFFFF !important;
+  background: #FFFFFF !important;
   border: 1px solid #CBD5E1 !important;
-  color: #334155 !important;
+  color: #2563EB !important;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04) !important;
 }
 
+body:not(.theme-dark) .ride-sort-btn:hover,
 body:not(.theme-dark) #sort-btn-price:hover,
 body:not(.theme-dark) #sort-btn-eta:hover {
-  background-color: #F1F5F9 !important;
+  background: #EFF6FF !important;
+  border-color: #93C5FD !important;
+  color: #1D4ED8 !important;
+}
+
+body:not(.theme-dark) .ride-sort-btn.active,
+body:not(.theme-dark) #sort-btn-price.bg-blue-600,
+body:not(.theme-dark) #sort-btn-eta.bg-blue-600 {
+  background: linear-gradient(135deg, #0073FF 0%, #2563EB 100%) !important;
+  color: #FFFFFF !important;
+  border-color: #0073FF !important;
+  box-shadow: 0 4px 12px rgba(0, 115, 255, 0.3) !important;
+}
+
+body:not(.theme-dark) .btn-book-uber {
+  background: #000000 !important;
+  color: #FFFFFF !important;
+  border: 1px solid #1E293B !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25) !important;
+}
+
+body:not(.theme-dark) .btn-book-uber * {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+body:not(.theme-dark) .btn-book-rapido {
+  background: linear-gradient(135deg, #059669 0%, #10B981 100%) !important;
+  color: #FFFFFF !important;
+  border: 1px solid #059669 !important;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3) !important;
+}
+
+body:not(.theme-dark) .btn-book-rapido * {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+body:not(.theme-dark) .btn-book-ola {
+  background: linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%) !important;
   color: #0F172A !important;
+  border: 1px solid #F59E0B !important;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3) !important;
+}
+
+body:not(.theme-dark) .btn-book-ola,
+body:not(.theme-dark) .btn-book-ola *,
+.btn-book-ola,
+.btn-book-ola * {
+  color: #0F172A !important;
+  stroke: #0F172A !important;
+}
+
+body:not(.theme-dark) .btn-book-more {
+  background: linear-gradient(135deg, #7C3AED 0%, #9333EA 100%) !important;
+  color: #FFFFFF !important;
+  border: 1px solid #7C3AED !important;
+  box-shadow: 0 4px 14px rgba(147, 51, 234, 0.3) !important;
+}
+
+body:not(.theme-dark) .btn-book-more * {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
 }
 
 /* 7. Ride Comparison Cards */
