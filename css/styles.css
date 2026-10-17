@@ -2228,15 +2228,26 @@ body.theme-light .input-label,
   font-weight: 600 !important;
 }
 
-body:not(.theme-dark) .input-value,
-body.theme-light .input-value,
-[data-theme="light"] .input-value,
-body:not(.theme-dark) #home-pickup-text,
-body:not(.theme-dark) #home-drop-text,
-body.theme-light #home-pickup-text,
-body.theme-light #home-drop-text {
+body:not(.theme-dark) .input-value:not(.placeholder),
+body.theme-light .input-value:not(.placeholder),
+[data-theme="light"] .input-value:not(.placeholder),
+body:not(.theme-dark) #home-pickup-text:not(.placeholder),
+body:not(.theme-dark) #home-drop-text:not(.placeholder),
+body.theme-light #home-pickup-text:not(.placeholder),
+body.theme-light #home-drop-text:not(.placeholder) {
   color: #0F172A !important;
   font-weight: 700 !important;
+}
+
+body:not(.theme-dark) .input-value.placeholder,
+body.theme-light .input-value.placeholder,
+[data-theme="light"] .input-value.placeholder,
+body:not(.theme-dark) #home-pickup-text.placeholder,
+body:not(.theme-dark) #home-drop-text.placeholder,
+body.theme-light #home-pickup-text.placeholder,
+body.theme-light #home-drop-text.placeholder {
+  color: #64748B !important;
+  font-weight: 500 !important;
 }
 
 body:not(.theme-dark) .btn-gps-pill,

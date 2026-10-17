@@ -67,11 +67,11 @@ class RideCompareApp {
     this.toastTimeout = null;
     this.selectedHistoryTripId = 1;
     this.userCoords = { lat: 16.7028, lng: 74.2405 };
-    this.pickupLocationName = 'Current Location';
-    this.pickupLocationFull = 'Your Live GPS Location';
+    this.pickupLocationName = '';
+    this.pickupLocationFull = '';
     this.pickupCoords = { lat: 16.7028, lng: 74.2405 };
     this.currentLiveLocationCoords = { lat: 16.7028, lng: 74.2405 };
-    this.hasPickupSelected = true;
+    this.hasPickupSelected = false;
     this.isLiveGpsActive = false;
     this.dropMap = null;
     this.dropMarker = null;
@@ -2693,17 +2693,6 @@ class RideCompareApp {
       dropText.title = city;
     }
 
-    // Ensure pickup is selected so search is ready
-    if (!this.hasPickupSelected) {
-      this.hasPickupSelected = true;
-      this.pickupLocationName = 'Current Location';
-      const pickupText = document.getElementById('home-pickup-text');
-      if (pickupText) {
-        pickupText.textContent = 'Current Location';
-        pickupText.classList.remove('placeholder');
-      }
-    }
-
     this.updateResultsMapRoute();
 
     const panel = document.getElementById('home-results-panel');
@@ -2727,7 +2716,9 @@ class RideCompareApp {
     const pickupCard = document.getElementById('home-pickup-card');
     const dropCard = document.getElementById('home-drop-card');
 
-    const isPickupPlaceholder = !pickupText || pickupText.classList.contains('placeholder') || pickupText.textContent.trim() === 'Select pickup location';
+    const isPickupPlaceholder = !pickupText || pickupText.classList.contains('placeholder') || 
+      pickupText.textContent.trim().toLowerCase() === 'select pickup location' ||
+      pickupText.textContent.trim().toLowerCase() === 'select pickup point';
     const isDropPlaceholder = !dropText || dropText.classList.contains('placeholder') || dropText.textContent.trim() === 'Select destination';
 
     const isPickupSelected = this.hasPickupSelected && !isPickupPlaceholder && (this.pickupLocationName || '').trim().length > 0;
@@ -2811,7 +2802,7 @@ class RideCompareApp {
     if (!pickupName && pickupText && !pickupText.classList.contains('placeholder')) {
       pickupName = pickupText.textContent.trim();
     }
-    if (!pickupName || pickupName === 'Select pickup location') {
+    if (!pickupName || pickupName.toLowerCase() === 'select pickup location' || pickupName.toLowerCase() === 'select pickup point') {
       pickupName = 'Current Location';
     }
 
@@ -3002,7 +2993,7 @@ class RideCompareApp {
     if (!pickupName && pickupText && !pickupText.classList.contains('placeholder')) {
       pickupName = pickupText.textContent.trim();
     }
-    if (!pickupName || pickupName === 'Select pickup location') {
+    if (!pickupName || pickupName.toLowerCase() === 'select pickup location' || pickupName.toLowerCase() === 'select pickup point') {
       pickupName = 'Current Location';
     }
 
@@ -3511,7 +3502,7 @@ class RideCompareApp {
     if (!pickupName && pickupTextEl && !pickupTextEl.classList.contains('placeholder')) {
       pickupName = pickupTextEl.textContent.trim();
     }
-    if (!pickupName || pickupName.toLowerCase() === 'select pickup location') {
+    if (!pickupName || pickupName.toLowerCase() === 'select pickup location' || pickupName.toLowerCase() === 'select pickup point') {
       pickupName = 'Current Location';
     }
 
@@ -3605,7 +3596,6 @@ class RideCompareApp {
         pickupEl.innerHTML = `
           <div class="flex flex-col">
             <span class="inline-flex items-center gap-1.5 font-bold text-sky-400">
-              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0"></span>
               Current Location (Live GPS)
             </span>
             <span class="text-[11px] text-slate-400 font-normal mt-0.5 truncate">${pickupDetail}</span>
@@ -4840,11 +4830,7 @@ class RideCompareApp {
     // Update Pickup Card on Home Screen
     const pickupText = document.getElementById('home-pickup-text');
     if (pickupText) {
-      if (selectedName.toLowerCase().includes('current location')) {
-        pickupText.innerHTML = '<span class="inline-flex items-center gap-1.5 font-semibold text-slate-200 dark:text-white"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0 inline-block"></span>Current Location</span>';
-      } else {
-        pickupText.textContent = selectedName;
-      }
+      pickupText.textContent = selectedName || 'Current Location';
       pickupText.title = selectedSub;
       pickupText.classList.remove('placeholder');
       pickupText.classList.remove('animate-pulse');
@@ -4916,19 +4902,18 @@ class RideCompareApp {
     this.showToast(`Drop location set: ${selectedName} 📍`, 'success');
     this.addRecentSearch(selectedName, selectedSub, null, this.pickupLocationName || 'Current Location');
 
-    // Check Pickup Location: If not explicitly selected, default to Current Location
+    // Check Pickup Location: If not explicitly selected, prompt for pickup
     const pickupText = document.getElementById('home-pickup-text');
-    const isPickupPlaceholder = !pickupText || pickupText.classList.contains('placeholder') || pickupText.textContent.trim() === 'Select pickup location';
+    const isPickupPlaceholder = !pickupText || pickupText.classList.contains('placeholder') || 
+      pickupText.textContent.trim().toLowerCase() === 'select pickup location' ||
+      pickupText.textContent.trim().toLowerCase() === 'select pickup point';
     const isPickupSelected = this.hasPickupSelected && !isPickupPlaceholder && (this.pickupLocationName || '').trim().length > 0;
 
     if (!isPickupSelected) {
-      this.hasPickupSelected = true;
-      this.pickupLocationName = 'Current Location';
-      this.pickupLocationFull = 'Your Current GPS Location';
-      if (pickupText) {
-        pickupText.innerHTML = '<span class="inline-flex items-center gap-1.5 font-semibold text-slate-200 dark:text-white"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0 inline-block"></span>Current Location</span>';
-        pickupText.classList.remove('placeholder');
-      }
+      setTimeout(() => {
+        this.openLocationPicker('pickup');
+      }, 250);
+      return;
     }
 
     // Both pickup and drop locations are selected -> open route map directly across all devices!
@@ -4946,19 +4931,22 @@ class RideCompareApp {
     // If user already manually selected a custom named place (other than Current Location), keep it
     if (this.hasPickupSelected && this.pickupLocationName && 
         this.pickupLocationName.toLowerCase() !== 'current location' && 
-        this.pickupLocationName.toLowerCase() !== 'select pickup location') {
+        this.pickupLocationName.toLowerCase() !== 'select pickup location' &&
+        this.pickupLocationName.toLowerCase() !== 'select pickup point') {
       return;
     }
 
-    // Set immediate default to Current Location across UI so user is never stalled
-    this.pickupLocationName = 'Current Location';
-    this.pickupLocationFull = this.pickupLocationFull || 'Your Live GPS Location';
-    this.hasPickupSelected = true;
+    if (!silent) {
+      // Set immediate default to Current Location across UI only when user explicitly tapped GPS
+      this.pickupLocationName = 'Current Location';
+      this.pickupLocationFull = this.pickupLocationFull || 'Your Live GPS Location';
+      this.hasPickupSelected = true;
 
-    if (pickupText) {
-      pickupText.innerHTML = '<span class="inline-flex items-center gap-1.5 font-semibold text-slate-200 dark:text-white"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0 inline-block"></span>Current Location</span>';
-      pickupText.classList.remove('placeholder');
-      pickupText.title = 'Current Location (Detecting live GPS coordinates...)';
+      if (pickupText) {
+        pickupText.textContent = 'Current Location';
+        pickupText.classList.remove('placeholder');
+        pickupText.title = 'Current Location (Detecting live GPS coordinates...)';
+      }
     }
 
     if (!navigator.geolocation) {
@@ -4981,7 +4969,6 @@ class RideCompareApp {
         this.userCoords = { lat, lng, accuracy };
         this.pickupCoords = { lat, lng };
         this.currentLiveLocationCoords = { lat, lng };
-        this.hasPickupSelected = true;
         this.isLiveGpsActive = true;
 
         let primaryName = 'Current Location';
@@ -5018,29 +5005,32 @@ class RideCompareApp {
           }
         } catch (_) {}
 
-        this.pickupLocationName = 'Current Location';
-        this.pickupLocationFull = detailName;
+        if (!silent || this.hasPickupSelected) {
+          this.pickupLocationName = primaryName;
+          this.pickupLocationFull = detailName;
+          this.hasPickupSelected = true;
 
-        const currentPickupText = document.getElementById('home-pickup-text');
-        if (currentPickupText && (!this.selectedPickupText || this.selectedPickupText.includes('Current Location') || currentPickupText.classList.contains('placeholder') || currentPickupText.textContent.includes('Current Location'))) {
-          currentPickupText.innerHTML = `<span class="inline-flex items-center gap-1.5 font-semibold text-slate-200 dark:text-white"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0 inline-block"></span>${primaryName}</span>`;
-          currentPickupText.classList.remove('placeholder');
-          currentPickupText.title = `Live Location: ${detailName} (±${accuracy}m)`;
-        }
+          const currentPickupText = document.getElementById('home-pickup-text');
+          if (currentPickupText) {
+            currentPickupText.textContent = primaryName;
+            currentPickupText.classList.remove('placeholder');
+            currentPickupText.classList.remove('animate-pulse');
+            currentPickupText.title = `Live Location: ${detailName} (±${accuracy}m)`;
+          }
 
-        // Update booking screen pickup if currently active
-        const bookingPickup = document.getElementById('booking-pickup-location');
-        if (bookingPickup && (bookingPickup.textContent.trim().toLowerCase().includes('location') || bookingPickup.textContent.trim().toLowerCase().includes('current'))) {
-          bookingPickup.innerHTML = `
-            <div class="flex flex-col">
-              <span class="inline-flex items-center gap-1.5 font-bold text-sky-400">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0"></span>
-                Current Location (Live GPS)
-              </span>
-              <span class="text-[11px] text-slate-400 font-normal mt-0.5 truncate">${this.cleanAddress(detailName)}</span>
-            </div>
-          `;
-          bookingPickup.title = `Live Location: ${detailName} (±${accuracy}m)`;
+          // Update booking screen pickup if currently active
+          const bookingPickup = document.getElementById('booking-pickup-location');
+          if (bookingPickup && (bookingPickup.textContent.trim().toLowerCase().includes('location') || bookingPickup.textContent.trim().toLowerCase().includes('current'))) {
+            bookingPickup.innerHTML = `
+              <div class="flex flex-col">
+                <span class="inline-flex items-center gap-1.5 font-bold text-sky-400">
+                  Current Location (Live GPS)
+                </span>
+                <span class="text-[11px] text-slate-400 font-normal mt-0.5 truncate">${this.cleanAddress(detailName)}</span>
+              </div>
+            `;
+            bookingPickup.title = `Live Location: ${detailName} (±${accuracy}m)`;
+          }
         }
 
         // Live watchPosition handler for continuous real-time updates as user moves
@@ -5051,7 +5041,7 @@ class RideCompareApp {
                 const liveLat = livePos.coords.latitude;
                 const liveLng = livePos.coords.longitude;
                 this.userCoords = { lat: liveLat, lng: liveLng, accuracy: Math.round(livePos.coords.accuracy || 15) };
-                if (this.pickupLocationName === 'Current Location') {
+                if (this.hasPickupSelected && this.pickupLocationName && this.pickupLocationName.includes('Current Location')) {
                   this.pickupCoords = { lat: liveLat, lng: liveLng };
                   this.currentLiveLocationCoords = { lat: liveLat, lng: liveLng };
                 }
@@ -5073,18 +5063,20 @@ class RideCompareApp {
           this.userCoords = { lat: 16.7028, lng: 74.2405, accuracy: 50 };
           this.pickupCoords = { lat: 16.7028, lng: 74.2405 };
           this.currentLiveLocationCoords = { lat: 16.7028, lng: 74.2405 };
+        }
+        if (!silent) {
           this.pickupLocationName = 'Current Location';
           this.pickupLocationFull = 'Kolhapur Central Area';
           this.hasPickupSelected = true;
 
           const currentPickupText = document.getElementById('home-pickup-text');
-          if (currentPickupText && currentPickupText.classList.contains('placeholder')) {
-            currentPickupText.innerHTML = '<span class="inline-flex items-center gap-1.5 font-semibold text-slate-200 dark:text-white"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0 inline-block"></span>Current Location</span>';
+          if (currentPickupText) {
+            currentPickupText.textContent = 'Current Location';
             currentPickupText.classList.remove('placeholder');
+            currentPickupText.classList.remove('animate-pulse');
             currentPickupText.title = 'Current Location (Default Area)';
           }
-        }
-        if (!silent) {
+
           let errMsg = 'Location permission denied. Using default area.';
           if (err && err.code === 2) errMsg = 'Location unavailable. Using default area.';
           else if (err && err.code === 3) errMsg = 'Location timed out. Using default area.';
