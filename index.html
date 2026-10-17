@@ -51,7 +51,7 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4LfkJpAF7Ggz83bF--j3vPztxlzrxPxg&libraries=places,geometry" async defer></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=84">
+  <link rel="stylesheet" href="css/styles.css?v=85">
 
   <style>
     /* Strict Responsive Display Rules: Bottom Nav for Mobile & Tablet (< 1024px) */
@@ -2143,8 +2143,8 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
             <div id="home-comparison-section" class="flex flex-col gap-3.5 mt-5 sm:mt-7 pt-2 w-full">
 
               <!-- Ride Comparison Header with Live Counts & Quick Sorting -->
-              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-1">
-                <div class="flex items-center gap-2 overflow-x-auto sm:overflow-visible no-scrollbar flex-shrink-0 py-0.5">
+              <div class="flex flex-wrap items-center justify-between gap-2 pb-1 w-full max-w-full">
+                <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar max-w-full py-0.5">
                   <button onclick="app.filterRideCategory('all')" id="filter-pill-all" class="ride-filter-pill active">
                     <span class="pill-dot"></span>
                     <span>All</span>
@@ -2171,8 +2171,8 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
                     <span class="pill-badge">1</span>
                   </button>
                 </div>
-                <div class="flex items-center gap-2 text-[11px] text-slate-400 font-semibold flex-shrink-0">
-                  <span class="hidden sm:inline text-slate-400 font-bold uppercase tracking-wider text-[10px]">Sort:</span>
+                <div class="flex items-center gap-1.5 text-[11px] text-slate-400 font-semibold flex-shrink-0 ml-auto sm:ml-0">
+                  <span class="text-slate-400 font-bold uppercase tracking-wider text-[10px]">Sort:</span>
                   <button onclick="app.sortRides('price')" id="sort-btn-price" class="ride-sort-btn">
                     <span>💰</span>
                     <span>Lowest Price</span>
