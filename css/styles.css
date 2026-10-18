@@ -5175,6 +5175,23 @@ body.theme-dark #admin-login-modal .admin-login-back-btn:hover,
   color: #FFFFFF !important;
 }
 
+body.theme-dark #portal-role-tab-container,
+[data-theme="dark"] #portal-role-tab-container {
+  background-color: #0F172A !important;
+  border-color: #334155 !important;
+}
+
+body.theme-dark #portal-tab-user,
+[data-theme="dark"] #portal-tab-user {
+  color: #94A3B8 !important;
+}
+
+body.theme-dark #portal-tab-user:hover,
+[data-theme="dark"] #portal-tab-user:hover {
+  color: #FFFFFF !important;
+  background-color: rgba(51, 65, 85, 0.6) !important;
+}
+
 /* ADMIN & DEVELOPER DASHBOARD TABS AND PRESENTATION */
 #screen-admin,
 #screen-developer {

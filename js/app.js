@@ -5930,7 +5930,27 @@ class RideCompareApp {
         : 'Enter authorized administrator email & password to access the Admin Dashboard';
     }
 
-    // 3. Switch Labels & Placeholder
+    // 3. Switch Role Tab Selector (User & Developer / Admin option below text)
+    const roleText = document.getElementById('portal-tab-role-text');
+    const roleIcon = document.getElementById('portal-tab-role-icon');
+    const roleTab = document.getElementById('portal-tab-role');
+    if (roleText) {
+      roleText.textContent = isDev ? 'Developer' : 'Admin';
+    }
+    if (roleIcon) {
+      roleIcon.innerHTML = isDev
+        ? '<svg class="w-3.5 h-3.5 text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>'
+        : '<svg class="w-3.5 h-3.5 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>';
+    }
+    if (roleTab) {
+      if (isDev) {
+        roleTab.className = 'flex-1 py-2 text-xs font-bold rounded-lg transition-all text-white bg-gradient-to-r from-indigo-600 to-purple-600 shadow-sm cursor-pointer flex items-center justify-center gap-1.5';
+      } else {
+        roleTab.className = 'flex-1 py-2 text-xs font-bold rounded-lg transition-all text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-500 shadow-sm cursor-pointer flex items-center justify-center gap-1.5';
+      }
+    }
+
+    // 4. Switch Labels & Placeholder
     const emailLabel = document.getElementById('portal-login-email-label');
     const passLabel = document.getElementById('portal-login-password-label');
     const emailInput = document.getElementById('admin-login-email');
@@ -5944,7 +5964,7 @@ class RideCompareApp {
       emailInput.placeholder = isDev ? 'developer@domain.com' : 'admin@domain.com';
     }
 
-    // 4. Toggle Buttons (Only Admin submit button in Admin portal, Only Dev submit button in Dev portal)
+    // 5. Toggle Buttons (Only Admin submit button in Admin portal, Only Dev submit button in Dev portal)
     const adminBtn = document.getElementById('btn-admin-login-submit');
     const devBtn = document.getElementById('btn-dev-login-submit');
     if (adminBtn) {
@@ -5956,9 +5976,22 @@ class RideCompareApp {
       devBtn.style.display = isDev ? 'flex' : 'none';
     }
 
-    // 5. Reset Error
+    // 6. Reset Error
     const err = document.getElementById('admin-login-error');
     if (err) err.classList.add('hidden');
+  }
+
+  switchToUserLoginFromPortal() {
+    if (window.soundFX && window.soundFX.playTap) {
+      try { window.soundFX.playTap(); } catch (_) {}
+    }
+    const portalEmail = document.getElementById('admin-login-email');
+    const authEmail = document.getElementById('auth-login-email');
+    if (portalEmail && authEmail && portalEmail.value) {
+      authEmail.value = portalEmail.value;
+    }
+    this.closeAdminLoginModal();
+    this.openAuthModal('login');
   }
 
   openAdminLoginModal() {

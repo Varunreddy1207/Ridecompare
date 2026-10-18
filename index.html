@@ -51,7 +51,7 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4LfkJpAF7Ggz83bF--j3vPztxlzrxPxg&libraries=places,geometry" async defer></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=89">
+  <link rel="stylesheet" href="css/styles.css?v=90">
 
   <style>
     /* Strict Responsive Display Rules: Bottom Nav for Mobile & Tablet (< 1024px) */
@@ -7613,6 +7613,20 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
         </div>
         <h3 id="portal-login-title" class="admin-login-title text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Admin Portal</h3>
         <p id="portal-login-subtitle" class="admin-login-subtitle text-xs text-slate-500 mt-1 font-medium">Enter authorized administrator email & password to access the Admin Dashboard</p>
+
+        <!-- Role Selector Option: User and Developer (below portal text) -->
+        <div id="portal-role-tab-container" class="portal-role-switcher p-1 rounded-xl bg-slate-100 border border-slate-200/90 flex items-center gap-1 mt-4 shadow-inner">
+          <button type="button" id="portal-tab-user" onclick="app.switchToUserLoginFromPortal()" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all text-slate-600 hover:text-slate-900 cursor-pointer flex items-center justify-center gap-1.5" title="Switch to User Login">
+            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            <span>User</span>
+          </button>
+          <button type="button" id="portal-tab-role" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all text-white bg-gradient-to-r from-indigo-600 to-purple-600 shadow-sm cursor-pointer flex items-center justify-center gap-1.5">
+            <span id="portal-tab-role-icon">
+              <svg class="w-3.5 h-3.5 text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+            </span>
+            <span id="portal-tab-role-text">Developer</span>
+          </button>
+        </div>
       </div>
 
       <!-- Error Banner -->
@@ -7659,7 +7673,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
             <svg class="w-4 h-4 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
           </button>
 
-          <button type="button" onclick="app.closeAdminLoginModal()" class="admin-login-back-btn w-full py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200/80 text-slate-600 hover:text-slate-900 text-xs font-semibold transition-all cursor-pointer mt-1">
+          <button type="button" onclick="app.switchToUserLoginFromPortal()" class="admin-login-back-btn w-full py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200/80 text-slate-600 hover:text-slate-900 text-xs font-semibold transition-all cursor-pointer mt-1">
             Back to User Login
           </button>
         </div>
@@ -8102,7 +8116,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
   <script src="js/bcrypt.min.js"></script>
   <script src="js/api.js?v=8"></script>
   <script src="js/audio.js?v=28"></script>
-  <script src="js/app.js?v=119"></script>
+  <script src="js/app.js?v=120"></script>
 
   <!-- Service Worker for Offline PWA Support -->
   <script>
