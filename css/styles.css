@@ -5083,6 +5083,13 @@ body.theme-light #btn-clear-map-search:hover,
   box-shadow: 0 6px 20px rgba(79, 70, 229, 0.45) !important;
 }
 
+#admin-login-modal #btn-admin-login-submit.hidden,
+#admin-login-modal #btn-dev-login-submit.hidden,
+#admin-login-modal #portal-login-icon-admin.hidden,
+#admin-login-modal #portal-login-icon-dev.hidden {
+  display: none !important;
+}
+
 #admin-login-modal .admin-login-back-btn {
   background-color: #F8FAFC !important;
   border: 1px solid #E2E8F0 !important;

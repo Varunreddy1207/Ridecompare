@@ -1002,7 +1002,7 @@ class RideCompareApp {
       if (!this.isAdminOrDev()) {
         this.currentTab = 'home';
         this.navigateTo(isAuth || hasStarted ? 'screen-home' : 'screen-splash', false);
-        setTimeout(() => this.openAdminLoginModal(), 200);
+        setTimeout(() => this.openDeveloperLoginModal(), 200);
       } else {
         this.navigateTo('screen-developer', false);
       }
@@ -1125,7 +1125,7 @@ class RideCompareApp {
     if (hash === '#dev-users' || hash === '#developer-users' || path.endsWith('/dev-users')) {
       if (!this.isAdminOrDev()) {
         try { history.replaceState(null, '', '#home'); } catch (_) {}
-        setTimeout(() => this.openAdminLoginModal(), 200);
+        setTimeout(() => this.openDeveloperLoginModal(), 200);
         return;
       }
       this.navigateTo('screen-developer', false);
@@ -1161,7 +1161,7 @@ class RideCompareApp {
     if (hash === '#devices' || hash === '#device-preview' || hash === '#simulator' || path.endsWith('/devices') || path.endsWith('/simulator')) {
       if (!this.isAdminOrDev()) {
         try { history.replaceState(null, '', '#home'); } catch (_) {}
-        setTimeout(() => this.openAdminLoginModal(), 200);
+        setTimeout(() => this.openDeveloperLoginModal(), 200);
         return;
       }
       this.navigateTo('screen-developer', false);
@@ -5908,15 +5908,82 @@ class RideCompareApp {
   // ADMIN PORTAL & DEVELOPER DASHBOARD CONTROLLER METHODS
   // =========================================================================
 
+  updatePortalLoginUI(mode = 'admin') {
+    const isDev = mode === 'developer';
+    this.portalLoginMode = isDev ? 'developer' : 'admin';
+
+    // 1. Switch Icons (Shield for Admin, Code </> for Developer)
+    const adminIcon = document.getElementById('portal-login-icon-admin');
+    const devIcon = document.getElementById('portal-login-icon-dev');
+    if (adminIcon) adminIcon.classList.toggle('hidden', isDev);
+    if (devIcon) devIcon.classList.toggle('hidden', !isDev);
+
+    // 2. Switch Title & Subtitle
+    const titleEl = document.getElementById('portal-login-title');
+    const subtitleEl = document.getElementById('portal-login-subtitle');
+    if (titleEl) {
+      titleEl.textContent = isDev ? 'Developer Portal' : 'Admin Portal';
+    }
+    if (subtitleEl) {
+      subtitleEl.textContent = isDev
+        ? 'Enter authorized developer email & password to access the Developer Dashboard'
+        : 'Enter authorized administrator email & password to access the Admin Dashboard';
+    }
+
+    // 3. Switch Labels & Placeholder
+    const emailLabel = document.getElementById('portal-login-email-label');
+    const passLabel = document.getElementById('portal-login-password-label');
+    const emailInput = document.getElementById('admin-login-email');
+    if (emailLabel) {
+      emailLabel.textContent = isDev ? 'Developer Email Address' : 'Admin Email Address';
+    }
+    if (passLabel) {
+      passLabel.textContent = isDev ? 'Developer Password' : 'Admin Password';
+    }
+    if (emailInput) {
+      emailInput.placeholder = isDev ? 'developer@domain.com' : 'admin@domain.com';
+    }
+
+    // 4. Toggle Buttons (Only Admin submit button in Admin portal, Only Dev submit button in Dev portal)
+    const adminBtn = document.getElementById('btn-admin-login-submit');
+    const devBtn = document.getElementById('btn-dev-login-submit');
+    if (adminBtn) {
+      adminBtn.classList.toggle('hidden', isDev);
+      adminBtn.style.display = isDev ? 'none' : 'flex';
+    }
+    if (devBtn) {
+      devBtn.classList.toggle('hidden', !isDev);
+      devBtn.style.display = isDev ? 'flex' : 'none';
+    }
+
+    // 5. Reset Error
+    const err = document.getElementById('admin-login-error');
+    if (err) err.classList.add('hidden');
+  }
+
   openAdminLoginModal() {
     if (window.soundFX && window.soundFX.playTap) {
       try { window.soundFX.playTap(); } catch (_) {}
     }
+    this.updatePortalLoginUI('admin');
     const modal = document.getElementById('admin-login-modal');
     if (modal) {
       modal.classList.add('show');
-      const err = document.getElementById('admin-login-error');
-      if (err) err.classList.add('hidden');
+      const emailInput = document.getElementById('admin-login-email');
+      if (emailInput) {
+        setTimeout(() => emailInput.focus(), 150);
+      }
+    }
+  }
+
+  openDeveloperLoginModal() {
+    if (window.soundFX && window.soundFX.playTap) {
+      try { window.soundFX.playTap(); } catch (_) {}
+    }
+    this.updatePortalLoginUI('developer');
+    const modal = document.getElementById('admin-login-modal');
+    if (modal) {
+      modal.classList.add('show');
       const emailInput = document.getElementById('admin-login-email');
       if (emailInput) {
         setTimeout(() => emailInput.focus(), 150);
@@ -5931,6 +5998,15 @@ class RideCompareApp {
     const modal = document.getElementById('admin-login-modal');
     if (modal) {
       modal.classList.remove('show');
+    }
+  }
+
+  handlePortalLoginSubmit(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    if (this.portalLoginMode === 'developer') {
+      this.handleDeveloperLoginSubmit(e);
+    } else {
+      this.handleAdminLoginSubmit(e);
     }
   }
 
@@ -5987,22 +6063,6 @@ class RideCompareApp {
         passInput.classList.add('ring-2', 'ring-red-500');
         passInput.focus();
         setTimeout(() => passInput.classList.remove('ring-2', 'ring-red-500'), 1500);
-      }
-    }
-  }
-
-  openDeveloperLoginModal() {
-    if (window.soundFX && window.soundFX.playTap) {
-      try { window.soundFX.playTap(); } catch (_) {}
-    }
-    const modal = document.getElementById('admin-login-modal');
-    if (modal) {
-      modal.classList.add('show');
-      const err = document.getElementById('admin-login-error');
-      if (err) err.classList.add('hidden');
-      const emailInput = document.getElementById('admin-login-email');
-      if (emailInput) {
-        setTimeout(() => emailInput.focus(), 150);
       }
     }
   }
