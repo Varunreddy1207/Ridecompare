@@ -5991,6 +5991,79 @@ class RideCompareApp {
     }
   }
 
+  openDeveloperLoginModal() {
+    if (window.soundFX && window.soundFX.playTap) {
+      try { window.soundFX.playTap(); } catch (_) {}
+    }
+    const modal = document.getElementById('admin-login-modal');
+    if (modal) {
+      modal.classList.add('show');
+      const err = document.getElementById('admin-login-error');
+      if (err) err.classList.add('hidden');
+      const emailInput = document.getElementById('admin-login-email');
+      if (emailInput) {
+        setTimeout(() => emailInput.focus(), 150);
+      }
+    }
+  }
+
+  handleDeveloperLoginSubmit(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const emailInput = document.getElementById('admin-login-email');
+    const passInput = document.getElementById('admin-login-password');
+    const errBanner = document.getElementById('admin-login-error');
+    const errText = document.getElementById('admin-login-error-text');
+
+    const email = (emailInput ? emailInput.value : '').toLowerCase().trim();
+    const pass = passInput ? passInput.value : '';
+
+    // Authorized Admin / Developer Credentials:
+    // 1. mvarunreddymassireddy@gmail.com / Vozx@0007
+    // 2. mahendarreddy440@gmail.com / Mahe@259
+    const isVarunDev = email === 'mvarunreddymassireddy@gmail.com' && pass === 'Vozx@0007';
+    const isMahendarDev = email === 'mahendarreddy440@gmail.com' && pass === 'Mahe@259';
+
+    if (isVarunDev || isMahendarDev) {
+      sessionStorage.setItem('ridecompare_admin_access', 'true');
+      localStorage.setItem('ridecompare_admin_access', 'true');
+
+      // Update current application profile with Developer status
+      const devName = isVarunDev ? 'Varun Reddy (Developer)' : 'Mahendar Reddy (Developer)';
+      this.userProfile = Object.assign({}, this.userProfile, {
+        name: devName,
+        email: email,
+        role: 'Developer'
+      });
+      localStorage.setItem('ridecompare_user_profile', JSON.stringify(this.userProfile));
+
+      this.closeAdminLoginModal();
+      this.closeAuthModal();
+
+      if (window.soundFX && window.soundFX.playTap) {
+        try { window.soundFX.playTap(); } catch (_) {}
+      }
+
+      this.showToast(`Welcome ${isVarunDev ? 'Varun' : 'Mahendar'}! Developer Portal Access Granted 💻`, 'success');
+      this.navigateTo('screen-developer', false);
+      try {
+        history.pushState(null, '', '#developer');
+      } catch (_) {
+        window.location.hash = '#developer';
+      }
+    } else {
+      if (errBanner) {
+        if (errText) errText.textContent = 'Invalid developer email or password. Access denied.';
+        errBanner.classList.remove('hidden');
+      }
+      this.showToast('Invalid developer email or password', 'error');
+      if (passInput) {
+        passInput.classList.add('ring-2', 'ring-red-500');
+        passInput.focus();
+        setTimeout(() => passInput.classList.remove('ring-2', 'ring-red-500'), 1500);
+      }
+    }
+  }
+
   switchToDeveloperDashboard() {
     if (window.soundFX && window.soundFX.playTap) {
       try { window.soundFX.playTap(); } catch (_) {}
