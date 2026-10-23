@@ -2084,6 +2084,10 @@ class RideCompareApp {
       if (screenId === 'screen-admin' || screenId === 'screen-developer') {
         this.loadDashboardLiveData(true);
         this.startDashboardPolling();
+        if (screenId === 'screen-developer') {
+          this.updateDeveloperProfileUI();
+          this.switchDevTab(this.currentDevTab || 'home', false);
+        }
       } else {
         this.stopDashboardPolling();
       }
@@ -6252,7 +6256,7 @@ class RideCompareApp {
 
     // Update userProfile
     const emailPrefix = email.split('@')[0] || 'User';
-    const formattedName = emailPrefix.charAt(0).toUpperCase() + emailPrefix.slice(1);
+    const formattedName = emailPrefix.split(/[._-]+/).filter(Boolean).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
     this.userProfile = Object.assign({}, this.userProfile || {}, {
       name: `${formattedName} (Developer)`,
       email: email,
@@ -6490,6 +6494,90 @@ class RideCompareApp {
     if (menu) {
       menu.classList.toggle('hidden');
     }
+  }
+
+  copyDeveloperApiKey(key = 'app_7d3e1b2f') {
+    if (window.soundFX && window.soundFX.playTap) {
+      try { window.soundFX.playTap(); } catch (_) {}
+    }
+    const cleanKey = key || 'app_7d3e1b2f';
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(cleanKey).then(() => {
+        this.showToast(`API Key ${cleanKey} copied to clipboard! 📋`, 'success');
+      }).catch(() => {
+        this.showToast(`API Key: ${cleanKey}`, 'info');
+      });
+    } else {
+      this.showToast(`API Key: ${cleanKey}`, 'info');
+    }
+    const copyIcon = document.getElementById('dev-copy-key-icon');
+    if (copyIcon) {
+      const origHtml = copyIcon.innerHTML;
+      copyIcon.innerHTML = '<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>';
+      setTimeout(() => { copyIcon.innerHTML = origHtml; }, 1800);
+    }
+  }
+
+  updateDeveloperProfileUI() {
+    let profile = this.userProfile || {};
+    try {
+      const stored = localStorage.getItem('ridecompare_user_profile');
+      if (stored) {
+        profile = Object.assign({}, profile, JSON.parse(stored));
+      }
+    } catch (_) {}
+
+    let rawName = profile.name || '';
+    let email = (profile.email || '').toLowerCase().trim();
+
+    // If no name but email exists, derive from email prefix
+    if (!rawName && email) {
+      const prefix = email.split('@')[0] || '';
+      rawName = prefix.split(/[._-]+/).filter(Boolean).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    }
+
+    // Default to Varun Reddy if Varun's admin email or empty
+    if (!rawName || email === 'mvarunreddymassireddy@gmail.com') {
+      if (email === 'mvarunreddymassireddy@gmail.com' || !rawName) {
+        rawName = 'Varun Reddy';
+      }
+    } else if (email === 'mahendarreddy440@gmail.com') {
+      rawName = 'Mahendar Reddy';
+    }
+
+    // Strip any (Developer), (Admin), or (User) tags from clean display name
+    let cleanName = rawName.replace(/\s*\((Developer|Admin|User)\)/gi, '').trim();
+    if (!cleanName) cleanName = 'Varun Reddy';
+
+    // Calculate avatar initials (e.g. "Varun Reddy" -> "VR")
+    const parts = cleanName.split(' ').filter(Boolean);
+    let initials = 'VR';
+    if (parts.length >= 2) {
+      initials = (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    } else if (parts.length === 1 && parts[0].length >= 2) {
+      initials = parts[0].slice(0, 2).toUpperCase();
+    } else if (parts.length === 1) {
+      initials = parts[0][0].toUpperCase();
+    }
+
+    // 1. Topbar Avatar initials
+    const initialsEl = document.getElementById('dev-topbar-avatar-initials');
+    if (initialsEl) initialsEl.textContent = initials;
+
+    // 2. Topbar Profile name
+    const topbarNameEl = document.getElementById('dev-topbar-profile-name');
+    if (topbarNameEl) topbarNameEl.textContent = cleanName;
+
+    // 3. Hero Welcome heading in Dashboard
+    const heroNameEl = document.getElementById('dev-hero-welcome-name');
+    if (heroNameEl) heroNameEl.textContent = cleanName;
+
+    // 4. Dropdown menu profile name & email
+    const dropdownNameEl = document.getElementById('dev-dropdown-user-name');
+    if (dropdownNameEl) dropdownNameEl.textContent = cleanName;
+
+    const dropdownEmailEl = document.getElementById('dev-dropdown-user-email');
+    if (dropdownEmailEl) dropdownEmailEl.textContent = email || 'developer@ridecompare.com';
   }
 
   enterAdminFullScreen(tabName = 'users') {
@@ -6786,44 +6874,42 @@ class RideCompareApp {
     }
   }
 
-  switchDevTab(tabName, triggerFullScreen = true) {
+  switchDevTab(tabName = 'home', triggerFullScreen = false) {
     if (window.soundFX && window.soundFX.playTap) {
       try { window.soundFX.playTap(); } catch (_) {}
     }
-    this.currentDevTab = tabName;
+    this.currentDevTab = tabName || 'home';
     const navItems = document.querySelectorAll('.dev-nav-item');
     navItems.forEach(item => {
-      const isMatch = item.id === `dev-tab-${tabName}` || item.getAttribute('onclick')?.includes(`'${tabName}'`);
+      const isMatch = item.id === `dev-tab-${this.currentDevTab}` || item.getAttribute('onclick')?.includes(`'${this.currentDevTab}'`);
       item.classList.toggle('active', !!isMatch);
       const icon = item.querySelector('svg');
       if (isMatch) {
-        item.classList.add('bg-blue-50', 'text-blue-600', 'font-bold');
-        item.classList.remove('text-slate-600', 'hover:bg-slate-100', 'font-semibold');
+        item.className = 'dev-nav-item active w-full px-4 py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs flex items-center gap-3 transition-all cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.4)]';
         if (icon) {
-          icon.classList.add('text-blue-600');
-          icon.classList.remove('text-slate-400');
+          icon.setAttribute('class', 'w-4 h-4 text-white');
         }
       } else {
-        item.classList.remove('bg-blue-50', 'text-blue-600', 'font-bold');
-        item.classList.add('text-slate-600', 'hover:bg-slate-100', 'font-semibold');
+        item.className = 'dev-nav-item w-full px-4 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer';
         if (icon) {
-          icon.classList.remove('text-blue-600');
-          icon.classList.add('text-slate-400');
+          icon.setAttribute('class', 'w-4 h-4 text-slate-400');
         }
       }
     });
 
-    const allDevPanels = ['playground', 'status', 'devices', 'users', 'docs', 'keys', 'logs', 'webhooks', 'settings'];
+    const allDevPanels = ['home', 'keys', 'docs', 'support', 'playground', 'status', 'devices', 'users', 'logs', 'webhooks', 'settings'];
     allDevPanels.forEach(p => {
       const el = document.getElementById(`dev-panel-${p}`);
       if (el) {
-        if (p === tabName) {
+        if (p === this.currentDevTab) {
           el.classList.remove('hidden');
         } else {
           el.classList.add('hidden');
         }
       }
     });
+
+    this.updateDeveloperProfileUI();
 
     if (tabName === 'status') {
       this.initSystemStatus();

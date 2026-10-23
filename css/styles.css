@@ -5204,9 +5204,8 @@ body.theme-dark #portal-tab-role.portal-tab-inactive:hover,
   background-color: rgba(51, 65, 85, 0.6) !important;
 }
 
-/* ADMIN & DEVELOPER DASHBOARD TABS AND PRESENTATION */
-#screen-admin,
-#screen-developer {
+/* ADMIN DASHBOARD: Clean modern light presentation */
+#screen-admin {
   background-color: #F8FAFC !important;
   color: #0F172A !important;
 }
@@ -5216,9 +5215,34 @@ body.theme-dark #portal-tab-role.portal-tab-inactive:hover,
   color: #FFFFFF !important;
 }
 
-.dev-nav-item.active {
-  background-color: #EFF6FF !important;
-  color: #2563EB !important;
+/* VOZX DEVELOPER PORTAL DASHBOARD: Cyber Dark Theme (Exact match of media_1792739987927_604e58f1) */
+#screen-developer {
+  background-color: #070D18 !important;
+  color: #F8FAFC !important;
+}
+
+#screen-developer .dev-sidebar {
+  background-color: #070D18 !important;
+  border-color: rgba(30, 41, 59, 0.8) !important;
+}
+
+#screen-developer .dev-nav-item {
+  color: #94A3B8 !important;
+}
+
+#screen-developer .dev-nav-item:hover {
+  color: #FFFFFF !important;
+  background-color: rgba(30, 41, 59, 0.6) !important;
+}
+
+#screen-developer .dev-nav-item.active {
+  background-color: #2563EB !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4) !important;
+}
+
+#screen-developer .dev-nav-item.active svg {
+  color: #FFFFFF !important;
 }
 
 /* RESPONSIVE ENFORCEMENT: HIDE ADMIN & DEVELOPER PORTAL BUTTONS IN USER LOGIN UI ON MOBILE (< 640px) */

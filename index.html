@@ -51,7 +51,7 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4LfkJpAF7Ggz83bF--j3vPztxlzrxPxg&libraries=places,geometry" async defer></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=91">
+  <link rel="stylesheet" href="css/styles.css?v=92">
 
   <style>
     /* Strict Responsive Display Rules: Bottom Nav for Mobile & Tablet (< 1024px) */
@@ -5611,1336 +5611,512 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
     </main>
   </section>
 
+    <!-- ====================================================================== -->
+  <!-- VOZX DEVELOPER PORTAL DASHBOARD (EXACT RECREATION OF media_1792739987927_604e58f1) -->
   <!-- ====================================================================== -->
-  <!-- DEVELOPER DASHBOARD SCREEN: EXACT RECREATION OF media_1791714448962_8590b107 -->
-  <!-- ====================================================================== -->
-  <section id="screen-developer" class="screen-page w-full min-h-screen bg-[#F8FAFC] text-slate-800 flex flex-col lg:flex-row relative">
+  <section id="screen-developer" class="screen-page w-full min-h-screen bg-[#070D18] text-slate-100 flex flex-col lg:flex-row relative font-sans">
 
     <!-- DESKTOP LEFT SIDEBAR -->
-    <aside class="dev-sidebar w-full lg:w-64 lg:min-w-[260px] bg-white border-b lg:border-b-0 lg:border-r border-slate-200/80 flex flex-col justify-between p-5 lg:min-h-screen z-20 shadow-sm">
+    <aside class="dev-sidebar w-full lg:w-60 lg:min-w-[240px] bg-[#070D18] border-b lg:border-b-0 lg:border-r border-slate-800/80 flex flex-col justify-between p-4 lg:p-5 lg:min-h-screen z-20 shadow-xl">
       <div class="space-y-6">
-        <!-- Logo & Branding -->
-        <div class="flex items-center gap-3 px-2 py-1">
-          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-500 flex items-center justify-center text-white shadow-md shadow-blue-500/25">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-          </div>
+        <!-- VOZX Developer Portal Branding -->
+        <div class="flex items-center gap-3 px-2 py-1.5 cursor-pointer select-none" onclick="app.switchDevTab('home')">
+          <svg class="w-8 h-8 flex-shrink-0" viewBox="0 0 40 40" fill="none">
+            <path d="M6 8L20 34L25 24L15 8H6Z" fill="url(#vozx-grad-1)"/>
+            <path d="M20 34L34 8H25L17 24L20 34Z" fill="url(#vozx-grad-2)"/>
+            <defs>
+              <linearGradient id="vozx-grad-1" x1="6" y1="8" x2="25" y2="34" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#38BDF8"/>
+                <stop offset="1" stop-color="#2563EB"/>
+              </linearGradient>
+              <linearGradient id="vozx-grad-2" x1="17" y1="8" x2="34" y2="34" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#3B82F6"/>
+                <stop offset="1" stop-color="#1D4ED8"/>
+              </linearGradient>
+            </defs>
+          </svg>
           <div>
-            <h2 class="text-base font-black tracking-tight text-slate-900 leading-tight">Ride<span class="text-blue-600">Compare</span></h2>
-            <p class="text-[10px] text-slate-400 font-medium">Smarter Rides. Better Choices.</p>
+            <div class="flex items-center text-lg font-black tracking-tight leading-none">
+              <span class="text-white">VO</span><span class="text-blue-500">ZX</span>
+            </div>
+            <span class="text-[10px] text-slate-400 font-medium tracking-wide block mt-1">Developer Portal</span>
           </div>
         </div>
 
         <!-- Navigation Menu -->
-        <nav class="space-y-1">
-          <button type="button" onclick="app.toggleDevTab('playground')" id="dev-tab-playground" class="dev-nav-item active w-full px-3.5 py-2.5 rounded-xl bg-blue-50 text-blue-600 font-bold text-xs flex items-center gap-3 transition-all cursor-pointer">
-            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
-            <span>API Playground</span>
+        <nav class="space-y-1.5">
+          <!-- Home (Active by Default) -->
+          <button type="button" onclick="app.switchDevTab('home')" id="dev-tab-home" class="dev-nav-item active w-full px-4 py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs flex items-center gap-3 transition-all cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.4)]">
+            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            <span>Home</span>
           </button>
 
-          <button type="button" onclick="app.toggleDevTab('status')" id="dev-tab-status" class="dev-nav-item w-full px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
-            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-            <span>System Status</span>
-          </button>
-
-          <button type="button" onclick="app.toggleDevTab('devices')" id="dev-tab-devices" class="dev-nav-item w-full px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
-            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2zM9 3h6"/></svg>
-            <span>Device &amp; UI Preview</span>
-            <span class="ml-auto px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-100 text-blue-700">Simulator</span>
-          </button>
-
-          <button type="button" onclick="app.toggleDevTab('users')" id="dev-tab-users" class="dev-nav-item w-full px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
-            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-            <span>Live Users &amp; Sessions</span>
-            <span id="dev-nav-users-count" class="ml-auto px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-100 text-emerald-700">27 Live</span>
-          </button>
-
-          <button type="button" onclick="app.toggleDevTab('docs')" id="dev-tab-docs" class="dev-nav-item w-full px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
-            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-            <span>Documentation</span>
-          </button>
-
-          <button type="button" onclick="app.toggleDevTab('keys')" id="dev-tab-keys" class="dev-nav-item w-full px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
+          <!-- API Keys -->
+          <button type="button" onclick="app.switchDevTab('keys')" id="dev-tab-keys" class="dev-nav-item w-full px-4 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
             <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
             <span>API Keys</span>
           </button>
 
-          <button type="button" onclick="app.toggleDevTab('logs')" id="dev-tab-logs" class="dev-nav-item w-full px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
-            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
-            <span>Logs</span>
+          <!-- Documentation -->
+          <button type="button" onclick="app.switchDevTab('docs')" id="dev-tab-docs" class="dev-nav-item w-full px-4 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            <span>Documentation</span>
           </button>
 
-          <button type="button" onclick="app.toggleDevTab('webhooks')" id="dev-tab-webhooks" class="dev-nav-item w-full px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
-            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
-            <span>Webhooks</span>
-          </button>
-
-          <button type="button" onclick="app.toggleDevTab('settings')" id="dev-tab-settings" class="dev-nav-item w-full px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
-            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-            <span>Settings</span>
+          <!-- Support -->
+          <button type="button" onclick="app.switchDevTab('support')" id="dev-tab-support" class="dev-nav-item w-full px-4 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1.414 5.658a9 9 0 01-2.167-9.238m7.824 2.167a1 1 0 111.414 1.414m-1.414-1.414L3 3"/></svg>
+            <span>Support</span>
           </button>
         </nav>
       </div>
 
-      <!-- Sidebar Bottom: Log Out -->
-      <div class="pt-4 border-t border-slate-100">
-        <button type="button" onclick="app.adminLogout()" class="w-full px-3.5 py-2.5 rounded-xl text-slate-700 hover:text-red-600 hover:bg-red-50 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
-          <svg class="w-4 h-4 text-slate-500 hover:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+      <!-- Sidebar Bottom: Promo Banner & Log Out -->
+      <div class="pt-6 space-y-3">
+        <!-- Promo Graphic Box (from mockup bottom left) -->
+        <div onclick="app.switchDevTab('docs')" class="relative overflow-hidden rounded-2xl bg-gradient-to-tr from-[#0F1D3D] via-[#0B152C] to-[#080E1C] border border-blue-900/40 p-3.5 flex items-center justify-between group cursor-pointer hover:border-blue-500/50 transition-all shadow-md">
+          <div class="flex items-center gap-2.5 z-10">
+            <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-md shadow-indigo-500/30 flex-shrink-0">
+              <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            </div>
+            <p class="text-[10px] font-bold text-slate-200 leading-tight">Build the future of mobility with VOZX APIs</p>
+          </div>
+          <svg class="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-400 group-hover:translate-x-0.5 transition-all z-10 flex-shrink-0 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          <div class="absolute -right-4 -bottom-4 w-14 h-14 bg-blue-500/10 rounded-full blur-xl pointer-events-none"></div>
+        </div>
+
+        <button type="button" onclick="app.adminLogout()" class="w-full px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-red-400 hover:bg-red-950/20 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
+          <svg class="w-4 h-4 text-slate-500 hover:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
           <span>Log Out</span>
         </button>
       </div>
     </aside>
 
-    <!-- MAIN DEVELOPER CONTENT CANVAS -->
-    <main id="dev-main-scroll" class="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 lg:overflow-y-auto space-y-6">
-
-      <!-- Top Bar: Header & Actions -->
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-1">
-        <div class="flex items-center gap-3">
-          <div id="dev-topbar-back-btn-container" class="hidden">
-            <button type="button" onclick="app.exitDevFullScreen(true)" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 font-bold text-xs shadow-xs transition-all cursor-pointer active:scale-95 group" title="Return to Dashboard & Normal Layout">
-              <svg class="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-              <span>Back</span>
-            </button>
-          </div>
-          <div>
-            <h1 id="dev-dashboard-title" class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Developer Dashboard</h1>
-            <p id="dev-dashboard-subtitle" class="text-xs text-slate-500 mt-0.5">Build, test and integrate with RideCompare APIs.</p>
+    <!-- RIGHT MAIN CANVAS -->
+    <div class="flex-1 flex flex-col min-w-0 bg-[#070D18]">
+      
+      <!-- TOP NAVBAR -->
+      <header class="flex items-center justify-between gap-4 px-4 sm:px-8 py-3.5 border-b border-slate-800/80 bg-[#070D18]/90 backdrop-blur-md sticky top-0 z-20">
+        <!-- Search bar -->
+        <div class="relative flex-1 max-w-xl">
+          <input type="text" placeholder="Search documentation, endpoints, or anything..." class="w-full pl-9 pr-4 py-2 rounded-xl bg-[#0B1325] border border-slate-800/80 text-slate-200 placeholder-slate-500 text-xs focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50 transition-all font-medium">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
           </div>
         </div>
 
-        <div class="flex items-center gap-2.5 sm:gap-3">
-          <!-- Sync Real Live Data Button in Developer Header -->
-          <button type="button" onclick="app.refreshDashboardData(true)" id="btn-dev-sync-live" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 font-bold text-xs shadow-xs transition-all cursor-pointer active:scale-95" title="Fetch Real-Time Data from Supabase">
-            <svg class="w-4 h-4 text-emerald-600 dev-sync-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-            <span class="hidden sm:inline">Sync Live Data</span>
-          </button>
-
-          <!-- Device Preview Quick Button -->
-          <button type="button" onclick="app.switchDevTab('devices')" id="btn-quick-device-preview" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 font-bold text-xs shadow-xs transition-all cursor-pointer active:scale-95" title="Preview Laptop, Tablet & Mobile Views">
-            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2zM9 3h6"/></svg>
-            <span class="hidden sm:inline">Device Preview</span>
-          </button>
-
-          <!-- Switch to Admin Dashboard button -->
-          <button type="button" onclick="app.switchToAdminDashboard()" id="btn-switch-to-admin" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-600 font-bold text-xs shadow-sm transition-all cursor-pointer active:scale-95" title="Switch to Admin Dashboard">
-            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-            <span>Admin Dashboard</span>
-          </button>
-
+        <!-- Right: Notification & User Profile -->
+        <div class="flex items-center gap-3">
           <!-- Notification Bell -->
-          <button type="button" onclick="app.showToast('All API systems operational', 'info')" class="relative w-9 h-9 rounded-full bg-white hover:bg-slate-100 border border-slate-200 text-slate-600 flex items-center justify-center transition-all cursor-pointer">
+          <button type="button" onclick="app.showToast('All VOZX API services operational ⚡', 'info')" class="relative w-8 h-8 rounded-xl bg-[#0B1325] hover:bg-slate-800/80 border border-slate-800/80 text-slate-400 hover:text-white flex items-center justify-center transition-all cursor-pointer">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-            <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500"></span>
+            <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-blue-500 shadow-sm shadow-blue-400"></span>
           </button>
 
-          <!-- Developer Avatar & Menu -->
+          <!-- User Profile Pill & Dropdown -->
           <div class="relative">
-            <button type="button" onclick="app.toggleDevUserMenu()" class="inline-flex items-center gap-2 p-1 pr-2.5 rounded-full bg-white hover:bg-slate-50 border border-slate-200 shadow-sm transition-all cursor-pointer">
-              <div class="w-7 h-7 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center shadow-inner">
-                D
+            <button type="button" onclick="app.toggleDevUserMenu()" class="inline-flex items-center gap-2.5 p-1 pr-3 rounded-full bg-[#0B1325] hover:bg-slate-800/80 border border-slate-800/80 transition-all cursor-pointer shadow-sm">
+              <!-- Avatar Circle with dynamic initials -->
+              <div id="dev-topbar-avatar" class="w-7 h-7 rounded-full bg-blue-600 text-white font-black text-[11px] flex items-center justify-center shadow-md shadow-blue-600/30">
+                <span id="dev-topbar-avatar-initials">VR</span>
               </div>
-              <span class="text-xs font-bold text-slate-800">Developer</span>
+              <span id="dev-topbar-profile-name" class="text-xs font-bold text-white tracking-tight">Varun Reddy</span>
               <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
             </button>
 
             <!-- Dropdown Menu -->
-            <div id="dev-user-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-2xl shadow-xl py-1.5 z-30 text-xs">
-              <button type="button" onclick="app.switchDevTab('devices')" class="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 font-medium flex items-center gap-2">
-                <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2zM9 3h6"/></svg>
-                <span>Device &amp; UI Preview</span>
-              </button>
-              <button type="button" onclick="app.switchToAdminDashboard()" class="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 font-medium flex items-center gap-2">
-                <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            <div id="dev-user-dropdown" class="hidden absolute right-0 mt-2 w-56 bg-[#0B1325] border border-slate-800 rounded-2xl shadow-2xl py-2 z-30 text-xs text-slate-200">
+              <div class="px-4 py-2 border-b border-slate-800/80">
+                <p id="dev-dropdown-user-name" class="font-bold text-white">Varun Reddy</p>
+                <p id="dev-dropdown-user-email" class="text-[11px] text-slate-400 truncate">developer@ridecompare.com</p>
+              </div>
+              <button type="button" onclick="app.switchToAdminDashboard()" class="w-full text-left px-4 py-2 hover:bg-slate-800 text-slate-300 hover:text-white font-medium flex items-center gap-2 cursor-pointer">
+                <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                 <span>Admin Dashboard</span>
               </button>
-              <button type="button" onclick="app.switchTab('home')" class="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 font-medium flex items-center gap-2">
-                <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+              <button type="button" onclick="app.switchDevTab('devices')" class="w-full text-left px-4 py-2 hover:bg-slate-800 text-slate-300 hover:text-white font-medium flex items-center gap-2 cursor-pointer">
+                <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2zM9 3h6"/></svg>
+                <span>Device &amp; UI Preview</span>
+              </button>
+              <button type="button" onclick="app.switchTab('home')" class="w-full text-left px-4 py-2 hover:bg-slate-800 text-slate-300 hover:text-white font-medium flex items-center gap-2 cursor-pointer">
+                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                 <span>Exit to Rider App</span>
               </button>
-              <div class="border-t border-slate-100 my-1"></div>
-              <button type="button" onclick="app.adminLogout()" class="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 font-semibold flex items-center gap-2">
-                <svg class="w-3.5 h-3.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7"/></svg>
+              <div class="border-t border-slate-800 my-1"></div>
+              <button type="button" onclick="app.adminLogout()" class="w-full text-left px-4 py-2 hover:bg-red-950/40 text-red-400 font-semibold flex items-center gap-2 cursor-pointer">
+                <svg class="w-3.5 h-3.5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7"/></svg>
                 <span>Log Out</span>
               </button>
             </div>
           </div>
         </div>
-      </div>
+      </header>
 
-      <!-- DEV TAB 1: API PLAYGROUND PANEL -->
-      <div id="dev-panel-playground" class="space-y-6">
+      <!-- SCROLLABLE MAIN CANVAS -->
+      <main id="dev-main-scroll" class="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 lg:overflow-y-auto space-y-6">
 
-        <!-- WELCOME HERO BANNER -->
-        <div class="bg-gradient-to-r from-blue-50/80 via-white to-blue-50/50 rounded-2xl border border-blue-100/90 p-5 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0 shadow-inner">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
-            </div>
-            <div>
-              <h2 class="text-base font-bold text-slate-900">Welcome, Developer</h2>
-              <p class="text-xs text-slate-500 mt-0.5">Explore the RideCompare API. Build your own integrations and make ride comparison smarter.</p>
-            </div>
-          </div>
+        <!-- ================================================================= -->
+        <!-- DEV PANEL: HOME (EXACT MATCH OF media_1792739987927_604e58f1)    -->
+        <!-- ================================================================= -->
+        <div id="dev-panel-home" class="space-y-6">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-          <div class="flex items-center gap-2 bg-white px-3.5 py-1.5 rounded-xl border border-slate-200/90 shadow-sm cursor-pointer hover:border-blue-300 transition-colors" onclick="app.switchDevTab('status')" title="View System Status">
-            <span class="text-xs font-semibold text-slate-500">API Status</span>
-            <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600">
-              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span>Online</span>
-            </span>
-          </div>
-        </div>
+            <!-- LEFT/CENTER COLUMN (COL-SPAN 8) -->
+            <div class="lg:col-span-8 space-y-6">
 
-        <!-- LIVE USER LOGGED IN TILL NOW CARD -->
-        <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-5 sm:p-6 transition-all hover:border-slate-300">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3 mb-4">
-            <div class="flex items-center gap-2">
-              <span class="relative flex h-3 w-3">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-              </span>
-              <h3 class="text-sm font-black text-slate-900 uppercase tracking-wider">User Logged In Right Now (Till Now)</h3>
-            </div>
-            <div class="flex items-center gap-2 text-xs text-slate-500">
-              <span class="text-[11px] font-medium">Last synced: <span id="dev-live-sync-time" class="font-bold text-slate-700">Just now</span></span>
-              <button type="button" onclick="app.refreshDashboardData(true)" class="p-1 hover:bg-slate-100 rounded-lg transition-colors text-emerald-600 cursor-pointer" title="Refresh Live User Data">
-                <svg class="w-4 h-4 dev-sync-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-              </button>
-            </div>
-          </div>
+              <!-- 1. HERO WELCOME BANNER (WITH CAR SKYLINE & USER PROFILE NAME) -->
+              <div class="relative rounded-2xl bg-[#091224] border border-blue-900/40 overflow-hidden shadow-2xl p-6 sm:p-7 min-h-[160px] flex items-center">
+                <!-- Background Image & Gradient Blend -->
+                <div class="absolute inset-0 z-0 flex justify-end pointer-events-none">
+                  <img src="assets/images/dev_hero_car_scene.png" alt="VOZX Night City" class="h-full w-auto object-cover object-right opacity-90">
+                  <div class="absolute inset-0 bg-gradient-to-r from-[#091224] via-[#091224]/85 to-transparent"></div>
+                </div>
 
-          <!-- Dynamic Active User Container -->
-          <div id="dev-current-user-card">
-            <!-- Populated dynamically: if logged in, renders user details; if not, shows login prompt -->
-          </div>
-        </div>
-
-        <!-- ROW: 4 REAL-TIME SUPABASE METRICS CARDS -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <!-- Card 1: Registered Users -->
-          <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm space-y-3">
-            <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-            </div>
-            <div>
-              <div class="text-xs font-semibold text-slate-500">Registered Users</div>
-              <div id="dev-stat-total-users" class="text-2xl font-black text-slate-900 mt-0.5 tracking-tight">27</div>
-            </div>
-            <div class="flex items-center gap-1 text-xs font-bold text-emerald-600">
-              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span>Live Database</span>
-              <span class="text-slate-400 font-normal">in Supabase /User</span>
-            </div>
-          </div>
-
-          <!-- Card 2: Active Cloud Sessions -->
-          <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm space-y-3">
-            <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2zM9 3h6"/></svg>
-            </div>
-            <div>
-              <div class="text-xs font-semibold text-slate-500">Active Sessions</div>
-              <div id="dev-stat-active-sessions" class="text-2xl font-black text-slate-900 mt-0.5 tracking-tight">21 Active</div>
-            </div>
-            <div class="flex items-center gap-1 text-xs font-bold text-blue-600">
-              <span>↑ Live Devices</span>
-              <span class="text-slate-400 font-normal">in /DeviceSession</span>
-            </div>
-          </div>
-
-          <!-- Card 3: Ride Comparisons & Searches -->
-          <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm space-y-3">
-            <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-            </div>
-            <div>
-              <div class="text-xs font-semibold text-slate-500">Comparisons Made</div>
-              <div id="dev-stat-comparisons" class="text-2xl font-black text-slate-900 mt-0.5 tracking-tight">17</div>
-            </div>
-            <div class="flex items-center gap-1 text-xs font-bold text-purple-600">
-              <span>↑ Real-time</span>
-              <span class="text-slate-400 font-normal">fare calculations</span>
-            </div>
-          </div>
-
-          <!-- Card 4: Database Health & Latency -->
-          <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm space-y-3">
-            <div class="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>
-            </div>
-            <div>
-              <div class="text-xs font-semibold text-slate-500">Database Latency</div>
-              <div id="dev-stat-db-latency" class="text-2xl font-black text-slate-900 mt-0.5 tracking-tight">24ms</div>
-            </div>
-            <div class="flex items-center gap-1 text-xs font-bold text-emerald-600">
-              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-              <span id="dev-stat-db-status">PostgreSQL Connected</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- REAL LIVE USERS ROSTER TABLE IN PLAYGROUND -->
-        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-sm space-y-4">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div>
-              <div class="flex items-center gap-2">
-                <h3 class="text-base font-bold text-slate-900">RideCompare Users Roster &amp; Logins</h3>
-                <span id="dev-users-roster-count" class="px-2 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-700">27 Live</span>
+                <!-- Text Content on Left (Above Gradient) -->
+                <div class="relative z-10 max-w-md">
+                  <p class="text-xs sm:text-sm text-slate-400 font-medium">Welcome back,</p>
+                  <h1 id="dev-hero-welcome-name" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mt-0.5">Varun Reddy</h1>
+                  <p class="text-xs text-slate-400 mt-2 leading-relaxed">Access your API keys, explore documentation and build amazing products with VOZX.</p>
+                </div>
               </div>
-              <p class="text-xs text-slate-400 mt-0.5">Real users who have registered and logged into RideCompare till now</p>
-            </div>
 
-            <div class="flex items-center gap-2">
-              <div class="relative">
-                <input type="text" id="dev-users-search" oninput="app.filterDevUsers(this.value)" placeholder="Search users by name, email..." class="text-xs px-3.5 py-1.5 pl-8 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-blue-500 w-48 sm:w-60">
-                <svg class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-              </div>
-              <button type="button" onclick="app.switchDevTab('users')" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all cursor-pointer">
-                View All →
-              </button>
-            </div>
-          </div>
-
-          <!-- Table Container -->
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs min-w-[550px]">
-              <thead>
-                <tr class="text-slate-400 border-b border-slate-100 pb-2">
-                  <th class="pb-3 font-semibold">User</th>
-                  <th class="pb-3 font-semibold">Contact</th>
-                  <th class="pb-3 font-semibold">Login City / Place</th>
-                  <th class="pb-3 font-semibold">Registered</th>
-                  <th class="pb-3 font-semibold">Last Active / Device</th>
-                  <th class="pb-3 font-semibold">Status</th>
-                  <th class="pb-3 font-semibold text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody id="dev-live-users-tbody" class="divide-y divide-slate-100 text-slate-700">
-                <!-- Populated dynamically with real Supabase users -->
-                <tr>
-                  <td colspan="7" class="py-6 text-center text-slate-400">
-                    <div class="inline-flex items-center gap-2 text-xs font-medium">
-                      <span class="w-2 h-2 rounded-full bg-blue-500 animate-ping"></span>
-                      <span>Loading real-time user database...</span>
+              <!-- 2. FOUR STAT METRIC CARDS ROW -->
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+                <!-- Card 1: Total API Keys -->
+                <div class="bg-[#0B1325] border border-slate-800/80 rounded-2xl p-4 sm:p-5 flex flex-col justify-between hover:border-slate-700 transition-all shadow-sm">
+                  <div>
+                    <div class="w-8 h-8 rounded-full bg-blue-600/20 text-blue-400 flex items-center justify-center mb-3">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
                     </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- ROW 1: QUICK START & ENDPOINTS -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-          
-          <!-- Left: Quick Start (lg:col-span-7) -->
-          <div class="lg:col-span-7 bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-sm flex flex-col justify-between">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
-              <div class="flex items-center gap-4 text-xs font-semibold">
-                <span class="font-bold text-slate-900 text-sm">Quick Start</span>
-                <div class="flex items-center gap-1">
-                  <button type="button" onclick="app.switchQuickStartLang('curl')" id="btn-lang-curl" class="lang-tab active px-2.5 py-1 rounded-md text-blue-600 border-b-2 border-blue-600 font-bold transition-all cursor-pointer">cURL</button>
-                  <button type="button" onclick="app.switchQuickStartLang('javascript')" id="btn-lang-javascript" class="lang-tab px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-800 transition-all cursor-pointer">JavaScript</button>
-                  <button type="button" onclick="app.switchQuickStartLang('python')" id="btn-lang-python" class="lang-tab px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-800 transition-all cursor-pointer">Python</button>
-                  <button type="button" onclick="app.switchQuickStartLang('nodejs')" id="btn-lang-nodejs" class="lang-tab px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-800 transition-all cursor-pointer">Node.js</button>
-                </div>
-              </div>
-
-              <button type="button" onclick="app.copyQuickStartCode()" id="btn-copy-code" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-600 hover:text-slate-900 text-xs font-semibold transition-all cursor-pointer active:scale-95">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                <span id="btn-copy-code-text">Copy</span>
-              </button>
-            </div>
-
-            <!-- Code Snippet Box -->
-            <div class="relative bg-slate-900 text-slate-200 rounded-xl p-4 font-mono text-xs overflow-x-auto leading-relaxed shadow-inner">
-              <pre id="quickstart-code-snippet"><code>curl -X GET \
-  "https://api.ridecompare.com/api/rides/compare" \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "pickupLocation": "New York, NY",
-    "dropLocation": "Boston, MA",
-    "rideType": "car"
-  }'</code></pre>
-            </div>
-          </div>
-
-          <!-- Right: Endpoints (lg:col-span-5) -->
-          <div class="lg:col-span-5 bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-sm flex flex-col justify-between">
-            <div class="mb-3">
-              <h3 class="text-sm font-bold text-slate-900">Endpoints</h3>
-            </div>
-
-            <div class="space-y-2.5">
-              <!-- Endpoint 1 -->
-              <div onclick="app.showToast('GET /api/health - Status 200 OK', 'success')" class="p-2.5 rounded-xl border border-slate-100 hover:border-blue-200 hover:bg-slate-50/80 flex items-center justify-between transition-all cursor-pointer">
-                <div class="flex items-center gap-3">
-                  <span class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-bold text-[10px] tracking-wide">GET</span>
-                  <span class="font-mono text-xs font-semibold text-slate-800">/api/health</span>
-                </div>
-                <div class="flex items-center gap-1.5 text-slate-400 text-xs">
-                  <span class="hidden sm:inline text-[11px] text-slate-400">Check API health</span>
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                </div>
-              </div>
-
-              <!-- Endpoint 2 -->
-              <div onclick="app.showToast('POST /api/auth/register', 'info')" class="p-2.5 rounded-xl border border-slate-100 hover:border-blue-200 hover:bg-slate-50/80 flex items-center justify-between transition-all cursor-pointer">
-                <div class="flex items-center gap-3">
-                  <span class="px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 font-bold text-[10px] tracking-wide">POST</span>
-                  <span class="font-mono text-xs font-semibold text-slate-800">/api/auth/register</span>
-                </div>
-                <div class="flex items-center gap-1.5 text-slate-400 text-xs">
-                  <span class="hidden sm:inline text-[11px] text-slate-400">Register new user</span>
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                </div>
-              </div>
-
-              <!-- Endpoint 3 -->
-              <div onclick="app.showToast('POST /api/auth/login', 'info')" class="p-2.5 rounded-xl border border-slate-100 hover:border-blue-200 hover:bg-slate-50/80 flex items-center justify-between transition-all cursor-pointer">
-                <div class="flex items-center gap-3">
-                  <span class="px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 font-bold text-[10px] tracking-wide">POST</span>
-                  <span class="font-mono text-xs font-semibold text-slate-800">/api/auth/login</span>
-                </div>
-                <div class="flex items-center gap-1.5 text-slate-400 text-xs">
-                  <span class="hidden sm:inline text-[11px] text-slate-400">Login user</span>
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                </div>
-              </div>
-
-              <!-- Endpoint 4 -->
-              <div onclick="app.showToast('GET /api/auth/me', 'info')" class="p-2.5 rounded-xl border border-slate-100 hover:border-blue-200 hover:bg-slate-50/80 flex items-center justify-between transition-all cursor-pointer">
-                <div class="flex items-center gap-3">
-                  <span class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-bold text-[10px] tracking-wide">GET</span>
-                  <span class="font-mono text-xs font-semibold text-slate-800">/api/auth/me</span>
-                </div>
-                <div class="flex items-center gap-1.5 text-slate-400 text-xs">
-                  <span class="hidden sm:inline text-[11px] text-slate-400">Current user details</span>
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                </div>
-              </div>
-
-              <!-- Endpoint 5 -->
-              <div onclick="app.showToast('POST /api/rides/compare', 'info')" class="p-2.5 rounded-xl border border-slate-100 hover:border-blue-200 hover:bg-slate-50/80 flex items-center justify-between transition-all cursor-pointer">
-                <div class="flex items-center gap-3">
-                  <span class="px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 font-bold text-[10px] tracking-wide">POST</span>
-                  <span class="font-mono text-xs font-semibold text-slate-800">/api/rides/compare</span>
-                </div>
-                <div class="flex items-center gap-1.5 text-slate-400 text-xs">
-                  <span class="hidden sm:inline text-[11px] text-slate-400">Compare ride options</span>
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ROW 2: API USAGE (3 METRIC CARDS WITH SPARKLINES) -->
-        <div>
-          <h3 class="text-sm font-bold text-slate-900 mb-3">API Usage</h3>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
-            <!-- Card 1: Total Requests -->
-            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm space-y-2 flex flex-col justify-between overflow-hidden relative">
-              <div>
-                <div class="text-xs font-semibold text-slate-500">Total Requests</div>
-                <div class="text-2xl font-black text-slate-900 mt-1 tracking-tight">12,482</div>
-                <div class="text-xs font-bold text-emerald-600 mt-1">↑ 18%</div>
-              </div>
-              <!-- Blue Sparkline Wave -->
-              <div class="w-full h-12 -mx-5 -mb-5 mt-2">
-                <svg class="w-full h-full" viewBox="0 0 200 48" preserveAspectRatio="none">
-                  <defs>
-                    <linearGradient id="waveBlue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stop-color="#2563EB" stop-opacity="0.35"/>
-                      <stop offset="100%" stop-color="#2563EB" stop-opacity="0.0"/>
-                    </linearGradient>
-                  </defs>
-                  <path d="M 0,38 Q 40,32 70,25 T 140,20 T 200,8 L 200,48 L 0,48 Z" fill="url(#waveBlue)"/>
-                  <path d="M 0,38 Q 40,32 70,25 T 140,20 T 200,8" fill="none" stroke="#2563EB" stroke-width="2.5"/>
-                </svg>
-              </div>
-            </div>
-
-            <!-- Card 2: Successful Requests -->
-            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm space-y-2 flex flex-col justify-between overflow-hidden relative">
-              <div>
-                <div class="text-xs font-semibold text-slate-500">Successful Requests</div>
-                <div class="text-2xl font-black text-slate-900 mt-1 tracking-tight">98.7%</div>
-                <div class="text-xs font-bold text-emerald-600 mt-1">↑ 0.5%</div>
-              </div>
-              <!-- Green Sparkline Wave -->
-              <div class="w-full h-12 -mx-5 -mb-5 mt-2">
-                <svg class="w-full h-full" viewBox="0 0 200 48" preserveAspectRatio="none">
-                  <defs>
-                    <linearGradient id="waveGreen" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stop-color="#10B981" stop-opacity="0.35"/>
-                      <stop offset="100%" stop-color="#10B981" stop-opacity="0.0"/>
-                    </linearGradient>
-                  </defs>
-                  <path d="M 0,35 Q 50,30 90,22 T 160,18 T 200,10 L 200,48 L 0,48 Z" fill="url(#waveGreen)"/>
-                  <path d="M 0,35 Q 50,30 90,22 T 160,18 T 200,10" fill="none" stroke="#10B981" stroke-width="2.5"/>
-                </svg>
-              </div>
-            </div>
-
-            <!-- Card 3: Rate Limit Usage -->
-            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm space-y-2 flex flex-col justify-between overflow-hidden relative">
-              <div>
-                <div class="text-xs font-semibold text-slate-500">Rate Limit Usage</div>
-                <div class="text-2xl font-black text-slate-900 mt-1 tracking-tight">12%</div>
-                <div class="text-xs font-bold text-emerald-600 mt-1">↓ 3%</div>
-              </div>
-              <!-- Purple Sparkline Wave -->
-              <div class="w-full h-12 -mx-5 -mb-5 mt-2">
-                <svg class="w-full h-full" viewBox="0 0 200 48" preserveAspectRatio="none">
-                  <defs>
-                    <linearGradient id="wavePurple" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.35"/>
-                      <stop offset="100%" stop-color="#8B5CF6" stop-opacity="0.0"/>
-                    </linearGradient>
-                  </defs>
-                  <path d="M 0,25 Q 50,35 100,28 T 170,22 T 200,18 L 200,48 L 0,48 Z" fill="url(#wavePurple)"/>
-                  <path d="M 0,25 Q 50,35 100,28 T 170,22 T 200,18" fill="none" stroke="#8B5CF6" stroke-width="2.5"/>
-                </svg>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ROW 3: API KEYS & USEFUL RESOURCES -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-          
-          <!-- Left: Your API Keys (lg:col-span-6) -->
-          <div class="lg:col-span-6 bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-sm space-y-4">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2">
-                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
-                <h3 class="text-sm font-bold text-slate-900">Your API Keys</h3>
-              </div>
-              <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                <span>Active</span>
-              </span>
-            </div>
-
-            <!-- Masked Key Input -->
-            <div class="flex items-center gap-2">
-              <div class="relative flex-1">
-                <input type="text" readonly value="rc_live_••••••••••••••••73a" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 font-mono text-xs text-slate-800 select-all focus:outline-none">
-              </div>
-              <button type="button" onclick="app.copyApiKey()" class="px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all cursor-pointer active:scale-95" title="Copy Key">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-              </button>
-            </div>
-
-            <div class="text-[11px] text-slate-400">
-              Created: Apr 20, 2025 • Last used: May 2, 2025
-            </div>
-
-            <button type="button" onclick="app.showToast('API Key Manager opened', 'info')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md shadow-blue-500/25 transition-all cursor-pointer active:scale-98">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
-              <span>Manage Keys</span>
-            </button>
-          </div>
-
-          <!-- Right: Useful Resources (lg:col-span-6) -->
-          <div class="lg:col-span-6 bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-sm space-y-3">
-            <h3 class="text-sm font-bold text-slate-900">Useful Resources</h3>
-
-            <div class="space-y-2.5 text-xs">
-              <!-- Link 1 -->
-              <a href="javascript:void(0)" onclick="app.showToast('Opening API Documentation...', 'info')" class="p-2.5 rounded-xl hover:bg-slate-50 flex items-center justify-between text-slate-700 hover:text-blue-600 transition-colors">
-                <span class="flex items-center gap-2.5 font-medium">
-                  <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                  <span>API Documentation</span>
-                </span>
-                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-              </a>
-
-              <!-- Link 2 -->
-              <a href="javascript:void(0)" onclick="app.showToast('Opening Postman Collection...', 'info')" class="p-2.5 rounded-xl hover:bg-slate-50 flex items-center justify-between text-slate-700 hover:text-blue-600 transition-colors">
-                <span class="flex items-center gap-2.5 font-medium">
-                  <svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v8m-4-4h8"/></svg>
-                  <span>Postman Collection</span>
-                </span>
-                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-              </a>
-
-              <!-- Link 3 -->
-              <a href="javascript:void(0)" onclick="window.open('https://github.com/Varunreddy1207/Ridecompare', '_blank')" class="p-2.5 rounded-xl hover:bg-slate-50 flex items-center justify-between text-slate-700 hover:text-blue-600 transition-colors">
-                <span class="flex items-center gap-2.5 font-medium">
-                  <svg class="w-4 h-4 text-slate-800" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
-                  <span>GitHub Repository</span>
-                </span>
-                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-              </a>
-
-              <!-- Link 4 -->
-              <a href="javascript:void(0)" onclick="app.showToast('Connecting to Developer Support...', 'info')" class="p-2.5 rounded-xl hover:bg-slate-50 flex items-center justify-between text-slate-700 hover:text-blue-600 transition-colors">
-                <span class="flex items-center gap-2.5 font-medium">
-                  <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                  <span>Support</span>
-                </span>
-                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-              </a>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- DEV TAB: LIVE USERS & SESSIONS FULL AUDIT PANEL -->
-      <div id="dev-panel-users" class="hidden space-y-6">
-        <!-- Header Banner -->
-        <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <div class="flex items-center gap-2.5">
-              <div class="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-              </div>
-              <h2 class="text-lg sm:text-xl font-black text-slate-900 tracking-tight">Real-Time Users &amp; Live Authentication Telemetry</h2>
-            </div>
-            <p class="text-xs text-slate-500 mt-1">Direct view of all users logged in till now, active cloud sessions, and new users logging in.</p>
-          </div>
-
-          <div class="flex items-center gap-2">
-            <button type="button" onclick="app.refreshDashboardData(true)" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 text-xs font-bold transition-all cursor-pointer">
-              <svg class="w-3.5 h-3.5 dev-sync-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-              <span>Sync Live Data</span>
-            </button>
-            <button type="button" onclick="app.switchDevTab('playground')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all cursor-pointer">
-              <span>← Back to Playground</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Filter & Search Controls -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
-          <div class="flex items-center gap-2 flex-wrap">
-            <button type="button" onclick="app.filterDevUsersTab('all')" id="btn-dev-tab-filter-all" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-blue-600 text-white shadow-sm transition-all cursor-pointer">All Users (<span class="dev-users-total-badge">27</span>)</button>
-            <button type="button" onclick="app.filterDevUsersTab('active')" id="btn-dev-tab-filter-active" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all cursor-pointer">Logged In / Active</button>
-            <button type="button" onclick="app.filterDevUsersTab('recent')" id="btn-dev-tab-filter-recent" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all cursor-pointer">Recent</button>
-          </div>
-
-          <div class="relative">
-            <input type="text" oninput="app.searchDevUsersFull(this.value)" placeholder="Search database by name, email, phone..." class="text-xs px-3.5 py-2 pl-9 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-blue-500 w-full sm:w-72">
-            <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-          </div>
-        </div>
-
-        <!-- Real-Time Activity Log & Raw Telemetry Stream -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-          <!-- Users Table (8 Cols) -->
-          <div class="lg:col-span-8 bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
-            <div class="p-4 border-b border-slate-100 flex items-center justify-between">
-              <span class="text-xs font-bold text-slate-900 uppercase tracking-wider">Supabase PostgreSQL User Roster</span>
-              <span class="text-[11px] text-slate-400">Live Database • Auto-synced</span>
-            </div>
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs">
-                <thead class="bg-slate-50/80 border-b border-slate-200/80">
-                  <tr class="text-slate-500 font-bold">
-                    <th class="py-3 px-4 font-semibold">User</th>
-                    <th class="py-3 px-4 font-semibold">Contact</th>
-                    <th class="py-3 px-4 font-semibold">Login City / Place</th>
-                    <th class="py-3 px-4 font-semibold">Registered</th>
-                    <th class="py-3 px-4 font-semibold">Last Active</th>
-                    <th class="py-3 px-4 font-semibold">Devices</th>
-                    <th class="py-3 px-4 font-semibold">Status</th>
-                    <th class="py-3 px-4 font-semibold text-right">Action</th>
-                  </tr>
-                </thead>
-                <tbody id="dev-full-users-tbody" class="divide-y divide-slate-100 text-slate-700">
-                  <!-- Populated dynamically -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Activity Audit Feed (4 Cols) -->
-          <div class="lg:col-span-4 bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5 space-y-4">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-              <div class="flex items-center gap-2">
-                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Live Activity Stream</h3>
-              </div>
-              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            </div>
-            <div id="dev-activity-stream" class="space-y-3 max-h-96 overflow-y-auto pr-1">
-              <!-- Dynamically populated events -->
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- DEV TAB 2: SYSTEM STATUS MONITOR PANEL -->
-      <div id="dev-panel-status" class="hidden space-y-6">
-
-        <!-- STATUS OVERVIEW BANNER -->
-        <div class="bg-white rounded-2xl border border-slate-200/90 shadow-[0_1px_3px_rgba(0,0,0,0.05)] p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <div class="flex items-center gap-2.5">
-              <div class="w-8 h-8 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-              </div>
-              <h2 class="text-lg sm:text-xl font-black text-slate-900 tracking-tight">System Status &amp; Infrastructure</h2>
-            </div>
-            <p class="text-xs text-slate-500 mt-1">Live development servers, REST API, and Supabase PostgreSQL database connection status</p>
-          </div>
-
-          <div class="flex flex-wrap items-center gap-3">
-            <div id="status-overall-pill" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold shadow-xs">
-              <span id="status-overall-dot" class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-              <span id="status-overall-label">Checking System Health...</span>
-            </div>
-
-            <span class="text-xs text-slate-500 font-medium flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-200">
-              <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-              <span>Last checked: <span id="status-timestamp-desktop" class="font-semibold text-slate-700">Checking...</span></span>
-            </span>
-
-            <button type="button" onclick="app.refreshSystemStatus()" id="btn-refresh-status-desktop" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-blue-600 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-all shadow-sm shadow-blue-500/20 active:scale-95 cursor-pointer">
-              <svg class="w-3.5 h-3.5 refresh-icon-desktop" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-              <span>Refresh Status</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- 1. WEBSITE LINK / SHARE SECTION -->
-        <div class="bg-white rounded-2xl border border-slate-200/90 shadow-[0_1px_3px_rgba(0,0,0,0.05)] p-5 sm:p-6 transition-all hover:border-slate-300">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div class="space-y-1">
-              <div class="flex items-center gap-2">
-                <div class="w-8 h-8 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-[#0073FF]">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
-                </div>
-                <h3 class="text-base font-bold text-slate-900 tracking-tight">Website Link</h3>
-              </div>
-              <p class="text-xs text-slate-500">Current active frontend website URL for local testing or deployed access</p>
-            </div>
-
-            <div class="flex flex-wrap items-center gap-2.5 sm:self-center">
-              <button type="button" id="btn-copy-website" onclick="app.copyWebsiteUrl(this)" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-800 text-xs font-bold transition-all shadow-sm active:scale-95 cursor-pointer">
-                <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                <span class="copy-text font-bold">COPY</span>
-              </button>
-
-              <button type="button" id="btn-open-website" onclick="app.openWebsite()" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#0073FF] hover:bg-[#0060E6] text-white text-xs font-bold transition-all shadow-md shadow-blue-500/20 active:scale-95 cursor-pointer">
-                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                <span>OPEN WEBSITE</span>
-              </button>
-            </div>
-          </div>
-
-          <div class="mt-4 p-3 bg-slate-50 rounded-xl border border-slate-200/80 flex items-center justify-between gap-3">
-            <div class="flex items-center gap-2.5 min-w-0">
-              <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider flex-shrink-0">URL:</span>
-              <span id="status-website-url" class="font-mono text-xs sm:text-sm font-semibold text-slate-900 truncate select-all">Detecting...</span>
-            </div>
-            <span id="status-website-env-tag" class="flex-shrink-0 text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-700 border border-blue-200">Local Dev</span>
-          </div>
-        </div>
-
-        <!-- 2. SERVERS & SERVICES STATUS GRID (3 CARDS) -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-
-          <!-- CARD 1: FRONTEND -->
-          <div class="bg-white rounded-2xl border border-slate-200/90 shadow-[0_1px_3px_rgba(0,0,0,0.05)] p-5 sm:p-6 flex flex-col justify-between hover:border-slate-300 transition-all">
-            <div>
-              <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-                <div class="flex items-center gap-2.5">
-                  <div class="w-9 h-9 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-[#0073FF]">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    <div class="text-[11px] font-semibold text-slate-400">Total API Keys</div>
+                    <div class="text-2xl sm:text-3xl font-extrabold text-white mt-1">1</div>
                   </div>
+                  <button type="button" onclick="app.switchDevTab('keys')" class="text-[11px] font-bold text-blue-400 hover:text-blue-300 mt-3 inline-flex items-center gap-1 cursor-pointer">
+                    <span>View Keys</span>
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                  </button>
+                </div>
+
+                <!-- Card 2: Applications -->
+                <div class="bg-[#0B1325] border border-slate-800/80 rounded-2xl p-4 sm:p-5 flex flex-col justify-between hover:border-slate-700 transition-all shadow-sm">
                   <div>
-                    <h3 class="text-sm font-bold text-slate-900">Frontend</h3>
-                    <p class="text-[11px] text-slate-500">Client Application</p>
+                    <div class="w-8 h-8 rounded-full bg-purple-600/20 text-purple-400 flex items-center justify-center mb-3">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    </div>
+                    <div class="text-[11px] font-semibold text-slate-400">Applications</div>
+                    <div class="text-2xl sm:text-3xl font-extrabold text-white mt-1">1</div>
                   </div>
+                  <button type="button" onclick="app.showToast('Active Application: RideCompare-App', 'info')" class="text-[11px] font-bold text-blue-400 hover:text-blue-300 mt-3 inline-flex items-center gap-1 cursor-pointer">
+                    <span>Manage Apps</span>
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                  </button>
                 </div>
-                <!-- Status Badge -->
-                <div id="status-fe-badge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold">
-                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                  <span id="status-fe-state">Online</span>
-                </div>
-              </div>
 
-              <!-- Key Info List -->
-              <div class="mt-4 space-y-2.5 text-xs">
-                <div class="flex items-center justify-between py-1 border-b border-slate-50">
-                  <span class="text-slate-500">Environment</span>
-                  <span id="status-fe-env" class="font-semibold text-slate-900">Development</span>
-                </div>
-                <div class="flex items-center justify-between py-1 border-b border-slate-50">
-                  <span class="text-slate-500">Framework</span>
-                  <span class="font-semibold text-slate-900">HTML5 / Vanilla JS SPA</span>
-                </div>
-                <div class="flex items-center justify-between py-1 border-b border-slate-50">
-                  <span class="text-slate-500">Frontend Port</span>
-                  <span id="status-fe-port" class="font-mono font-bold text-slate-900">5000</span>
-                </div>
-                <div class="py-1">
-                  <span class="text-slate-500 block mb-1">Current URL</span>
-                  <div class="flex items-center gap-1.5">
-                    <span id="status-fe-fullurl" class="font-mono text-[11px] font-semibold text-slate-700 bg-slate-50 px-2 py-1 rounded border border-slate-200/80 truncate flex-1">http://localhost:5000</span>
-                    <button type="button" onclick="app.copyText(document.getElementById('status-fe-fullurl').textContent, this)" class="px-2 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold border border-slate-200 transition-colors flex-shrink-0 cursor-pointer" title="Copy Frontend URL">
-                      <span class="copy-text">COPY</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
-              <span>Client State</span>
-              <span class="text-emerald-600 font-semibold flex items-center gap-1">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                Browser Active
-              </span>
-            </div>
-          </div>
-
-          <!-- CARD 2: BACKEND API -->
-          <div class="bg-white rounded-2xl border border-slate-200/90 shadow-[0_1px_3px_rgba(0,0,0,0.05)] p-5 sm:p-6 flex flex-col justify-between hover:border-slate-300 transition-all">
-            <div>
-              <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-                <div class="flex items-center gap-2.5">
-                  <div class="w-9 h-9 rounded-xl bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg>
-                  </div>
+                <!-- Card 3: API Usage -->
+                <div class="bg-[#0B1325] border border-slate-800/80 rounded-2xl p-4 sm:p-5 flex flex-col justify-between hover:border-slate-700 transition-all shadow-sm">
                   <div>
-                    <h3 class="text-sm font-bold text-slate-900">Backend API</h3>
-                    <p class="text-[11px] text-slate-500">Node.js / Express Server</p>
+                    <div class="w-8 h-8 rounded-full bg-emerald-600/20 text-emerald-400 flex items-center justify-center mb-3">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                    </div>
+                    <div class="text-[11px] font-semibold text-slate-400">API Usage</div>
+                    <div class="text-2xl sm:text-3xl font-extrabold text-white mt-1">2.4K</div>
+                    <div class="text-[10px] text-slate-500 mt-0.5">Requests this month</div>
                   </div>
+                  <button type="button" onclick="app.showToast('Analytics: 2,420 successful API calls this month', 'info')" class="text-[11px] font-bold text-blue-400 hover:text-blue-300 mt-3 inline-flex items-center gap-1 cursor-pointer">
+                    <span>View Analytics</span>
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                  </button>
                 </div>
-                <!-- Status Badge -->
-                <div id="status-be-badge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold">
-                  <span id="status-be-dot" class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                  <span id="status-be-state">Connected</span>
-                </div>
-              </div>
 
-              <!-- Key Info List -->
-              <div class="mt-4 space-y-2.5 text-xs">
-                <div class="flex items-center justify-between py-1 border-b border-slate-50">
-                  <span class="text-slate-500">Server Framework</span>
-                  <span id="status-be-framework" class="font-semibold text-slate-900">Node.js / Express</span>
-                </div>
-                <div class="flex items-center justify-between py-1 border-b border-slate-50">
-                  <span class="text-slate-500">Backend Port</span>
-                  <span id="status-be-port" class="font-mono font-bold text-slate-900">5000</span>
-                </div>
-                <div class="flex items-center justify-between py-1 border-b border-slate-50">
-                  <span class="text-slate-500">Health Endpoint</span>
-                  <span class="font-mono text-xs font-semibold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">GET /api/health</span>
-                </div>
-                <div class="py-1">
-                  <span class="text-slate-500 block mb-1">API Server URL</span>
-                  <div class="flex items-center gap-1.5">
-                    <span id="status-be-url" class="font-mono text-[11px] font-semibold text-slate-700 bg-slate-50 px-2 py-1 rounded border border-slate-200/80 truncate flex-1">http://localhost:5000/api</span>
-                    <button type="button" id="btn-copy-api" onclick="app.copyApiUrl(this)" class="px-2 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold border border-slate-200 transition-colors flex-shrink-0 cursor-pointer" title="Copy Backend API URL">
-                      <span class="copy-text">COPY</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Non-exposure Guarantee Security Badge -->
-            <div class="mt-5 pt-3 border-t border-slate-100 text-[10px] text-slate-500 flex items-center gap-1.5">
-              <svg class="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 1.944A11.954 11.954 0 012.166 5C2.056 5.649 2 6.319 2 7c0 5.225 3.34 9.67 8 11.317C14.66 16.67 18 12.225 18 7c0-.682-.057-1.35-.166-2.001A11.954 11.954 0 0110 1.944zM11 14a1 1 0 11-2 0 1 1 0 012 0zm0-7a1 1 0 10-2 0v3a1 1 0 102 0V7z" clip-rule="evenodd"/></svg>
-              <span class="leading-tight">Private credentials &amp; JWT secrets are strictly protected</span>
-            </div>
-          </div>
-
-          <!-- CARD 3: DATABASE -->
-          <div class="bg-white rounded-2xl border border-slate-200/90 shadow-[0_1px_3px_rgba(0,0,0,0.05)] p-5 sm:p-6 flex flex-col justify-between hover:border-slate-300 transition-all">
-            <div>
-              <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-                <div class="flex items-center gap-2.5">
-                  <div class="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>
-                  </div>
+                <!-- Card 4: Remaining Quota -->
+                <div class="bg-[#0B1325] border border-slate-800/80 rounded-2xl p-4 sm:p-5 flex flex-col justify-between hover:border-slate-700 transition-all shadow-sm">
                   <div>
-                    <h3 class="text-sm font-bold text-slate-900">Database</h3>
-                    <p class="text-[11px] text-slate-500">Supabase PostgreSQL</p>
+                    <div class="w-8 h-8 rounded-full bg-amber-600/20 text-amber-400 flex items-center justify-center mb-3">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <div class="text-[11px] font-semibold text-slate-400">Remaining Quota</div>
+                    <div class="text-2xl sm:text-3xl font-extrabold text-white mt-1">98.5%</div>
+                    <div class="text-[10px] text-slate-500 mt-0.5">Left for this month</div>
                   </div>
-                </div>
-                <!-- Status Badge -->
-                <div id="status-db-badge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold">
-                  <span id="status-db-dot" class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                  <span id="status-db-state">Connected</span>
-                </div>
-              </div>
-
-              <!-- Key Info List -->
-              <div class="mt-4 space-y-2.5 text-xs">
-                <div class="flex items-center justify-between py-1 border-b border-slate-50">
-                  <span class="text-slate-500">Database Engine</span>
-                  <span class="font-semibold text-slate-900">Supabase PostgreSQL</span>
-                </div>
-                <div class="flex items-center justify-between py-1 border-b border-slate-50">
-                  <span class="text-slate-500">ORM Layer</span>
-                  <span class="font-semibold text-slate-900">Prisma ORM</span>
-                </div>
-                <div class="flex items-center justify-between py-1 border-b border-slate-50">
-                  <span class="text-slate-500">DB Environment</span>
-                  <span id="status-db-env" class="font-semibold text-slate-900">Development</span>
-                </div>
-                <div class="flex items-center justify-between py-1 border-b border-slate-50">
-                  <span class="text-slate-500">Direct DB Access</span>
-                  <span class="font-semibold text-emerald-600 flex items-center gap-1">
-                    <svg class="w-3.5 h-3.5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                    Express Gateway Only
-                  </span>
+                  <button type="button" onclick="app.showToast('Remaining Quota: 98,580 requests available', 'info')" class="text-[11px] font-bold text-blue-400 hover:text-blue-300 mt-3 inline-flex items-center gap-1 cursor-pointer">
+                    <span>View Limits</span>
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                  </button>
                 </div>
               </div>
-            </div>
 
-            <div class="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
-              <span>Connection Test</span>
-              <span id="status-db-ping" class="text-emerald-600 font-semibold">Active &amp; Verified</span>
-            </div>
-          </div>
+              <!-- 3. QUICK START SECTION -->
+              <div>
+                <h3 class="text-sm font-bold text-white tracking-tight">Quick Start</h3>
+                <p class="text-xs text-slate-400 mt-0.5">Get started with VOZX APIs in just a few steps.</p>
 
-        </div>
-
-        <!-- 3. ARCHITECTURE & 4-TIER DATA FLOW -->
-        <div class="bg-white rounded-2xl border border-slate-200/90 shadow-[0_1px_3px_rgba(0,0,0,0.05)] p-5 sm:p-6">
-          <div class="flex items-center justify-between mb-4">
-            <div>
-              <h3 class="text-sm font-bold text-slate-900">System Architecture &amp; Data Flow</h3>
-              <p class="text-xs text-slate-500">Secure 4-tier communication stack ensuring credentials remain server-side</p>
-            </div>
-            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">Zero Direct DB Exposure</span>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            
-            <!-- Tier 1 -->
-            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex flex-col items-center text-center">
-              <div class="w-8 h-8 rounded-lg bg-blue-100 text-[#0073FF] flex items-center justify-center font-bold text-xs mb-2">1</div>
-              <h4 class="text-xs font-bold text-slate-900">VOZX Frontend</h4>
-              <p class="text-[11px] text-slate-500 mt-0.5">SPA / Mobile Web</p>
-              <div class="mt-2 text-[10px] font-semibold text-blue-600 bg-white px-2 py-0.5 rounded border border-blue-200">Port 5000 / Client</div>
-            </div>
-
-            <!-- Tier 2 -->
-            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex flex-col items-center text-center">
-              <div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-xs mb-2">2</div>
-              <h4 class="text-xs font-bold text-slate-900">Express Backend</h4>
-              <p class="text-[11px] text-slate-500 mt-0.5">Node.js REST API</p>
-              <div class="mt-2 text-[10px] font-semibold text-purple-700 bg-white px-2 py-0.5 rounded border border-purple-200">Port 5000 / API Gateway</div>
-            </div>
-
-            <!-- Tier 3 -->
-            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex flex-col items-center text-center">
-              <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-xs mb-2">3</div>
-              <h4 class="text-xs font-bold text-slate-900">Prisma ORM</h4>
-              <p class="text-[11px] text-slate-500 mt-0.5">Type-Safe Client</p>
-              <div class="mt-2 text-[10px] font-semibold text-amber-700 bg-white px-2 py-0.5 rounded border border-amber-200">Migration &amp; Connection Pool</div>
-            </div>
-
-            <!-- Tier 4 -->
-            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex flex-col items-center text-center">
-              <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs mb-2">4</div>
-              <h4 class="text-xs font-bold text-slate-900">Supabase PostgreSQL</h4>
-              <p class="text-[11px] text-slate-500 mt-0.5">Cloud Database</p>
-              <div class="mt-2 text-[10px] font-semibold text-emerald-700 bg-white px-2 py-0.5 rounded border border-emerald-200">Encrypted Cloud Host</div>
-            </div>
-
-          </div>
-        </div>
-
-        <!-- 4. DIAGNOSTIC SUMMARY & ACTIONS -->
-        <div class="bg-white rounded-2xl border border-slate-200/90 shadow-[0_1px_3px_rgba(0,0,0,0.05)] p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h3 class="text-sm font-bold text-slate-900">System Diagnostics &amp; Developer Actions</h3>
-            <p class="text-xs text-slate-500 mt-0.5">Check status, copy diagnostics report, or refresh live health metrics</p>
-          </div>
-
-          <div class="flex flex-wrap items-center gap-2.5">
-            <button type="button" id="btn-copy-diagnostics" onclick="app.copyDiagnostics(this)" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-800 text-xs font-bold transition-all shadow-sm active:scale-95 cursor-pointer">
-              <svg class="w-3.5 h-3.5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-              <span class="copy-text">COPY DIAGNOSTICS</span>
-            </button>
-
-            <button type="button" onclick="app.refreshSystemStatus()" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#0073FF] hover:bg-[#0060E6] text-white text-xs font-bold transition-all shadow-md shadow-blue-500/20 active:scale-95 cursor-pointer">
-              <svg class="w-3.5 h-3.5 refresh-icon-action" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-              <span>REFRESH STATUS</span>
-            </button>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- DEV TAB 3: RESPONSIVE DEVICE & UI PERFECTION INSPECTOR -->
-      <div id="dev-devices-slot">
-        <div id="dev-panel-devices" class="hidden space-y-6">
-
-        <!-- TOP HEADER & CONTROLS BANNER -->
-        <div id="dev-device-inspector-header" class="dev-device-inspector-sticky sticky top-0 z-50 bg-white rounded-2xl border border-slate-200/90 shadow-[0_1px_3px_rgba(0,0,0,0.05)] p-5 sm:p-6 flex flex-col xl:flex-row items-start xl:items-center justify-between gap-4">
-          <div>
-            <div class="flex items-center gap-2.5">
-              <div class="w-8 h-8 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2zM9 3h6"/></svg>
-              </div>
-              <h2 class="text-lg sm:text-xl font-black text-slate-900 tracking-tight">Responsive Device &amp; UI Perfection Inspector</h2>
-            </div>
-            <p class="text-xs text-slate-500 mt-1">Live interactive simulator to test Laptop, Tablet, and Mobile views with real-time UI quality &amp; layout audits.</p>
-          </div>
-
-          <!-- DEVICE SWITCHER BUTTONS & RUN AUDIT BUTTON -->
-          <div class="flex flex-wrap items-center gap-2">
-            <!-- Device Selector Segmented Control -->
-            <div class="inline-flex p-1 bg-slate-100 rounded-xl border border-slate-200/80">
-              <!-- Laptop / Desktop -->
-              <button type="button" onclick="window.app.setDeviceMode('laptop')" id="dev-btn-mode-laptop" class="device-mode-btn active px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer bg-white text-blue-600 shadow-xs">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                <span>Laptop (1280px)</span>
-              </button>
-
-              <!-- Tablet -->
-              <button type="button" onclick="window.app.setDeviceMode('tablet')" id="dev-btn-mode-tablet" class="device-mode-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all flex items-center gap-1.5 cursor-pointer">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2zM9 3h6"/></svg>
-                <span>Tablet (768px)</span>
-              </button>
-
-              <!-- Mobile -->
-              <button type="button" onclick="window.app.setDeviceMode('mobile')" id="dev-btn-mode-mobile" class="device-mode-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all flex items-center gap-1.5 cursor-pointer">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                <span>Mobile (390px)</span>
-              </button>
-            </div>
-
-            <!-- Rotate Orientation -->
-            <button type="button" onclick="window.app.toggleDeviceOrientation()" class="p-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 hover:text-slate-900 transition-all cursor-pointer shadow-xs active:scale-95" title="Rotate Orientation (Portrait / Landscape)">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-            </button>
-
-            <!-- Run UI Perfection Check -->
-            <button type="button" onclick="window.app.runUIPerfectionAudit()" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm shadow-emerald-600/20 transition-all cursor-pointer active:scale-95">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-              <span>Check UI Perfection</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- SECONDARY TOOLBAR: QUICK SCREEN SWITCHER & SIMULATOR CONTROLS -->
-        <div class="bg-white rounded-2xl border border-slate-200/90 shadow-[0_1px_3px_rgba(0,0,0,0.05)] p-3 sm:p-4 flex flex-wrap items-center justify-between gap-3 text-xs">
-          <div class="flex flex-wrap items-center gap-1.5">
-            <span class="text-slate-400 font-semibold text-[11px] mr-1">Preview Screen:</span>
-            <button type="button" onclick="window.app.navigateDevicePreview('home')" class="dev-screen-nav-btn active px-2.5 py-1 rounded-lg bg-blue-50 text-blue-600 font-bold border border-blue-200 transition-all cursor-pointer">🏠 Home</button>
-            <button type="button" onclick="window.app.navigateDevicePreview('compare')" class="dev-screen-nav-btn px-2.5 py-1 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 font-medium border border-slate-200 transition-all cursor-pointer">⚡ Compare Rates</button>
-            <button type="button" onclick="window.app.navigateDevicePreview('history')" class="dev-screen-nav-btn px-2.5 py-1 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 font-medium border border-slate-200 transition-all cursor-pointer">📜 History</button>
-            <button type="button" onclick="window.app.navigateDevicePreview('profile')" class="dev-screen-nav-btn px-2.5 py-1 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 font-medium border border-slate-200 transition-all cursor-pointer">👤 Profile</button>
-            <button type="button" onclick="window.app.navigateDevicePreview('booking')" class="dev-screen-nav-btn px-2.5 py-1 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 font-medium border border-slate-200 transition-all cursor-pointer">🎫 Booking</button>
-            <button type="button" onclick="window.app.navigateDevicePreview('login')" class="dev-screen-nav-btn px-2.5 py-1 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 font-medium border border-slate-200 transition-all cursor-pointer">🔐 Login</button>
-          </div>
-
-          <div class="flex items-center gap-2 ml-auto">
-            <!-- Scale Dropdown -->
-            <div class="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-200">
-              <span class="text-slate-500 font-medium text-[11px]">Zoom:</span>
-              <select id="dev-zoom-select" onchange="window.app.setDeviceScale(this.value)" class="bg-transparent text-slate-800 font-bold text-xs focus:outline-none cursor-pointer">
-                <option value="fit" selected>Fit</option>
-                <option value="1">100%</option>
-                <option value="0.85">85%</option>
-                <option value="0.75">75%</option>
-                <option value="0.5">50%</option>
-              </select>
-            </div>
-
-            <!-- Toggle Theme inside preview -->
-            <button type="button" onclick="window.app.toggleDeviceTheme()" class="px-2.5 py-1 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 font-medium border border-slate-200 flex items-center gap-1 transition-all cursor-pointer" title="Toggle Light/Dark Theme inside simulator">
-              <svg class="w-3.5 h-3.5 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"/></svg>
-              <span>Theme</span>
-            </button>
-
-            <!-- Reload simulator -->
-            <button type="button" onclick="window.app.reloadDevicePreview()" class="px-2.5 py-1 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 font-medium border border-slate-200 flex items-center gap-1 transition-all cursor-pointer" title="Reload Device Simulator">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-              <span>Reload</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- MAIN SIMULATOR & LIVE UI AUDIT WORKSPACE -->
-        <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
-
-          <!-- LEFT / CENTER: THE INTERACTIVE DEVICE STAGE (8 Cols) -->
-          <div class="xl:col-span-8 bg-slate-900/95 rounded-3xl p-4 sm:p-6 flex flex-col items-center justify-start min-h-[660px] relative overflow-hidden shadow-2xl border border-slate-800">
-            
-            <!-- Device Stage Header Info Pill -->
-            <div class="w-full flex items-center justify-between text-xs z-20 pb-4 mb-2 border-b border-slate-800/80">
-              <div class="flex items-center gap-2 bg-slate-800/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-slate-700/80 shadow-md">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span id="dev-stage-device-name" class="font-bold text-white text-[11px]">Laptop View</span>
-                <span class="text-slate-400">•</span>
-                <span id="dev-stage-res-label" class="text-slate-300 font-mono text-[11px]">1280 × 800</span>
-              </div>
-
-              <div class="flex items-center gap-2 bg-slate-800/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-slate-700/80 shadow-md">
-                <span id="dev-stage-breakpoint-badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/20 text-blue-400 border border-blue-500/30">Desktop (lg: ≥1024px)</span>
-                <span id="dev-stage-nav-mode" class="text-slate-300 text-[10px] font-medium">Sidebar Active</span>
-              </div>
-            </div>
-
-            <!-- THE DEVICE FRAME CONTAINER -->
-            <div id="dev-device-viewport-wrapper" class="w-full flex items-start justify-center py-4 overflow-hidden transition-all duration-300">
-              <div id="dev-device-scaler" class="flex items-start justify-center transition-all duration-300">
-                <!-- Rendered Device Bezel Shell with Iframe inside -->
-                <div id="dev-device-bezel" class="device-bezel-laptop relative transition-all duration-300 shadow-2xl">
-                  <!-- Device Camera / Notch / Top Bar -->
-                  <div id="dev-bezel-notch" class="device-bezel-notch"></div>
-                  
-                  <!-- Screen Canvas (housing the iframe) -->
-                  <div id="dev-screen-canvas" class="device-screen-canvas bg-white overflow-hidden relative">
-                    <iframe id="dev-preview-iframe" class="w-full h-full border-0 block" title="RideCompare Live Simulator"></iframe>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 mt-3">
+                  <!-- Step 1: Get API Key -->
+                  <div onclick="app.switchDevTab('keys')" class="bg-[#0B1325] border border-slate-800/80 hover:border-blue-500/50 hover:bg-[#0E1830] rounded-2xl p-4 transition-all cursor-pointer group flex flex-col justify-between">
+                    <div>
+                      <div class="w-8 h-8 rounded-full bg-blue-600/20 text-blue-400 flex items-center justify-center mb-3">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+                      </div>
+                      <div class="text-xs font-bold text-white group-hover:text-blue-400 transition-colors flex items-center justify-between">
+                        <span>1. Get API Key</span>
+                        <svg class="w-3 h-3 text-slate-500 group-hover:text-blue-400 group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                      </div>
+                      <p class="text-[11px] text-slate-400 mt-1 leading-relaxed">Create your API key to access our services.</p>
+                    </div>
                   </div>
 
-                  <!-- Device Bottom Base (for Laptop) or Home Indicator (for Mobile/Tablet) -->
-                  <div id="dev-bezel-chin" class="device-bezel-chin"></div>
+                  <!-- Step 2: Read Documentation -->
+                  <div onclick="app.switchDevTab('docs')" class="bg-[#0B1325] border border-slate-800/80 hover:border-purple-500/50 hover:bg-[#0E1830] rounded-2xl p-4 transition-all cursor-pointer group flex flex-col justify-between">
+                    <div>
+                      <div class="w-8 h-8 rounded-full bg-purple-600/20 text-purple-400 flex items-center justify-center mb-3">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                      </div>
+                      <div class="text-xs font-bold text-white group-hover:text-purple-400 transition-colors flex items-center justify-between">
+                        <span>2. Read Documentation</span>
+                        <svg class="w-3 h-3 text-slate-500 group-hover:text-purple-400 group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                      </div>
+                      <p class="text-[11px] text-slate-400 mt-1 leading-relaxed">Explore endpoints, request formats and examples.</p>
+                    </div>
+                  </div>
+
+                  <!-- Step 3: Start Building -->
+                  <div onclick="app.switchDevTab('docs')" class="bg-[#0B1325] border border-slate-800/80 hover:border-emerald-500/50 hover:bg-[#0E1830] rounded-2xl p-4 transition-all cursor-pointer group flex flex-col justify-between">
+                    <div>
+                      <div class="w-8 h-8 rounded-full bg-emerald-600/20 text-emerald-400 flex items-center justify-center mb-3">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                      </div>
+                      <div class="text-xs font-bold text-white group-hover:text-emerald-400 transition-colors flex items-center justify-between">
+                        <span>3. Start Building</span>
+                        <svg class="w-3 h-3 text-slate-500 group-hover:text-emerald-400 group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                      </div>
+                      <p class="text-[11px] text-slate-400 mt-1 leading-relaxed">Integrate and test with our APIs.</p>
+                    </div>
+                  </div>
                 </div>
               </div>
+
+              <!-- 4. RECENT ACTIVITY TABLE -->
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <h3 class="text-sm font-bold text-white tracking-tight">Recent Activity</h3>
+                  <button type="button" onclick="app.showToast('Showing all recent API activities', 'info')" class="text-xs font-semibold text-blue-400 hover:text-blue-300 inline-flex items-center gap-1 cursor-pointer">
+                    <span>View All</span>
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                  </button>
+                </div>
+
+                <div class="bg-[#0B1325] border border-slate-800/80 rounded-2xl divide-y divide-slate-800/60 overflow-hidden shadow-sm">
+                  <!-- Row 1 -->
+                  <div class="p-3.5 sm:p-4 flex items-center justify-between gap-3 hover:bg-[#0E1830] transition-colors">
+                    <div class="flex items-center gap-3 min-w-0">
+                      <div class="w-8 h-8 rounded-full bg-blue-600/20 text-blue-400 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+                      </div>
+                      <div class="min-w-0">
+                        <div class="text-xs font-bold text-white">API key created</div>
+                        <div class="text-[11px] font-mono text-slate-400 truncate">app_7d3e1b2f</div>
+                      </div>
+                    </div>
+                    <div class="hidden sm:block text-xs font-mono text-slate-400">/v1/rides/estimate</div>
+                    <div class="flex items-center gap-3">
+                      <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Active</span>
+                      <span class="text-[11px] text-slate-400 whitespace-nowrap">14 Oct 2025, 10:24 AM</span>
+                    </div>
+                  </div>
+
+                  <!-- Row 2 -->
+                  <div class="p-3.5 sm:p-4 flex items-center justify-between gap-3 hover:bg-[#0E1830] transition-colors">
+                    <div class="flex items-center gap-3 min-w-0">
+                      <div class="w-8 h-8 rounded-full bg-indigo-600/20 text-indigo-400 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                      </div>
+                      <div class="min-w-0">
+                        <div class="text-xs font-bold text-white">Application created</div>
+                        <div class="text-[11px] text-slate-400 truncate">RideCompare-App</div>
+                      </div>
+                    </div>
+                    <div class="hidden sm:block text-xs text-slate-500">-</div>
+                    <div class="flex items-center gap-3">
+                      <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Active</span>
+                      <span class="text-[11px] text-slate-400 whitespace-nowrap">14 Oct 2025, 09:52 AM</span>
+                    </div>
+                  </div>
+
+                  <!-- Row 3 -->
+                  <div class="p-3.5 sm:p-4 flex items-center justify-between gap-3 hover:bg-[#0E1830] transition-colors">
+                    <div class="flex items-center gap-3 min-w-0">
+                      <div class="w-8 h-8 rounded-full bg-blue-600/20 text-blue-400 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+                      </div>
+                      <div class="min-w-0">
+                        <div class="text-xs font-bold text-white">API key regenerated</div>
+                        <div class="text-[11px] font-mono text-slate-400 truncate">app_7d3e1b2f</div>
+                      </div>
+                    </div>
+                    <div class="hidden sm:block text-xs text-slate-500">-</div>
+                    <div class="flex items-center gap-3">
+                      <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Active</span>
+                      <span class="text-[11px] text-slate-400 whitespace-nowrap">10 Oct 2025, 06:18 PM</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
             </div>
 
-          </div>
+            <!-- RIGHT COLUMN (COL-SPAN 4) -->
+            <div class="lg:col-span-4 space-y-5">
 
-          <!-- RIGHT: LIVE UI PERFECTION & AUDIT REPORT PANEL (4 Cols) -->
-          <div class="xl:col-span-4 space-y-5">
+              <!-- CARD 1: YOUR APPLICATION -->
+              <div class="bg-[#0B1325] border border-slate-800/80 rounded-2xl p-5 shadow-sm space-y-4">
+                <h3 class="text-sm font-bold text-white tracking-tight">Your Application</h3>
 
-            <!-- UI PERFECTION AUDIT CARD -->
-            <div class="bg-white rounded-2xl border border-slate-200/90 shadow-[0_1px_3px_rgba(0,0,0,0.05)] p-5">
-              <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <!-- App Box -->
+                <div onclick="app.showToast('RideCompare-App is fully verified & connected', 'success')" class="bg-[#0F1A33] border border-slate-700/60 rounded-xl p-3 flex items-center justify-between cursor-pointer hover:border-blue-500/40 transition-all">
+                  <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-blue-600/20 text-blue-400 flex items-center justify-center flex-shrink-0">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                    </div>
+                    <div>
+                      <div class="text-xs font-bold text-white">RideCompare-App</div>
+                      <div class="text-[10px] text-slate-400 mt-0.5">Created on 14 Oct 2025</div>
+                    </div>
+                  </div>
+                  <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </div>
+
+                <!-- API Key Section -->
                 <div>
-                  <h3 class="text-sm font-black text-slate-900 tracking-tight">UI Perfection Audit</h3>
-                  <p class="text-[11px] text-slate-500">Live responsiveness &amp; layout validation</p>
+                  <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-xs font-semibold text-slate-300">API Key</span>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Active</span>
+                  </div>
+                  <div class="flex items-center justify-between px-3 py-2 rounded-xl bg-[#070D18] border border-slate-800 font-mono text-xs text-slate-300">
+                    <span id="dev-active-key-text">app_7d3e1b2f</span>
+                    <button type="button" onclick="app.copyDeveloperApiKey('app_7d3e1b2f')" id="dev-copy-key-icon" class="p-1 text-slate-400 hover:text-white transition-colors cursor-pointer" title="Copy API Key">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                    </button>
+                  </div>
                 </div>
-                <div id="audit-score-badge" class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-black flex items-center gap-1.5 shadow-xs">
-                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                  <span>100% PERFECT</span>
+
+                <button type="button" onclick="app.switchDevTab('keys')" class="text-xs font-bold text-blue-400 hover:text-blue-300 inline-flex items-center gap-1 cursor-pointer">
+                  <span>View Details</span>
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </button>
+              </div>
+
+              <!-- CARD 2: NEED HELP? -->
+              <div class="bg-[#0B1325] border border-slate-800/80 rounded-2xl p-5 shadow-sm space-y-3.5">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-8 h-8 rounded-full bg-blue-600/20 text-blue-400 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1.414 5.658a9 9 0 01-2.167-9.238m7.824 2.167a1 1 0 111.414 1.414m-1.414-1.414L3 3"/></svg>
+                  </div>
+                  <h3 class="text-sm font-bold text-white tracking-tight">Need Help?</h3>
+                </div>
+                <p class="text-xs text-slate-400 leading-relaxed">Check out our documentation or contact our support team.</p>
+
+                <div class="space-y-2 pt-1">
+                  <button type="button" onclick="app.switchDevTab('docs')" class="w-full py-2.5 px-3.5 rounded-xl bg-[#0F1A33] hover:bg-[#132244] border border-slate-700/60 text-slate-200 text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer">
+                    <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                    <span>API Documentation</span>
+                    <svg class="w-3.5 h-3.5 ml-0.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                  </button>
+
+                  <button type="button" onclick="app.showToast('Connecting to VOZX Developer Support...', 'info')" class="w-full py-2.5 px-3.5 rounded-xl bg-transparent hover:bg-slate-800/40 border border-slate-800 text-slate-300 text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer">
+                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    <span>Contact Support</span>
+                  </button>
                 </div>
               </div>
 
-              <!-- Audit Check Items List -->
-              <div class="mt-4 space-y-3" id="dev-audit-items-list">
-                
-                <!-- Check 1: Horizontal Overflow -->
-                <div class="audit-item p-2.5 rounded-xl bg-slate-50/80 border border-slate-200/80 flex items-start justify-between gap-3">
-                  <div class="flex items-start gap-2.5 min-w-0">
-                    <div class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+              <!-- CARD 3: EXPLORE RIDE APIS -->
+              <div onclick="app.switchDevTab('docs')" class="relative rounded-2xl bg-gradient-to-br from-[#0B1D47] via-[#091533] to-[#070D18] border border-blue-900/40 p-5 overflow-hidden cursor-pointer hover:border-blue-500/50 transition-all group shadow-md">
+                <div class="relative z-10 flex flex-col justify-between min-h-[110px]">
+                  <div>
+                    <div class="w-8 h-8 rounded-full bg-blue-600/30 text-blue-400 flex items-center justify-center mb-2">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                     </div>
-                    <div class="min-w-0">
-                      <h4 class="text-xs font-bold text-slate-900">Zero Horizontal Overflow</h4>
-                      <p class="text-[10px] text-slate-500">No content clipping or unwanted horizontal scroll.</p>
-                    </div>
+                    <h4 class="text-sm font-bold text-white group-hover:text-blue-300 transition-colors">Explore Ride APIs</h4>
+                    <p class="text-xs text-slate-400 mt-1 max-w-[220px]">Get fare estimates, ETA and available vehicles.</p>
                   </div>
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-700 border border-emerald-200 flex-shrink-0">✓ Pass</span>
-                </div>
-
-                <!-- Check 2: Responsive Navigation Switch -->
-                <div class="audit-item p-2.5 rounded-xl bg-slate-50/80 border border-slate-200/80 flex items-start justify-between gap-3">
-                  <div class="flex items-start gap-2.5 min-w-0">
-                    <div class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                    </div>
-                    <div class="min-w-0">
-                      <h4 class="text-xs font-bold text-slate-900">Navigation Alignment</h4>
-                      <p class="text-[10px] text-slate-500">Desktop sidebar vs. Tablet/Mobile bottom dock.</p>
-                    </div>
+                  <div class="flex justify-end mt-2">
+                    <svg class="w-4 h-4 text-slate-400 group-hover:text-blue-400 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                   </div>
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-700 border border-emerald-200 flex-shrink-0">✓ Pass</span>
                 </div>
-
-                <!-- Check 3: Mobile Admin Portal Safety -->
-                <div class="audit-item p-2.5 rounded-xl bg-slate-50/80 border border-slate-200/80 flex items-start justify-between gap-3">
-                  <div class="flex items-start gap-2.5 min-w-0">
-                    <div class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                    </div>
-                    <div class="min-w-0">
-                      <h4 class="text-xs font-bold text-slate-900">Mobile Admin Removal</h4>
-                      <p class="text-[10px] text-slate-500">Admin button removed on mobile login view.</p>
-                    </div>
-                  </div>
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-700 border border-emerald-200 flex-shrink-0">✓ Pass</span>
-                </div>
-
-                <!-- Check 4: Touch Target Sizes -->
-                <div class="audit-item p-2.5 rounded-xl bg-slate-50/80 border border-slate-200/80 flex items-start justify-between gap-3">
-                  <div class="flex items-start gap-2.5 min-w-0">
-                    <div class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                    </div>
-                    <div class="min-w-0">
-                      <h4 class="text-xs font-bold text-slate-900">Touch Target Dimensions</h4>
-                      <p class="text-[10px] text-slate-500">Interactive buttons meet ≥40px touch sizing.</p>
-                    </div>
-                  </div>
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-700 border border-emerald-200 flex-shrink-0">✓ Pass</span>
-                </div>
-
-                <!-- Check 5: Live Map & Vehicle Pins -->
-                <div class="audit-item p-2.5 rounded-xl bg-slate-50/80 border border-slate-200/80 flex items-start justify-between gap-3">
-                  <div class="flex items-start gap-2.5 min-w-0">
-                    <div class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                    </div>
-                    <div class="min-w-0">
-                      <h4 class="text-xs font-bold text-slate-900">Live Map &amp; Pins Render</h4>
-                      <p class="text-[10px] text-slate-500">Live location radar and driver markers verified.</p>
-                    </div>
-                  </div>
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-700 border border-emerald-200 flex-shrink-0">✓ Pass</span>
-                </div>
-
-                <!-- Check 6: Pure White Light Theme -->
-                <div class="audit-item p-2.5 rounded-xl bg-slate-50/80 border border-slate-200/80 flex items-start justify-between gap-3">
-                  <div class="flex items-start gap-2.5 min-w-0">
-                    <div class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                    </div>
-                    <div class="min-w-0">
-                      <h4 class="text-xs font-bold text-slate-900">White Theme Contrast</h4>
-                      <p class="text-[10px] text-slate-500">Pure #FFFFFF surfaces and clear contrast.</p>
-                    </div>
-                  </div>
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-700 border border-emerald-200 flex-shrink-0">✓ Pass</span>
-                </div>
-
+                <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-blue-600/10 rounded-full blur-2xl pointer-events-none"></div>
               </div>
 
-              <button type="button" onclick="app.runUIPerfectionAudit()" class="w-full mt-4 py-2 px-3 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold text-xs border border-blue-200 transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-95">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                <span>Re-run Full UI Perfection Audit</span>
-              </button>
             </div>
+          </div>
+        </div>
 
-            <!-- DEVICE SPECS QUICK REFERENCE CARD -->
-            <div class="bg-white rounded-2xl border border-slate-200/90 shadow-[0_1px_3px_rgba(0,0,0,0.05)] p-5 text-xs">
-              <h3 class="text-sm font-black text-slate-900 tracking-tight mb-3">Live Device Specs</h3>
-              
-              <div class="space-y-2.5">
-                <div class="flex items-center justify-between py-1 border-b border-slate-100">
-                  <span class="text-slate-500">Current Device:</span>
-                  <span id="spec-device-type" class="font-bold text-slate-800">Laptop / Desktop</span>
-                </div>
-                <div class="flex items-center justify-between py-1 border-b border-slate-100">
-                  <span class="text-slate-500">Viewport Dimensions:</span>
-                  <span id="spec-viewport-dims" class="font-bold text-blue-600 font-mono">1280px × 800px</span>
-                </div>
-                <div class="flex items-center justify-between py-1 border-b border-slate-100">
-                  <span class="text-slate-500">Orientation:</span>
-                  <span id="spec-orientation" class="font-bold text-slate-800">Landscape</span>
-                </div>
-                <div class="flex items-center justify-between py-1 border-b border-slate-100">
-                  <span class="text-slate-500">Active Navigation:</span>
-                  <span id="spec-nav-type" class="font-bold text-emerald-600">Desktop Sidebar</span>
-                </div>
-                <div class="flex items-center justify-between py-1 border-b border-slate-100">
-                  <span class="text-slate-500">Active Breakpoint:</span>
-                  <span id="spec-breakpoint" class="font-bold text-slate-800">lg (≥1024px)</span>
-                </div>
-                <div class="flex items-center justify-between py-1">
-                  <span class="text-slate-500">Touch Target Standard:</span>
-                  <span class="font-bold text-emerald-600">WCAG 2.1 AA Compliant</span>
-                </div>
+        <!-- ================================================================= -->
+        <!-- DEV PANEL: API KEYS                                               -->
+        <!-- ================================================================= -->
+        <div id="dev-panel-keys" class="hidden space-y-6">
+          <div class="bg-[#0B1325] rounded-2xl border border-slate-800 p-6 shadow-sm space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="text-lg font-bold text-white">API Keys Management</h2>
+                <p class="text-xs text-slate-400 mt-0.5">Manage production and sandbox API tokens for developer access.</p>
+              </div>
+              <button type="button" onclick="app.showToast('New developer API key generated!', 'success')" class="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-sm transition-all cursor-pointer">+ Generate New Key</button>
+            </div>
+            <div class="p-4 rounded-xl bg-[#070D18] border border-slate-800 flex items-center justify-between text-xs font-mono text-slate-200">
+              <div><span class="text-slate-400 font-sans">Production Key:</span> <span class="font-bold text-blue-400">app_7d3e1b2f90a44c77b8</span></div>
+              <button type="button" onclick="app.copyDeveloperApiKey('app_7d3e1b2f90a44c77b8')" class="text-blue-400 hover:text-blue-300 font-bold font-sans text-xs cursor-pointer">Copy</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- DEV PANEL: DOCUMENTATION                                          -->
+        <!-- ================================================================= -->
+        <div id="dev-panel-docs" class="hidden space-y-6">
+          <div class="bg-[#0B1325] rounded-2xl border border-slate-800 p-6 shadow-sm">
+            <h2 class="text-lg font-bold text-white">VOZX Developer Documentation</h2>
+            <p class="text-xs text-slate-400 mt-1">Official REST API &amp; SDK references for ride aggregation and fare calculation.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+              <div onclick="app.showToast('REST API Quickstart: GET /v1/rides/estimate', 'info')" class="p-4 rounded-xl border border-slate-800 bg-[#070D18] hover:border-blue-500/50 cursor-pointer transition-all">
+                <h3 class="text-xs font-bold text-white">REST API Quickstart</h3>
+                <p class="text-[11px] text-slate-400 mt-1">Authentication, rate limits and base endpoints.</p>
+              </div>
+              <div onclick="app.showToast('Fare Engine: Multi-provider rate aggregation active', 'info')" class="p-4 rounded-xl border border-slate-800 bg-[#070D18] hover:border-purple-500/50 cursor-pointer transition-all">
+                <h3 class="text-xs font-bold text-white">Fare Comparison Engine</h3>
+                <p class="text-[11px] text-slate-400 mt-1">Multi-provider pricing models and surge detection.</p>
+              </div>
+              <div onclick="app.showToast('Webhooks: Listening on /webhooks/v1/rides', 'info')" class="p-4 rounded-xl border border-slate-800 bg-[#070D18] hover:border-emerald-500/50 cursor-pointer transition-all">
+                <h3 class="text-xs font-bold text-white">Webhooks &amp; Events</h3>
+                <p class="text-[11px] text-slate-400 mt-1">Real-time driver updates and booking callbacks.</p>
               </div>
             </div>
-
           </div>
-
         </div>
 
-      </div>
-      </div>
-
-      <!-- DEV TAB 5: DOCUMENTATION -->
-      <div id="dev-panel-docs" class="hidden space-y-6 dev-panel-expanded">
-        <div class="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-sm">
-          <h2 class="text-xl font-black text-slate-900">RideCompare Developer Documentation</h2>
-          <p class="text-xs text-slate-500 mt-1">Official REST API &amp; SDK references for ride aggregation and fare calculation.</p>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-blue-50/50 cursor-pointer transition-colors">
-              <h3 class="text-sm font-bold text-slate-900">REST API Quickstart</h3>
-              <p class="text-xs text-slate-500 mt-1">Authentication, rate limits and base endpoints.</p>
-            </div>
-            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-blue-50/50 cursor-pointer transition-colors">
-              <h3 class="text-sm font-bold text-slate-900">Fare Comparison Engine</h3>
-              <p class="text-xs text-slate-500 mt-1">Multi-provider pricing models and surge detection.</p>
-            </div>
-            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-blue-50/50 cursor-pointer transition-colors">
-              <h3 class="text-sm font-bold text-slate-900">Webhooks &amp; Events</h3>
-              <p class="text-xs text-slate-500 mt-1">Real-time driver updates and booking callbacks.</p>
+        <!-- ================================================================= -->
+        <!-- DEV PANEL: SUPPORT                                                -->
+        <!-- ================================================================= -->
+        <div id="dev-panel-support" class="hidden space-y-6">
+          <div class="bg-[#0B1325] rounded-2xl border border-slate-800 p-6 shadow-sm space-y-4">
+            <h2 class="text-lg font-bold text-white">Developer Support</h2>
+            <p class="text-xs text-slate-400">Get in touch with VOZX API engineering support or join the developer community.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+              <div class="p-4 rounded-xl bg-[#070D18] border border-slate-800 space-y-2">
+                <h4 class="text-xs font-bold text-white">Priority Technical Support</h4>
+                <p class="text-[11px] text-slate-400">Direct access to API team with 24/7 incident response.</p>
+                <button type="button" onclick="app.showToast('Support ticket opened! An engineer will reach out via email.', 'success')" class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs cursor-pointer">Open Ticket</button>
+              </div>
+              <div class="p-4 rounded-xl bg-[#070D18] border border-slate-800 space-y-2">
+                <h4 class="text-xs font-bold text-white">Developer Community Discord</h4>
+                <p class="text-[11px] text-slate-400">Discuss integrations, webhooks and ask questions directly.</p>
+                <button type="button" onclick="app.showToast('Invite link generated: discord.gg/vozx-developers', 'info')" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs cursor-pointer">Join Discord</button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- DEV TAB 6: API KEYS -->
-      <div id="dev-panel-keys" class="hidden space-y-6 dev-panel-expanded">
-        <div class="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-sm space-y-4">
-          <div class="flex items-center justify-between">
-            <div>
-              <h2 class="text-xl font-black text-slate-900">API Keys Management</h2>
-              <p class="text-xs text-slate-500 mt-0.5">Manage production and sandbox API tokens for developer access.</p>
-            </div>
-            <button class="px-3.5 py-2 rounded-xl bg-blue-600 text-white font-bold text-xs shadow-sm">+ Generate New Key</button>
-          </div>
-          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs font-mono">
-            <div><span class="text-slate-400">Production Key:</span> <span class="font-bold text-slate-900">rc_live_981a2f47b2c94d01...</span></div>
-            <button class="text-blue-600 font-bold hover:underline font-sans text-xs">Copy</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- DEV TAB 7: LOGS -->
-      <div id="dev-panel-logs" class="hidden space-y-6 dev-panel-expanded">
-        <div class="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-sm">
-          <h2 class="text-xl font-black text-slate-900">Developer Stream Logs</h2>
-          <p class="text-xs text-slate-500 mt-0.5">Live tail of HTTP requests, API latency and webhook triggers.</p>
-          <div class="mt-4 p-4 rounded-xl bg-slate-900 text-emerald-400 font-mono text-xs space-y-1.5 h-64 overflow-y-auto">
-            <div>[2026-10-15 06:20:11] GET /api/v1/fares?pickup=16.7450,74.3720 200 OK (114ms)</div>
-            <div>[2026-10-15 06:20:13] POST /api/v1/auth/session 200 OK (82ms)</div>
-            <div>[2026-10-15 06:20:18] GET /api/v1/providers/rapido/quote 200 OK (210ms)</div>
-            <div>[2026-10-15 06:20:25] GET /api/v1/providers/uber/quote 200 OK (195ms)</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- DEV TAB 8: WEBHOOKS -->
-      <div id="dev-panel-webhooks" class="hidden space-y-6 dev-panel-expanded">
-        <div class="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-sm space-y-4">
-          <h2 class="text-xl font-black text-slate-900">Webhook Subscriptions</h2>
-          <p class="text-xs text-slate-500 mt-0.5">Configure endpoints to receive automated notifications on ride lifecycle events.</p>
-          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs">
-            <span class="font-bold text-slate-800">Endpoint:</span> <code class="text-blue-600">https://api.ridecompare.io/webhooks/v1/rides</code>
-            <p class="text-slate-400 text-[11px] mt-1">Events: ride.booked, ride.cancelled, fare.surged</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- DEV TAB 9: SETTINGS -->
-      <div id="dev-panel-settings" class="hidden space-y-6 dev-panel-expanded">
-        <div class="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-sm space-y-4">
-          <h2 class="text-xl font-black text-slate-900">Developer Environment Settings</h2>
-          <p class="text-xs text-slate-500 mt-0.5">Toggle sandbox testing modes, mock responses and debug tracing.</p>
-          <div class="space-y-3 text-xs">
-            <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200/60">
-              <div><p class="font-bold text-slate-800">Mock Provider Fares Mode</p><p class="text-slate-400 text-[10px]">Use synthetic real-time estimates when APIs are rate-limited</p></div>
-              <input type="checkbox" checked class="w-4 h-4 accent-blue-600">
-            </div>
-            <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200/60">
-              <div><p class="font-bold text-slate-800">Verbose Debug Headers</p><p class="text-slate-400 text-[10px]">Include X-RideCompare-Trace in API responses</p></div>
-              <input type="checkbox" checked class="w-4 h-4 accent-blue-600">
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </main>
+      </main>
+    </div>
   </section>
 
   <!-- ====================================================================== -->
@@ -8116,7 +7292,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
   <script src="js/bcrypt.min.js"></script>
   <script src="js/api.js?v=8"></script>
   <script src="js/audio.js?v=28"></script>
-  <script src="js/app.js?v=121"></script>
+  <script src="js/app.js?v=122"></script>
 
   <!-- Service Worker for Offline PWA Support -->
   <script>
