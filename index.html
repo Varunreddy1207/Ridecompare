@@ -51,7 +51,7 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4LfkJpAF7Ggz83bF--j3vPztxlzrxPxg&libraries=places,geometry" async defer></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=90">
+  <link rel="stylesheet" href="css/styles.css?v=91">
 
   <style>
     /* Strict Responsive Display Rules: Bottom Nav for Mobile & Tablet (< 1024px) */
@@ -7616,11 +7616,11 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
 
         <!-- Role Selector Option: User and Developer (below portal text) -->
         <div id="portal-role-tab-container" class="portal-role-switcher p-1 rounded-xl bg-slate-100 border border-slate-200/90 flex items-center gap-1 mt-4 shadow-inner">
-          <button type="button" id="portal-tab-user" onclick="app.switchToUserLoginFromPortal()" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all text-slate-600 hover:text-slate-900 cursor-pointer flex items-center justify-center gap-1.5" title="Switch to User Login">
+          <button type="button" id="portal-tab-user" onclick="app.setPortalDevTab('user')" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 shadow-sm cursor-pointer flex items-center justify-center gap-1.5 portal-tab-active" title="User Login / Create Developer Password">
             <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
             <span>User</span>
           </button>
-          <button type="button" id="portal-tab-role" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all text-white bg-gradient-to-r from-indigo-600 to-purple-600 shadow-sm cursor-pointer flex items-center justify-center gap-1.5">
+          <button type="button" id="portal-tab-role" onclick="app.setPortalDevTab('developer')" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all text-slate-600 hover:text-slate-900 cursor-pointer flex items-center justify-center gap-1.5 portal-tab-inactive">
             <span id="portal-tab-role-icon">
               <svg class="w-3.5 h-3.5 text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
             </span>
@@ -7667,7 +7667,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
           </button>
 
           <!-- Developer Submit Button (Shown only in Developer Portal) -->
-          <button type="button" id="btn-dev-login-submit" onclick="app.handleDeveloperLoginSubmit(event)" class="hidden w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 hover:from-indigo-700 hover:to-purple-700 text-white font-bold text-sm shadow-[0_4px_18px_rgba(99,102,241,0.35)] hover:shadow-[0_6px_22px_rgba(99,102,241,0.45)] transition-all active:scale-98 flex items-center justify-center gap-2 cursor-pointer">
+          <button type="button" id="btn-dev-login-submit" onclick="app.handlePortalLoginSubmit(event)" class="hidden w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 hover:from-indigo-700 hover:to-purple-700 text-white font-bold text-sm shadow-[0_4px_18px_rgba(99,102,241,0.35)] hover:shadow-[0_6px_22px_rgba(99,102,241,0.45)] transition-all active:scale-98 flex items-center justify-center gap-2 cursor-pointer">
             <svg class="w-4 h-4 text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
             <span>Log In to Developer Portal</span>
             <svg class="w-4 h-4 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
@@ -8116,7 +8116,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
   <script src="js/bcrypt.min.js"></script>
   <script src="js/api.js?v=8"></script>
   <script src="js/audio.js?v=28"></script>
-  <script src="js/app.js?v=120"></script>
+  <script src="js/app.js?v=121"></script>
 
   <!-- Service Worker for Offline PWA Support -->
   <script>

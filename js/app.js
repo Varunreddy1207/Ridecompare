@@ -5918,53 +5918,25 @@ class RideCompareApp {
     if (adminIcon) adminIcon.classList.toggle('hidden', isDev);
     if (devIcon) devIcon.classList.toggle('hidden', !isDev);
 
-    // 2. Switch Title & Subtitle
+    // 2. Switch Title
     const titleEl = document.getElementById('portal-login-title');
-    const subtitleEl = document.getElementById('portal-login-subtitle');
     if (titleEl) {
       titleEl.textContent = isDev ? 'Developer Portal' : 'Admin Portal';
-    }
-    if (subtitleEl) {
-      subtitleEl.textContent = isDev
-        ? 'Enter authorized developer email & password to access the Developer Dashboard'
-        : 'Enter authorized administrator email & password to access the Admin Dashboard';
     }
 
     // 3. Switch Role Tab Selector (User & Developer / Admin option below text)
     const roleText = document.getElementById('portal-tab-role-text');
     const roleIcon = document.getElementById('portal-tab-role-icon');
-    const roleTab = document.getElementById('portal-tab-role');
     if (roleText) {
       roleText.textContent = isDev ? 'Developer' : 'Admin';
     }
     if (roleIcon) {
       roleIcon.innerHTML = isDev
-        ? '<svg class="w-3.5 h-3.5 text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>'
+        ? '<svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>'
         : '<svg class="w-3.5 h-3.5 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>';
     }
-    if (roleTab) {
-      if (isDev) {
-        roleTab.className = 'flex-1 py-2 text-xs font-bold rounded-lg transition-all text-white bg-gradient-to-r from-indigo-600 to-purple-600 shadow-sm cursor-pointer flex items-center justify-center gap-1.5';
-      } else {
-        roleTab.className = 'flex-1 py-2 text-xs font-bold rounded-lg transition-all text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-500 shadow-sm cursor-pointer flex items-center justify-center gap-1.5';
-      }
-    }
 
-    // 4. Switch Labels & Placeholder
-    const emailLabel = document.getElementById('portal-login-email-label');
-    const passLabel = document.getElementById('portal-login-password-label');
-    const emailInput = document.getElementById('admin-login-email');
-    if (emailLabel) {
-      emailLabel.textContent = isDev ? 'Developer Email Address' : 'Admin Email Address';
-    }
-    if (passLabel) {
-      passLabel.textContent = isDev ? 'Developer Password' : 'Admin Password';
-    }
-    if (emailInput) {
-      emailInput.placeholder = isDev ? 'developer@domain.com' : 'admin@domain.com';
-    }
-
-    // 5. Toggle Buttons (Only Admin submit button in Admin portal, Only Dev submit button in Dev portal)
+    // 4. Toggle Buttons (Only Admin submit button in Admin portal, Only Dev submit button in Dev portal)
     const adminBtn = document.getElementById('btn-admin-login-submit');
     const devBtn = document.getElementById('btn-dev-login-submit');
     if (adminBtn) {
@@ -5976,9 +5948,122 @@ class RideCompareApp {
       devBtn.style.display = isDev ? 'flex' : 'none';
     }
 
-    // 6. Reset Error
+    // 5. Reset Error
     const err = document.getElementById('admin-login-error');
     if (err) err.classList.add('hidden');
+
+    // 6. Set default sub-tab according to mode:
+    // In Developer Portal, User is active by default; in Admin Portal, Admin is active.
+    if (isDev) {
+      this.setPortalDevTab('user');
+    } else {
+      this.setPortalDevTab('admin');
+    }
+  }
+
+  setPortalDevTab(tab = 'user') {
+    if (window.soundFX && window.soundFX.playTap) {
+      try { window.soundFX.playTap(); } catch (_) {}
+    }
+
+    const tabUser = document.getElementById('portal-tab-user');
+    const tabRole = document.getElementById('portal-tab-role');
+    const subtitleEl = document.getElementById('portal-login-subtitle');
+    const emailLabel = document.getElementById('portal-login-email-label');
+    const passLabel = document.getElementById('portal-login-password-label');
+    const emailInput = document.getElementById('admin-login-email');
+    const passInput = document.getElementById('admin-login-password');
+    const errBanner = document.getElementById('admin-login-error');
+
+    if (errBanner) errBanner.classList.add('hidden');
+
+    if (this.portalLoginMode === 'admin') {
+      if (tab === 'user') {
+        this.switchToUserLoginFromPortal();
+        return;
+      }
+      this.devSubTab = 'admin';
+      if (tabUser) {
+        tabUser.className = 'flex-1 py-2 text-xs font-bold rounded-lg transition-all text-slate-600 hover:text-slate-900 cursor-pointer flex items-center justify-center gap-1.5 portal-tab-inactive';
+        const userSvg = tabUser.querySelector('svg');
+        if (userSvg) userSvg.setAttribute('class', 'w-3.5 h-3.5 text-slate-500');
+      }
+      if (tabRole) {
+        tabRole.className = 'flex-1 py-2 text-xs font-bold rounded-lg transition-all text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-500 shadow-sm cursor-pointer flex items-center justify-center gap-1.5 portal-tab-active';
+        const roleIcon = document.getElementById('portal-tab-role-icon');
+        const roleSvg = roleIcon ? roleIcon.querySelector('svg') : tabRole.querySelector('svg');
+        if (roleSvg) roleSvg.setAttribute('class', 'w-3.5 h-3.5 text-blue-200');
+      }
+      if (subtitleEl) {
+        subtitleEl.textContent = 'Enter authorized administrator email & password to access the Admin Dashboard';
+      }
+      if (emailLabel) emailLabel.textContent = 'Admin Email Address';
+      if (passLabel) passLabel.textContent = 'Admin Password';
+      if (emailInput) emailInput.placeholder = 'admin@domain.com';
+      if (passInput) {
+        passInput.placeholder = 'Enter password';
+        passInput.setAttribute('autocomplete', 'current-password');
+      }
+      return;
+    }
+
+    // Developer Portal Mode:
+    this.devSubTab = (tab === 'developer') ? 'developer' : 'user';
+    const isUserTab = (this.devSubTab === 'user');
+
+    if (isUserTab) {
+      // User Tab is active in Developer Portal
+      if (tabUser) {
+        tabUser.className = 'flex-1 py-2 text-xs font-bold rounded-lg transition-all text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 shadow-sm cursor-pointer flex items-center justify-center gap-1.5 portal-tab-active';
+        const userSvg = tabUser.querySelector('svg');
+        if (userSvg) userSvg.setAttribute('class', 'w-3.5 h-3.5 text-indigo-200');
+      }
+      if (tabRole) {
+        tabRole.className = 'flex-1 py-2 text-xs font-bold rounded-lg transition-all text-slate-600 hover:text-slate-900 cursor-pointer flex items-center justify-center gap-1.5 portal-tab-inactive';
+        const roleIcon = document.getElementById('portal-tab-role-icon');
+        const roleSvg = roleIcon ? roleIcon.querySelector('svg') : tabRole.querySelector('svg');
+        if (roleSvg) roleSvg.setAttribute('class', 'w-3.5 h-3.5 text-slate-500');
+      }
+
+      if (subtitleEl) {
+        subtitleEl.textContent = 'Enter your email & create a new password to access the Developer Dashboard';
+      }
+      if (emailLabel) emailLabel.textContent = 'User Email Address';
+      if (passLabel) passLabel.textContent = 'Create New Password';
+      if (emailInput) {
+        emailInput.placeholder = 'name@domain.com';
+      }
+      if (passInput) {
+        passInput.placeholder = 'Create new password';
+        passInput.setAttribute('autocomplete', 'new-password');
+      }
+    } else {
+      // Developer Tab is active in Developer Portal
+      if (tabUser) {
+        tabUser.className = 'flex-1 py-2 text-xs font-bold rounded-lg transition-all text-slate-600 hover:text-slate-900 cursor-pointer flex items-center justify-center gap-1.5 portal-tab-inactive';
+        const userSvg = tabUser.querySelector('svg');
+        if (userSvg) userSvg.setAttribute('class', 'w-3.5 h-3.5 text-slate-500');
+      }
+      if (tabRole) {
+        tabRole.className = 'flex-1 py-2 text-xs font-bold rounded-lg transition-all text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 shadow-sm cursor-pointer flex items-center justify-center gap-1.5 portal-tab-active';
+        const roleIcon = document.getElementById('portal-tab-role-icon');
+        const roleSvg = roleIcon ? roleIcon.querySelector('svg') : tabRole.querySelector('svg');
+        if (roleSvg) roleSvg.setAttribute('class', 'w-3.5 h-3.5 text-indigo-200');
+      }
+
+      if (subtitleEl) {
+        subtitleEl.textContent = 'Enter authorized developer email & password to access the Developer Dashboard';
+      }
+      if (emailLabel) emailLabel.textContent = 'Developer Email Address';
+      if (passLabel) passLabel.textContent = 'Developer Password';
+      if (emailInput) {
+        emailInput.placeholder = 'developer@domain.com';
+      }
+      if (passInput) {
+        passInput.placeholder = 'Enter password';
+        passInput.setAttribute('autocomplete', 'current-password');
+      }
+    }
   }
 
   switchToUserLoginFromPortal() {
@@ -6037,7 +6122,11 @@ class RideCompareApp {
   handlePortalLoginSubmit(e) {
     if (e && e.preventDefault) e.preventDefault();
     if (this.portalLoginMode === 'developer') {
-      this.handleDeveloperLoginSubmit(e);
+      if (this.devSubTab === 'user') {
+        this.handleDeveloperUserSubmit(e);
+      } else {
+        this.handleDeveloperLoginSubmit(e);
+      }
     } else {
       this.handleAdminLoginSubmit(e);
     }
@@ -6100,7 +6189,7 @@ class RideCompareApp {
     }
   }
 
-  handleDeveloperLoginSubmit(e) {
+  handleDeveloperUserSubmit(e) {
     if (e && e.preventDefault) e.preventDefault();
     const emailInput = document.getElementById('admin-login-email');
     const passInput = document.getElementById('admin-login-password');
@@ -6110,19 +6199,127 @@ class RideCompareApp {
     const email = (emailInput ? emailInput.value : '').toLowerCase().trim();
     const pass = passInput ? passInput.value : '';
 
-    // Authorized Admin / Developer Credentials:
-    // 1. mvarunreddymassireddy@gmail.com / Vozx@0007
-    // 2. mahendarreddy440@gmail.com / Mahe@259
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
+      if (errBanner) {
+        if (errText) errText.textContent = 'Please enter a valid user email address.';
+        errBanner.classList.remove('hidden');
+      }
+      this.showToast('Please enter a valid email address', 'error');
+      if (emailInput) {
+        emailInput.classList.add('ring-2', 'ring-red-500');
+        emailInput.focus();
+        setTimeout(() => emailInput.classList.remove('ring-2', 'ring-red-500'), 1500);
+      }
+      return;
+    }
+
+    if (!pass || pass.length < 4) {
+      if (errBanner) {
+        if (errText) errText.textContent = 'Please create a new password with at least 4 characters.';
+        errBanner.classList.remove('hidden');
+      }
+      this.showToast('Password must be at least 4 characters', 'error');
+      if (passInput) {
+        passInput.classList.add('ring-2', 'ring-red-500');
+        passInput.focus();
+        setTimeout(() => passInput.classList.remove('ring-2', 'ring-red-500'), 1500);
+      }
+      return;
+    }
+
+    // Save newly registered developer credentials in localStorage
+    try {
+      const storedDevs = JSON.parse(localStorage.getItem('ridecompare_registered_developers') || '[]');
+      const existingIdx = storedDevs.findIndex(d => (d.email || '').toLowerCase() === email);
+      const newDev = {
+        email: email,
+        password: pass,
+        role: 'Developer',
+        registeredAt: new Date().toISOString()
+      };
+      if (existingIdx >= 0) {
+        storedDevs[existingIdx] = newDev;
+      } else {
+        storedDevs.push(newDev);
+      }
+      localStorage.setItem('ridecompare_registered_developers', JSON.stringify(storedDevs));
+    } catch (_) {}
+
+    // Grant developer access
+    sessionStorage.setItem('ridecompare_admin_access', 'true');
+    localStorage.setItem('ridecompare_admin_access', 'true');
+
+    // Update userProfile
+    const emailPrefix = email.split('@')[0] || 'User';
+    const formattedName = emailPrefix.charAt(0).toUpperCase() + emailPrefix.slice(1);
+    this.userProfile = Object.assign({}, this.userProfile || {}, {
+      name: `${formattedName} (Developer)`,
+      email: email,
+      role: 'Developer'
+    });
+    localStorage.setItem('ridecompare_user_profile', JSON.stringify(this.userProfile));
+
+    this.closeAdminLoginModal();
+    this.closeAuthModal();
+
+    if (window.soundFX && window.soundFX.playTap) {
+      try { window.soundFX.playTap(); } catch (_) {}
+    }
+
+    this.showToast(`Welcome ${formattedName}! Developer Portal Access Granted 💻`, 'success');
+    this.navigateTo('screen-developer', false);
+    try {
+      history.pushState(null, '', '#developer');
+    } catch (_) {
+      window.location.hash = '#developer';
+    }
+  }
+
+  handleDeveloperLoginSubmit(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    if (this.portalLoginMode === 'developer' && this.devSubTab === 'user') {
+      this.handleDeveloperUserSubmit(e);
+      return;
+    }
+
+    const emailInput = document.getElementById('admin-login-email');
+    const passInput = document.getElementById('admin-login-password');
+    const errBanner = document.getElementById('admin-login-error');
+    const errText = document.getElementById('admin-login-error-text');
+
+    const email = (emailInput ? emailInput.value : '').toLowerCase().trim();
+    const pass = passInput ? passInput.value : '';
+
+    // Authorized Developer Credentials:
+    // 1. Hardcoded admin/dev credentials
     const isVarunDev = email === 'mvarunreddymassireddy@gmail.com' && pass === 'Vozx@0007';
     const isMahendarDev = email === 'mahendarreddy440@gmail.com' && pass === 'Mahe@259';
 
-    if (isVarunDev || isMahendarDev) {
+    // 2. Or registered developers from localStorage
+    let isRegisteredDev = false;
+    let registeredDevName = '';
+    try {
+      const storedDevs = JSON.parse(localStorage.getItem('ridecompare_registered_developers') || '[]');
+      const found = storedDevs.find(d => (d.email || '').toLowerCase() === email && d.password === pass);
+      if (found) {
+        isRegisteredDev = true;
+        const prefix = email.split('@')[0] || 'Developer';
+        registeredDevName = prefix.charAt(0).toUpperCase() + prefix.slice(1) + ' (Developer)';
+      }
+    } catch (_) {}
+
+    if (isVarunDev || isMahendarDev || isRegisteredDev) {
       sessionStorage.setItem('ridecompare_admin_access', 'true');
       localStorage.setItem('ridecompare_admin_access', 'true');
 
       // Update current application profile with Developer status
-      const devName = isVarunDev ? 'Varun Reddy (Developer)' : 'Mahendar Reddy (Developer)';
-      this.userProfile = Object.assign({}, this.userProfile, {
+      let devName = 'Developer';
+      if (isVarunDev) devName = 'Varun Reddy (Developer)';
+      else if (isMahendarDev) devName = 'Mahendar Reddy (Developer)';
+      else if (isRegisteredDev) devName = registeredDevName;
+
+      this.userProfile = Object.assign({}, this.userProfile || {}, {
         name: devName,
         email: email,
         role: 'Developer'
@@ -6136,7 +6333,8 @@ class RideCompareApp {
         try { window.soundFX.playTap(); } catch (_) {}
       }
 
-      this.showToast(`Welcome ${isVarunDev ? 'Varun' : 'Mahendar'}! Developer Portal Access Granted 💻`, 'success');
+      const welcomeName = isVarunDev ? 'Varun' : isMahendarDev ? 'Mahendar' : (email.split('@')[0] || 'Developer');
+      this.showToast(`Welcome ${welcomeName}! Developer Portal Access Granted 💻`, 'success');
       this.navigateTo('screen-developer', false);
       try {
         history.pushState(null, '', '#developer');

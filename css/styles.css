@@ -5181,13 +5181,25 @@ body.theme-dark #portal-role-tab-container,
   border-color: #334155 !important;
 }
 
-body.theme-dark #portal-tab-user,
-[data-theme="dark"] #portal-tab-user {
-  color: #94A3B8 !important;
+body.theme-dark #portal-tab-user.portal-tab-active,
+[data-theme="dark"] #portal-tab-user.portal-tab-active,
+body.theme-dark #portal-tab-role.portal-tab-active,
+[data-theme="dark"] #portal-tab-role.portal-tab-active {
+  color: #FFFFFF !important;
 }
 
-body.theme-dark #portal-tab-user:hover,
-[data-theme="dark"] #portal-tab-user:hover {
+body.theme-dark #portal-tab-user.portal-tab-inactive,
+[data-theme="dark"] #portal-tab-user.portal-tab-inactive,
+body.theme-dark #portal-tab-role.portal-tab-inactive,
+[data-theme="dark"] #portal-tab-role.portal-tab-inactive {
+  color: #94A3B8 !important;
+  background-color: transparent !important;
+}
+
+body.theme-dark #portal-tab-user.portal-tab-inactive:hover,
+[data-theme="dark"] #portal-tab-user.portal-tab-inactive:hover,
+body.theme-dark #portal-tab-role.portal-tab-inactive:hover,
+[data-theme="dark"] #portal-tab-role.portal-tab-inactive:hover {
   color: #FFFFFF !important;
   background-color: rgba(51, 65, 85, 0.6) !important;
 }
