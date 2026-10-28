@@ -51,7 +51,7 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4LfkJpAF7Ggz83bF--j3vPztxlzrxPxg&libraries=places,geometry" async defer></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=108">
+  <link rel="stylesheet" href="css/styles.css?v=109">
 
   <style>
     /* Strict Responsive Display Rules: Bottom Nav for Mobile & Tablet (< 1024px) */
@@ -8390,12 +8390,12 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
           <span>Back</span>
         </button>
 
-        <button type="button" id="btn-topbar-admin" onclick="app.openAdminLoginModal()" class="auth-admin-pill hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-950/70 hover:bg-blue-900/80 border border-blue-500/50 text-blue-300 hover:text-white text-xs font-semibold shadow-sm transition-all cursor-pointer active:scale-95" title="Admin Portal">
+        <button type="button" id="btn-topbar-admin" onclick="app.openAdminLoginModal()" class="auth-admin-pill hidden items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-950/70 hover:bg-blue-900/80 border border-blue-500/50 text-blue-300 hover:text-white text-xs font-semibold shadow-sm transition-all cursor-pointer active:scale-95" title="Admin Portal">
           <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
           <span>Admin</span>
         </button>
 
-        <button type="button" id="btn-topbar-dev" onclick="app.openDeveloperLoginModal()" class="auth-dev-pill hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-950/70 hover:bg-indigo-900/80 border border-indigo-500/50 text-indigo-300 hover:text-white text-xs font-semibold shadow-sm transition-all cursor-pointer active:scale-95" title="Developer Portal">
+        <button type="button" id="btn-topbar-dev" onclick="app.openDeveloperLoginModal()" class="auth-dev-pill hidden items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-950/70 hover:bg-indigo-900/80 border border-indigo-500/50 text-indigo-300 hover:text-white text-xs font-semibold shadow-sm transition-all cursor-pointer active:scale-95" title="Developer Portal">
           <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
           <span>Dev</span>
         </button>
@@ -8488,16 +8488,30 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
           Don't have an account? <button type="button" onclick="app.switchAuthTab('signup')" class="text-blue-400 hover:underline font-semibold cursor-pointer">Sign Up</button>
         </p>
 
-        <!-- Admin & Developer Portal Login Buttons (Hidden in Mobile View < 640px) -->
-        <div id="auth-admin-button-container" class="hidden sm:block pt-2 border-t border-slate-800/80 mt-2 space-y-2">
-          <button type="button" id="btn-login-as-admin" onclick="app.openAdminLoginModal()" class="btn-login-as-admin w-full py-2.5 px-4 rounded-xl bg-slate-900/90 hover:bg-slate-800/90 border border-slate-700/70 hover:border-blue-500/50 text-slate-300 hover:text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer active:scale-98">
-            <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-            <span>Admin Portal</span>
-          </button>
-          <button type="button" id="btn-login-as-dev" onclick="app.openDeveloperLoginModal()" class="btn-login-as-dev w-full py-2.5 px-4 rounded-xl bg-slate-900/90 hover:bg-slate-800/90 border border-slate-700/70 hover:border-indigo-500/50 text-slate-300 hover:text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer active:scale-98">
-            <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
-            <span>Developer Portal</span>
-          </button>
+        <!-- More Options Divider & Toggle (Admin & Developer Portals) -->
+        <div class="pt-3 mt-2 flex flex-col items-center w-full">
+          <div class="w-full flex items-center gap-3">
+            <div class="h-px bg-slate-200 dark:bg-slate-800/80 flex-1"></div>
+            <button type="button" id="btn-toggle-auth-portals" onclick="app.toggleAuthPortals()" class="px-3.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200/80 dark:bg-slate-800/90 dark:hover:bg-slate-700/80 border border-slate-200 dark:border-slate-700/70 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs active:scale-95 select-none" aria-expanded="false" title="Show Admin & Developer Portals">
+              <span>More</span>
+              <svg id="auth-portals-chevron" class="w-3.5 h-3.5 text-slate-400 dark:text-slate-400 transition-transform duration-300 transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div class="h-px bg-slate-200 dark:bg-slate-800/80 flex-1"></div>
+          </div>
+
+          <!-- Animated Collapsible Container for Admin & Developer Portals (Hidden by Default) -->
+          <div id="auth-admin-button-container" class="auth-portals-collapsible w-full space-y-2">
+            <button type="button" id="btn-login-as-admin" onclick="app.openAdminLoginModal()" class="btn-login-as-admin w-full py-2.5 px-4 rounded-xl bg-slate-900/90 hover:bg-slate-800/90 border border-slate-700/70 hover:border-blue-500/50 text-slate-300 hover:text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer active:scale-98">
+              <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+              <span>Admin Portal</span>
+            </button>
+            <button type="button" id="btn-login-as-dev" onclick="app.openDeveloperLoginModal()" class="btn-login-as-dev w-full py-2.5 px-4 rounded-xl bg-slate-900/90 hover:bg-slate-800/90 border border-slate-700/70 hover:border-indigo-500/50 text-slate-300 hover:text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer active:scale-98">
+              <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+              <span>Developer Portal</span>
+            </button>
+          </div>
         </div>
       </form>
 
@@ -9191,7 +9205,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
   <script src="js/bcrypt.min.js"></script>
   <script src="js/api.js?v=9"></script>
   <script src="js/audio.js?v=28"></script>
-  <script src="js/app.js?v=138"></script>
+  <script src="js/app.js?v=139"></script>
 
   <!-- Service Worker for Offline PWA Support -->
   <script>

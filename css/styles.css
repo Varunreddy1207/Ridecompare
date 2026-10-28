@@ -5369,24 +5369,60 @@ html.theme-dark #screen-developer-user .user-dev-nav-item.active svg,
   color: #2563EB !important;
 }
 
-/* RESPONSIVE ENFORCEMENT: HIDE ADMIN & DEVELOPER PORTAL BUTTONS IN USER LOGIN UI ON MOBILE (< 640px) */
-@media (max-width: 639px) {
-  #btn-login-as-admin,
-  #btn-login-as-dev,
-  #btn-topbar-admin,
-  #btn-topbar-dev,
-  #auth-admin-button-container,
-  .auth-admin-pill,
-  .auth-dev-pill,
-  .btn-login-as-admin,
-  .btn-login-as-dev {
-    display: none !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-    height: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: none !important;
+/* Hide topbar Admin & Dev pills so portals are exclusively revealed via the "More" button */
+#btn-topbar-admin,
+#btn-topbar-dev,
+.auth-admin-pill,
+.auth-dev-pill {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+}
+
+/* Auth Portals Animated Expand / Collapse (Revealed smoothly when user clicks "More") */
+.auth-portals-collapsible {
+  max-height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(-10px) scale(0.98);
+  margin-top: 0 !important;
+  overflow: hidden !important;
+  transition: max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.28s ease,
+              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              margin-top 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: max-height, opacity, transform;
+}
+
+.auth-portals-collapsible.expanded {
+  max-height: 160px !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transform: translateY(0) scale(1) !important;
+  margin-top: 10px !important;
+}
+
+.auth-portals-collapsible.expanded .btn-login-as-admin {
+  animation: portalSlideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.auth-portals-collapsible.expanded .btn-login-as-dev {
+  animation: portalSlideDown 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes portalSlideDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

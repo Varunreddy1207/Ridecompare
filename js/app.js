@@ -1390,6 +1390,37 @@ class RideCompareApp {
   // =========================================================================
   // AUTHENTICATION MODAL & CONTROLLERS (Connected to Supabase PostgreSQL & JWT)
   // =========================================================================
+  // Admin & Developer Portals Collapsible Toggle in Auth Modal
+  toggleAuthPortals() {
+    if (window.soundFX && window.soundFX.playTap) {
+      try { window.soundFX.playTap(); } catch (_) {}
+    }
+    const container = document.getElementById('auth-admin-button-container');
+    const chevron = document.getElementById('auth-portals-chevron');
+    const toggleBtn = document.getElementById('btn-toggle-auth-portals');
+    if (!container) return;
+
+    const isExpanded = container.classList.contains('expanded');
+    if (isExpanded) {
+      container.classList.remove('expanded');
+      if (chevron) chevron.classList.remove('rotate-180');
+      if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
+    } else {
+      container.classList.add('expanded');
+      if (chevron) chevron.classList.add('rotate-180');
+      if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'true');
+    }
+  }
+
+  resetAuthPortalsToggle() {
+    const container = document.getElementById('auth-admin-button-container');
+    const chevron = document.getElementById('auth-portals-chevron');
+    const toggleBtn = document.getElementById('btn-toggle-auth-portals');
+    if (container) container.classList.remove('expanded');
+    if (chevron) chevron.classList.remove('rotate-180');
+    if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
+  }
+
   openAuthModal(tab = 'login') {
     if (window.soundFX && window.soundFX.playTap) window.soundFX.playTap();
     const modal = document.getElementById('auth-modal');
@@ -1405,6 +1436,7 @@ class RideCompareApp {
     document.body.classList.add('auth-modal-open');
     this.switchAuthTab(tab);
     this.clearAuthErrors();
+    this.resetAuthPortalsToggle();
     modal.classList.add('show');
     this.updateAuthModalTheme();
   }
@@ -1427,6 +1459,7 @@ class RideCompareApp {
     this.clearAuthErrors();
     this.clearAuthSuccess();
     this.resetPasswordVisibility();
+    this.resetAuthPortalsToggle();
 
     // If user is not authenticated and hasn't started the app, ensure Get Started screen is cleanly active
     const isAuth = !!((window.RideCompareAuth && window.RideCompareAuth.isAuthenticated) || (this.userProfile && this.userProfile.name && this.userProfile.name !== 'Guest User'));
@@ -1437,6 +1470,7 @@ class RideCompareApp {
   }
 
   switchAuthTab(tab = 'login') {
+    this.resetAuthPortalsToggle();
     if (this.authRedirectTimer) {
       clearTimeout(this.authRedirectTimer);
       this.authRedirectTimer = null;
@@ -1445,6 +1479,7 @@ class RideCompareApp {
     this.clearAuthErrors();
     this.clearAuthSuccess();
     this.resetPasswordVisibility();
+    this.resetAuthPortalsToggle();
 
     const isDarkMode = document.body.classList.contains('theme-dark') || document.documentElement.getAttribute('data-theme') === 'dark';
     const successBox = document.getElementById('auth-signup-success-box');
