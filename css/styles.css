@@ -5426,6 +5426,40 @@ html.theme-dark #screen-developer-user .user-dev-nav-item.active svg,
   }
 }
 
+/* Explicit styling to guarantee Login button background theme on More, Admin Portal & Developer Portal buttons */
+#btn-toggle-auth-portals {
+  background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 50%, #4338CA 100%) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 2px 12px rgba(37, 99, 235, 0.35) !important;
+  border: 1px solid rgba(147, 197, 253, 0.35) !important;
+}
+
+#btn-toggle-auth-portals svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+.auth-portals-collapsible .btn-login-as-admin,
+.auth-portals-collapsible .btn-login-as-dev {
+  background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 50%, #4338CA 100%) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35) !important;
+  border: 1px solid rgba(147, 197, 253, 0.3) !important;
+}
+
+.auth-portals-collapsible .btn-login-as-admin:hover,
+.auth-portals-collapsible .btn-login-as-dev:hover,
+#btn-toggle-auth-portals:hover {
+  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 50%, #4F46E5 100%) !important;
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45) !important;
+}
+
+.auth-portals-collapsible .btn-login-as-admin svg,
+.auth-portals-collapsible .btn-login-as-dev svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
 /* ==========================================================================
    DEVELOPER DASHBOARD: RESPONSIVE DEVICE & UI PREVIEW SIMULATOR
    ========================================================================== */
