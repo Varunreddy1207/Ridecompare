@@ -51,7 +51,7 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4LfkJpAF7Ggz83bF--j3vPztxlzrxPxg&libraries=places,geometry" async defer></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=105">
+  <link rel="stylesheet" href="css/styles.css?v=106">
 
   <style>
     /* Strict Responsive Display Rules: Bottom Nav for Mobile & Tablet (< 1024px) */
@@ -7120,59 +7120,55 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
   </section>
 
   <!-- ====================================================================== -->
-  <!-- VOZX DEVELOPER PORTAL DASHBOARD (FOR USERS) (EXACT RECREATION OF media_1792739987927_604e58f1) -->
+  <!-- VOZX RIDECOMPARE DEVELOPER PORTAL DASHBOARD (CLEAN WHITE THEME)         -->
   <!-- ====================================================================== -->
-  <section id="screen-developer-user" class="screen-page w-full min-h-screen bg-[#070D18] text-slate-100 flex flex-col lg:flex-row relative font-sans">
+  <section id="screen-developer-user" class="screen-page w-full min-h-screen bg-[#F8FAFC] text-slate-800 flex flex-col lg:flex-row relative font-sans">
 
     <!-- DESKTOP LEFT SIDEBAR -->
-    <aside class="dev-sidebar w-full lg:w-60 lg:min-w-[240px] bg-[#070D18] border-b lg:border-b-0 lg:border-r border-slate-800/80 flex flex-col justify-between p-4 lg:p-5 lg:min-h-screen z-20 shadow-xl">
+    <aside class="dev-sidebar w-full lg:w-64 lg:min-w-[260px] bg-white border-b lg:border-b-0 lg:border-r border-slate-200/80 flex flex-col justify-between p-4 lg:p-5 lg:min-h-screen z-20 shadow-sm">
       <div class="space-y-6">
-        <!-- VOZX Developer Portal Branding -->
+        <!-- VOZX RideCompare Developer Portal Branding -->
         <div class="flex items-center gap-3 px-2 py-1.5 cursor-pointer select-none" onclick="app.switchUserDevTab('home')">
-          <svg class="w-8 h-8 flex-shrink-0" viewBox="0 0 40 40" fill="none">
-            <path d="M6 8L20 34L25 24L15 8H6Z" fill="url(#vozx-grad-1)"/>
-            <path d="M20 34L34 8H25L17 24L20 34Z" fill="url(#vozx-grad-2)"/>
-            <defs>
-              <linearGradient id="vozx-grad-1" x1="6" y1="8" x2="25" y2="34" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#38BDF8"/>
-                <stop offset="1" stop-color="#2563EB"/>
-              </linearGradient>
-              <linearGradient id="vozx-grad-2" x1="17" y1="8" x2="34" y2="34" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#3B82F6"/>
-                <stop offset="1" stop-color="#1D4ED8"/>
-              </linearGradient>
-            </defs>
-          </svg>
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-500 flex items-center justify-center text-white shadow-md shadow-blue-500/25 flex-shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          </div>
           <div>
-            <div class="flex items-center text-lg font-black tracking-tight leading-none">
-              <span class="text-white">VO</span><span class="text-blue-500">ZX</span>
+            <div class="flex items-center text-base font-black tracking-tight leading-none text-slate-900">
+              <span>VOZX</span>&nbsp;<span class="text-blue-600">RideCompare</span>
             </div>
-            <span class="text-[10px] text-slate-400 font-medium tracking-wide block mt-1">Developer Portal</span>
+            <span class="text-[10px] text-slate-500 font-medium tracking-wide block mt-1">Developer Portal</span>
           </div>
         </div>
 
         <!-- Navigation Menu -->
         <nav class="space-y-1.5">
           <!-- Home (Active by Default) -->
-          <button type="button" onclick="app.switchUserDevTab('home')" id="user-dev-tab-home" class="user-dev-nav-item active w-full px-4 py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs flex items-center gap-3 transition-all cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.4)]">
-            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          <button type="button" onclick="app.switchUserDevTab('home')" id="user-dev-tab-home" class="user-dev-nav-item active w-full px-4 py-2.5 rounded-xl bg-blue-50 text-blue-600 font-bold text-xs flex items-center gap-3 transition-all cursor-pointer">
+            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
             <span>Home</span>
           </button>
 
+          <!-- About RideCompare (Comprehensive What It Is & How It Works) -->
+          <button type="button" onclick="app.switchUserDevTab('about')" id="user-dev-tab-about" class="user-dev-nav-item w-full px-4 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span>About RideCompare</span>
+            <span class="ml-auto px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-100 text-blue-700">Guide</span>
+          </button>
+
           <!-- API Keys -->
-          <button type="button" onclick="app.switchUserDevTab('keys')" id="user-dev-tab-keys" class="user-dev-nav-item w-full px-4 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
+          <button type="button" onclick="app.switchUserDevTab('keys')" id="user-dev-tab-keys" class="user-dev-nav-item w-full px-4 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
             <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
             <span>API Keys</span>
           </button>
 
           <!-- Documentation -->
-          <button type="button" onclick="app.switchUserDevTab('docs')" id="user-dev-tab-docs" class="user-dev-nav-item w-full px-4 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
+          <button type="button" onclick="app.switchUserDevTab('docs')" id="user-dev-tab-docs" class="user-dev-nav-item w-full px-4 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
             <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
             <span>Documentation</span>
           </button>
 
           <!-- Support -->
-          <button type="button" onclick="app.switchUserDevTab('support')" id="user-dev-tab-support" class="user-dev-nav-item w-full px-4 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
+          <button type="button" onclick="app.switchUserDevTab('support')" id="user-dev-tab-support" class="user-dev-nav-item w-full px-4 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
             <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1.414 5.658a9 9 0 01-2.167-9.238m7.824 2.167a1 1 0 111.414 1.414m-1.414-1.414L3 3"/></svg>
             <span>Support</span>
           </button>
@@ -7181,34 +7177,33 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
 
       <!-- Sidebar Bottom: Promo Banner & Log Out -->
       <div class="pt-6 space-y-3">
-        <!-- Promo Graphic Box (from mockup bottom left) -->
-        <div onclick="app.switchUserDevTab('docs')" class="relative overflow-hidden rounded-2xl bg-gradient-to-tr from-[#0F1D3D] via-[#0B152C] to-[#080E1C] border border-blue-900/40 p-3.5 flex items-center justify-between group cursor-pointer hover:border-blue-500/50 transition-all shadow-md">
+        <!-- Promo Graphic Box (About VOZX RideCompare Link) -->
+        <div onclick="app.switchUserDevTab('about')" class="relative overflow-hidden rounded-2xl bg-gradient-to-tr from-blue-50 via-indigo-50/60 to-white border border-blue-200/80 p-3.5 flex items-center justify-between group cursor-pointer hover:border-blue-400 hover:shadow-xs transition-all">
           <div class="flex items-center gap-2.5 z-10">
-            <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-md shadow-indigo-500/30 flex-shrink-0">
+            <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-xs flex-shrink-0">
               <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
             </div>
-            <p class="text-[10px] font-bold text-slate-200 leading-tight">Build the future of mobility with VOZX APIs</p>
+            <p class="text-[10px] font-bold text-slate-800 leading-tight">Build the future of mobility with VOZX RideCompare APIs</p>
           </div>
-          <svg class="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-400 group-hover:translate-x-0.5 transition-all z-10 flex-shrink-0 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-          <div class="absolute -right-4 -bottom-4 w-14 h-14 bg-blue-500/10 rounded-full blur-xl pointer-events-none"></div>
+          <svg class="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all z-10 flex-shrink-0 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
         </div>
 
-        <button type="button" onclick="app.adminLogout()" class="w-full px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-red-400 hover:bg-red-950/20 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
-          <svg class="w-4 h-4 text-slate-500 hover:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+        <button type="button" onclick="app.adminLogout()" class="w-full px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-red-600 hover:bg-red-50 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
+          <svg class="w-4 h-4 text-slate-400 hover:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
           <span>Log Out</span>
         </button>
       </div>
     </aside>
 
     <!-- RIGHT MAIN CANVAS -->
-    <div class="flex-1 flex flex-col min-w-0 bg-[#070D18]">
+    <div class="flex-1 flex flex-col min-w-0 bg-[#F8FAFC]">
       
       <!-- TOP NAVBAR -->
-      <header class="flex items-center justify-between gap-4 px-4 sm:px-8 py-3.5 border-b border-slate-800/80 bg-[#070D18]/90 backdrop-blur-md sticky top-0 z-20">
+      <header class="flex items-center justify-between gap-4 px-4 sm:px-8 py-3.5 border-b border-slate-200/80 bg-white/95 backdrop-blur-md sticky top-0 z-20">
         <!-- Search bar -->
         <div class="relative flex-1 max-w-xl">
-          <input type="text" placeholder="Search documentation, endpoints, or anything..." class="w-full pl-9 pr-4 py-2 rounded-xl bg-[#0B1325] border border-slate-800/80 text-slate-200 placeholder-slate-500 text-xs focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50 transition-all font-medium">
-          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+          <input type="text" placeholder="Search documentation, endpoints, or anything..." class="w-full pl-9 pr-4 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 text-xs focus:outline-none focus:bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 transition-all font-medium">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
           </div>
         </div>
@@ -7216,43 +7211,47 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
         <!-- Right: Notification & User Profile -->
         <div class="flex items-center gap-3">
           <!-- Notification Bell -->
-          <button type="button" onclick="app.showToast('All VOZX API services operational ⚡', 'info')" class="relative w-8 h-8 rounded-xl bg-[#0B1325] hover:bg-slate-800/80 border border-slate-800/80 text-slate-400 hover:text-white flex items-center justify-center transition-all cursor-pointer">
+          <button type="button" onclick="app.showToast('All VOZX RideCompare API services operational ⚡', 'info')" class="relative w-8 h-8 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 hover:text-slate-900 flex items-center justify-center transition-all cursor-pointer shadow-xs">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-            <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-blue-500 shadow-sm shadow-blue-400"></span>
+            <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-blue-600 shadow-xs"></span>
           </button>
 
           <!-- User Profile Pill & Dropdown -->
           <div class="relative">
-            <button type="button" onclick="app.toggleUserDevMenu()" class="inline-flex items-center gap-2.5 p-1 pr-3 rounded-full bg-[#0B1325] hover:bg-slate-800/80 border border-slate-800/80 transition-all cursor-pointer shadow-sm">
+            <button type="button" onclick="app.toggleUserDevMenu()" class="inline-flex items-center gap-2.5 p-1 pr-3 rounded-full bg-white hover:bg-slate-50 border border-slate-200 transition-all cursor-pointer shadow-xs">
               <!-- Avatar Circle with dynamic initials -->
-              <div id="user-dev-topbar-avatar" class="w-7 h-7 rounded-full bg-blue-600 text-white font-black text-[11px] flex items-center justify-center shadow-md shadow-blue-600/30">
+              <div id="user-dev-topbar-avatar" class="w-7 h-7 rounded-full bg-blue-600 text-white font-black text-[11px] flex items-center justify-center shadow-inner">
                 <span id="user-dev-topbar-avatar-initials">VR</span>
               </div>
-              <span id="user-dev-topbar-profile-name" class="text-xs font-bold text-white tracking-tight">Varun Reddy</span>
+              <span id="user-dev-topbar-profile-name" class="text-xs font-bold text-slate-800 tracking-tight">Varun Reddy</span>
               <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
             </button>
 
             <!-- Dropdown Menu -->
-            <div id="user-dev-dropdown" class="hidden absolute right-0 mt-2 w-56 bg-[#0B1325] border border-slate-800 rounded-2xl shadow-2xl py-2 z-30 text-xs text-slate-200">
-              <div class="px-4 py-2 border-b border-slate-800/80">
-                <p id="user-dev-dropdown-user-name" class="font-bold text-white">Varun Reddy</p>
-                <p id="user-dev-dropdown-user-email" class="text-[11px] text-slate-400 truncate">developer@ridecompare.com</p>
+            <div id="user-dev-dropdown" class="hidden absolute right-0 mt-2 w-56 bg-white border border-slate-200 rounded-2xl shadow-xl py-2 z-30 text-xs text-slate-700">
+              <div class="px-4 py-2 border-b border-slate-100">
+                <p id="user-dev-dropdown-user-name" class="font-bold text-slate-900">Varun Reddy</p>
+                <p id="user-dev-dropdown-user-email" class="text-[11px] text-slate-500 truncate">developer@ridecompare.com</p>
               </div>
-              <button type="button" id="user-dev-dropdown-admin-item" onclick="app.switchToAdminDashboard()" class="hidden w-full text-left px-4 py-2 hover:bg-slate-800 text-slate-300 hover:text-white font-medium flex items-center gap-2 cursor-pointer">
-                <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+              <button type="button" id="user-dev-dropdown-admin-item" onclick="app.switchToAdminDashboard()" class="hidden w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 font-medium flex items-center gap-2 cursor-pointer">
+                <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                 <span>Admin Dashboard</span>
               </button>
-              <button type="button" onclick="app.switchDevTab('devices')" class="w-full text-left px-4 py-2 hover:bg-slate-800 text-slate-300 hover:text-white font-medium flex items-center gap-2 cursor-pointer">
-                <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2zM9 3h6"/></svg>
+              <button type="button" onclick="app.switchUserDevTab('about')" class="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 font-medium flex items-center gap-2 cursor-pointer">
+                <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span>About RideCompare</span>
+              </button>
+              <button type="button" onclick="app.switchDevTab('devices')" class="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 font-medium flex items-center gap-2 cursor-pointer">
+                <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2zM9 3h6"/></svg>
                 <span>Device &amp; UI Preview</span>
               </button>
-              <button type="button" onclick="app.switchTab('home')" class="w-full text-left px-4 py-2 hover:bg-slate-800 text-slate-300 hover:text-white font-medium flex items-center gap-2 cursor-pointer">
-                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+              <button type="button" onclick="app.switchTab('home')" class="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 font-medium flex items-center gap-2 cursor-pointer">
+                <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                 <span>Exit to Rider App</span>
               </button>
-              <div class="border-t border-slate-800 my-1"></div>
-              <button type="button" onclick="app.adminLogout()" class="w-full text-left px-4 py-2 hover:bg-red-950/40 text-red-400 font-semibold flex items-center gap-2 cursor-pointer">
-                <svg class="w-3.5 h-3.5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7"/></svg>
+              <div class="border-t border-slate-100 my-1"></div>
+              <button type="button" onclick="app.adminLogout()" class="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 font-semibold flex items-center gap-2 cursor-pointer">
+                <svg class="w-3.5 h-3.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7"/></svg>
                 <span>Log Out</span>
               </button>
             </div>
@@ -7264,7 +7263,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
       <main id="user-dev-main-scroll" class="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 lg:overflow-y-auto space-y-6">
 
         <!-- ================================================================= -->
-        <!-- DEV PANEL: HOME (EXACT MATCH OF media_1792739987927_604e58f1)    -->
+        <!-- DEV PANEL 1: HOME (CLEAN WHITE THEME WITH ABOUT SECTION)          -->
         <!-- ================================================================= -->
         <div id="user-dev-panel-home" class="space-y-6">
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -7273,80 +7272,82 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
             <div class="lg:col-span-8 space-y-6">
 
               <!-- 1. HERO WELCOME BANNER (WITH CAR SKYLINE & USER PROFILE NAME) -->
-              <div class="relative rounded-2xl bg-[#091224] border border-blue-900/40 overflow-hidden shadow-2xl p-6 sm:p-7 min-h-[160px] flex items-center">
+              <div class="relative rounded-2xl bg-gradient-to-r from-[#0C1938] via-[#10224A] to-[#152B5C] border border-slate-200 overflow-hidden shadow-sm p-6 sm:p-7 min-h-[160px] flex items-center justify-between">
                 <!-- Background Image & Gradient Blend -->
                 <div class="absolute inset-0 z-0 flex justify-end pointer-events-none">
-                  <img src="assets/images/dev_hero_car_scene.png" alt="VOZX Night City" class="h-full w-auto object-cover object-right opacity-90">
-                  <div class="absolute inset-0 bg-gradient-to-r from-[#091224] via-[#091224]/85 to-transparent"></div>
+                  <img src="assets/images/dev_hero_car_scene.png" alt="VOZX RideCompare City Scene" class="h-full w-auto object-cover object-right opacity-85">
+                  <div class="absolute inset-0 bg-gradient-to-r from-[#0C1938] via-[#0C1938]/85 to-transparent"></div>
                 </div>
 
                 <!-- Text Content on Left (Above Gradient) -->
                 <div class="relative z-10 max-w-md">
-                  <p class="text-xs sm:text-sm text-slate-400 font-medium">Welcome back,</p>
+                  <p class="text-xs sm:text-sm text-slate-300 font-medium">Welcome back,</p>
                   <h1 id="user-dev-hero-welcome-name" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mt-0.5">Varun Reddy</h1>
-                  <p class="text-xs text-slate-400 mt-2 leading-relaxed">Access your API keys, explore documentation and build amazing products with VOZX.</p>
+                  <p class="text-xs text-slate-300 mt-2 leading-relaxed">Access your API keys, explore documentation and build amazing products with VOZX RideCompare.</p>
                 </div>
+
+
               </div>
 
               <!-- 2. FOUR STAT METRIC CARDS ROW -->
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
                 <!-- Card 1: Total API Keys -->
-                <div class="bg-[#0B1325] border border-slate-800/80 rounded-2xl p-4 sm:p-5 flex flex-col justify-between hover:border-slate-700 transition-all shadow-sm">
+                <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 flex flex-col justify-between hover:border-blue-200 hover:shadow-sm transition-all shadow-xs">
                   <div>
-                    <div class="w-8 h-8 rounded-full bg-blue-600/20 text-blue-400 flex items-center justify-center mb-3">
+                    <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mb-3">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
                     </div>
-                    <div class="text-[11px] font-semibold text-slate-400">Total API Keys</div>
-                    <div class="text-2xl sm:text-3xl font-extrabold text-white mt-1">1</div>
+                    <div class="text-[11px] font-semibold text-slate-500">Total API Keys</div>
+                    <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">1</div>
                   </div>
-                  <button type="button" onclick="app.switchUserDevTab('keys')" class="text-[11px] font-bold text-blue-400 hover:text-blue-300 mt-3 inline-flex items-center gap-1 cursor-pointer">
+                  <button type="button" onclick="app.switchUserDevTab('keys')" class="text-[11px] font-bold text-blue-600 hover:text-blue-700 mt-3 inline-flex items-center gap-1 cursor-pointer">
                     <span>View Keys</span>
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                   </button>
                 </div>
 
                 <!-- Card 2: Applications -->
-                <div class="bg-[#0B1325] border border-slate-800/80 rounded-2xl p-4 sm:p-5 flex flex-col justify-between hover:border-slate-700 transition-all shadow-sm">
+                <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 flex flex-col justify-between hover:border-purple-200 hover:shadow-sm transition-all shadow-xs">
                   <div>
-                    <div class="w-8 h-8 rounded-full bg-purple-600/20 text-purple-400 flex items-center justify-center mb-3">
+                    <div class="w-8 h-8 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center mb-3">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                     </div>
-                    <div class="text-[11px] font-semibold text-slate-400">Applications</div>
-                    <div class="text-2xl sm:text-3xl font-extrabold text-white mt-1">1</div>
+                    <div class="text-[11px] font-semibold text-slate-500">Applications</div>
+                    <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">1</div>
                   </div>
-                  <button type="button" onclick="app.showToast('Active Application: RideCompare-App', 'info')" class="text-[11px] font-bold text-blue-400 hover:text-blue-300 mt-3 inline-flex items-center gap-1 cursor-pointer">
+                  <button type="button" onclick="app.showToast('Active Application: RideCompare-App', 'info')" class="text-[11px] font-bold text-blue-600 hover:text-blue-700 mt-3 inline-flex items-center gap-1 cursor-pointer">
                     <span>Manage Apps</span>
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                   </button>
                 </div>
 
                 <!-- Card 3: API Usage -->
-                <div class="bg-[#0B1325] border border-slate-800/80 rounded-2xl p-4 sm:p-5 flex flex-col justify-between hover:border-slate-700 transition-all shadow-sm">
+                <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 flex flex-col justify-between hover:border-emerald-200 hover:shadow-sm transition-all shadow-xs">
                   <div>
-                    <div class="w-8 h-8 rounded-full bg-emerald-600/20 text-emerald-400 flex items-center justify-center mb-3">
+                    <div class="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                     </div>
-                    <div class="text-[11px] font-semibold text-slate-400">API Usage</div>
-                    <div class="text-2xl sm:text-3xl font-extrabold text-white mt-1">2.4K</div>
-                    <div class="text-[10px] text-slate-500 mt-0.5">Requests this month</div>
+                    <div class="text-[11px] font-semibold text-slate-500">API Usage</div>
+                    <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">2.4K</div>
+                    <div class="text-[10px] text-slate-400 mt-0.5">Requests this month</div>
                   </div>
-                  <button type="button" onclick="app.showToast('Analytics: 2,420 successful API calls this month', 'info')" class="text-[11px] font-bold text-blue-400 hover:text-blue-300 mt-3 inline-flex items-center gap-1 cursor-pointer">
+                  <button type="button" onclick="app.showToast('Analytics: 2,420 successful API calls this month', 'info')" class="text-[11px] font-bold text-blue-600 hover:text-blue-700 mt-3 inline-flex items-center gap-1 cursor-pointer">
                     <span>View Analytics</span>
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                   </button>
                 </div>
 
                 <!-- Card 4: Remaining Quota -->
-                <div class="bg-[#0B1325] border border-slate-800/80 rounded-2xl p-4 sm:p-5 flex flex-col justify-between hover:border-slate-700 transition-all shadow-sm">
+                <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 flex flex-col justify-between hover:border-amber-200 hover:shadow-sm transition-all shadow-xs">
                   <div>
-                    <div class="w-8 h-8 rounded-full bg-amber-600/20 text-amber-400 flex items-center justify-center mb-3">
+                    <div class="w-8 h-8 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center mb-3">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     </div>
-                    <div class="text-[11px] font-semibold text-slate-400">Remaining Quota</div>
-                    <div class="text-2xl sm:text-3xl font-extrabold text-white mt-1">98.5%</div>
-                    <div class="text-[10px] text-slate-500 mt-0.5">Left for this month</div>
+                    <div class="text-[11px] font-semibold text-slate-500">Remaining Quota</div>
+                    <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">98.5%</div>
+                    <div class="text-[10px] text-slate-400 mt-0.5">Left for this month</div>
                   </div>
-                  <button type="button" onclick="app.showToast('Remaining Quota: 98,580 requests available', 'info')" class="text-[11px] font-bold text-blue-400 hover:text-blue-300 mt-3 inline-flex items-center gap-1 cursor-pointer">
+                  <button type="button" onclick="app.showToast('Remaining Quota: 98,580 requests available', 'info')" class="text-[11px] font-bold text-blue-600 hover:text-blue-700 mt-3 inline-flex items-center gap-1 cursor-pointer">
                     <span>View Limits</span>
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                   </button>
@@ -7355,115 +7356,165 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
 
               <!-- 3. QUICK START SECTION -->
               <div>
-                <h3 class="text-sm font-bold text-white tracking-tight">Quick Start</h3>
-                <p class="text-xs text-slate-400 mt-0.5">Get started with VOZX APIs in just a few steps.</p>
+                <h3 class="text-sm font-bold text-slate-900 tracking-tight">Quick Start</h3>
+                <p class="text-xs text-slate-500 mt-0.5">Get started with VOZX RideCompare APIs in just a few steps.</p>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 mt-3">
                   <!-- Step 1: Get API Key -->
-                  <div onclick="app.switchUserDevTab('keys')" class="bg-[#0B1325] border border-slate-800/80 hover:border-blue-500/50 hover:bg-[#0E1830] rounded-2xl p-4 transition-all cursor-pointer group flex flex-col justify-between">
+                  <div onclick="app.switchUserDevTab('keys')" class="bg-white border border-slate-200/80 hover:border-blue-400 hover:shadow-sm rounded-2xl p-4 transition-all cursor-pointer group flex flex-col justify-between shadow-xs">
                     <div>
-                      <div class="w-8 h-8 rounded-full bg-blue-600/20 text-blue-400 flex items-center justify-center mb-3">
+                      <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mb-3">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
                       </div>
-                      <div class="text-xs font-bold text-white group-hover:text-blue-400 transition-colors flex items-center justify-between">
+                      <div class="text-xs font-bold text-slate-900 group-hover:text-blue-600 transition-colors flex items-center justify-between">
                         <span>1. Get API Key</span>
-                        <svg class="w-3 h-3 text-slate-500 group-hover:text-blue-400 group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        <svg class="w-3 h-3 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                       </div>
-                      <p class="text-[11px] text-slate-400 mt-1 leading-relaxed">Create your API key to access our services.</p>
+                      <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">Create your API key to access our services.</p>
                     </div>
                   </div>
 
                   <!-- Step 2: Read Documentation -->
-                  <div onclick="app.switchUserDevTab('docs')" class="bg-[#0B1325] border border-slate-800/80 hover:border-purple-500/50 hover:bg-[#0E1830] rounded-2xl p-4 transition-all cursor-pointer group flex flex-col justify-between">
+                  <div onclick="app.switchUserDevTab('docs')" class="bg-white border border-slate-200/80 hover:border-purple-400 hover:shadow-sm rounded-2xl p-4 transition-all cursor-pointer group flex flex-col justify-between shadow-xs">
                     <div>
-                      <div class="w-8 h-8 rounded-full bg-purple-600/20 text-purple-400 flex items-center justify-center mb-3">
+                      <div class="w-8 h-8 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center mb-3">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                       </div>
-                      <div class="text-xs font-bold text-white group-hover:text-purple-400 transition-colors flex items-center justify-between">
+                      <div class="text-xs font-bold text-slate-900 group-hover:text-purple-600 transition-colors flex items-center justify-between">
                         <span>2. Read Documentation</span>
-                        <svg class="w-3 h-3 text-slate-500 group-hover:text-purple-400 group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        <svg class="w-3 h-3 text-slate-400 group-hover:text-purple-600 group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                       </div>
-                      <p class="text-[11px] text-slate-400 mt-1 leading-relaxed">Explore endpoints, request formats and examples.</p>
+                      <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">Explore endpoints, request formats and examples.</p>
                     </div>
                   </div>
 
                   <!-- Step 3: Start Building -->
-                  <div onclick="app.switchUserDevTab('docs')" class="bg-[#0B1325] border border-slate-800/80 hover:border-emerald-500/50 hover:bg-[#0E1830] rounded-2xl p-4 transition-all cursor-pointer group flex flex-col justify-between">
+                  <div onclick="app.switchUserDevTab('docs')" class="bg-white border border-slate-200/80 hover:border-emerald-400 hover:shadow-sm rounded-2xl p-4 transition-all cursor-pointer group flex flex-col justify-between shadow-xs">
                     <div>
-                      <div class="w-8 h-8 rounded-full bg-emerald-600/20 text-emerald-400 flex items-center justify-center mb-3">
+                      <div class="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
                       </div>
-                      <div class="text-xs font-bold text-white group-hover:text-emerald-400 transition-colors flex items-center justify-between">
+                      <div class="text-xs font-bold text-slate-900 group-hover:text-emerald-600 transition-colors flex items-center justify-between">
                         <span>3. Start Building</span>
-                        <svg class="w-3 h-3 text-slate-500 group-hover:text-emerald-400 group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        <svg class="w-3 h-3 text-slate-400 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                       </div>
-                      <p class="text-[11px] text-slate-400 mt-1 leading-relaxed">Integrate and test with our APIs.</p>
+                      <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">Integrate and test with our APIs.</p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <!-- 4. RECENT ACTIVITY TABLE -->
+              <!-- 4. ON-HOME ABOUT RIDECOMPARE SHOWCASE (WHAT IS RIDECOMPARE & HOW IT WORKS) -->
+              <div class="bg-white border border-slate-200/80 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                  <div>
+                    <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-600 font-bold text-[10px] tracking-wide uppercase mb-1">
+                      Platform Intelligence
+                    </div>
+                    <h3 class="text-base font-black text-slate-900 tracking-tight">About VOZX RideCompare</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Learn what RideCompare is, why it was created, and how our real-time multi-provider engine works.</p>
+                  </div>
+                  <button type="button" onclick="app.switchUserDevTab('about')" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-bold text-xs shadow-xs transition-all cursor-pointer whitespace-nowrap self-start sm:self-auto">
+                    <span>View Complete Guide</span>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                  </button>
+                </div>
+
+                <!-- 2 Feature Summary Blocks -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                  <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                    <div class="flex items-center gap-2.5">
+                      <div class="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-black text-xs">?</div>
+                      <h4 class="text-xs font-bold text-slate-900">What is RideCompare?</h4>
+                    </div>
+                    <p class="text-[11px] text-slate-600 leading-relaxed">
+                      VOZX RideCompare is a next-generation ride fare aggregator connecting commuters directly to live quotes from Uber, Ola, Rapido, and local fleets simultaneously. Eliminates dynamic surge traps and saves 22%–38% per ride.
+                    </p>
+                    <ul class="text-[11px] text-slate-500 space-y-1 pt-1">
+                      <li class="flex items-center gap-1.5"><span class="text-emerald-500 font-bold">✓</span> Multi-modal: Bike, Auto, Mini, Sedan, SUV, EV</li>
+                      <li class="flex items-center gap-1.5"><span class="text-emerald-500 font-bold">✓</span> Zero hidden commissions or booking markups</li>
+                    </ul>
+                  </div>
+
+                  <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                    <div class="flex items-center gap-2.5">
+                      <div class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-black text-xs">⚡</div>
+                      <h4 class="text-xs font-bold text-slate-900">How It Works in 4 Steps</h4>
+                    </div>
+                    <p class="text-[11px] text-slate-600 leading-relaxed">
+                      1. Enter pickup &amp; drop locations within city boundary.<br>
+                      2. Parallel engine queries Uber, Ola &amp; Rapido in &lt;1.2s.<br>
+                      3. AI badges Cheapest, Fastest, and Best Value options.<br>
+                      4. One-click deep-link direct booking with pre-filled GPS.
+                    </p>
+                    <div class="pt-1">
+                      <span class="text-[10px] font-bold text-blue-600 cursor-pointer hover:underline" onclick="app.switchUserDevTab('about')">Read complete 5-stage architecture &rarr;</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 5. RECENT ACTIVITY TABLE -->
               <div>
                 <div class="flex items-center justify-between mb-3">
-                  <h3 class="text-sm font-bold text-white tracking-tight">Recent Activity</h3>
-                  <button type="button" onclick="app.showToast('Showing all recent API activities', 'info')" class="text-xs font-semibold text-blue-400 hover:text-blue-300 inline-flex items-center gap-1 cursor-pointer">
+                  <h3 class="text-sm font-bold text-slate-900 tracking-tight">Recent Activity</h3>
+                  <button type="button" onclick="app.showToast('Showing all recent API activities', 'info')" class="text-xs font-semibold text-blue-600 hover:text-blue-700 inline-flex items-center gap-1 cursor-pointer">
                     <span>View All</span>
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                   </button>
                 </div>
 
-                <div class="bg-[#0B1325] border border-slate-800/80 rounded-2xl divide-y divide-slate-800/60 overflow-hidden shadow-sm">
+                <div class="bg-white border border-slate-200/80 rounded-2xl divide-y divide-slate-100 overflow-hidden shadow-xs">
                   <!-- Row 1 -->
-                  <div class="p-3.5 sm:p-4 flex items-center justify-between gap-3 hover:bg-[#0E1830] transition-colors">
+                  <div class="p-3.5 sm:p-4 flex items-center justify-between gap-3 hover:bg-slate-50/80 transition-colors">
                     <div class="flex items-center gap-3 min-w-0">
-                      <div class="w-8 h-8 rounded-full bg-blue-600/20 text-blue-400 flex items-center justify-center flex-shrink-0">
+                      <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
                       </div>
                       <div class="min-w-0">
-                        <div class="text-xs font-bold text-white">API key created</div>
-                        <div class="text-[11px] font-mono text-slate-400 truncate">app_7d3e1b2f</div>
+                        <div class="text-xs font-bold text-slate-900">API key created</div>
+                        <div class="text-[11px] font-mono text-slate-500 truncate">app_7d3e1b2f</div>
                       </div>
                     </div>
-                    <div class="hidden sm:block text-xs font-mono text-slate-400">/v1/rides/estimate</div>
+                    <div class="hidden sm:block text-xs font-mono text-slate-500">/v1/rides/estimate</div>
                     <div class="flex items-center gap-3">
-                      <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Active</span>
+                      <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Active</span>
                       <span class="text-[11px] text-slate-400 whitespace-nowrap">14 Oct 2025, 10:24 AM</span>
                     </div>
                   </div>
 
                   <!-- Row 2 -->
-                  <div class="p-3.5 sm:p-4 flex items-center justify-between gap-3 hover:bg-[#0E1830] transition-colors">
+                  <div class="p-3.5 sm:p-4 flex items-center justify-between gap-3 hover:bg-slate-50/80 transition-colors">
                     <div class="flex items-center gap-3 min-w-0">
-                      <div class="w-8 h-8 rounded-full bg-indigo-600/20 text-indigo-400 flex items-center justify-center flex-shrink-0">
+                      <div class="w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center flex-shrink-0">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                       </div>
                       <div class="min-w-0">
-                        <div class="text-xs font-bold text-white">Application created</div>
-                        <div class="text-[11px] text-slate-400 truncate">RideCompare-App</div>
+                        <div class="text-xs font-bold text-slate-900">Application created</div>
+                        <div class="text-[11px] text-slate-500 truncate">RideCompare-App</div>
                       </div>
                     </div>
-                    <div class="hidden sm:block text-xs text-slate-500">-</div>
+                    <div class="hidden sm:block text-xs text-slate-400">-</div>
                     <div class="flex items-center gap-3">
-                      <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Active</span>
+                      <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Active</span>
                       <span class="text-[11px] text-slate-400 whitespace-nowrap">14 Oct 2025, 09:52 AM</span>
                     </div>
                   </div>
 
                   <!-- Row 3 -->
-                  <div class="p-3.5 sm:p-4 flex items-center justify-between gap-3 hover:bg-[#0E1830] transition-colors">
+                  <div class="p-3.5 sm:p-4 flex items-center justify-between gap-3 hover:bg-slate-50/80 transition-colors">
                     <div class="flex items-center gap-3 min-w-0">
-                      <div class="w-8 h-8 rounded-full bg-blue-600/20 text-blue-400 flex items-center justify-center flex-shrink-0">
+                      <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
                       </div>
                       <div class="min-w-0">
-                        <div class="text-xs font-bold text-white">API key regenerated</div>
-                        <div class="text-[11px] font-mono text-slate-400 truncate">app_7d3e1b2f</div>
+                        <div class="text-xs font-bold text-slate-900">API key regenerated</div>
+                        <div class="text-[11px] font-mono text-slate-500 truncate">app_7d3e1b2f</div>
                       </div>
                     </div>
-                    <div class="hidden sm:block text-xs text-slate-500">-</div>
+                    <div class="hidden sm:block text-xs text-slate-400">-</div>
                     <div class="flex items-center gap-3">
-                      <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Active</span>
+                      <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Active</span>
                       <span class="text-[11px] text-slate-400 whitespace-nowrap">10 Oct 2025, 06:18 PM</span>
                     </div>
                   </div>
@@ -7476,82 +7527,81 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
             <div class="lg:col-span-4 space-y-5">
 
               <!-- CARD 1: YOUR APPLICATION -->
-              <div class="bg-[#0B1325] border border-slate-800/80 rounded-2xl p-5 shadow-sm space-y-4">
-                <h3 class="text-sm font-bold text-white tracking-tight">Your Application</h3>
+              <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs space-y-4">
+                <h3 class="text-sm font-bold text-slate-900 tracking-tight">Your Application</h3>
 
                 <!-- App Box -->
-                <div onclick="app.showToast('RideCompare-App is fully verified & connected', 'success')" class="bg-[#0F1A33] border border-slate-700/60 rounded-xl p-3 flex items-center justify-between cursor-pointer hover:border-blue-500/40 transition-all">
+                <div onclick="app.showToast('RideCompare-App is fully verified & connected', 'success')" class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center justify-between cursor-pointer hover:border-blue-400 transition-all">
                   <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-blue-600/20 text-blue-400 flex items-center justify-center flex-shrink-0">
+                    <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0">
                       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                     </div>
                     <div>
-                      <div class="text-xs font-bold text-white">RideCompare-App</div>
-                      <div class="text-[10px] text-slate-400 mt-0.5">Created on 14 Oct 2025</div>
+                      <div class="text-xs font-bold text-slate-900">RideCompare-App</div>
+                      <div class="text-[10px] text-slate-500 mt-0.5">Created on 14 Oct 2025</div>
                     </div>
                   </div>
-                  <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                  <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7m0 0l-7 7m7-7H3"/></svg>
                 </div>
 
                 <!-- API Key Section -->
                 <div>
                   <div class="flex items-center justify-between mb-1.5">
-                    <span class="text-xs font-semibold text-slate-300">API Key</span>
-                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Active</span>
+                    <span class="text-xs font-semibold text-slate-700">API Key</span>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Active</span>
                   </div>
-                  <div class="flex items-center justify-between px-3 py-2 rounded-xl bg-[#070D18] border border-slate-800 font-mono text-xs text-slate-300">
+                  <div class="flex items-center justify-between px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 font-mono text-xs text-slate-800">
                     <span id="user-dev-active-key-text">app_7d3e1b2f</span>
-                    <button type="button" onclick="app.copyDeveloperApiKey('app_7d3e1b2f')" id="user-dev-copy-key-icon" class="p-1 text-slate-400 hover:text-white transition-colors cursor-pointer" title="Copy API Key">
+                    <button type="button" onclick="app.copyDeveloperApiKey('app_7d3e1b2f')" id="user-dev-copy-key-icon" class="p-1 text-slate-400 hover:text-slate-700 transition-colors cursor-pointer" title="Copy API Key">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                     </button>
                   </div>
                 </div>
 
-                <button type="button" onclick="app.switchUserDevTab('keys')" class="text-xs font-bold text-blue-400 hover:text-blue-300 inline-flex items-center gap-1 cursor-pointer">
+                <button type="button" onclick="app.switchUserDevTab('keys')" class="text-xs font-bold text-blue-600 hover:text-blue-700 inline-flex items-center gap-1 cursor-pointer">
                   <span>View Details</span>
                   <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                 </button>
               </div>
 
               <!-- CARD 2: NEED HELP? -->
-              <div class="bg-[#0B1325] border border-slate-800/80 rounded-2xl p-5 shadow-sm space-y-3.5">
+              <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs space-y-3.5">
                 <div class="flex items-center gap-2.5">
-                  <div class="w-8 h-8 rounded-full bg-blue-600/20 text-blue-400 flex items-center justify-center flex-shrink-0">
+                  <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1.414 5.658a9 9 0 01-2.167-9.238m7.824 2.167a1 1 0 111.414 1.414m-1.414-1.414L3 3"/></svg>
                   </div>
-                  <h3 class="text-sm font-bold text-white tracking-tight">Need Help?</h3>
+                  <h3 class="text-sm font-bold text-slate-900 tracking-tight">Need Help?</h3>
                 </div>
-                <p class="text-xs text-slate-400 leading-relaxed">Check out our documentation or contact our support team.</p>
+                <p class="text-xs text-slate-500 leading-relaxed">Check out our documentation or contact our support team.</p>
 
                 <div class="space-y-2 pt-1">
-                  <button type="button" onclick="app.switchUserDevTab('docs')" class="w-full py-2.5 px-3.5 rounded-xl bg-[#0F1A33] hover:bg-[#132244] border border-slate-700/60 text-slate-200 text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer">
-                    <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                  <button type="button" onclick="app.switchUserDevTab('docs')" class="w-full py-2.5 px-3.5 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer">
+                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                     <span>API Documentation</span>
-                    <svg class="w-3.5 h-3.5 ml-0.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    <svg class="w-3.5 h-3.5 ml-0.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                   </button>
 
-                  <button type="button" onclick="app.showToast('Connecting to VOZX Developer Support...', 'info')" class="w-full py-2.5 px-3.5 rounded-xl bg-transparent hover:bg-slate-800/40 border border-slate-800 text-slate-300 text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer">
-                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                  <button type="button" onclick="app.showToast('Connecting to VOZX RideCompare Developer Support...', 'info')" class="w-full py-2.5 px-3.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer">
+                    <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                     <span>Contact Support</span>
                   </button>
                 </div>
               </div>
 
               <!-- CARD 3: EXPLORE RIDE APIS -->
-              <div onclick="app.switchUserDevTab('docs')" class="relative rounded-2xl bg-gradient-to-br from-[#0B1D47] via-[#091533] to-[#070D18] border border-blue-900/40 p-5 overflow-hidden cursor-pointer hover:border-blue-500/50 transition-all group shadow-md">
+              <div onclick="app.switchUserDevTab('docs')" class="relative rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-700 text-white p-5 overflow-hidden cursor-pointer hover:shadow-md transition-all group shadow-sm">
                 <div class="relative z-10 flex flex-col justify-between min-h-[110px]">
                   <div>
-                    <div class="w-8 h-8 rounded-full bg-blue-600/30 text-blue-400 flex items-center justify-center mb-2">
+                    <div class="w-8 h-8 rounded-full bg-white/20 text-white flex items-center justify-center mb-2">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                     </div>
-                    <h4 class="text-sm font-bold text-white group-hover:text-blue-300 transition-colors">Explore Ride APIs</h4>
-                    <p class="text-xs text-slate-400 mt-1 max-w-[220px]">Get fare estimates, ETA and available vehicles.</p>
+                    <h4 class="text-sm font-bold text-white group-hover:text-blue-100 transition-colors">Explore Ride APIs</h4>
+                    <p class="text-xs text-blue-100 mt-1 max-w-[220px]">Get fare estimates, ETA and available vehicles.</p>
                   </div>
                   <div class="flex justify-end mt-2">
-                    <svg class="w-4 h-4 text-slate-400 group-hover:text-blue-400 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    <svg class="w-4 h-4 text-white group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                   </div>
                 </div>
-                <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-blue-600/10 rounded-full blur-2xl pointer-events-none"></div>
               </div>
 
             </div>
@@ -7559,65 +7609,334 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
         </div>
 
         <!-- ================================================================= -->
-        <!-- DEV PANEL: API KEYS                                               -->
+        <!-- DEV PANEL 2: ABOUT RIDECOMPARE (WHAT IS RIDECOMPARE & HOW IT WORKS)-->
+        <!-- ================================================================= -->
+        <div id="user-dev-panel-about" class="hidden space-y-6">
+
+          <!-- 1. HERO HEADER BANNER -->
+          <div class="relative rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white p-6 sm:p-8 shadow-sm overflow-hidden">
+            <div class="relative z-10 max-w-3xl space-y-3">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-xs font-bold text-blue-100 tracking-wide">
+                <svg class="w-3.5 h-3.5 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span>About VOZX RideCompare</span>
+              </div>
+              <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight leading-tight">
+                One Ride. All Prices. Zero Guesswork.
+              </h1>
+              <p class="text-xs sm:text-sm text-blue-100/90 leading-relaxed max-w-2xl">
+                VOZX RideCompare is India's leading real-time multi-modal ride aggregation and dynamic fare comparison platform. We connect commuters directly to live fares from Uber, Ola, Rapido, and local fleets in one unified dashboard—saving money, time, and hassle on every journey.
+              </p>
+              <div class="flex flex-wrap items-center gap-3 pt-2">
+                <button type="button" onclick="app.switchTab('home')" class="px-4 py-2 rounded-xl bg-white text-blue-600 hover:bg-blue-50 font-bold text-xs shadow-xs transition-all cursor-pointer active:scale-95 inline-flex items-center gap-2">
+                  <span>Try Live Comparison</span>
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </button>
+                <button type="button" onclick="app.switchUserDevTab('docs')" class="px-4 py-2 rounded-xl bg-blue-700/60 hover:bg-blue-700 border border-white/20 text-white font-semibold text-xs transition-all cursor-pointer inline-flex items-center gap-2">
+                  <span>Explore Developer APIs</span>
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                </button>
+              </div>
+            </div>
+            <!-- Decorative Background Graphic -->
+            <div class="absolute -right-8 -bottom-12 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+          </div>
+
+          <!-- 2. FOUR IMPACT METRICS -->
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs">
+              <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-sm mb-3">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </div>
+              <div class="text-2xl font-black text-slate-900">22% – 38%</div>
+              <div class="text-xs font-bold text-slate-700 mt-0.5">Average Trip Savings</div>
+              <p class="text-[11px] text-slate-500 mt-1 leading-snug">Riders consistently bypass artificial surge spikes by booking alternative providers.</p>
+            </div>
+
+            <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs">
+              <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm mb-3">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </div>
+              <div class="text-2xl font-black text-slate-900">4.8 Mins</div>
+              <div class="text-xs font-bold text-slate-700 mt-0.5">Time Saved Per Search</div>
+              <p class="text-[11px] text-slate-500 mt-1 leading-snug">No more toggling between 4 separate ride apps while dynamic fares change.</p>
+            </div>
+
+            <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs">
+              <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-sm mb-3">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+              </div>
+              <div class="text-2xl font-black text-slate-900">4+ Networks</div>
+              <div class="text-xs font-bold text-slate-700 mt-0.5">Simultaneous Providers</div>
+              <p class="text-[11px] text-slate-500 mt-1 leading-snug">Live pricing from Uber, Ola, Rapido, and local urban taxis integrated.</p>
+            </div>
+
+            <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs">
+              <div class="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-sm mb-3">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+              </div>
+              <div class="text-2xl font-black text-slate-900">0% Markup</div>
+              <div class="text-xs font-bold text-slate-700 mt-0.5">100% Price Transparency</div>
+              <p class="text-[11px] text-slate-500 mt-1 leading-snug">Direct-to-provider rates with zero hidden markups or intermediary cuts.</p>
+            </div>
+          </div>
+
+          <!-- 3. SECTION: WHAT IS VOZX RIDECOMPARE? -->
+          <div class="bg-white border border-slate-200/80 rounded-2xl p-6 sm:p-7 shadow-xs space-y-5">
+            <div>
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-600 font-bold text-[10px] tracking-wide uppercase mb-2">
+                Core Philosophy
+              </div>
+              <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                What is VOZX RideCompare?
+              </h2>
+              <p class="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">
+                Urban ride-hailing in India has become fragmented, opaque, and volatile. At any given moment, the exact same 8-kilometer trip can cost ₹180 on one app and ₹320 on another due to uncoordinated dynamic surge algorithms. VOZX RideCompare solves this by creating a centralized, independent mobility layer.
+              </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+              <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                <div class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-xs shadow-xs">01</div>
+                <h3 class="text-xs font-bold text-slate-900">All-In-One Unified Aggregation</h3>
+                <p class="text-[11px] text-slate-500 leading-relaxed">
+                  Instead of opening Uber, then Ola, then Rapido, riders enter their pickup and drop-off once. Our system queries all services concurrently, standardizing vehicle tiers from Bikes to XL SUVs.
+                </p>
+              </div>
+
+              <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                <div class="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-xs">02</div>
+                <h3 class="text-xs font-bold text-slate-900">Dynamic Surge Transparency</h3>
+                <p class="text-[11px] text-slate-500 leading-relaxed">
+                  Surge multipliers are calculated based on hyper-local supply and demand. By viewing providers side-by-side, commuters spot non-surging providers and save instantly.
+                </p>
+              </div>
+
+              <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                <div class="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shadow-xs">03</div>
+                <h3 class="text-xs font-bold text-slate-900">City-Scale Verified Geofencing</h3>
+                <p class="text-[11px] text-slate-500 leading-relaxed">
+                  Intelligent municipal boundary detection ensures accurate service coverage across supported tier-1 and tier-2 cities, providing clear feedback if locations are outside service limits.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. SECTION: HOW IT WORKS (THE 5-STEP ARCHITECTURE) -->
+          <div class="bg-white border border-slate-200/80 rounded-2xl p-6 sm:p-7 shadow-xs space-y-6">
+            <div>
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold text-[10px] tracking-wide uppercase mb-2">
+                Technical Architecture &amp; User Journey
+              </div>
+              <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                How VOZX RideCompare Works
+              </h2>
+              <p class="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">
+                From route selection to driver dispatch, every search executes through a 5-stage real-time pipeline designed for maximum speed, accuracy, and commuter savings.
+              </p>
+            </div>
+
+            <!-- 5 Steps Flow -->
+            <div class="space-y-4">
+
+              <!-- Step 1 -->
+              <div class="flex items-start gap-4 p-4 rounded-xl border border-slate-200 hover:border-blue-300 hover:bg-slate-50/50 transition-all">
+                <div class="w-10 h-10 rounded-2xl bg-blue-100 text-blue-700 font-black text-sm flex items-center justify-center flex-shrink-0 shadow-xs">
+                  1
+                </div>
+                <div class="space-y-1 flex-1">
+                  <div class="flex items-center justify-between">
+                    <h3 class="text-xs font-bold text-slate-900">Location Selection &amp; Geo-Boundary Verification</h3>
+                    <span class="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-blue-50 text-blue-600">Step 01</span>
+                  </div>
+                  <p class="text-[11px] text-slate-500 leading-relaxed">
+                    The rider selects their pickup and destination using autocomplete smart search powered by Google Maps and OpenStreetMap Nominatim. The system immediately performs a geospatial check against supported municipal city boundaries to verify ride provider service availability.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Step 2 -->
+              <div class="flex items-start gap-4 p-4 rounded-xl border border-slate-200 hover:border-indigo-300 hover:bg-slate-50/50 transition-all">
+                <div class="w-10 h-10 rounded-2xl bg-indigo-100 text-indigo-700 font-black text-sm flex items-center justify-center flex-shrink-0 shadow-xs">
+                  2
+                </div>
+                <div class="space-y-1 flex-1">
+                  <div class="flex items-center justify-between">
+                    <h3 class="text-xs font-bold text-slate-900">Simultaneous Multi-Provider API Query</h3>
+                    <span class="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-indigo-50 text-indigo-600">Step 02</span>
+                  </div>
+                  <p class="text-[11px] text-slate-500 leading-relaxed">
+                    Our backend engine dispatches parallel asynchronous requests to Uber, Ola, and Rapido estimation endpoints. In less than 1.2 seconds, live quotes, base rates, distance fees, surge multipliers (1.0x to 2.5x), and driver arrival ETAs are gathered and normalized.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Step 3 -->
+              <div class="flex items-start gap-4 p-4 rounded-xl border border-slate-200 hover:border-emerald-300 hover:bg-slate-50/50 transition-all">
+                <div class="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-700 font-black text-sm flex items-center justify-center flex-shrink-0 shadow-xs">
+                  3
+                </div>
+                <div class="space-y-1 flex-1">
+                  <div class="flex items-center justify-between">
+                    <h3 class="text-xs font-bold text-slate-900">AI Best-Value Scoring &amp; Intelligent Badging</h3>
+                    <span class="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-emerald-50 text-emerald-600">Step 03</span>
+                  </div>
+                  <p class="text-[11px] text-slate-500 leading-relaxed">
+                    The VOZX ranking engine analyzes all gathered options across price, arrival time, and vehicle tier comfort. Options are clearly tagged with smart badges: <span class="text-emerald-600 font-bold">Cheapest</span> (lowest fare), <span class="text-blue-600 font-bold">Fastest</span> (shortest driver ETA), and <span class="text-purple-600 font-bold">Best Value</span> (optimum balance).
+                  </p>
+                </div>
+              </div>
+
+              <!-- Step 4 -->
+              <div class="flex items-start gap-4 p-4 rounded-xl border border-slate-200 hover:border-purple-300 hover:bg-slate-50/50 transition-all">
+                <div class="w-10 h-10 rounded-2xl bg-purple-100 text-purple-700 font-black text-sm flex items-center justify-center flex-shrink-0 shadow-xs">
+                  4
+                </div>
+                <div class="space-y-1 flex-1">
+                  <div class="flex items-center justify-between">
+                    <h3 class="text-xs font-bold text-slate-900">One-Click Booking &amp; Deep-Linking</h3>
+                    <span class="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-purple-50 text-purple-600">Step 04</span>
+                  </div>
+                  <p class="text-[11px] text-slate-500 leading-relaxed">
+                    With one click on "Book Ride", the platform deep-links directly into the provider application (e.g., Uber or Ola) with pickup &amp; drop-off coordinates pre-filled, or routes through integrated partner APIs—meaning zero re-typing and immediate confirmation.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Step 5 -->
+              <div class="flex items-start gap-4 p-4 rounded-xl border border-slate-200 hover:border-amber-300 hover:bg-slate-50/50 transition-all">
+                <div class="w-10 h-10 rounded-2xl bg-amber-100 text-amber-700 font-black text-sm flex items-center justify-center flex-shrink-0 shadow-xs">
+                  5
+                </div>
+                <div class="space-y-1 flex-1">
+                  <div class="flex items-center justify-between">
+                    <h3 class="text-xs font-bold text-slate-900">Live GPS Trip Tracking &amp; Fare Analytics</h3>
+                    <span class="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-amber-50 text-amber-600">Step 05</span>
+                  </div>
+                  <p class="text-[11px] text-slate-500 leading-relaxed">
+                    Riders track their active trip on an interactive Leaflet/Google map with real-time ETA countdown, route milestones, and live vehicle markers. After completion, saved trip history logs total rupees saved across all rides.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- 5. SECTION: PROVIDER COMPARISON MATRIX -->
+          <div class="bg-white border border-slate-200/80 rounded-2xl p-6 sm:p-7 shadow-xs space-y-4">
+            <div>
+              <h2 class="text-lg font-bold text-slate-900 tracking-tight">Provider Coverage &amp; Vehicle Tiers</h2>
+              <p class="text-xs text-slate-500 mt-0.5">How VOZX RideCompare standardizes categories across India's top ride networks.</p>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr class="border-b border-slate-200 text-slate-500 font-bold">
+                    <th class="py-3 px-3">Provider</th>
+                    <th class="py-3 px-3">Vehicle Categories</th>
+                    <th class="py-3 px-3">Surge Tracking</th>
+                    <th class="py-3 px-3">Booking Mode</th>
+                    <th class="py-3 px-3">Avg Response</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 text-slate-700 font-medium">
+                  <tr>
+                    <td class="py-3 px-3 font-bold text-slate-900 flex items-center gap-2">
+                      <span class="w-6 h-6 rounded-md bg-black text-white text-[10px] font-black flex items-center justify-center">U</span>
+                      <span>Uber</span>
+                    </td>
+                    <td class="py-3 px-3">Uber Moto, Uber Auto, Uber Go, Premier, Uber XL</td>
+                    <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-bold text-[10px]">Live Real-Time</span></td>
+                    <td class="py-3 px-3">Deep-link &amp; Partner API</td>
+                    <td class="py-3 px-3 font-mono text-[11px] text-slate-500">~680 ms</td>
+                  </tr>
+                  <tr>
+                    <td class="py-3 px-3 font-bold text-slate-900 flex items-center gap-2">
+                      <span class="w-6 h-6 rounded-md bg-emerald-600 text-white text-[10px] font-black flex items-center justify-center">O</span>
+                      <span>Ola</span>
+                    </td>
+                    <td class="py-3 px-3">Ola Bike, Ola Auto, Mini, Prime Sedan, Prime SUV</td>
+                    <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-bold text-[10px]">Live Real-Time</span></td>
+                    <td class="py-3 px-3">Deep-link &amp; Partner API</td>
+                    <td class="py-3 px-3 font-mono text-[11px] text-slate-500">~740 ms</td>
+                  </tr>
+                  <tr>
+                    <td class="py-3 px-3 font-bold text-slate-900 flex items-center gap-2">
+                      <span class="w-6 h-6 rounded-md bg-amber-500 text-white text-[10px] font-black flex items-center justify-center">R</span>
+                      <span>Rapido</span>
+                    </td>
+                    <td class="py-3 px-3">Rapido Bike, Rapido Auto, Rapido Cab Economy</td>
+                    <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-bold text-[10px]">Live Real-Time</span></td>
+                    <td class="py-3 px-3">Deep-link &amp; Universal Intent</td>
+                    <td class="py-3 px-3 font-mono text-[11px] text-slate-500">~520 ms</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- DEV PANEL 3: API KEYS                                             -->
         <!-- ================================================================= -->
         <div id="user-dev-panel-keys" class="hidden space-y-6">
-          <div class="bg-[#0B1325] rounded-2xl border border-slate-800 p-6 shadow-sm space-y-4">
+          <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs space-y-4">
             <div class="flex items-center justify-between">
               <div>
-                <h2 class="text-lg font-bold text-white">API Keys Management</h2>
-                <p class="text-xs text-slate-400 mt-0.5">Manage production and sandbox API tokens for developer access.</p>
+                <h2 class="text-lg font-bold text-slate-900">API Keys Management</h2>
+                <p class="text-xs text-slate-500 mt-0.5">Manage production and sandbox API tokens for developer access.</p>
               </div>
-              <button type="button" onclick="app.showToast('New developer API key generated!', 'success')" class="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-sm transition-all cursor-pointer">+ Generate New Key</button>
+              <button type="button" onclick="app.showToast('New developer API key generated!', 'success')" class="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-xs transition-all cursor-pointer">+ Generate New Key</button>
             </div>
-            <div class="p-4 rounded-xl bg-[#070D18] border border-slate-800 flex items-center justify-between text-xs font-mono text-slate-200">
-              <div><span class="text-slate-400 font-sans">Production Key:</span> <span class="font-bold text-blue-400">app_7d3e1b2f90a44c77b8</span></div>
-              <button type="button" onclick="app.copyDeveloperApiKey('app_7d3e1b2f90a44c77b8')" class="text-blue-400 hover:text-blue-300 font-bold font-sans text-xs cursor-pointer">Copy</button>
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs font-mono text-slate-800">
+              <div><span class="text-slate-500 font-sans">Production Key:</span> <span class="font-bold text-blue-600">app_7d3e1b2f90a44c77b8</span></div>
+              <button type="button" onclick="app.copyDeveloperApiKey('app_7d3e1b2f90a44c77b8')" class="text-blue-600 hover:text-blue-700 font-bold font-sans text-xs cursor-pointer">Copy</button>
             </div>
           </div>
         </div>
 
         <!-- ================================================================= -->
-        <!-- DEV PANEL: DOCUMENTATION                                          -->
+        <!-- DEV PANEL 4: DOCUMENTATION                                        -->
         <!-- ================================================================= -->
         <div id="user-dev-panel-docs" class="hidden space-y-6">
-          <div class="bg-[#0B1325] rounded-2xl border border-slate-800 p-6 shadow-sm">
-            <h2 class="text-lg font-bold text-white">VOZX Developer Documentation</h2>
-            <p class="text-xs text-slate-400 mt-1">Official REST API &amp; SDK references for ride aggregation and fare calculation.</p>
+          <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs">
+            <h2 class="text-lg font-bold text-slate-900">VOZX RideCompare Developer Documentation</h2>
+            <p class="text-xs text-slate-500 mt-1">Official REST API &amp; SDK references for ride aggregation and fare calculation.</p>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-              <div onclick="app.showToast('REST API Quickstart: GET /v1/rides/estimate', 'info')" class="p-4 rounded-xl border border-slate-800 bg-[#070D18] hover:border-blue-500/50 cursor-pointer transition-all">
-                <h3 class="text-xs font-bold text-white">REST API Quickstart</h3>
-                <p class="text-[11px] text-slate-400 mt-1">Authentication, rate limits and base endpoints.</p>
+              <div onclick="app.showToast('REST API Quickstart: GET /v1/rides/estimate', 'info')" class="p-4 rounded-xl border border-slate-200 bg-slate-50 hover:border-blue-400 cursor-pointer transition-all">
+                <h3 class="text-xs font-bold text-slate-900">REST API Quickstart</h3>
+                <p class="text-[11px] text-slate-500 mt-1">Authentication, rate limits and base endpoints.</p>
               </div>
-              <div onclick="app.showToast('Fare Engine: Multi-provider rate aggregation active', 'info')" class="p-4 rounded-xl border border-slate-800 bg-[#070D18] hover:border-purple-500/50 cursor-pointer transition-all">
-                <h3 class="text-xs font-bold text-white">Fare Comparison Engine</h3>
-                <p class="text-[11px] text-slate-400 mt-1">Multi-provider pricing models and surge detection.</p>
+              <div onclick="app.showToast('Fare Engine: Multi-provider rate aggregation active', 'info')" class="p-4 rounded-xl border border-slate-200 bg-slate-50 hover:border-purple-400 cursor-pointer transition-all">
+                <h3 class="text-xs font-bold text-slate-900">Fare Comparison Engine</h3>
+                <p class="text-[11px] text-slate-500 mt-1">Multi-provider pricing models and surge detection.</p>
               </div>
-              <div onclick="app.showToast('Webhooks: Listening on /webhooks/v1/rides', 'info')" class="p-4 rounded-xl border border-slate-800 bg-[#070D18] hover:border-emerald-500/50 cursor-pointer transition-all">
-                <h3 class="text-xs font-bold text-white">Webhooks &amp; Events</h3>
-                <p class="text-[11px] text-slate-400 mt-1">Real-time driver updates and booking callbacks.</p>
+              <div onclick="app.showToast('Webhooks: Listening on /webhooks/v1/rides', 'info')" class="p-4 rounded-xl border border-slate-200 bg-slate-50 hover:border-emerald-400 cursor-pointer transition-all">
+                <h3 class="text-xs font-bold text-slate-900">Webhooks &amp; Events</h3>
+                <p class="text-[11px] text-slate-500 mt-1">Real-time driver updates and booking callbacks.</p>
               </div>
             </div>
           </div>
         </div>
 
         <!-- ================================================================= -->
-        <!-- DEV PANEL: SUPPORT                                                -->
+        <!-- DEV PANEL 5: SUPPORT                                              -->
         <!-- ================================================================= -->
         <div id="user-dev-panel-support" class="hidden space-y-6">
-          <div class="bg-[#0B1325] rounded-2xl border border-slate-800 p-6 shadow-sm space-y-4">
-            <h2 class="text-lg font-bold text-white">Developer Support</h2>
-            <p class="text-xs text-slate-400">Get in touch with VOZX API engineering support or join the developer community.</p>
+          <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs space-y-4">
+            <h2 class="text-lg font-bold text-slate-900">Developer Support</h2>
+            <p class="text-xs text-slate-500">Get in touch with VOZX RideCompare API engineering support or join the developer community.</p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-              <div class="p-4 rounded-xl bg-[#070D18] border border-slate-800 space-y-2">
-                <h4 class="text-xs font-bold text-white">Priority Technical Support</h4>
-                <p class="text-[11px] text-slate-400">Direct access to API team with 24/7 incident response.</p>
-                <button type="button" onclick="app.showToast('Support ticket opened! An engineer will reach out via email.', 'success')" class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs cursor-pointer">Open Ticket</button>
+              <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                <h4 class="text-xs font-bold text-slate-900">Priority Technical Support</h4>
+                <p class="text-[11px] text-slate-500">Direct access to API team with 24/7 incident response.</p>
+                <button type="button" onclick="app.showToast('Support ticket opened! An engineer will reach out via email.', 'success')" class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs cursor-pointer shadow-xs">Open Ticket</button>
               </div>
-              <div class="p-4 rounded-xl bg-[#070D18] border border-slate-800 space-y-2">
-                <h4 class="text-xs font-bold text-white">Developer Community Discord</h4>
-                <p class="text-[11px] text-slate-400">Discuss integrations, webhooks and ask questions directly.</p>
-                <button type="button" onclick="app.showToast('Invite link generated: discord.gg/vozx-developers', 'info')" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs cursor-pointer">Join Discord</button>
+              <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                <h4 class="text-xs font-bold text-slate-900">Developer Community Discord</h4>
+                <p class="text-[11px] text-slate-500">Discuss integrations, webhooks and ask questions directly.</p>
+                <button type="button" onclick="app.showToast('Invite link generated: discord.gg/vozx-developers', 'info')" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs cursor-pointer shadow-xs">Join Discord</button>
               </div>
             </div>
           </div>
@@ -7626,6 +7945,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
       </main>
     </div>
   </section>
+
 
   
 
@@ -8871,7 +9191,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
   <script src="js/bcrypt.min.js"></script>
   <script src="js/api.js?v=9"></script>
   <script src="js/audio.js?v=28"></script>
-  <script src="js/app.js?v=135"></script>
+  <script src="js/app.js?v=136"></script>
 
   <!-- Service Worker for Offline PWA Support -->
   <script>

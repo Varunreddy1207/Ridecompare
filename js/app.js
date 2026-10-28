@@ -7631,7 +7631,7 @@ class RideCompareApp {
     }
   }
 
-  // User Developer Portal Tab Switcher (Cyber Dark VOZX UI for Users)
+  // User Developer Portal Tab Switcher (VOZX RideCompare UI in Clean Light Theme)
   switchUserDevTab(tabName = 'home', triggerSound = false) {
     if (triggerSound && window.soundFX && window.soundFX.playTap) {
       try { window.soundFX.playTap(); } catch (_) {}
@@ -7643,19 +7643,19 @@ class RideCompareApp {
       item.classList.toggle('active', !!isMatch);
       const icon = item.querySelector('svg');
       if (isMatch) {
-        item.className = 'user-dev-nav-item active w-full px-4 py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs flex items-center gap-3 transition-all cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.4)]';
+        item.className = 'user-dev-nav-item active w-full px-4 py-2.5 rounded-xl bg-blue-50 text-blue-600 font-bold text-xs flex items-center gap-3 transition-all cursor-pointer';
         if (icon) {
-          icon.setAttribute('class', 'w-4 h-4 text-white');
+          icon.setAttribute('class', 'w-4 h-4 text-blue-600');
         }
       } else {
-        item.className = 'user-dev-nav-item w-full px-4 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer';
+        item.className = 'user-dev-nav-item w-full px-4 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer';
         if (icon) {
           icon.setAttribute('class', 'w-4 h-4 text-slate-400');
         }
       }
     });
 
-    const panels = ['home', 'keys', 'docs', 'support'];
+    const panels = ['home', 'about', 'keys', 'docs', 'support'];
     panels.forEach(p => {
       const el = document.getElementById(`user-dev-panel-${p}`);
       if (el) {
