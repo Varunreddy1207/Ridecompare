@@ -1021,7 +1021,8 @@ class RideCompareApp {
         this.navigateTo(isAuth || hasStarted ? 'screen-home' : 'screen-splash', false);
         setTimeout(() => this.openDeveloperLoginModal(), 200);
       } else {
-        this.navigateTo('screen-developer', false);
+        const isUserDev = this.userProfile?.role === 'UserDeveloper';
+        this.navigateTo(isUserDev ? 'screen-developer-user' : 'screen-developer', false);
       }
       return;
     }
@@ -1263,11 +1264,11 @@ class RideCompareApp {
     const width = window.innerWidth;
 
     // When Welcome Splash is Active OR on Get Started Screen OR Booking Screen OR System Status Screen OR Admin/Dev Screens
-    if (this.isWelcomeSplashActive || this.currentScreen === 'screen-splash' || this.currentScreen === 'screen-booking' || this.currentScreen === 'screen-status' || this.currentScreen === 'screen-admin' || this.currentScreen === 'screen-developer') {
+    if (this.isWelcomeSplashActive || this.currentScreen === 'screen-splash' || this.currentScreen === 'screen-booking' || this.currentScreen === 'screen-status' || this.currentScreen === 'screen-admin' || this.currentScreen === 'screen-developer' || this.currentScreen === 'screen-developer-user') {
       if (bottomNav) bottomNav.style.setProperty('display', 'none', 'important');
       legacyMobNavs.forEach(el => el.style.setProperty('display', 'none', 'important'));
       legacyTabDocks.forEach(el => el.style.setProperty('display', 'none', 'important'));
-      if (this.isWelcomeSplashActive || this.currentScreen === 'screen-splash' || this.currentScreen === 'screen-admin' || this.currentScreen === 'screen-developer') {
+      if (this.isWelcomeSplashActive || this.currentScreen === 'screen-splash' || this.currentScreen === 'screen-admin' || this.currentScreen === 'screen-developer' || this.currentScreen === 'screen-developer-user') {
         deskSidebars.forEach(el => el.style.setProperty('display', 'none', 'important'));
         deskTopbars.forEach(tb => tb.style.setProperty('display', 'none', 'important'));
       }
@@ -2098,15 +2099,17 @@ class RideCompareApp {
         this.stopVehicleAnimation('results');
       }
 
-      if (screenId === 'screen-admin' || screenId === 'screen-developer') {
+      if (screenId === 'screen-admin' || screenId === 'screen-developer' || screenId === 'screen-developer-user') {
         this.loadDashboardLiveData(true);
         if (screenId === 'screen-admin') {
           this.syncDevRequestsWithCloud().catch(() => {});
         }
         this.startDashboardPolling();
-        if (screenId === 'screen-developer') {
+        if (screenId === 'screen-developer-user') {
           this.updateDeveloperProfileUI();
-          this.switchDevTab(this.currentDevTab || 'home', false);
+          this.switchUserDevTab(this.currentUserDevTab || 'home', false);
+        } else if (screenId === 'screen-developer') {
+          this.switchDevTab(this.currentDevTab || 'playground', false);
         }
       } else {
         this.stopDashboardPolling();
@@ -5699,7 +5702,7 @@ class RideCompareApp {
     if (window.soundFX && window.soundFX.playTap) {
       try { window.soundFX.playTap(); } catch (_) {}
     }
-    this.isLoggingOutAdmin = (this.currentScreen === 'screen-admin' || this.currentScreen === 'screen-developer');
+    this.isLoggingOutAdmin = (this.currentScreen === 'screen-admin' || this.currentScreen === 'screen-developer' || this.currentScreen === 'screen-developer-user');
     this.openLogoutConfirmModal();
   }
 
@@ -5725,7 +5728,7 @@ class RideCompareApp {
   }
 
   async confirmLogout() {
-    const wasAdmin = this.isLoggingOutAdmin || this.currentScreen === 'screen-admin' || this.currentScreen === 'screen-developer';
+    const wasAdmin = this.isLoggingOutAdmin || this.currentScreen === 'screen-admin' || this.currentScreen === 'screen-developer' || this.currentScreen === 'screen-developer-user';
     this.closeLogoutConfirmModal();
 
     if (wasAdmin) {
@@ -6283,9 +6286,9 @@ class RideCompareApp {
     const emailPrefix = email.split('@')[0] || 'User';
     const formattedName = emailPrefix.split(/[._-]+/).filter(Boolean).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
     this.userProfile = Object.assign({}, this.userProfile || {}, {
-      name: `${formattedName} (Developer)`,
+      name: formattedName,
       email: email,
-      role: 'Developer'
+      role: 'UserDeveloper'
     });
     localStorage.setItem('ridecompare_user_profile', JSON.stringify(this.userProfile));
 
@@ -6297,7 +6300,7 @@ class RideCompareApp {
     }
 
     this.showToast(`Welcome ${formattedName}! Developer Portal Access Granted 💻`, 'success');
-    this.navigateTo('screen-developer', false);
+    this.navigateTo('screen-developer-user', false);
     try {
       history.pushState(null, '', '#developer');
     } catch (_) {
@@ -6931,8 +6934,11 @@ class RideCompareApp {
     if (adminMenu) adminMenu.classList.add('hidden');
     const devMenu = document.getElementById('dev-user-dropdown');
     if (devMenu) devMenu.classList.add('hidden');
+    const userDevMenu = document.getElementById('user-dev-dropdown');
+    if (userDevMenu) userDevMenu.classList.add('hidden');
 
-    this.navigateTo('screen-developer', false);
+    const isUserDev = this.userProfile?.role === 'UserDeveloper';
+    this.navigateTo(isUserDev ? 'screen-developer-user' : 'screen-developer', false);
     try {
       history.pushState(null, '', '#developer');
     } catch (_) {
@@ -6949,6 +6955,8 @@ class RideCompareApp {
     if (adminMenu) adminMenu.classList.add('hidden');
     const devMenu = document.getElementById('dev-user-dropdown');
     if (devMenu) devMenu.classList.add('hidden');
+    const userDevMenu = document.getElementById('user-dev-dropdown');
+    if (userDevMenu) userDevMenu.classList.add('hidden');
 
     this.navigateTo('screen-admin', false);
     try {
@@ -6967,6 +6975,8 @@ class RideCompareApp {
     if (adminMenu) adminMenu.classList.add('hidden');
     const devMenu = document.getElementById('dev-user-dropdown');
     if (devMenu) devMenu.classList.add('hidden');
+    const userDevMenu = document.getElementById('user-dev-dropdown');
+    if (userDevMenu) userDevMenu.classList.add('hidden');
 
     if (this.currentScreen === 'screen-admin') {
       this.toggleAdminTab('devices');
@@ -7001,6 +7011,8 @@ class RideCompareApp {
     if (adminMenu) adminMenu.classList.add('hidden');
     const devMenu = document.getElementById('dev-user-dropdown');
     if (devMenu) devMenu.classList.add('hidden');
+    const userDevMenu = document.getElementById('user-dev-dropdown');
+    if (userDevMenu) userDevMenu.classList.add('hidden');
 
     // 3. Clear admin login form inputs & errors
     const adminEmailInp = document.getElementById('admin-login-email');
@@ -7124,24 +7136,21 @@ class RideCompareApp {
       initials = parts[0][0].toUpperCase();
     }
 
-    // 1. Topbar Avatar initials
-    const initialsEl = document.getElementById('dev-topbar-avatar-initials');
-    if (initialsEl) initialsEl.textContent = initials;
+    // 1. User Developer UI elements (for screen-developer-user)
+    const userInitialsEl = document.getElementById('user-dev-topbar-avatar-initials') || document.getElementById('dev-topbar-avatar-initials');
+    if (userInitialsEl) userInitialsEl.textContent = initials;
 
-    // 2. Topbar Profile name
-    const topbarNameEl = document.getElementById('dev-topbar-profile-name');
-    if (topbarNameEl) topbarNameEl.textContent = cleanName;
+    const userTopbarNameEl = document.getElementById('user-dev-topbar-profile-name') || document.getElementById('dev-topbar-profile-name');
+    if (userTopbarNameEl) userTopbarNameEl.textContent = cleanName;
 
-    // 3. Hero Welcome heading in Dashboard
-    const heroNameEl = document.getElementById('dev-hero-welcome-name');
-    if (heroNameEl) heroNameEl.textContent = cleanName;
+    const userHeroNameEl = document.getElementById('user-dev-hero-welcome-name') || document.getElementById('dev-hero-welcome-name');
+    if (userHeroNameEl) userHeroNameEl.textContent = cleanName;
 
-    // 4. Dropdown menu profile name & email
-    const dropdownNameEl = document.getElementById('dev-dropdown-user-name');
-    if (dropdownNameEl) dropdownNameEl.textContent = cleanName;
+    const userDropdownNameEl = document.getElementById('user-dev-dropdown-user-name') || document.getElementById('dev-dropdown-user-name');
+    if (userDropdownNameEl) userDropdownNameEl.textContent = cleanName;
 
-    const dropdownEmailEl = document.getElementById('dev-dropdown-user-email');
-    if (dropdownEmailEl) dropdownEmailEl.textContent = email || 'developer@ridecompare.com';
+    const userDropdownEmailEl = document.getElementById('user-dev-dropdown-user-email') || document.getElementById('dev-dropdown-user-email');
+    if (userDropdownEmailEl) userDropdownEmailEl.textContent = email || 'user@ridecompare.com';
   }
 
   enterAdminFullScreen(tabName = 'users') {
@@ -7442,30 +7451,34 @@ class RideCompareApp {
     }
   }
 
-  switchDevTab(tabName = 'home', triggerFullScreen = false) {
+  switchDevTab(tabName = 'playground', triggerFullScreen = false) {
     if (window.soundFX && window.soundFX.playTap) {
       try { window.soundFX.playTap(); } catch (_) {}
     }
-    this.currentDevTab = tabName || 'home';
-    const navItems = document.querySelectorAll('.dev-nav-item');
+    this.currentDevTab = tabName || 'playground';
+    const navItems = document.querySelectorAll('#screen-developer .dev-nav-item');
     navItems.forEach(item => {
       const isMatch = item.id === `dev-tab-${this.currentDevTab}` || item.getAttribute('onclick')?.includes(`'${this.currentDevTab}'`);
       item.classList.toggle('active', !!isMatch);
       const icon = item.querySelector('svg');
       if (isMatch) {
-        item.className = 'dev-nav-item active w-full px-4 py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs flex items-center gap-3 transition-all cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.4)]';
+        item.classList.add('bg-blue-50', 'text-blue-600', 'font-bold');
+        item.classList.remove('text-slate-600', 'hover:bg-slate-100', 'font-semibold');
         if (icon) {
-          icon.setAttribute('class', 'w-4 h-4 text-white');
+          icon.classList.add('text-blue-600');
+          icon.classList.remove('text-slate-400');
         }
       } else {
-        item.className = 'dev-nav-item w-full px-4 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer';
+        item.classList.remove('bg-blue-50', 'text-blue-600', 'font-bold');
+        item.classList.add('text-slate-600', 'hover:bg-slate-100', 'font-semibold');
         if (icon) {
-          icon.setAttribute('class', 'w-4 h-4 text-slate-400');
+          icon.classList.remove('text-blue-600');
+          icon.classList.add('text-slate-400');
         }
       }
     });
 
-    const allDevPanels = ['home', 'keys', 'docs', 'support', 'playground', 'status', 'devices', 'users', 'logs', 'webhooks', 'settings'];
+    const allDevPanels = ['playground', 'status', 'devices', 'users', 'docs', 'keys', 'logs', 'webhooks', 'settings'];
     allDevPanels.forEach(p => {
       const el = document.getElementById(`dev-panel-${p}`);
       if (el) {
@@ -7476,8 +7489,6 @@ class RideCompareApp {
         }
       }
     });
-
-    this.updateDeveloperProfileUI();
 
     if (tabName === 'status') {
       this.initSystemStatus();
@@ -7509,6 +7520,52 @@ class RideCompareApp {
     }
   }
 
+  // User Developer Portal Tab Switcher (Cyber Dark VOZX UI for Users)
+  switchUserDevTab(tabName = 'home', triggerSound = false) {
+    if (triggerSound && window.soundFX && window.soundFX.playTap) {
+      try { window.soundFX.playTap(); } catch (_) {}
+    }
+    this.currentUserDevTab = tabName || 'home';
+    const navItems = document.querySelectorAll('.user-dev-nav-item');
+    navItems.forEach(item => {
+      const isMatch = item.id === `user-dev-tab-${this.currentUserDevTab}` || item.getAttribute('onclick')?.includes(`'${this.currentUserDevTab}'`);
+      item.classList.toggle('active', !!isMatch);
+      const icon = item.querySelector('svg');
+      if (isMatch) {
+        item.className = 'user-dev-nav-item active w-full px-4 py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs flex items-center gap-3 transition-all cursor-pointer shadow-[0_4px_14px_rgba(37,99,235,0.4)]';
+        if (icon) {
+          icon.setAttribute('class', 'w-4 h-4 text-white');
+        }
+      } else {
+        item.className = 'user-dev-nav-item w-full px-4 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer';
+        if (icon) {
+          icon.setAttribute('class', 'w-4 h-4 text-slate-400');
+        }
+      }
+    });
+
+    const panels = ['home', 'keys', 'docs', 'support'];
+    panels.forEach(p => {
+      const el = document.getElementById(`user-dev-panel-${p}`);
+      if (el) {
+        if (p === this.currentUserDevTab) {
+          el.classList.remove('hidden');
+        } else {
+          el.classList.add('hidden');
+        }
+      }
+    });
+
+    this.updateDeveloperProfileUI();
+  }
+
+  toggleUserDevMenu() {
+    const menu = document.getElementById('user-dev-dropdown');
+    if (menu) {
+      menu.classList.toggle('hidden');
+    }
+  }
+
   // =========================================================================
   // REAL-TIME DASHBOARD DATA ENGINE (SUPABASE POSTGRESQL & LIVE SESSIONS)
   // =========================================================================
@@ -7525,7 +7582,7 @@ class RideCompareApp {
   startDashboardPolling() {
     if (this.dashboardPollTimer) return;
     this.dashboardPollTimer = setInterval(() => {
-      if (this.currentScreen === 'screen-admin' || this.currentScreen === 'screen-developer') {
+      if (this.currentScreen === 'screen-admin' || this.currentScreen === 'screen-developer' || this.currentScreen === 'screen-developer-user') {
         this.loadDashboardLiveData(true);
         if (this.currentScreen === 'screen-admin') {
           this.syncDevRequestsWithCloud().catch(() => {});

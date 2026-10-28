@@ -5204,10 +5204,16 @@ body.theme-dark #portal-tab-role.portal-tab-inactive:hover,
   background-color: rgba(51, 65, 85, 0.6) !important;
 }
 
-/* ADMIN DASHBOARD: Clean modern light presentation */
-#screen-admin {
+/* ADMIN & DEVELOPER DASHBOARD: Clean modern light presentation (Exact match of media_1793162370217_c5ca91c1) */
+#screen-admin,
+#screen-developer {
   background-color: #F8FAFC !important;
   color: #0F172A !important;
+}
+
+#screen-developer .dev-sidebar {
+  background-color: #FFFFFF !important;
+  border-color: rgba(226, 232, 240, 0.8) !important;
 }
 
 .admin-nav-item.active {
@@ -5215,33 +5221,38 @@ body.theme-dark #portal-tab-role.portal-tab-inactive:hover,
   color: #FFFFFF !important;
 }
 
-/* VOZX DEVELOPER PORTAL DASHBOARD: Cyber Dark Theme (Exact match of media_1792739987927_604e58f1) */
-#screen-developer {
+.dev-nav-item.active {
+  background-color: #EFF6FF !important;
+  color: #2563EB !important;
+}
+
+/* VOZX DEVELOPER PORTAL DASHBOARD (FOR USERS): Cyber Dark Theme (Exact match of media_1793162443132_d6e2dcc6) */
+#screen-developer-user {
   background-color: #070D18 !important;
   color: #F8FAFC !important;
 }
 
-#screen-developer .dev-sidebar {
+#screen-developer-user .dev-sidebar {
   background-color: #070D18 !important;
   border-color: rgba(30, 41, 59, 0.8) !important;
 }
 
-#screen-developer .dev-nav-item {
+#screen-developer-user .user-dev-nav-item {
   color: #94A3B8 !important;
 }
 
-#screen-developer .dev-nav-item:hover {
+#screen-developer-user .user-dev-nav-item:hover {
   color: #FFFFFF !important;
   background-color: rgba(30, 41, 59, 0.6) !important;
 }
 
-#screen-developer .dev-nav-item.active {
+#screen-developer-user .user-dev-nav-item.active {
   background-color: #2563EB !important;
   color: #FFFFFF !important;
   box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4) !important;
 }
 
-#screen-developer .dev-nav-item.active svg {
+#screen-developer-user .user-dev-nav-item.active svg {
   color: #FFFFFF !important;
 }
 
