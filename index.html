@@ -51,7 +51,7 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4LfkJpAF7Ggz83bF--j3vPztxlzrxPxg&libraries=places,geometry" async defer></script>
 
   <!-- Custom Master Stylesheet -->
-  <link rel="stylesheet" href="css/styles.css?v=92">
+  <link rel="stylesheet" href="css/styles.css?v=93">
 
   <style>
     /* Strict Responsive Display Rules: Bottom Nav for Mobile & Tablet (< 1024px) */
@@ -4424,6 +4424,12 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
             <span>System Logs</span>
           </button>
 
+          <button type="button" id="admin-nav-dev-requests" onclick="app.toggleAdminTab('dev-requests')" class="admin-nav-item w-full px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer" title="Review developer login requests">
+            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+            <span>Developer Requests</span>
+            <span id="admin-dev-req-badge" class="hidden ml-auto px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700 border border-amber-300">0 Pending</span>
+          </button>
+
           <button type="button" id="admin-nav-settings" onclick="app.toggleAdminTab('settings')" class="admin-nav-item w-full px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-semibold text-xs flex items-center gap-3 transition-all cursor-pointer">
             <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
             <span>Settings</span>
@@ -5603,6 +5609,83 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- ADMIN TAB: DEVELOPER LOGIN REQUESTS (Separate Section) -->
+      <div id="admin-panel-dev-requests" class="hidden space-y-6 admin-panel-expanded">
+
+        <!-- Header Banner -->
+        <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2.5">
+              <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-600 text-white flex items-center justify-center shadow-md shadow-indigo-500/25">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+              </div>
+              <div>
+                <h2 class="text-lg sm:text-xl font-black text-slate-900 tracking-tight">Developer Login Requests</h2>
+                <p class="text-xs text-slate-500 mt-0.5">Review, accept, or reject incoming developer login requests with developer password <span class="font-mono font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded">Vozx@dev1916</span>.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 flex-wrap">
+            <span id="admin-dev-req-pending-pill" class="px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-600 font-bold text-xs">
+              0 Pending
+            </span>
+            <button type="button" onclick="app.renderAdminDevRequests()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-700 text-xs font-bold transition-all cursor-pointer">
+              <svg class="w-3.5 h-3.5 admin-sync-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              <span>Refresh</span>
+            </button>
+            <button type="button" onclick="app.clearAdminDevRequestsHistory()" class="inline-flex items-center gap-1 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-semibold transition-all cursor-pointer">
+              <span>Clear History</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+          <div class="flex items-center gap-2 flex-wrap">
+            <button type="button" onclick="app.filterAdminDevRequests('all')" id="btn-dev-req-filter-all" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-600 text-white shadow-sm transition-all cursor-pointer">All (<span id="count-dev-req-all">0</span>)</button>
+            <button type="button" onclick="app.filterAdminDevRequests('pending')" id="btn-dev-req-filter-pending" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all cursor-pointer">Pending (<span id="count-dev-req-pending">0</span>)</button>
+            <button type="button" onclick="app.filterAdminDevRequests('approved')" id="btn-dev-req-filter-approved" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all cursor-pointer">Accepted (<span id="count-dev-req-approved">0</span>)</button>
+            <button type="button" onclick="app.filterAdminDevRequests('rejected')" id="btn-dev-req-filter-rejected" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all cursor-pointer">Rejected (<span id="count-dev-req-rejected">0</span>)</button>
+          </div>
+
+          <div class="relative">
+            <input type="text" oninput="app.searchAdminDevRequests(this.value)" placeholder="Search by email or location..." class="text-xs px-3.5 py-2 pl-9 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-indigo-500 w-full sm:w-64">
+            <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          </div>
+        </div>
+
+        <!-- Requests Table / List Container -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs min-w-[640px]">
+              <thead class="bg-slate-50/80 border-b border-slate-200/80">
+                <tr class="text-slate-500 font-bold">
+                  <th class="py-3.5 px-4 font-semibold">Developer Email</th>
+                  <th class="py-3.5 px-4 font-semibold">Detected Location</th>
+                  <th class="py-3.5 px-4 font-semibold">Requested At</th>
+                  <th class="py-3.5 px-4 font-semibold">Status</th>
+                  <th class="py-3.5 px-4 font-semibold text-right">Actions (Accept / Reject)</th>
+                </tr>
+              </thead>
+              <tbody id="admin-dev-requests-table-body" class="divide-y divide-slate-100">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Empty state when no requests match -->
+          <div id="admin-dev-requests-empty" class="hidden py-14 px-4 text-center">
+            <div class="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-500 flex items-center justify-center mx-auto mb-3">
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+            </div>
+            <h3 class="text-sm font-bold text-slate-800">No Developer Requests Found</h3>
+            <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">When developers submit login requests with password Vozx@dev1916, their email, location, and Accept / Reject actions will appear here in real time.</p>
+          </div>
+        </div>
+
       </div>
 
       <!-- ADMIN TAB 8: DEVICE & UI PREVIEW SIMULATOR PANEL -->
@@ -6845,7 +6928,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
           <!-- Developer Submit Button (Shown only in Developer Portal) -->
           <button type="button" id="btn-dev-login-submit" onclick="app.handlePortalLoginSubmit(event)" class="hidden w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 hover:from-indigo-700 hover:to-purple-700 text-white font-bold text-sm shadow-[0_4px_18px_rgba(99,102,241,0.35)] hover:shadow-[0_6px_22px_rgba(99,102,241,0.45)] transition-all active:scale-98 flex items-center justify-center gap-2 cursor-pointer">
             <svg class="w-4 h-4 text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
-            <span>Log In to Developer Portal</span>
+            <span id="btn-dev-login-submit-text">Request to Login</span>
             <svg class="w-4 h-4 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
           </button>
 
@@ -6854,6 +6937,75 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
           </button>
         </div>
       </form>
+
+      <!-- Developer Login Request Pending / Waiting Screen -->
+      <div id="dev-login-pending-container" class="hidden space-y-4 text-center py-2">
+        <!-- Waiting state -->
+        <div id="dev-pending-waiting-view" class="space-y-4">
+          <div class="relative w-16 h-16 mx-auto flex items-center justify-center">
+            <span class="absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-25 animate-ping"></span>
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-indigo-700 text-white flex items-center justify-center shadow-lg shadow-indigo-500/30">
+              <svg class="w-7 h-7 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+            </div>
+          </div>
+
+          <div>
+            <h4 class="text-lg font-black text-slate-900 tracking-tight">Login Request Sent</h4>
+            <p class="text-xs text-slate-500 mt-1 max-w-xs mx-auto">Your request has been submitted to the Admin Portal. Waiting for administrator approval...</p>
+          </div>
+
+          <!-- Developer Info Card -->
+          <div class="bg-slate-50 rounded-2xl border border-slate-200/80 p-4 text-left space-y-2 text-xs">
+            <div class="flex items-center justify-between">
+              <span class="text-slate-500 font-medium">Developer Email:</span>
+              <span id="dev-pending-email" class="font-bold text-slate-800 break-all">dev@domain.com</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-slate-500 font-medium">Detected Location:</span>
+              <span id="dev-pending-location" class="font-bold text-slate-800 text-right">Hyderabad, India</span>
+            </div>
+            <div class="flex items-center justify-between pt-2 border-t border-slate-200/70">
+              <span class="text-slate-500 font-medium">Status:</span>
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-700 animate-pulse">
+                <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                <span>Waiting for Approval...</span>
+              </span>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-2 pt-1">
+            <button type="button" onclick="app.cancelDevLoginRequest()" class="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition-all cursor-pointer">
+              Cancel Request
+            </button>
+          </div>
+        </div>
+
+        <!-- Rejected State (shows exact text: No access for you) -->
+        <div id="dev-pending-rejected-view" class="hidden space-y-4">
+          <div class="w-16 h-16 rounded-2xl bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center mx-auto shadow-sm">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+          </div>
+
+          <div>
+            <h4 class="text-xl font-black text-rose-600 tracking-tight">No access for you</h4>
+            <p class="text-xs text-slate-500 mt-1 max-w-xs mx-auto">The administrator has rejected your request to access the Developer Portal.</p>
+          </div>
+
+          <div class="bg-rose-50/80 rounded-2xl border border-rose-200 p-3.5 text-xs text-rose-700 font-medium">
+            Access denied by administrator. Contact the admin team if you believe this is an error.
+          </div>
+
+          <div class="flex flex-col gap-2 pt-2">
+            <button type="button" onclick="app.resetDevLoginForm(true)" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md transition-all cursor-pointer">
+              Try Again
+            </button>
+            <button type="button" onclick="app.closeAdminLoginModal()" class="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition-all cursor-pointer">
+              Close
+            </button>
+          </div>
+        </div>
+
+      </div>
     </div>
   </div>
 
@@ -7292,7 +7444,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
   <script src="js/bcrypt.min.js"></script>
   <script src="js/api.js?v=8"></script>
   <script src="js/audio.js?v=28"></script>
-  <script src="js/app.js?v=122"></script>
+  <script src="js/app.js?v=123"></script>
 
   <!-- Service Worker for Offline PWA Support -->
   <script>

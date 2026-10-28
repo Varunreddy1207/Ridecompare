@@ -302,6 +302,23 @@ class RideCompareApp {
       this.enforceResponsiveNav();
       window.addEventListener('resize', () => this.enforceResponsiveNav());
 
+      // Initialize developer login requests badge and cross-window sync
+      this.updateDevRequestBadge();
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'ridecompare_dev_requests') {
+          this.updateDevRequestBadge();
+          if (this.currentAdminTab === 'dev-requests') {
+            this.renderAdminDevRequests();
+          }
+        }
+      });
+      window.addEventListener('ridecompare_dev_requests_updated', () => {
+        this.updateDevRequestBadge();
+        if (this.currentAdminTab === 'dev-requests') {
+          this.renderAdminDevRequests();
+        }
+      });
+
       // Close Edit Profile Modal on backdrop click
       const editModal = document.getElementById('edit-profile-modal');
       if (editModal) {
@@ -6041,6 +6058,8 @@ class RideCompareApp {
         passInput.placeholder = 'Create new password';
         passInput.setAttribute('autocomplete', 'new-password');
       }
+      const devBtnText = document.getElementById('btn-dev-login-submit-text');
+      if (devBtnText) devBtnText.textContent = 'Log In to Developer Portal';
     } else {
       // Developer Tab is active in Developer Portal
       if (tabUser) {
@@ -6067,6 +6086,8 @@ class RideCompareApp {
         passInput.placeholder = 'Enter password';
         passInput.setAttribute('autocomplete', 'current-password');
       }
+      const devBtnText = document.getElementById('btn-dev-login-submit-text');
+      if (devBtnText) devBtnText.textContent = 'Request to Login';
     }
   }
 
@@ -6102,6 +6123,7 @@ class RideCompareApp {
     if (window.soundFX && window.soundFX.playTap) {
       try { window.soundFX.playTap(); } catch (_) {}
     }
+    this.resetDevLoginForm(false);
     this.updatePortalLoginUI('developer');
     const modal = document.getElementById('admin-login-modal');
     if (modal) {
@@ -6280,7 +6302,7 @@ class RideCompareApp {
     }
   }
 
-  handleDeveloperLoginSubmit(e) {
+  async handleDeveloperLoginSubmit(e) {
     if (e && e.preventDefault) e.preventDefault();
     if (this.portalLoginMode === 'developer' && this.devSubTab === 'user') {
       this.handleDeveloperUserSubmit(e);
@@ -6295,68 +6317,508 @@ class RideCompareApp {
     const email = (emailInput ? emailInput.value : '').toLowerCase().trim();
     const pass = passInput ? passInput.value : '';
 
-    // Authorized Developer Credentials:
-    // 1. Hardcoded admin/dev credentials
-    const isVarunDev = email === 'mvarunreddymassireddy@gmail.com' && pass === 'Vozx@0007';
-    const isMahendarDev = email === 'mahendarreddy440@gmail.com' && pass === 'Mahe@259';
-
-    // 2. Or registered developers from localStorage
-    let isRegisteredDev = false;
-    let registeredDevName = '';
-    try {
-      const storedDevs = JSON.parse(localStorage.getItem('ridecompare_registered_developers') || '[]');
-      const found = storedDevs.find(d => (d.email || '').toLowerCase() === email && d.password === pass);
-      if (found) {
-        isRegisteredDev = true;
-        const prefix = email.split('@')[0] || 'Developer';
-        registeredDevName = prefix.charAt(0).toUpperCase() + prefix.slice(1) + ' (Developer)';
-      }
-    } catch (_) {}
-
-    if (isVarunDev || isMahendarDev || isRegisteredDev) {
-      sessionStorage.setItem('ridecompare_admin_access', 'true');
-      localStorage.setItem('ridecompare_admin_access', 'true');
-
-      // Update current application profile with Developer status
-      let devName = 'Developer';
-      if (isVarunDev) devName = 'Varun Reddy (Developer)';
-      else if (isMahendarDev) devName = 'Mahendar Reddy (Developer)';
-      else if (isRegisteredDev) devName = registeredDevName;
-
-      this.userProfile = Object.assign({}, this.userProfile || {}, {
-        name: devName,
-        email: email,
-        role: 'Developer'
-      });
-      localStorage.setItem('ridecompare_user_profile', JSON.stringify(this.userProfile));
-
-      this.closeAdminLoginModal();
-      this.closeAuthModal();
-
-      if (window.soundFX && window.soundFX.playTap) {
-        try { window.soundFX.playTap(); } catch (_) {}
-      }
-
-      const welcomeName = isVarunDev ? 'Varun' : isMahendarDev ? 'Mahendar' : (email.split('@')[0] || 'Developer');
-      this.showToast(`Welcome ${welcomeName}! Developer Portal Access Granted 💻`, 'success');
-      this.navigateTo('screen-developer', false);
-      try {
-        history.pushState(null, '', '#developer');
-      } catch (_) {
-        window.location.hash = '#developer';
-      }
-    } else {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
       if (errBanner) {
-        if (errText) errText.textContent = 'Invalid developer email or password. Access denied.';
+        if (errText) errText.textContent = 'Please enter a valid developer email address.';
         errBanner.classList.remove('hidden');
       }
-      this.showToast('Invalid developer email or password', 'error');
+      this.showToast('Please enter a valid developer email address', 'error');
+      if (emailInput) {
+        emailInput.classList.add('ring-2', 'ring-red-500');
+        emailInput.focus();
+        setTimeout(() => emailInput.classList.remove('ring-2', 'ring-red-500'), 1500);
+      }
+      return;
+    }
+
+    // Developer password check:
+    // Authorized developer password is strictly "Vozx@dev1916"
+    // Also allow super-admin passwords for instant admin bypass
+    const isDevPassword = (pass === 'Vozx@dev1916');
+    const isVarunAdmin = email === 'mvarunreddymassireddy@gmail.com' && pass === 'Vozx@0007';
+    const isMahendarAdmin = email === 'mahendarreddy440@gmail.com' && pass === 'Mahe@259';
+
+    if (!isDevPassword && !isVarunAdmin && !isMahendarAdmin) {
+      if (errBanner) {
+        if (errText) errText.textContent = 'Invalid developer password. Access denied.';
+        errBanner.classList.remove('hidden');
+      }
+      this.showToast('Invalid developer password', 'error');
       if (passInput) {
         passInput.classList.add('ring-2', 'ring-red-500');
         passInput.focus();
         setTimeout(() => passInput.classList.remove('ring-2', 'ring-red-500'), 1500);
       }
+      return;
     }
+
+    if (errBanner) errBanner.classList.add('hidden');
+
+    if (isVarunAdmin || isMahendarAdmin) {
+      const devName = isVarunAdmin ? 'Varun Reddy (Developer)' : 'Mahendar Reddy (Developer)';
+      this.grantDeveloperAccess(email, devName);
+      return;
+    }
+
+    // For developer password "Vozx@dev1916", submit Login Request with Email and Location!
+    await this.submitDeveloperLoginRequest(email, pass);
+  }
+
+  async getDeveloperLocation() {
+    if (this.pickupLocationFull && !this.pickupLocationFull.toLowerCase().includes('current location') && this.pickupLocationFull.trim().length > 3) {
+      return this.pickupLocationFull.trim();
+    }
+    if (this.pickupLocationName && !this.pickupLocationName.toLowerCase().includes('current location') && this.pickupLocationName.trim().length > 3) {
+      return this.pickupLocationName.trim();
+    }
+
+    if (navigator.geolocation) {
+      try {
+        const pos = await new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 2000, enableHighAccuracy: false, maximumAge: 300000 });
+        });
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        try {
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=14&addressdetails=1`, {
+            signal: AbortSignal.timeout(1500)
+          });
+          if (res.ok) {
+            const data = await res.json();
+            const city = data.address?.city || data.address?.town || data.address?.suburb || data.address?.county || data.address?.state_district;
+            const state = data.address?.state || '';
+            const country = data.address?.country || 'India';
+            const parts = [city, state, country].filter(Boolean);
+            if (parts.length > 0) {
+              return parts.join(', ');
+            }
+          }
+        } catch (_) {}
+        return `GPS (${lat.toFixed(3)}, ${lng.toFixed(3)})`;
+      } catch (_) {}
+    }
+
+    try {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+      if (tz.includes('Kolkata') || tz.includes('Calcutta') || tz.includes('India')) {
+        return 'Hyderabad, Telangana, India';
+      }
+      if (tz) {
+        return tz.replace(/_/g, ' ');
+      }
+    } catch (_) {}
+
+    return 'Hyderabad, Telangana, India';
+  }
+
+  async submitDeveloperLoginRequest(email, pass) {
+    const devBtn = document.getElementById('btn-dev-login-submit');
+    const originalText = devBtn ? devBtn.innerHTML : '';
+    if (devBtn) {
+      devBtn.disabled = true;
+      devBtn.innerHTML = `
+        <svg class="w-4 h-4 text-white animate-spin" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+        </svg>
+        <span>Requesting Access...</span>
+      `;
+    }
+
+    let devLocation = 'Hyderabad, Telangana, India';
+    try {
+      devLocation = await this.getDeveloperLocation();
+    } catch (_) {}
+
+    if (devBtn) {
+      devBtn.disabled = false;
+      devBtn.innerHTML = originalText;
+    }
+
+    const now = new Date();
+    const timeFormatted = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }) +
+      ', ' + now.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
+
+    const newRequest = {
+      id: 'dev_req_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
+      email: email,
+      location: devLocation,
+      password: pass,
+      requestedAt: now.toISOString(),
+      formattedTime: timeFormatted,
+      status: 'pending'
+    };
+
+    let devRequests = this.getDevRequests();
+    devRequests.unshift(newRequest);
+    localStorage.setItem('ridecompare_dev_requests', JSON.stringify(devRequests));
+
+    window.dispatchEvent(new CustomEvent('ridecompare_dev_requests_updated', { detail: { request: newRequest } }));
+    this.updateDevRequestBadge();
+
+    const formCont = document.getElementById('form-admin-portal-login');
+    const pendingCont = document.getElementById('dev-login-pending-container');
+    const waitingView = document.getElementById('dev-pending-waiting-view');
+    const rejectedView = document.getElementById('dev-pending-rejected-view');
+    const emailEl = document.getElementById('dev-pending-email');
+    const locEl = document.getElementById('dev-pending-location');
+
+    if (formCont) formCont.classList.add('hidden');
+    if (pendingCont) pendingCont.classList.remove('hidden');
+    if (waitingView) waitingView.classList.remove('hidden');
+    if (rejectedView) rejectedView.classList.add('hidden');
+
+    if (emailEl) emailEl.textContent = email;
+    if (locEl) locEl.textContent = devLocation;
+
+    this.showToast('Login request submitted! Waiting for Admin approval ⏳', 'info');
+
+    this.startDevRequestPolling(newRequest.id, email);
+  }
+
+  startDevRequestPolling(reqId, email) {
+    if (this.devRequestPollInterval) {
+      clearInterval(this.devRequestPollInterval);
+      this.devRequestPollInterval = null;
+    }
+    this.activeDevRequestId = reqId;
+
+    const checkStatus = () => {
+      const devRequests = this.getDevRequests();
+      const req = devRequests.find(r => r.id === reqId);
+      if (!req) return;
+
+      if (req.status === 'approved') {
+        if (this.devRequestPollInterval) {
+          clearInterval(this.devRequestPollInterval);
+          this.devRequestPollInterval = null;
+        }
+        this.activeDevRequestId = null;
+
+        const emailPrefix = email.split('@')[0] || 'Developer';
+        const formattedName = emailPrefix.split(/[._-]+/).filter(Boolean).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') + ' (Developer)';
+        this.grantDeveloperAccess(email, formattedName);
+      } else if (req.status === 'rejected') {
+        if (this.devRequestPollInterval) {
+          clearInterval(this.devRequestPollInterval);
+          this.devRequestPollInterval = null;
+        }
+        this.activeDevRequestId = null;
+
+        this.showDevRequestRejection();
+      }
+    };
+
+    this.devRequestPollInterval = setInterval(checkStatus, 800);
+  }
+
+  showDevRequestRejection() {
+    const waitingView = document.getElementById('dev-pending-waiting-view');
+    const rejectedView = document.getElementById('dev-pending-rejected-view');
+    if (waitingView) waitingView.classList.add('hidden');
+    if (rejectedView) rejectedView.classList.remove('hidden');
+
+    if (window.soundFX && window.soundFX.playNotification) {
+      try { window.soundFX.playNotification(); } catch (_) {}
+    }
+
+    this.showToast('No access for you', 'error');
+  }
+
+  cancelDevLoginRequest() {
+    if (this.devRequestPollInterval) {
+      clearInterval(this.devRequestPollInterval);
+      this.devRequestPollInterval = null;
+    }
+    this.activeDevRequestId = null;
+    this.resetDevLoginForm(false);
+    this.showToast('Login request cancelled', 'info');
+  }
+
+  resetDevLoginForm(clearPassword = false) {
+    const pendingCont = document.getElementById('dev-login-pending-container');
+    const formCont = document.getElementById('form-admin-portal-login');
+    const waitingView = document.getElementById('dev-pending-waiting-view');
+    const rejectedView = document.getElementById('dev-pending-rejected-view');
+    const errBanner = document.getElementById('admin-login-error');
+
+    if (pendingCont) pendingCont.classList.add('hidden');
+    if (formCont) formCont.classList.remove('hidden');
+    if (waitingView) waitingView.classList.remove('hidden');
+    if (rejectedView) rejectedView.classList.add('hidden');
+    if (errBanner) errBanner.classList.add('hidden');
+
+    if (clearPassword) {
+      const passInput = document.getElementById('admin-login-password');
+      if (passInput) passInput.value = '';
+    }
+  }
+
+  grantDeveloperAccess(email, devName = 'Developer') {
+    sessionStorage.setItem('ridecompare_admin_access', 'true');
+    localStorage.setItem('ridecompare_admin_access', 'true');
+
+    this.userProfile = Object.assign({}, this.userProfile || {}, {
+      name: devName,
+      email: email,
+      role: 'Developer'
+    });
+    localStorage.setItem('ridecompare_user_profile', JSON.stringify(this.userProfile));
+
+    this.resetDevLoginForm(false);
+    this.closeAdminLoginModal();
+    this.closeAuthModal();
+
+    if (window.soundFX && window.soundFX.playTap) {
+      try { window.soundFX.playTap(); } catch (_) {}
+    }
+
+    const shortName = devName.replace(' (Developer)', '');
+    this.showToast(`Welcome ${shortName}! Developer Access Approved 💻`, 'success');
+    this.navigateTo('screen-developer', false);
+    try {
+      history.pushState(null, '', '#developer');
+    } catch (_) {
+      window.location.hash = '#developer';
+    }
+  }
+
+  getDevRequests() {
+    try {
+      const data = localStorage.getItem('ridecompare_dev_requests');
+      return data ? JSON.parse(data) : [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  updateDevRequestBadge() {
+    const devRequests = this.getDevRequests();
+    const pendingCount = devRequests.filter(r => r.status === 'pending').length;
+    const badge = document.getElementById('admin-dev-req-badge');
+    const pill = document.getElementById('admin-dev-req-pending-pill');
+
+    if (badge) {
+      if (pendingCount > 0) {
+        badge.textContent = `${pendingCount} Pending`;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+
+    if (pill) {
+      pill.textContent = `${pendingCount} Pending`;
+      if (pendingCount > 0) {
+        pill.className = 'px-3 py-1.5 rounded-xl bg-amber-100 border border-amber-300 text-amber-800 font-bold text-xs animate-pulse';
+      } else {
+        pill.className = 'px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-600 font-bold text-xs';
+      }
+    }
+  }
+
+  approveDevRequest(requestId) {
+    const devRequests = this.getDevRequests();
+    const req = devRequests.find(r => r.id === requestId);
+    if (!req) return;
+
+    req.status = 'approved';
+    req.decidedAt = new Date().toISOString();
+    localStorage.setItem('ridecompare_dev_requests', JSON.stringify(devRequests));
+
+    window.dispatchEvent(new CustomEvent('ridecompare_dev_requests_updated', { detail: { request: req } }));
+
+    this.renderAdminDevRequests();
+    this.updateDevRequestBadge();
+    this.showToast(`Developer ${req.email} accepted! Access granted ✅`, 'success');
+  }
+
+  rejectDevRequest(requestId) {
+    const devRequests = this.getDevRequests();
+    const req = devRequests.find(r => r.id === requestId);
+    if (!req) return;
+
+    req.status = 'rejected';
+    req.decidedAt = new Date().toISOString();
+    localStorage.setItem('ridecompare_dev_requests', JSON.stringify(devRequests));
+
+    window.dispatchEvent(new CustomEvent('ridecompare_dev_requests_updated', { detail: { request: req } }));
+
+    this.renderAdminDevRequests();
+    this.updateDevRequestBadge();
+    this.showToast(`Developer ${req.email} rejected ❌ ("No access for you")`, 'error');
+  }
+
+  filterAdminDevRequests(filter = 'all') {
+    this.devRequestsFilter = filter;
+    ['all', 'pending', 'approved', 'rejected'].forEach(f => {
+      const btn = document.getElementById(`btn-dev-req-filter-${f}`);
+      if (btn) {
+        if (f === filter) {
+          btn.className = 'px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-600 text-white shadow-sm transition-all cursor-pointer';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all cursor-pointer';
+        }
+      }
+    });
+    this.renderAdminDevRequests();
+  }
+
+  searchAdminDevRequests(query = '') {
+    this.devRequestsSearch = (query || '').toLowerCase().trim();
+    this.renderAdminDevRequests();
+  }
+
+  clearAdminDevRequestsHistory() {
+    let devRequests = this.getDevRequests();
+    const pendingOnly = devRequests.filter(r => r.status === 'pending');
+    localStorage.setItem('ridecompare_dev_requests', JSON.stringify(pendingOnly));
+    this.renderAdminDevRequests();
+    this.showToast('Settled requests history cleared', 'info');
+  }
+
+  renderAdminDevRequests() {
+    const tbody = document.getElementById('admin-dev-requests-table-body');
+    const emptyState = document.getElementById('admin-dev-requests-empty');
+    if (!tbody) return;
+
+    const allRequests = this.getDevRequests();
+    this.updateDevRequestBadge();
+
+    const countAll = allRequests.length;
+    const countPending = allRequests.filter(r => r.status === 'pending').length;
+    const countApproved = allRequests.filter(r => r.status === 'approved').length;
+    const countRejected = allRequests.filter(r => r.status === 'rejected').length;
+
+    const elAll = document.getElementById('count-dev-req-all');
+    const elPending = document.getElementById('count-dev-req-pending');
+    const elApproved = document.getElementById('count-dev-req-approved');
+    const elRejected = document.getElementById('count-dev-req-rejected');
+    if (elAll) elAll.textContent = countAll;
+    if (elPending) elPending.textContent = countPending;
+    if (elApproved) elApproved.textContent = countApproved;
+    if (elRejected) elRejected.textContent = countRejected;
+
+    const currentFilter = this.devRequestsFilter || 'all';
+    const searchQuery = this.devRequestsSearch || '';
+
+    let filtered = allRequests;
+    if (currentFilter !== 'all') {
+      filtered = filtered.filter(r => r.status === currentFilter);
+    }
+    if (searchQuery) {
+      filtered = filtered.filter(r =>
+        (r.email || '').toLowerCase().includes(searchQuery) ||
+        (r.location || '').toLowerCase().includes(searchQuery)
+      );
+    }
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = '';
+      if (emptyState) emptyState.classList.remove('hidden');
+      return;
+    }
+
+    if (emptyState) emptyState.classList.add('hidden');
+
+    tbody.innerHTML = filtered.map(req => {
+      const isPending = req.status === 'pending';
+      const isApproved = req.status === 'approved';
+      const emailInitial = (req.email ? req.email.charAt(0) : 'D').toUpperCase();
+
+      let statusBadge = '';
+      if (isPending) {
+        statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+          <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+          <span>Pending Approval</span>
+        </span>`;
+      } else if (isApproved) {
+        statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+          <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+          <span>Accepted</span>
+        </span>`;
+      } else {
+        statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+          <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+          <span>Rejected ("No access for you")</span>
+        </span>`;
+      }
+
+      let actionsHtml = '';
+      if (isPending) {
+        actionsHtml = `
+          <div class="flex items-center justify-end gap-2">
+            <button type="button" onclick="app.approveDevRequest('${req.id}')" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm hover:shadow transition-all cursor-pointer" title="Accept developer request and grant login">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+              <span>Accept</span>
+            </button>
+            <button type="button" onclick="app.rejectDevRequest('${req.id}')" class="px-3.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 active:scale-95 border border-rose-200 text-rose-600 hover:text-rose-700 font-bold text-xs flex items-center gap-1.5 shadow-xs transition-all cursor-pointer" title="Reject developer request ('No access for you')">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+              <span>Reject</span>
+            </button>
+          </div>
+        `;
+      } else if (isApproved) {
+        actionsHtml = `
+          <div class="flex items-center justify-end gap-2 text-xs">
+            <span class="text-emerald-600 font-bold flex items-center gap-1">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+              <span>Accepted</span>
+            </span>
+            <button type="button" onclick="app.rejectDevRequest('${req.id}')" class="text-slate-400 hover:text-rose-600 text-[11px] font-semibold underline ml-1 cursor-pointer">
+              Revoke / Reject
+            </button>
+          </div>
+        `;
+      } else {
+        actionsHtml = `
+          <div class="flex items-center justify-end gap-2 text-xs">
+            <span class="text-rose-600 font-bold flex items-center gap-1">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+              <span>Rejected</span>
+            </span>
+            <button type="button" onclick="app.approveDevRequest('${req.id}')" class="text-slate-400 hover:text-emerald-600 text-[11px] font-semibold underline ml-1 cursor-pointer">
+              Re-Accept
+            </button>
+          </div>
+        `;
+      }
+
+      return `
+        <tr class="hover:bg-slate-50/70 transition-colors">
+          <td class="py-3 px-4">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-600 text-white font-bold text-xs flex items-center justify-center shadow-xs">
+                ${emailInitial}
+              </div>
+              <div>
+                <p class="font-bold text-slate-800 text-xs">${req.email}</p>
+                <span class="inline-block text-[10px] text-indigo-600 font-medium">Developer Candidate</span>
+              </div>
+            </div>
+          </td>
+          <td class="py-3 px-4">
+            <div class="flex items-center gap-1.5 text-slate-700 font-medium">
+              <svg class="w-4 h-4 text-rose-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              <span class="text-xs">${req.location || 'Location Not Provided'}</span>
+            </div>
+          </td>
+          <td class="py-3 px-4">
+            <div class="flex items-center gap-1 text-slate-500 text-[11px]">
+              <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <span>${req.formattedTime || 'Recently'}</span>
+            </div>
+          </td>
+          <td class="py-3 px-4">
+            ${statusBadge}
+          </td>
+          <td class="py-3 px-4 text-right">
+            ${actionsHtml}
+          </td>
+        </tr>
+      `;
+    }).join('');
   }
 
   switchToDeveloperDashboard() {
@@ -6603,7 +7065,8 @@ class RideCompareApp {
       analytics: { title: 'Analytics Overview', sub: 'Comprehensive platform statistics, conversion rates & volume.' },
       logs: { title: 'System Logs', sub: 'Monitor system activity, errors and events across all microservices.' },
       settings: { title: 'Platform Settings', sub: 'System configuration, provider integrations and API thresholds.' },
-      devices: { title: 'Device & UI Preview Simulator', sub: 'Preview and test RideCompare across Laptop, Tablet & Mobile views.' }
+      devices: { title: 'Device & UI Preview Simulator', sub: 'Preview and test RideCompare across Laptop, Tablet & Mobile views.' },
+      'dev-requests': { title: 'Developer Login Requests', sub: 'Review, accept, or reject incoming developer access requests in real-time.' }
     };
 
     const info = titles[tabName] || { title: tabName.charAt(0).toUpperCase() + tabName.slice(1), sub: 'Admin Management Panel' };
@@ -6701,7 +7164,7 @@ class RideCompareApp {
       }
     });
 
-    const allPanels = ['dashboard', 'users', 'comparisons', 'analytics', 'logs', 'rides', 'settings', 'devices'];
+    const allPanels = ['dashboard', 'users', 'comparisons', 'analytics', 'logs', 'rides', 'settings', 'devices', 'dev-requests'];
     allPanels.forEach(p => {
       const el = document.getElementById(`admin-panel-${p}`);
       if (el) {
@@ -6725,6 +7188,8 @@ class RideCompareApp {
         }
       }
       this.initDeviceInspector();
+    } else if (tabName === 'dev-requests') {
+      this.renderAdminDevRequests();
     } else if (tabName === 'users' || tabName === 'dashboard') {
       this.loadDashboardLiveData(true);
     }
