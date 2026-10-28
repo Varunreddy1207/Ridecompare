@@ -5206,14 +5206,60 @@ body.theme-dark #portal-tab-role.portal-tab-inactive:hover,
 
 /* ADMIN & DEVELOPER DASHBOARD: Clean modern light presentation (Exact match of media_1793162370217_c5ca91c1) */
 #screen-admin,
-#screen-developer {
+#screen-developer,
+#screen-developer > main,
+#screen-developer #dev-main-scroll,
+body.theme-dark #screen-developer,
+html.theme-dark #screen-developer,
+[data-theme="dark"] #screen-developer,
+body.theme-dark #screen-developer > main,
+html.theme-dark #screen-developer > main,
+[data-theme="dark"] #screen-developer > main,
+body.theme-dark #screen-developer #dev-main-scroll,
+html.theme-dark #screen-developer #dev-main-scroll,
+[data-theme="dark"] #screen-developer #dev-main-scroll {
   background-color: #F8FAFC !important;
   color: #0F172A !important;
 }
 
-#screen-developer .dev-sidebar {
+#screen-developer .dev-sidebar,
+body.theme-dark #screen-developer .dev-sidebar,
+html.theme-dark #screen-developer .dev-sidebar,
+[data-theme="dark"] #screen-developer .dev-sidebar {
   background-color: #FFFFFF !important;
   border-color: rgba(226, 232, 240, 0.8) !important;
+  color: #0F172A !important;
+}
+
+#screen-developer .dev-sidebar h2,
+body.theme-dark #screen-developer .dev-sidebar h2,
+html.theme-dark #screen-developer .dev-sidebar h2,
+[data-theme="dark"] #screen-developer .dev-sidebar h2 {
+  color: #0F172A !important;
+}
+
+#screen-developer .dev-sidebar p,
+body.theme-dark #screen-developer .dev-sidebar p,
+html.theme-dark #screen-developer .dev-sidebar p,
+[data-theme="dark"] #screen-developer .dev-sidebar p {
+  color: #94A3B8 !important;
+}
+
+#screen-developer .dev-nav-item,
+body.theme-dark #screen-developer .dev-nav-item,
+html.theme-dark #screen-developer .dev-nav-item,
+[data-theme="dark"] #screen-developer .dev-nav-item {
+  color: #475569 !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+#screen-developer .dev-nav-item:hover,
+body.theme-dark #screen-developer .dev-nav-item:hover,
+html.theme-dark #screen-developer .dev-nav-item:hover,
+[data-theme="dark"] #screen-developer .dev-nav-item:hover {
+  color: #0F172A !important;
+  background-color: #F1F5F9 !important;
 }
 
 .admin-nav-item.active {
@@ -5221,9 +5267,35 @@ body.theme-dark #portal-tab-role.portal-tab-inactive:hover,
   color: #FFFFFF !important;
 }
 
-.dev-nav-item.active {
+.dev-nav-item.active,
+#screen-developer .dev-nav-item.active,
+body.theme-dark #screen-developer .dev-nav-item.active,
+html.theme-dark #screen-developer .dev-nav-item.active,
+[data-theme="dark"] #screen-developer .dev-nav-item.active {
   background-color: #EFF6FF !important;
   color: #2563EB !important;
+  box-shadow: none !important;
+}
+
+#screen-developer .dev-nav-item.active svg,
+body.theme-dark #screen-developer .dev-nav-item.active svg,
+html.theme-dark #screen-developer .dev-nav-item.active svg,
+[data-theme="dark"] #screen-developer .dev-nav-item.active svg {
+  color: #2563EB !important;
+}
+
+#screen-developer #dev-dashboard-title,
+body.theme-dark #screen-developer #dev-dashboard-title,
+html.theme-dark #screen-developer #dev-dashboard-title,
+[data-theme="dark"] #screen-developer #dev-dashboard-title {
+  color: #0F172A !important;
+}
+
+#screen-developer #dev-dashboard-subtitle,
+body.theme-dark #screen-developer #dev-dashboard-subtitle,
+html.theme-dark #screen-developer #dev-dashboard-subtitle,
+[data-theme="dark"] #screen-developer #dev-dashboard-subtitle {
+  color: #64748B !important;
 }
 
 /* VOZX DEVELOPER PORTAL DASHBOARD (FOR USERS): Cyber Dark Theme (Exact match of media_1793162443132_d6e2dcc6) */
