@@ -298,6 +298,13 @@ class RideCompareApp {
         this.handleHashRoute();
       });
 
+      // Auto-update developer button text as user types email
+      const portalEmailInput = document.getElementById('admin-login-email');
+      if (portalEmailInput) {
+        portalEmailInput.addEventListener('input', () => this.updateDevLoginButtonText());
+        portalEmailInput.addEventListener('change', () => this.updateDevLoginButtonText());
+      }
+
       // Responsive Navigation Enforcement
       this.enforceResponsiveNav();
       window.addEventListener('resize', () => this.enforceResponsiveNav());
@@ -6195,8 +6202,7 @@ class RideCompareApp {
         passInput.placeholder = 'Create new password';
         passInput.setAttribute('autocomplete', 'new-password');
       }
-      const devBtnText = document.getElementById('btn-dev-login-submit-text');
-      if (devBtnText) devBtnText.textContent = 'Log In to Developer Portal';
+      this.updateDevLoginButtonText();
     } else {
       // Developer Tab is active in Developer Portal
       if (tabUser) {
@@ -6223,8 +6229,82 @@ class RideCompareApp {
         passInput.placeholder = 'Enter password';
         passInput.setAttribute('autocomplete', 'current-password');
       }
-      const devBtnText = document.getElementById('btn-dev-login-submit-text');
-      if (devBtnText) devBtnText.textContent = 'Request to Login';
+      this.updateDevLoginButtonText();
+    }
+  }
+
+  getApprovedDeveloperEmails() {
+    try {
+      const data = localStorage.getItem('ridecompare_approved_developer_emails');
+      if (data) {
+        const parsed = JSON.parse(data);
+        if (Array.isArray(parsed)) return parsed.map(e => (e || '').toLowerCase().trim()).filter(Boolean);
+      }
+    } catch (_) {}
+    return [];
+  }
+
+  addApprovedDeveloperEmail(email) {
+    if (!email) return;
+    try {
+      const cleanEmail = email.toLowerCase().trim();
+      let approved = this.getApprovedDeveloperEmails();
+      if (!approved.includes(cleanEmail)) {
+        approved.push(cleanEmail);
+        localStorage.setItem('ridecompare_approved_developer_emails', JSON.stringify(approved));
+      }
+    } catch (_) {}
+  }
+
+  removeApprovedDeveloperEmail(email) {
+    if (!email) return;
+    try {
+      const cleanEmail = email.toLowerCase().trim();
+      let approved = this.getApprovedDeveloperEmails().filter(e => e !== cleanEmail);
+      localStorage.setItem('ridecompare_approved_developer_emails', JSON.stringify(approved));
+    } catch (_) {}
+  }
+
+  isEmailApprovedDeveloper(email) {
+    if (!email) return false;
+    const cleanEmail = email.toLowerCase().trim();
+    if (!cleanEmail) return false;
+
+    // Super-admin emails are always authorized
+    if (cleanEmail === 'mvarunreddymassireddy@gmail.com' || cleanEmail === 'mahendarreddy440@gmail.com') {
+      return true;
+    }
+
+    // Check recent request status: if the latest request for this email was rejected, require re-approval
+    try {
+      const devRequests = this.getDevRequests();
+      const req = devRequests.find(r => (r.email || '').toLowerCase().trim() === cleanEmail);
+      if (req) {
+        if (req.status === 'rejected') return false;
+        if (req.status === 'approved') return true;
+      }
+    } catch (_) {}
+
+    const approvedList = this.getApprovedDeveloperEmails();
+    return approvedList.includes(cleanEmail);
+  }
+
+  updateDevLoginButtonText() {
+    const devBtnText = document.getElementById('btn-dev-login-submit-text');
+    if (!devBtnText) return;
+
+    if (this.portalLoginMode === 'developer') {
+      if (this.devSubTab === 'user') {
+        devBtnText.textContent = 'Log In to Developer Portal';
+      } else {
+        const emailInput = document.getElementById('admin-login-email');
+        const email = (emailInput ? emailInput.value : '').toLowerCase().trim();
+        if (email && this.isEmailApprovedDeveloper(email)) {
+          devBtnText.textContent = 'Log In to Developer Dashboard';
+        } else {
+          devBtnText.textContent = 'Request to Login';
+        }
+      }
     }
   }
 
@@ -6262,6 +6342,7 @@ class RideCompareApp {
     }
     this.resetDevLoginForm(false);
     this.updatePortalLoginUI('developer');
+    this.updateDevLoginButtonText();
     const modal = document.getElementById('admin-login-modal');
     if (modal) {
       modal.classList.add('show');
@@ -6504,7 +6585,15 @@ class RideCompareApp {
       return;
     }
 
-    // For developer password "Vozx@dev1916", submit Login Request with Email and Location!
+    // If developer has already previously logged in / been approved with this email, log straight in!
+    if (this.isEmailApprovedDeveloper(email)) {
+      const emailPrefix = email.split('@')[0] || 'Developer';
+      const formattedName = emailPrefix.split(/[._-]+/).filter(Boolean).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') + ' (Developer)';
+      this.grantDeveloperAccess(email, formattedName);
+      return;
+    }
+
+    // For new developer email with password "Vozx@dev1916", submit Login Request with Email and Location!
     await this.submitDeveloperLoginRequest(email, pass);
   }
 
@@ -6722,6 +6811,7 @@ class RideCompareApp {
   }
 
   grantDeveloperAccess(email, devName = 'Developer') {
+    this.addApprovedDeveloperEmail(email);
     sessionStorage.setItem('ridecompare_admin_access', 'true');
     localStorage.setItem('ridecompare_admin_access', 'true');
     const isAdminEmailEarly = email === 'mvarunreddymassireddy@gmail.com' || email === 'mahendarreddy440@gmail.com';
@@ -6818,6 +6908,13 @@ class RideCompareApp {
             localItem.decidedAt = item.decidedAt;
           }
         }
+        if (item.email) {
+          if (item.status === 'approved') {
+            this.addApprovedDeveloperEmail(item.email);
+          } else if (item.status === 'rejected') {
+            this.removeApprovedDeveloperEmail(item.email);
+          }
+        }
       }
     });
 
@@ -6865,6 +6962,9 @@ class RideCompareApp {
       req.status = 'approved';
       req.decidedAt = new Date().toISOString();
       localStorage.setItem('ridecompare_dev_requests', JSON.stringify(devRequests));
+      if (req.email) {
+        this.addApprovedDeveloperEmail(req.email);
+      }
     }
 
     if (window.RideCompareApi && typeof window.RideCompareApi.updateDeveloperRequestStatus === 'function') {
@@ -6886,6 +6986,9 @@ class RideCompareApp {
       req.status = 'rejected';
       req.decidedAt = new Date().toISOString();
       localStorage.setItem('ridecompare_dev_requests', JSON.stringify(devRequests));
+      if (req.email) {
+        this.removeApprovedDeveloperEmail(req.email);
+      }
     }
 
     if (window.RideCompareApi && typeof window.RideCompareApi.updateDeveloperRequestStatus === 'function') {
