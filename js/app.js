@@ -733,6 +733,12 @@ class RideCompareApp {
       window.location.hash = '#profile';
     } else if (this.currentScreen === 'screen-booking') {
       window.location.hash = '#booking';
+    } else if (this.currentScreen === 'screen-developer-user') {
+      window.location.hash = '#developer';
+    } else if (this.currentScreen === 'screen-developer') {
+      window.location.hash = '#developer';
+    } else if (this.currentScreen === 'screen-admin') {
+      window.location.hash = '#admin';
     } else {
       window.location.hash = '#home';
     }
@@ -1008,7 +1014,7 @@ class RideCompareApp {
       if (!this.isSuperAdmin()) {
         if (this.isAdminOrDev()) {
           this.showToast('Access denied: Developers cannot access Admin Portal 🚫', 'error');
-          const isUserDev = this.userProfile?.role === 'UserDeveloper';
+          const isUserDev = this.isUserDeveloper();
           this.navigateTo(isUserDev ? 'screen-developer-user' : 'screen-developer', false);
           try { history.replaceState(null, '', '#developer'); } catch (_) {}
           return;
@@ -1023,13 +1029,13 @@ class RideCompareApp {
     }
 
     // Direct Developer route check
-    if (hash === '#developer' || path.endsWith('/developer')) {
+    if (hash === '#developer' || path.endsWith('/developer') || hash === '#dev-user' || hash === '#developer-user') {
       if (!this.isAdminOrDev()) {
         this.currentTab = 'home';
         this.navigateTo(isAuth || hasStarted ? 'screen-home' : 'screen-splash', false);
         setTimeout(() => this.openDeveloperLoginModal(), 200);
       } else {
-        const isUserDev = this.userProfile?.role === 'UserDeveloper';
+        const isUserDev = this.isUserDeveloper();
         this.navigateTo(isUserDev ? 'screen-developer-user' : 'screen-developer', false);
       }
       return;
@@ -1130,7 +1136,7 @@ class RideCompareApp {
       if (!this.isSuperAdmin()) {
         if (this.isAdminOrDev()) {
           this.showToast('Access denied: Developers cannot access Admin Portal 🚫', 'error');
-          const isUserDev = this.userProfile?.role === 'UserDeveloper';
+          const isUserDev = this.isUserDeveloper();
           this.navigateTo(isUserDev ? 'screen-developer-user' : 'screen-developer', false);
           try { history.replaceState(null, '', '#developer'); } catch (_) {}
           return;
@@ -1144,13 +1150,14 @@ class RideCompareApp {
     }
 
     // Explicit Developer route
-    if (hash === '#developer' || path.endsWith('/developer')) {
+    if (hash === '#developer' || path.endsWith('/developer') || hash === '#dev-user' || hash === '#developer-user') {
       if (!this.isAdminOrDev()) {
         try { history.replaceState(null, '', '#home'); } catch (_) {}
         setTimeout(() => this.openAdminLoginModal(), 200);
         return;
       }
-      this.navigateTo('screen-developer', false);
+      const isUserDev = this.isUserDeveloper();
+      this.navigateTo(isUserDev ? 'screen-developer-user' : 'screen-developer', false);
       return;
     }
 
@@ -1171,7 +1178,7 @@ class RideCompareApp {
       if (!this.isSuperAdmin()) {
         if (this.isAdminOrDev()) {
           this.showToast('Access denied: Developers cannot access Admin Portal 🚫', 'error');
-          const isUserDev = this.userProfile?.role === 'UserDeveloper';
+          const isUserDev = this.isUserDeveloper();
           this.navigateTo(isUserDev ? 'screen-developer-user' : 'screen-developer', false);
           try { history.replaceState(null, '', '#developer'); } catch (_) {}
           return;
@@ -2093,8 +2100,13 @@ class RideCompareApp {
         try { window.soundFX.playTap(); } catch (_) {}
       }
       this.showToast('Access denied: Developers cannot access Admin Portal 🚫', 'error');
-      const fallbackScreen = (this.userProfile?.role === 'UserDeveloper') ? 'screen-developer-user' : (this.isAdminOrDev() ? 'screen-developer' : 'screen-home');
+      const fallbackScreen = this.isUserDeveloper() ? 'screen-developer-user' : (this.isAdminOrDev() ? 'screen-developer' : 'screen-home');
       screenId = fallbackScreen;
+    }
+
+    // Role Guard: Ensure UserDevelopers always navigate to user developer portal, never original developer portal
+    if (screenId === 'screen-developer' && this.isUserDeveloper()) {
+      screenId = 'screen-developer-user';
     }
 
     const screens = document.querySelectorAll('.screen-page');
@@ -2139,9 +2151,17 @@ class RideCompareApp {
         }
         this.startDashboardPolling();
         if (screenId === 'screen-developer-user') {
+          try {
+            sessionStorage.setItem('ridecompare_current_dev_screen', 'screen-developer-user');
+            sessionStorage.setItem('ridecompare_developer_role', 'UserDeveloper');
+          } catch (_) {}
           this.updateDeveloperProfileUI();
-          this.switchUserDevTab(this.currentUserDevTab || 'home', false);
+          const savedTab = this.currentUserDevTab || sessionStorage.getItem('ridecompare_user_dev_tab') || 'home';
+          this.switchUserDevTab(savedTab, false);
         } else if (screenId === 'screen-developer') {
+          try {
+            sessionStorage.setItem('ridecompare_current_dev_screen', 'screen-developer');
+          } catch (_) {}
           this.switchDevTab(this.currentDevTab || 'playground', false);
         }
       } else {
@@ -5916,6 +5936,22 @@ class RideCompareApp {
     return isAdminRole || isKnownAdminEmail;
   }
 
+  isUserDeveloper() {
+    if (this.userProfile && this.userProfile.role === 'UserDeveloper') return true;
+    try {
+      if (sessionStorage.getItem('ridecompare_developer_role') === 'UserDeveloper') return true;
+      if (localStorage.getItem('ridecompare_developer_role') === 'UserDeveloper') return true;
+      if (sessionStorage.getItem('ridecompare_current_dev_screen') === 'screen-developer-user') return true;
+      const stored = localStorage.getItem('ridecompare_user_profile');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed && parsed.role === 'UserDeveloper') return true;
+      }
+    } catch (_) {}
+    return false;
+  }
+
+
   updateAdminDevAccessUI() {
     const isSuperAdmin = this.isSuperAdmin();
 
@@ -6378,6 +6414,10 @@ class RideCompareApp {
     // Grant developer access
     sessionStorage.setItem('ridecompare_admin_access', 'true');
     localStorage.setItem('ridecompare_admin_access', 'true');
+    sessionStorage.setItem('ridecompare_developer_role', 'UserDeveloper');
+    localStorage.setItem('ridecompare_developer_role', 'UserDeveloper');
+    sessionStorage.setItem('ridecompare_current_dev_screen', 'screen-developer-user');
+    localStorage.setItem('ridecompare_current_dev_screen', 'screen-developer-user');
 
     // Update userProfile
     const emailPrefix = email.split('@')[0] || 'User';
@@ -6684,6 +6724,11 @@ class RideCompareApp {
   grantDeveloperAccess(email, devName = 'Developer') {
     sessionStorage.setItem('ridecompare_admin_access', 'true');
     localStorage.setItem('ridecompare_admin_access', 'true');
+    const isAdminEmailEarly = email === 'mvarunreddymassireddy@gmail.com' || email === 'mahendarreddy440@gmail.com';
+    sessionStorage.setItem('ridecompare_developer_role', isAdminEmailEarly ? 'Admin' : 'Developer');
+    localStorage.setItem('ridecompare_developer_role', isAdminEmailEarly ? 'Admin' : 'Developer');
+    sessionStorage.setItem('ridecompare_current_dev_screen', 'screen-developer');
+    localStorage.setItem('ridecompare_current_dev_screen', 'screen-developer');
 
     const isAdminEmail = email === 'mvarunreddymassireddy@gmail.com' || email === 'mahendarreddy440@gmail.com';
     this.userProfile = Object.assign({}, this.userProfile || {}, {
@@ -7038,7 +7083,7 @@ class RideCompareApp {
     if (userDevMenu) userDevMenu.classList.add('hidden');
 
     this.updateAdminDevAccessUI();
-    const isUserDev = this.userProfile?.role === 'UserDeveloper';
+    const isUserDev = this.isUserDeveloper();
     this.navigateTo(isUserDev ? 'screen-developer-user' : 'screen-developer', false);
     try {
       history.pushState(null, '', '#developer');
@@ -7114,6 +7159,11 @@ class RideCompareApp {
     // 1. Invalidate and clear admin session authorization
     sessionStorage.removeItem('ridecompare_admin_access');
     localStorage.removeItem('ridecompare_admin_access');
+    sessionStorage.removeItem('ridecompare_developer_role');
+    localStorage.removeItem('ridecompare_developer_role');
+    sessionStorage.removeItem('ridecompare_current_dev_screen');
+    localStorage.removeItem('ridecompare_current_dev_screen');
+    sessionStorage.removeItem('ridecompare_user_dev_tab');
 
     // 2. Hide any open admin or developer dropdown menus
     const adminMenu = document.getElementById('admin-user-dropdown');
@@ -7637,6 +7687,7 @@ class RideCompareApp {
       try { window.soundFX.playTap(); } catch (_) {}
     }
     this.currentUserDevTab = tabName || 'home';
+    try { sessionStorage.setItem('ridecompare_user_dev_tab', this.currentUserDevTab); } catch (_) {}
     const navItems = document.querySelectorAll('.user-dev-nav-item');
     navItems.forEach(item => {
       const isMatch = item.id === `user-dev-tab-${this.currentUserDevTab}` || item.getAttribute('onclick')?.includes(`'${this.currentUserDevTab}'`);
