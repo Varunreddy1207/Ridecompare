@@ -482,6 +482,46 @@
     async getMe() {
       return this.request('/auth/me');
     }
+
+    /**
+     * Cross-Device Developer Login Requests Management (Supabase PostgreSQL Cloud)
+     */
+    async createDeveloperRequest(reqData) {
+      try {
+        await supabaseRequest('/DeveloperRequest', 'POST', {
+          id: reqData.id,
+          email: reqData.email,
+          location: reqData.location,
+          status: reqData.status || 'pending',
+          formattedTime: reqData.formattedTime || 'Just now',
+          requestedAt: reqData.requestedAt || new Date().toISOString()
+        }, { 'Prefer': 'return=representation' });
+      } catch (err) {
+        console.warn('[RideCompareApi] Error creating cloud developer request:', err);
+      }
+      return reqData;
+    }
+
+    async getDeveloperRequests() {
+      try {
+        const rows = await supabaseRequest('/DeveloperRequest?select=*&order=requestedAt.desc');
+        return Array.isArray(rows) ? rows : [];
+      } catch (err) {
+        console.warn('[RideCompareApi] Error fetching cloud developer requests:', err);
+        return [];
+      }
+    }
+
+    async updateDeveloperRequestStatus(id, status) {
+      try {
+        await supabaseRequest(`/DeveloperRequest?id=eq.${encodeURIComponent(id)}`, 'PATCH', {
+          status,
+          decidedAt: new Date().toISOString()
+        });
+      } catch (err) {
+        console.warn('[RideCompareApi] Error updating cloud developer request status:', err);
+      }
+    }
   }
 
   // =========================================================================
@@ -1746,6 +1786,7 @@
   }
 
   const apiClient = new RideCompareApiClient();
+  apiClient.supabaseRequest = supabaseRequest;
   window.RideCompareApi = apiClient;
   window.RideCompareAuth = new AuthStore(apiClient);
 })(window);

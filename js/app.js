@@ -2100,6 +2100,9 @@ class RideCompareApp {
 
       if (screenId === 'screen-admin' || screenId === 'screen-developer') {
         this.loadDashboardLiveData(true);
+        if (screenId === 'screen-admin') {
+          this.syncDevRequestsWithCloud().catch(() => {});
+        }
         this.startDashboardPolling();
         if (screenId === 'screen-developer') {
           this.updateDeveloperProfileUI();
@@ -6372,17 +6375,23 @@ class RideCompareApp {
     if (this.pickupLocationName && !this.pickupLocationName.toLowerCase().includes('current location') && this.pickupLocationName.trim().length > 3) {
       return this.pickupLocationName.trim();
     }
+    const savedCity = localStorage.getItem('ridecompare_user_city');
+    if (savedCity && savedCity.trim().length > 2) {
+      return savedCity.trim() + ', India';
+    }
 
     if (navigator.geolocation) {
       try {
-        const pos = await new Promise((resolve, reject) => {
-          navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 2000, enableHighAccuracy: false, maximumAge: 300000 });
+        const posPromise = new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 800, enableHighAccuracy: false, maximumAge: 300000 });
         });
+        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 800));
+        const pos = await Promise.race([posPromise, timeoutPromise]);
         const lat = pos.coords.latitude;
         const lng = pos.coords.longitude;
         try {
           const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=14&addressdetails=1`, {
-            signal: AbortSignal.timeout(1500)
+            signal: AbortSignal.timeout(800)
           });
           if (res.ok) {
             const data = await res.json();
@@ -6390,9 +6399,7 @@ class RideCompareApp {
             const state = data.address?.state || '';
             const country = data.address?.country || 'India';
             const parts = [city, state, country].filter(Boolean);
-            if (parts.length > 0) {
-              return parts.join(', ');
-            }
+            if (parts.length > 0) return parts.join(', ');
           }
         } catch (_) {}
         return `GPS (${lat.toFixed(3)}, ${lng.toFixed(3)})`;
@@ -6404,9 +6411,7 @@ class RideCompareApp {
       if (tz.includes('Kolkata') || tz.includes('Calcutta') || tz.includes('India')) {
         return 'Hyderabad, Telangana, India';
       }
-      if (tz) {
-        return tz.replace(/_/g, ' ');
-      }
+      if (tz) return tz.replace(/_/g, ' ');
     } catch (_) {}
 
     return 'Hyderabad, Telangana, India';
@@ -6454,6 +6459,11 @@ class RideCompareApp {
     devRequests.unshift(newRequest);
     localStorage.setItem('ridecompare_dev_requests', JSON.stringify(devRequests));
 
+    // Save to Cloud Supabase Database for cross-device & cross-browser sync
+    if (window.RideCompareApi && typeof window.RideCompareApi.createDeveloperRequest === 'function') {
+      window.RideCompareApi.createDeveloperRequest(newRequest).catch(() => {});
+    }
+
     window.dispatchEvent(new CustomEvent('ridecompare_dev_requests_updated', { detail: { request: newRequest } }));
     this.updateDevRequestBadge();
 
@@ -6484,9 +6494,25 @@ class RideCompareApp {
     }
     this.activeDevRequestId = reqId;
 
-    const checkStatus = () => {
-      const devRequests = this.getDevRequests();
-      const req = devRequests.find(r => r.id === reqId);
+    const checkStatus = async () => {
+      let devRequests = this.getDevRequests();
+      let req = devRequests.find(r => r.id === reqId);
+
+      // If pending or not found locally, query Cloud Supabase database for approval/rejection
+      if ((!req || req.status === 'pending') && window.RideCompareApi && typeof window.RideCompareApi.getDeveloperRequests === 'function') {
+        try {
+          const cloudReqs = await window.RideCompareApi.getDeveloperRequests();
+          const cloudMatch = cloudReqs.find(r => r.id === reqId);
+          if (cloudMatch) {
+            req = cloudMatch;
+            const idx = devRequests.findIndex(r => r.id === reqId);
+            if (idx >= 0) devRequests[idx] = cloudMatch;
+            else devRequests.unshift(cloudMatch);
+            localStorage.setItem('ridecompare_dev_requests', JSON.stringify(devRequests));
+          }
+        } catch (_) {}
+      }
+
       if (!req) return;
 
       if (req.status === 'approved') {
@@ -6618,36 +6644,112 @@ class RideCompareApp {
     }
   }
 
-  approveDevRequest(requestId) {
-    const devRequests = this.getDevRequests();
-    const req = devRequests.find(r => r.id === requestId);
-    if (!req) return;
+  async syncDevRequestsWithCloud() {
+    let cloudList = [];
+    if (window.RideCompareApi && typeof window.RideCompareApi.getDeveloperRequests === 'function') {
+      try {
+        cloudList = await window.RideCompareApi.getDeveloperRequests();
+      } catch (_) {}
+    }
 
-    req.status = 'approved';
-    req.decidedAt = new Date().toISOString();
-    localStorage.setItem('ridecompare_dev_requests', JSON.stringify(devRequests));
+    let localList = this.getDevRequests();
+    const map = new Map();
 
-    window.dispatchEvent(new CustomEvent('ridecompare_dev_requests_updated', { detail: { request: req } }));
+    localList.forEach(item => {
+      if (item && item.id) map.set(item.id, item);
+    });
 
-    this.renderAdminDevRequests();
+    cloudList.forEach(item => {
+      if (item && item.id) {
+        if (!map.has(item.id)) {
+          map.set(item.id, item);
+        } else {
+          const localItem = map.get(item.id);
+          if (item.status && item.status !== 'pending') {
+            localItem.status = item.status;
+            localItem.decidedAt = item.decidedAt;
+          }
+        }
+      }
+    });
+
+    // If local has pending requests missing from cloud, push to cloud
+    localList.forEach(localItem => {
+      if (localItem && localItem.status === 'pending') {
+        const inCloud = cloudList.some(c => c.id === localItem.id);
+        if (!inCloud && window.RideCompareApi && typeof window.RideCompareApi.createDeveloperRequest === 'function') {
+          window.RideCompareApi.createDeveloperRequest(localItem).catch(() => {});
+        }
+      }
+    });
+
+    const merged = Array.from(map.values()).sort((a, b) => {
+      const ta = new Date(a.requestedAt || a.id).getTime() || 0;
+      const tb = new Date(b.requestedAt || b.id).getTime() || 0;
+      return tb - ta;
+    });
+
+    localStorage.setItem('ridecompare_dev_requests', JSON.stringify(merged));
     this.updateDevRequestBadge();
-    this.showToast(`Developer ${req.email} accepted! Access granted ✅`, 'success');
+    this.renderAdminDevRequests();
+    return merged;
   }
 
-  rejectDevRequest(requestId) {
+  async refreshAdminDevRequests(showToast = false) {
+    const syncIcons = document.querySelectorAll('.admin-sync-icon');
+    syncIcons.forEach(el => el.classList.add('animate-spin'));
+    try {
+      await this.syncDevRequestsWithCloud();
+      if (showToast) {
+        this.showToast('Developer requests synced with database 🔄', 'success');
+      }
+    } finally {
+      setTimeout(() => {
+        syncIcons.forEach(el => el.classList.remove('animate-spin'));
+      }, 400);
+    }
+  }
+
+  async approveDevRequest(requestId) {
     const devRequests = this.getDevRequests();
     const req = devRequests.find(r => r.id === requestId);
-    if (!req) return;
+    if (req) {
+      req.status = 'approved';
+      req.decidedAt = new Date().toISOString();
+      localStorage.setItem('ridecompare_dev_requests', JSON.stringify(devRequests));
+    }
 
-    req.status = 'rejected';
-    req.decidedAt = new Date().toISOString();
-    localStorage.setItem('ridecompare_dev_requests', JSON.stringify(devRequests));
+    if (window.RideCompareApi && typeof window.RideCompareApi.updateDeveloperRequestStatus === 'function') {
+      window.RideCompareApi.updateDeveloperRequestStatus(requestId, 'approved').catch(() => {});
+    }
 
     window.dispatchEvent(new CustomEvent('ridecompare_dev_requests_updated', { detail: { request: req } }));
 
     this.renderAdminDevRequests();
     this.updateDevRequestBadge();
-    this.showToast(`Developer ${req.email} rejected ❌ ("No access for you")`, 'error');
+    const emailStr = req ? req.email : 'Developer';
+    this.showToast(`Developer ${emailStr} accepted! Access granted ✅`, 'success');
+  }
+
+  async rejectDevRequest(requestId) {
+    const devRequests = this.getDevRequests();
+    const req = devRequests.find(r => r.id === requestId);
+    if (req) {
+      req.status = 'rejected';
+      req.decidedAt = new Date().toISOString();
+      localStorage.setItem('ridecompare_dev_requests', JSON.stringify(devRequests));
+    }
+
+    if (window.RideCompareApi && typeof window.RideCompareApi.updateDeveloperRequestStatus === 'function') {
+      window.RideCompareApi.updateDeveloperRequestStatus(requestId, 'rejected').catch(() => {});
+    }
+
+    window.dispatchEvent(new CustomEvent('ridecompare_dev_requests_updated', { detail: { request: req } }));
+
+    this.renderAdminDevRequests();
+    this.updateDevRequestBadge();
+    const emailStr = req ? req.email : 'Developer';
+    this.showToast(`Developer ${emailStr} rejected ❌ ("No access for you")`, 'error');
   }
 
   filterAdminDevRequests(filter = 'all') {
@@ -7189,6 +7291,7 @@ class RideCompareApp {
       }
       this.initDeviceInspector();
     } else if (tabName === 'dev-requests') {
+      this.syncDevRequestsWithCloud().catch(() => {});
       this.renderAdminDevRequests();
     } else if (tabName === 'users' || tabName === 'dashboard') {
       this.loadDashboardLiveData(true);
@@ -7424,8 +7527,11 @@ class RideCompareApp {
     this.dashboardPollTimer = setInterval(() => {
       if (this.currentScreen === 'screen-admin' || this.currentScreen === 'screen-developer') {
         this.loadDashboardLiveData(true);
+        if (this.currentScreen === 'screen-admin') {
+          this.syncDevRequestsWithCloud().catch(() => {});
+        }
       }
-    }, 20000);
+    }, 3500);
   }
 
   stopDashboardPolling() {

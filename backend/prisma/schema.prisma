@@ -123,3 +123,17 @@ model Notification {
   @@index([userId])
   @@index([isRead])
 }
+
+model DeveloperRequest {
+  id            String    @id @default(uuid())
+  email         String
+  location      String
+  status        String    @default("pending")
+  requestedAt   DateTime  @default(now())
+  decidedAt     DateTime?
+  formattedTime String?
+
+  @@index([status])
+  @@index([requestedAt])
+}
+
