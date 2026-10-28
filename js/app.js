@@ -1526,7 +1526,7 @@ class RideCompareApp {
       }
       if (loginForm) loginForm.classList.remove('hidden');
       if (signupForm) signupForm.classList.add('hidden');
-      if (title) title.textContent = 'Welcome Back';
+      if (title) title.textContent = "Welcome's You";
       if (sub) sub.textContent = 'Sign in to compare rates & save money';
       const emailInput = document.getElementById('auth-login-email');
       if (emailInput) setTimeout(() => emailInput.focus(), 50);
