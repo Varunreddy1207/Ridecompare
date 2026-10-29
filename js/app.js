@@ -6225,18 +6225,11 @@ class RideCompareApp {
         if (roleSvg) roleSvg.setAttribute('class', 'w-3.5 h-3.5 text-slate-500');
       }
 
-      if (subtitleEl) {
-        subtitleEl.textContent = 'Enter your email & create a new password to access the Developer Dashboard';
-      }
       if (emailLabel) emailLabel.textContent = 'User Email Address';
-      if (passLabel) passLabel.textContent = 'Create New Password';
       if (emailInput) {
         emailInput.placeholder = 'name@domain.com';
       }
-      if (passInput) {
-        passInput.placeholder = 'Create new password';
-        passInput.setAttribute('autocomplete', 'new-password');
-      }
+      this.updateDevUserPasswordFields();
       this.updateDevLoginButtonText();
     } else {
       // Developer Tab is active in Developer Portal
@@ -6324,7 +6317,60 @@ class RideCompareApp {
     return approvedList.includes(cleanEmail);
   }
 
+  getExistingDeveloperUser(email) {
+    if (!email) return null;
+    const cleanEmail = email.toLowerCase().trim();
+    if (!cleanEmail) return null;
+
+    try {
+      const storedDevs = JSON.parse(localStorage.getItem('ridecompare_registered_developers') || '[]');
+      const foundDev = storedDevs.find(d => (d.email || '').toLowerCase().trim() === cleanEmail);
+      if (foundDev && foundDev.password) return foundDev;
+    } catch (_) {}
+
+    try {
+      const localUsers = JSON.parse(localStorage.getItem('ridecompare_local_users') || '[]');
+      const foundUser = localUsers.find(u => (u.email || '').toLowerCase().trim() === cleanEmail);
+      if (foundUser && foundUser.password) return foundUser;
+    } catch (_) {}
+
+    return null;
+  }
+
+  updateDevUserPasswordFields() {
+    if (this.portalLoginMode !== 'developer' || this.devSubTab !== 'user') return;
+
+    const emailInput = document.getElementById('admin-login-email');
+    const passLabel = document.getElementById('portal-login-password-label');
+    const passInput = document.getElementById('admin-login-password');
+    const subtitleEl = document.getElementById('portal-login-subtitle');
+
+    const email = (emailInput ? emailInput.value : '').toLowerCase().trim();
+    const existingUser = this.getExistingDeveloperUser(email);
+
+    if (email && existingUser) {
+      if (passLabel) passLabel.textContent = 'Enter Password';
+      if (passInput) {
+        passInput.placeholder = 'Enter password';
+        passInput.setAttribute('autocomplete', 'current-password');
+      }
+      if (subtitleEl) {
+        subtitleEl.textContent = 'Enter your email & password to access the Developer Dashboard';
+      }
+    } else {
+      if (passLabel) passLabel.textContent = 'Create New Password';
+      if (passInput) {
+        passInput.placeholder = 'Create new password';
+        passInput.setAttribute('autocomplete', 'new-password');
+      }
+      if (subtitleEl) {
+        subtitleEl.textContent = 'Enter your email & create a new password to access the Developer Dashboard';
+      }
+    }
+  }
+
   updateDevLoginButtonText() {
+    this.updateDevUserPasswordFields();
     const devBtnText = document.getElementById('btn-dev-login-submit-text');
     if (!devBtnText) return;
 
@@ -6495,37 +6541,68 @@ class RideCompareApp {
       return;
     }
 
-    if (!pass || pass.length < 4) {
-      if (errBanner) {
-        if (errText) errText.textContent = 'Please create a new password with at least 4 characters.';
-        errBanner.classList.remove('hidden');
+    const existingUser = this.getExistingDeveloperUser(email);
+    if (existingUser) {
+      if (!pass) {
+        if (errBanner) {
+          if (errText) errText.textContent = 'Please enter your password.';
+          errBanner.classList.remove('hidden');
+        }
+        this.showToast('Please enter your password', 'error');
+        if (passInput) {
+          passInput.classList.add('ring-2', 'ring-red-500');
+          passInput.focus();
+          setTimeout(() => passInput.classList.remove('ring-2', 'ring-red-500'), 1500);
+        }
+        return;
       }
-      this.showToast('Password must be at least 4 characters', 'error');
-      if (passInput) {
-        passInput.classList.add('ring-2', 'ring-red-500');
-        passInput.focus();
-        setTimeout(() => passInput.classList.remove('ring-2', 'ring-red-500'), 1500);
-      }
-      return;
-    }
 
-    // Save newly registered developer credentials in localStorage
-    try {
-      const storedDevs = JSON.parse(localStorage.getItem('ridecompare_registered_developers') || '[]');
-      const existingIdx = storedDevs.findIndex(d => (d.email || '').toLowerCase() === email);
-      const newDev = {
-        email: email,
-        password: pass,
-        role: 'Developer',
-        registeredAt: new Date().toISOString()
-      };
-      if (existingIdx >= 0) {
-        storedDevs[existingIdx] = newDev;
-      } else {
-        storedDevs.push(newDev);
+      if (pass !== existingUser.password) {
+        if (errBanner) {
+          if (errText) errText.textContent = 'Incorrect password. Please enter the password you created for this email.';
+          errBanner.classList.remove('hidden');
+        }
+        this.showToast('Incorrect password. Please try again.', 'error');
+        if (passInput) {
+          passInput.classList.add('ring-2', 'ring-red-500');
+          passInput.focus();
+          setTimeout(() => passInput.classList.remove('ring-2', 'ring-red-500'), 1500);
+        }
+        return;
       }
-      localStorage.setItem('ridecompare_registered_developers', JSON.stringify(storedDevs));
-    } catch (_) {}
+    } else {
+      if (!pass || pass.length < 4) {
+        if (errBanner) {
+          if (errText) errText.textContent = 'Please create a new password with at least 4 characters.';
+          errBanner.classList.remove('hidden');
+        }
+        this.showToast('Password must be at least 4 characters', 'error');
+        if (passInput) {
+          passInput.classList.add('ring-2', 'ring-red-500');
+          passInput.focus();
+          setTimeout(() => passInput.classList.remove('ring-2', 'ring-red-500'), 1500);
+        }
+        return;
+      }
+
+      // Save newly registered developer credentials in localStorage
+      try {
+        const storedDevs = JSON.parse(localStorage.getItem('ridecompare_registered_developers') || '[]');
+        const existingIdx = storedDevs.findIndex(d => (d.email || '').toLowerCase() === email);
+        const newDev = {
+          email: email,
+          password: pass,
+          role: 'Developer',
+          registeredAt: new Date().toISOString()
+        };
+        if (existingIdx >= 0) {
+          storedDevs[existingIdx] = newDev;
+        } else {
+          storedDevs.push(newDev);
+        }
+        localStorage.setItem('ridecompare_registered_developers', JSON.stringify(storedDevs));
+      } catch (_) {}
+    }
 
     // Grant developer access
     sessionStorage.setItem('ridecompare_admin_access', 'true');
