@@ -767,7 +767,9 @@ class RideCompareApp {
     const isDevPreview = window.location.search.includes('dev_preview=1') || window.self !== window.top;
 
     // If already viewed, in simulator preview, or entering directly with specific deep route
-    if (hasViewed || isDeepPath || isDevPreview || (window.location.hash && window.location.hash !== '#' && window.location.hash !== '#home')) {
+    const savedActiveScreen = sessionStorage.getItem('ridecompare_active_screen') || localStorage.getItem('ridecompare_active_screen');
+    const isReturningToActiveScreen = !!(savedActiveScreen && savedActiveScreen !== 'screen-splash' && savedActiveScreen !== 'screen-home');
+    if (hasViewed || isDeepPath || isDevPreview || isReturningToActiveScreen || (window.location.hash && window.location.hash !== '#' && window.location.hash !== '#home')) {
       splash.classList.add('hidden');
       this.isWelcomeSplashActive = false;
       if (isDevPreview) {
@@ -1137,34 +1139,47 @@ class RideCompareApp {
     const path = (window.location.pathname || '').toLowerCase().replace(/\/$/, '');
     const hasStarted = localStorage.getItem('ridecompare_has_started') === 'true';
     const isAuth = !!(window.RideCompareAuth && window.RideCompareAuth.isAuthenticated);
+    const savedActiveScreen = sessionStorage.getItem('ridecompare_active_screen') || localStorage.getItem('ridecompare_active_screen');
+    const hasAdminAccess = sessionStorage.getItem('ridecompare_admin_access') === 'true' || localStorage.getItem('ridecompare_admin_access') === 'true';
 
-    // Explicit Admin route (Strict SuperAdmin Only)
-    if (hash === '#admin' || path.endsWith('/admin')) {
-      if (!this.isSuperAdmin()) {
-        if (this.isAdminOrDev()) {
-          this.showToast('Access denied: Developers cannot access Admin Portal 🚫', 'error');
-          const isUserDev = this.isUserDeveloper();
-          this.navigateTo(isUserDev ? 'screen-developer-user' : 'screen-developer', false);
-          try { history.replaceState(null, '', '#developer'); } catch (_) {}
-          return;
-        }
-        try { history.replaceState(null, '', '#home'); } catch (_) {}
-        setTimeout(() => this.openAdminLoginModal(), 200);
+    // 1. Explicit Admin route (#admin) OR reloading while on screen-admin
+    if (hash === '#admin' || path.endsWith('/admin') || (!hash && savedActiveScreen === 'screen-admin')) {
+      if (this.isSuperAdmin() || (hasAdminAccess && savedActiveScreen === 'screen-admin')) {
+        this.navigateTo('screen-admin', false);
         return;
       }
-      this.navigateTo('screen-admin', false);
+      if (this.isAdminOrDev()) {
+        this.showToast('Access denied: Developers cannot access Admin Portal 🚫', 'error');
+        const isUserDev = this.isUserDeveloper();
+        this.navigateTo(isUserDev ? 'screen-developer-user' : 'screen-developer', false);
+        try { history.replaceState(null, '', isUserDev ? '#dev-user' : '#developer'); } catch (_) {}
+        return;
+      }
+      try { history.replaceState(null, '', '#home'); } catch (_) {}
+      setTimeout(() => this.openAdminLoginModal(), 200);
       return;
     }
 
-    // Explicit Developer route
-    if (hash === '#developer' || path.endsWith('/developer') || hash === '#dev-user' || hash === '#developer-user') {
-      if (!this.isAdminOrDev()) {
-        try { history.replaceState(null, '', '#home'); } catch (_) {}
-        setTimeout(() => this.openAdminLoginModal(), 200);
+    // 2. User Developer route (#dev-user, #developer-user) OR reloading on screen-developer-user
+    if (hash === '#dev-user' || hash === '#developer-user' || (!hash && savedActiveScreen === 'screen-developer-user')) {
+      if (this.isAdminOrDev()) {
+        this.navigateTo('screen-developer-user', false);
         return;
       }
-      const isUserDev = this.isUserDeveloper();
-      this.navigateTo(isUserDev ? 'screen-developer-user' : 'screen-developer', false);
+      try { history.replaceState(null, '', '#home'); } catch (_) {}
+      setTimeout(() => this.openDeveloperLoginModal(), 200);
+      return;
+    }
+
+    // 3. App Developer route (#developer) OR reloading on screen-developer
+    if (hash === '#developer' || path.endsWith('/developer') || (!hash && savedActiveScreen === 'screen-developer')) {
+      if (this.isAdminOrDev()) {
+        const isUserDev = this.isUserDeveloper();
+        this.navigateTo(isUserDev ? 'screen-developer-user' : 'screen-developer', false);
+        return;
+      }
+      try { history.replaceState(null, '', '#home'); } catch (_) {}
+      setTimeout(() => this.openDeveloperLoginModal(), 200);
       return;
     }
 
@@ -2165,6 +2180,29 @@ class RideCompareApp {
       this.updateAdminDevAccessUI();
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
+      // Persist active screen so on page refresh that exact screen is restored
+      try {
+        sessionStorage.setItem('ridecompare_active_screen', screenId);
+        localStorage.setItem('ridecompare_active_screen', screenId);
+        const screenHashMap = {
+          'screen-admin': '#admin',
+          'screen-developer': '#developer',
+          'screen-developer-user': '#dev-user',
+          'screen-booking': '#booking',
+          'screen-history': '#history',
+          'screen-saved': '#saved',
+          'screen-wallet': '#wallet',
+          'screen-ai': '#ai',
+          'screen-profile': '#profile',
+          'screen-status': '#status',
+          'screen-home': '#home'
+        };
+        const targetHash = screenHashMap[screenId];
+        if (targetHash && window.location.hash !== targetHash) {
+          history.replaceState(null, '', targetHash);
+        }
+      } catch (_) {}
+
       if (screenId === 'screen-booking') {
         const refreshBookingMap = () => {
           if (this.bookingMap) {
@@ -2189,6 +2227,11 @@ class RideCompareApp {
       if (screenId === 'screen-admin' || screenId === 'screen-developer' || screenId === 'screen-developer-user') {
         this.loadDashboardLiveData(true);
         if (screenId === 'screen-admin') {
+          try {
+            sessionStorage.setItem('ridecompare_current_dev_screen', 'screen-admin');
+            sessionStorage.setItem('ridecompare_developer_role', 'Admin');
+            localStorage.setItem('ridecompare_developer_role', 'Admin');
+          } catch (_) {}
           this.syncDevRequestsWithCloud().catch(() => {});
         }
         this.startDashboardPolling();
@@ -5958,6 +6001,11 @@ class RideCompareApp {
   }
 
   isSuperAdmin() {
+    const devRoleSession = sessionStorage.getItem('ridecompare_developer_role');
+    const devRoleLocal = localStorage.getItem('ridecompare_developer_role');
+    const hasAdminAccess = sessionStorage.getItem('ridecompare_admin_access') === 'true' ||
+                           localStorage.getItem('ridecompare_admin_access') === 'true';
+
     let profile = this.userProfile || {};
     try {
       const stored = localStorage.getItem('ridecompare_user_profile');
@@ -5967,16 +6015,31 @@ class RideCompareApp {
     } catch (_) {}
 
     const email = (profile.email || '').toLowerCase().trim();
-    const role = profile.role;
+    const isKnownAdminEmail = email === 'mvarunreddymassireddy@gmail.com' || email === 'mahendarreddy440@gmail.com';
 
-    // Developers and UserDevelopers explicitly cannot access Admin portal
-    if (role === 'Developer' || role === 'UserDeveloper') {
-      return false;
+    // 1. Super admin emails always have full admin privileges
+    if (isKnownAdminEmail) {
+      return true;
     }
 
-    const isAdminRole = role === 'Admin' || profile.isAdmin === true;
-    const isKnownAdminEmail = email === 'mvarunreddymassireddy@gmail.com' || email === 'mahendarreddy440@gmail.com';
-    return isAdminRole || isKnownAdminEmail;
+    // 2. Explicit admin role in session/local storage
+    if (hasAdminAccess && (devRoleSession === 'Admin' || devRoleLocal === 'Admin')) {
+      return true;
+    }
+
+    // 3. User profile role marked as Admin
+    const role = profile.role;
+    if (role === 'Admin' || profile.isAdmin === true) {
+      return true;
+    }
+
+    // 4. If current active screen is screen-admin with admin access granted
+    const activeScreen = sessionStorage.getItem('ridecompare_active_screen') || localStorage.getItem('ridecompare_active_screen');
+    if (hasAdminAccess && activeScreen === 'screen-admin') {
+      return true;
+    }
+
+    return false;
   }
 
   isUserDeveloper() {
@@ -6499,6 +6562,12 @@ class RideCompareApp {
     if (isVarunAdmin || isMahendarAdmin) {
       sessionStorage.setItem('ridecompare_admin_access', 'true');
       localStorage.setItem('ridecompare_admin_access', 'true');
+      sessionStorage.setItem('ridecompare_developer_role', 'Admin');
+      localStorage.setItem('ridecompare_developer_role', 'Admin');
+      sessionStorage.setItem('ridecompare_current_dev_screen', 'screen-admin');
+      localStorage.setItem('ridecompare_current_dev_screen', 'screen-admin');
+      sessionStorage.setItem('ridecompare_active_screen', 'screen-admin');
+      localStorage.setItem('ridecompare_active_screen', 'screen-admin');
 
       // Update current application profile with Admin status
       const adminName = isVarunAdmin ? 'Varun Reddy (Admin)' : 'Mahendar Reddy (Admin)';
@@ -6676,6 +6745,8 @@ class RideCompareApp {
       return;
     }
 
+    const nameInput = document.getElementById('admin-login-name');
+    const enteredDevName = nameInput ? nameInput.value.trim() : '';
     const emailInput = document.getElementById('admin-login-email');
     const passInput = document.getElementById('admin-login-password');
     const errBanner = document.getElementById('admin-login-error');
@@ -6728,9 +6799,6 @@ class RideCompareApp {
       this.grantDeveloperAccess(email, devName);
       return;
     }
-
-    const nameInput = document.getElementById('admin-login-name');
-    const enteredDevName = nameInput ? nameInput.value.trim() : '';
 
     // If developer has already previously logged in / been approved with this email, log straight in!
     if (this.isEmailApprovedDeveloper(email)) {
@@ -7014,7 +7082,22 @@ class RideCompareApp {
   getDevRequests() {
     try {
       const data = localStorage.getItem('ridecompare_dev_requests');
-      return data ? JSON.parse(data) : [];
+      const list = data ? JSON.parse(data) : [];
+      if (Array.isArray(list)) {
+        list.forEach(r => {
+          if (!r.name && r.email) {
+            const existingDev = this.getExistingDeveloperUser(r.email);
+            if (existingDev && existingDev.name) {
+              r.name = existingDev.name;
+            } else {
+              const emailPrefix = r.email.split('@')[0] || '';
+              r.name = emailPrefix.split(/[._-]+/).filter(Boolean).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+            }
+          }
+        });
+        return list;
+      }
+      return [];
     } catch (_) {
       return [];
     }
@@ -7279,7 +7362,15 @@ class RideCompareApp {
         }
       }
       if (!devName) devName = 'Developer Candidate';
-      const devInitial = devName.charAt(0).toUpperCase();
+      const parts = devName.split(' ').filter(Boolean);
+      let devInitial = 'D';
+      if (parts.length >= 2) {
+        devInitial = (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+      } else if (parts.length === 1 && parts[0].length >= 2) {
+        devInitial = parts[0].slice(0, 2).toUpperCase();
+      } else if (parts.length === 1) {
+        devInitial = parts[0][0].toUpperCase();
+      }
 
       let statusBadge = '';
       if (isPending) {
@@ -7409,6 +7500,18 @@ class RideCompareApp {
     if (window.soundFX && window.soundFX.playTap) {
       try { window.soundFX.playTap(); } catch (_) {}
     }
+    sessionStorage.setItem('ridecompare_developer_role', 'Admin');
+    localStorage.setItem('ridecompare_developer_role', 'Admin');
+    sessionStorage.setItem('ridecompare_current_dev_screen', 'screen-admin');
+    localStorage.setItem('ridecompare_current_dev_screen', 'screen-admin');
+    sessionStorage.setItem('ridecompare_active_screen', 'screen-admin');
+    localStorage.setItem('ridecompare_active_screen', 'screen-admin');
+    if (this.userProfile) {
+      this.userProfile.role = 'Admin';
+      this.userProfile.isAdmin = true;
+      try { localStorage.setItem('ridecompare_user_profile', JSON.stringify(this.userProfile)); } catch (_) {}
+    }
+
     const adminMenu = document.getElementById('admin-user-dropdown');
     if (adminMenu) adminMenu.classList.add('hidden');
     const devMenu = document.getElementById('dev-user-dropdown');
