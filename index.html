@@ -5743,7 +5743,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
           </div>
 
           <div class="relative">
-            <input type="text" oninput="app.searchAdminDevRequests(this.value)" placeholder="Search by email or location..." class="text-xs px-3.5 py-2 pl-9 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-indigo-500 w-full sm:w-64">
+            <input type="text" oninput="app.searchAdminDevRequests(this.value)" placeholder="Search by name, email or location..." class="text-xs px-3.5 py-2 pl-9 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-indigo-500 w-full sm:w-64">
             <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
           </div>
         </div>
@@ -5754,7 +5754,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
             <table class="w-full text-left text-xs min-w-[640px]">
               <thead class="bg-slate-50/80 border-b border-slate-200/80">
                 <tr class="text-slate-500 font-bold">
-                  <th class="py-3.5 px-4 font-semibold">Developer Email</th>
+                  <th class="py-3.5 px-4 font-semibold">Developer Name &amp; Email</th>
                   <th class="py-3.5 px-4 font-semibold">Detected Location</th>
                   <th class="py-3.5 px-4 font-semibold">Requested At</th>
                   <th class="py-3.5 px-4 font-semibold">Status</th>
@@ -5910,15 +5910,19 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
           <!-- Developer Avatar & Menu -->
           <div class="relative">
             <button type="button" onclick="app.toggleDevUserMenu()" class="inline-flex items-center gap-2 p-1 pr-2.5 rounded-full bg-white hover:bg-slate-50 border border-slate-200 shadow-sm transition-all cursor-pointer">
-              <div class="w-7 h-7 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center shadow-inner">
+              <div id="dev-topbar-avatar-initials" class="w-7 h-7 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center shadow-inner">
                 D
               </div>
-              <span class="text-xs font-bold text-slate-800">Developer</span>
+              <span id="dev-topbar-profile-name" class="text-xs font-bold text-slate-800">Developer</span>
               <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
             </button>
 
             <!-- Dropdown Menu -->
-            <div id="dev-user-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-2xl shadow-xl py-1.5 z-30 text-xs">
+            <div id="dev-user-dropdown" class="hidden absolute right-0 mt-2 w-52 bg-white border border-slate-200 rounded-2xl shadow-xl py-2 z-30 text-xs">
+              <div class="px-4 py-2 border-b border-slate-100 mb-1">
+                <p id="dev-dropdown-user-name" class="font-bold text-slate-900">Developer</p>
+                <p id="dev-dropdown-user-email" class="text-[11px] text-slate-500 truncate">developer@ridecompare.com</p>
+              </div>
               <button type="button" onclick="app.switchDevTab('devices')" class="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 font-medium flex items-center gap-2">
                 <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2zM9 3h6"/></svg>
                 <span>Device &amp; UI Preview</span>
@@ -5951,7 +5955,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
             </div>
             <div>
-              <h2 class="text-base font-bold text-slate-900">Welcome, Developer</h2>
+              <h2 id="dev-hero-welcome-text" class="text-base font-bold text-slate-900">Welcome, Developer</h2>
               <p class="text-xs text-slate-500 mt-0.5">Explore the RideCompare API. Build your own integrations and make ride comparison smarter.</p>
             </div>
           </div>
@@ -8657,6 +8661,17 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
 
       <!-- Portal Form -->
       <form id="form-admin-portal-login" onsubmit="app.handlePortalLoginSubmit(event)" class="space-y-4">
+        <!-- Developer / User Name Input (Shown in Developer Portal) -->
+        <div id="portal-login-name-container" class="hidden">
+          <label id="portal-login-name-label" for="admin-login-name" class="admin-login-label block text-xs font-bold text-slate-700 mb-1.5">User Name</label>
+          <div class="relative">
+            <input id="admin-login-name" type="text" placeholder="Enter your full name" autocomplete="name" class="admin-login-input w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-100 transition-all font-medium">
+            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            </div>
+          </div>
+        </div>
+
         <div>
           <label id="portal-login-email-label" for="admin-login-email" class="admin-login-label block text-xs font-bold text-slate-700 mb-1.5">Admin Email Address</label>
           <div class="relative">
@@ -8717,6 +8732,10 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
 
           <!-- Developer Info Card -->
           <div class="bg-slate-50 rounded-2xl border border-slate-200/80 p-4 text-left space-y-2 text-xs">
+            <div class="flex items-center justify-between">
+              <span class="text-slate-500 font-medium">Developer Name:</span>
+              <span id="dev-pending-name" class="font-bold text-slate-800 break-all">Developer Candidate</span>
+            </div>
             <div class="flex items-center justify-between">
               <span class="text-slate-500 font-medium">Developer Email:</span>
               <span id="dev-pending-email" class="font-bold text-slate-800 break-all">dev@domain.com</span>
@@ -9205,7 +9224,7 @@ body.theme-light #history-detail-modal button.bg-gradient-to-r {
   <script src="js/bcrypt.min.js"></script>
   <script src="js/api.js?v=9"></script>
   <script src="js/audio.js?v=28"></script>
-  <script src="js/app.js?v=142"></script>
+  <script src="js/app.js?v=143"></script>
 
   <!-- Service Worker for Offline PWA Support -->
   <script>

@@ -490,6 +490,7 @@
       try {
         await supabaseRequest('/DeveloperRequest', 'POST', {
           id: reqData.id,
+          name: reqData.name || '',
           email: reqData.email,
           location: reqData.location,
           status: reqData.status || 'pending',

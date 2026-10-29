@@ -2204,6 +2204,7 @@ class RideCompareApp {
           try {
             sessionStorage.setItem('ridecompare_current_dev_screen', 'screen-developer');
           } catch (_) {}
+          this.updateDeveloperProfileUI();
           this.switchDevTab(this.currentDevTab || 'playground', false);
         }
       } else {
@@ -6112,6 +6113,16 @@ class RideCompareApp {
     const isDev = mode === 'developer';
     this.portalLoginMode = isDev ? 'developer' : 'admin';
 
+    // 0. Toggle Name field container (Shown in Developer Portal, Hidden in Admin Portal)
+    const nameCont = document.getElementById('portal-login-name-container');
+    if (nameCont) {
+      if (isDev) {
+        nameCont.classList.remove('hidden');
+      } else {
+        nameCont.classList.add('hidden');
+      }
+    }
+
     // 1. Switch Icons (Shield for Admin, Code </> for Developer)
     const adminIcon = document.getElementById('portal-login-icon-admin');
     const devIcon = document.getElementById('portal-login-icon-dev');
@@ -6208,8 +6219,11 @@ class RideCompareApp {
     }
 
     // Developer Portal Mode:
-    this.devSubTab = (tab === 'developer') ? 'developer' : 'user';
+    this.devSubTab = (tab === 'developer' || tab === 'role') ? 'developer' : 'user';
     const isUserTab = (this.devSubTab === 'user');
+
+    const nameLabel = document.getElementById('portal-login-name-label');
+    const nameInput = document.getElementById('admin-login-name');
 
     if (isUserTab) {
       // User Tab is active in Developer Portal
@@ -6225,6 +6239,8 @@ class RideCompareApp {
         if (roleSvg) roleSvg.setAttribute('class', 'w-3.5 h-3.5 text-slate-500');
       }
 
+      if (nameLabel) nameLabel.textContent = 'User Name';
+      if (nameInput) nameInput.placeholder = 'Enter your full name';
       if (emailLabel) emailLabel.textContent = 'User Email Address';
       if (emailInput) {
         emailInput.placeholder = 'name@domain.com';
@@ -6245,6 +6261,8 @@ class RideCompareApp {
         if (roleSvg) roleSvg.setAttribute('class', 'w-3.5 h-3.5 text-indigo-200');
       }
 
+      if (nameLabel) nameLabel.textContent = 'Developer Name';
+      if (nameInput) nameInput.placeholder = 'Enter developer name';
       if (subtitleEl) {
         subtitleEl.textContent = 'Enter authorized developer email & password to access the Developer Dashboard';
       }
@@ -6345,10 +6363,15 @@ class RideCompareApp {
     const passInput = document.getElementById('admin-login-password');
     const subtitleEl = document.getElementById('portal-login-subtitle');
 
+    const nameInput = document.getElementById('admin-login-name');
     const email = (emailInput ? emailInput.value : '').toLowerCase().trim();
     const existingUser = this.getExistingDeveloperUser(email);
 
     if (email && existingUser) {
+      if (nameInput && (!nameInput.value || nameInput.dataset.autoPrefilled === 'true')) {
+        nameInput.value = existingUser.name || '';
+        nameInput.dataset.autoPrefilled = 'true';
+      }
       if (passLabel) passLabel.textContent = 'Enter Password';
       if (passInput) {
         passInput.placeholder = 'Enter password';
@@ -6518,6 +6541,7 @@ class RideCompareApp {
 
   handleDeveloperUserSubmit(e) {
     if (e && e.preventDefault) e.preventDefault();
+    const nameInput = document.getElementById('admin-login-name');
     const emailInput = document.getElementById('admin-login-email');
     const passInput = document.getElementById('admin-login-password');
     const errBanner = document.getElementById('admin-login-error');
@@ -6525,6 +6549,7 @@ class RideCompareApp {
 
     const email = (emailInput ? emailInput.value : '').toLowerCase().trim();
     const pass = passInput ? passInput.value : '';
+    const enteredName = nameInput ? nameInput.value.trim() : '';
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email || !emailRegex.test(email)) {
@@ -6589,8 +6614,12 @@ class RideCompareApp {
       try {
         const storedDevs = JSON.parse(localStorage.getItem('ridecompare_registered_developers') || '[]');
         const existingIdx = storedDevs.findIndex(d => (d.email || '').toLowerCase() === email);
+        const emailPrefix = email.split('@')[0] || 'User';
+        const formattedName = emailPrefix.split(/[._-]+/).filter(Boolean).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        const resolvedName = enteredName || (existingIdx >= 0 && storedDevs[existingIdx].name ? storedDevs[existingIdx].name : formattedName);
         const newDev = {
           email: email,
+          name: resolvedName,
           password: pass,
           role: 'Developer',
           registeredAt: new Date().toISOString()
@@ -6612,11 +6641,12 @@ class RideCompareApp {
     sessionStorage.setItem('ridecompare_current_dev_screen', 'screen-developer-user');
     localStorage.setItem('ridecompare_current_dev_screen', 'screen-developer-user');
 
-    // Update userProfile
+    // Update userProfile with the exact entered / saved name
     const emailPrefix = email.split('@')[0] || 'User';
     const formattedName = emailPrefix.split(/[._-]+/).filter(Boolean).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    const finalUserName = enteredName || (existingUser && existingUser.name ? existingUser.name : formattedName);
     this.userProfile = Object.assign({}, this.userProfile || {}, {
-      name: formattedName,
+      name: finalUserName,
       email: email,
       role: 'UserDeveloper'
     });
@@ -6629,7 +6659,8 @@ class RideCompareApp {
       try { window.soundFX.playTap(); } catch (_) {}
     }
 
-    this.showToast(`Welcome ${formattedName}! Developer Portal Access Granted 💻`, 'success');
+    this.updateDeveloperProfileUI();
+    this.showToast(`Welcome ${finalUserName}! Developer Portal Access Granted 💻`, 'success');
     this.navigateTo('screen-developer-user', false);
     try {
       history.pushState(null, '', '#developer');
@@ -6692,21 +6723,26 @@ class RideCompareApp {
     if (errBanner) errBanner.classList.add('hidden');
 
     if (isVarunAdmin || isMahendarAdmin) {
-      const devName = isVarunAdmin ? 'Varun Reddy (Developer)' : 'Mahendar Reddy (Developer)';
+      const defaultName = isVarunAdmin ? 'Varun Reddy (Developer)' : 'Mahendar Reddy (Developer)';
+      const devName = enteredDevName ? (enteredDevName + ' (Developer)') : defaultName;
       this.grantDeveloperAccess(email, devName);
       return;
     }
 
+    const nameInput = document.getElementById('admin-login-name');
+    const enteredDevName = nameInput ? nameInput.value.trim() : '';
+
     // If developer has already previously logged in / been approved with this email, log straight in!
     if (this.isEmailApprovedDeveloper(email)) {
       const emailPrefix = email.split('@')[0] || 'Developer';
-      const formattedName = emailPrefix.split(/[._-]+/).filter(Boolean).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') + ' (Developer)';
-      this.grantDeveloperAccess(email, formattedName);
+      const fallbackName = emailPrefix.split(/[._-]+/).filter(Boolean).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') + ' (Developer)';
+      const finalName = enteredDevName ? (enteredDevName + ' (Developer)') : fallbackName;
+      this.grantDeveloperAccess(email, finalName);
       return;
     }
 
-    // For new developer email with password "Vozx@dev1916", submit Login Request with Email and Location!
-    await this.submitDeveloperLoginRequest(email, pass);
+    // For new developer email with password "Vozx@dev1916", submit Login Request with Name, Email and Location!
+    await this.submitDeveloperLoginRequest(email, pass, enteredDevName);
   }
 
   async getDeveloperLocation() {
@@ -6758,7 +6794,7 @@ class RideCompareApp {
     return 'Hyderabad, Telangana, India';
   }
 
-  async submitDeveloperLoginRequest(email, pass) {
+  async submitDeveloperLoginRequest(email, pass, devName = '') {
     const devBtn = document.getElementById('btn-dev-login-submit');
     const originalText = devBtn ? devBtn.innerHTML : '';
     if (devBtn) {
@@ -6786,8 +6822,13 @@ class RideCompareApp {
     const timeFormatted = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }) +
       ', ' + now.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
 
+    const emailPrefix = email.split('@')[0] || 'Developer';
+    const formattedName = emailPrefix.split(/[._-]+/).filter(Boolean).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    const resolvedName = devName ? devName : formattedName;
+
     const newRequest = {
       id: 'dev_req_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
+      name: resolvedName,
       email: email,
       location: devLocation,
       password: pass,
@@ -6812,8 +6853,11 @@ class RideCompareApp {
     const pendingCont = document.getElementById('dev-login-pending-container');
     const waitingView = document.getElementById('dev-pending-waiting-view');
     const rejectedView = document.getElementById('dev-pending-rejected-view');
+    const nameEl = document.getElementById('dev-pending-name');
     const emailEl = document.getElementById('dev-pending-email');
     const locEl = document.getElementById('dev-pending-location');
+
+    if (nameEl) nameEl.textContent = resolvedName;
 
     if (formCont) formCont.classList.add('hidden');
     if (pendingCont) pendingCont.classList.remove('hidden');
@@ -6864,8 +6908,9 @@ class RideCompareApp {
         this.activeDevRequestId = null;
 
         const emailPrefix = email.split('@')[0] || 'Developer';
-        const formattedName = emailPrefix.split(/[._-]+/).filter(Boolean).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') + ' (Developer)';
-        this.grantDeveloperAccess(email, formattedName);
+        const formattedName = emailPrefix.split(/[._-]+/).filter(Boolean).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        const finalName = (req && req.name) ? (req.name + ' (Developer)') : (formattedName + ' (Developer)');
+        this.grantDeveloperAccess(email, finalName);
       } else if (req.status === 'rejected') {
         if (this.devRequestPollInterval) {
           clearInterval(this.devRequestPollInterval);
@@ -6919,6 +6964,11 @@ class RideCompareApp {
     if (clearPassword) {
       const passInput = document.getElementById('admin-login-password');
       if (passInput) passInput.value = '';
+      const nameInput = document.getElementById('admin-login-name');
+      if (nameInput) {
+        nameInput.value = '';
+        delete nameInput.dataset.autoPrefilled;
+      }
     }
   }
 
@@ -6951,6 +7001,7 @@ class RideCompareApp {
 
     const shortName = devName.replace(' (Developer)', '');
     this.showToast(`Welcome ${shortName}! Developer Access Approved 💻`, 'success');
+    this.updateDeveloperProfileUI();
     this.updateAdminDevAccessUI();
     this.navigateTo('screen-developer', false);
     try {
@@ -7012,9 +7063,23 @@ class RideCompareApp {
     cloudList.forEach(item => {
       if (item && item.id) {
         if (!map.has(item.id)) {
+          if (!item.name && item.email) {
+            const existingDev = this.getExistingDeveloperUser(item.email);
+            if (existingDev && existingDev.name) {
+              item.name = existingDev.name;
+            } else {
+              const emailPrefix = item.email.split('@')[0] || '';
+              item.name = emailPrefix.split(/[._-]+/).filter(Boolean).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+            }
+          }
           map.set(item.id, item);
         } else {
           const localItem = map.get(item.id);
+          if (localItem && localItem.name && !item.name) {
+            item.name = localItem.name;
+          } else if (localItem && !localItem.name && item.name) {
+            localItem.name = item.name;
+          }
           if (item.status && item.status !== 'pending') {
             localItem.status = item.status;
             localItem.decidedAt = item.decidedAt;
@@ -7076,6 +7141,18 @@ class RideCompareApp {
       localStorage.setItem('ridecompare_dev_requests', JSON.stringify(devRequests));
       if (req.email) {
         this.addApprovedDeveloperEmail(req.email);
+        if (req.name) {
+          try {
+            const storedDevs = JSON.parse(localStorage.getItem('ridecompare_registered_developers') || '[]');
+            const idx = storedDevs.findIndex(d => (d.email || '').toLowerCase() === req.email.toLowerCase());
+            if (idx >= 0) {
+              storedDevs[idx].name = req.name;
+            } else {
+              storedDevs.push({ email: req.email, name: req.name, role: 'Developer', registeredAt: new Date().toISOString() });
+            }
+            localStorage.setItem('ridecompare_registered_developers', JSON.stringify(storedDevs));
+          } catch (_) {}
+        }
       }
     }
 
@@ -7174,6 +7251,7 @@ class RideCompareApp {
     }
     if (searchQuery) {
       filtered = filtered.filter(r =>
+        (r.name || '').toLowerCase().includes(searchQuery) ||
         (r.email || '').toLowerCase().includes(searchQuery) ||
         (r.location || '').toLowerCase().includes(searchQuery)
       );
@@ -7190,7 +7268,18 @@ class RideCompareApp {
     tbody.innerHTML = filtered.map(req => {
       const isPending = req.status === 'pending';
       const isApproved = req.status === 'approved';
-      const emailInitial = (req.email ? req.email.charAt(0) : 'D').toUpperCase();
+      let devName = req.name;
+      if (!devName && req.email) {
+        const existingDev = this.getExistingDeveloperUser(req.email);
+        if (existingDev && existingDev.name) {
+          devName = existingDev.name;
+        } else {
+          const emailPrefix = req.email.split('@')[0] || '';
+          devName = emailPrefix.split(/[._-]+/).filter(Boolean).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        }
+      }
+      if (!devName) devName = 'Developer Candidate';
+      const devInitial = devName.charAt(0).toUpperCase();
 
       let statusBadge = '';
       if (isPending) {
@@ -7255,10 +7344,11 @@ class RideCompareApp {
           <td class="py-3 px-4">
             <div class="flex items-center gap-2.5">
               <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-600 text-white font-bold text-xs flex items-center justify-center shadow-xs">
-                ${emailInitial}
+                ${devInitial}
               </div>
               <div>
-                <p class="font-bold text-slate-800 text-xs">${req.email}</p>
+                <p class="font-bold text-slate-900 text-xs">${devName}</p>
+                <p class="text-[11px] text-slate-500 font-mono">${req.email}</p>
                 <span class="inline-block text-[10px] text-indigo-600 font-medium">Developer Candidate</span>
               </div>
             </div>
@@ -7512,21 +7602,29 @@ class RideCompareApp {
       initials = parts[0][0].toUpperCase();
     }
 
-    // 1. User Developer UI elements (for screen-developer-user)
-    const userInitialsEl = document.getElementById('user-dev-topbar-avatar-initials') || document.getElementById('dev-topbar-avatar-initials');
+    // 1. User Developer UI elements (screen-developer-user)
+    const userInitialsEl = document.getElementById('user-dev-topbar-avatar-initials');
     if (userInitialsEl) userInitialsEl.textContent = initials;
-
-    const userTopbarNameEl = document.getElementById('user-dev-topbar-profile-name') || document.getElementById('dev-topbar-profile-name');
+    const userTopbarNameEl = document.getElementById('user-dev-topbar-profile-name');
     if (userTopbarNameEl) userTopbarNameEl.textContent = cleanName;
-
-    const userHeroNameEl = document.getElementById('user-dev-hero-welcome-name') || document.getElementById('dev-hero-welcome-name');
+    const userHeroNameEl = document.getElementById('user-dev-hero-welcome-name');
     if (userHeroNameEl) userHeroNameEl.textContent = cleanName;
-
-    const userDropdownNameEl = document.getElementById('user-dev-dropdown-user-name') || document.getElementById('dev-dropdown-user-name');
+    const userDropdownNameEl = document.getElementById('user-dev-dropdown-user-name');
     if (userDropdownNameEl) userDropdownNameEl.textContent = cleanName;
+    const userDropdownEmailEl = document.getElementById('user-dev-dropdown-user-email');
+    if (userDropdownEmailEl) userDropdownEmailEl.textContent = email || 'developer@ridecompare.com';
 
-    const userDropdownEmailEl = document.getElementById('user-dev-dropdown-user-email') || document.getElementById('dev-dropdown-user-email');
-    if (userDropdownEmailEl) userDropdownEmailEl.textContent = email || 'user@ridecompare.com';
+    // 2. App Developer UI elements (screen-developer)
+    const devInitialsEl = document.getElementById('dev-topbar-avatar-initials');
+    if (devInitialsEl) devInitialsEl.textContent = initials;
+    const devTopbarNameEl = document.getElementById('dev-topbar-profile-name');
+    if (devTopbarNameEl) devTopbarNameEl.textContent = cleanName;
+    const devHeroWelcomeEl = document.getElementById('dev-hero-welcome-text');
+    if (devHeroWelcomeEl) devHeroWelcomeEl.textContent = `Welcome, ${cleanName}`;
+    const devDropdownNameEl = document.getElementById('dev-dropdown-user-name');
+    if (devDropdownNameEl) devDropdownNameEl.textContent = cleanName;
+    const devDropdownEmailEl = document.getElementById('dev-dropdown-user-email');
+    if (devDropdownEmailEl) devDropdownEmailEl.textContent = email || 'developer@ridecompare.com';
   }
 
   enterAdminFullScreen(tabName = 'users') {
